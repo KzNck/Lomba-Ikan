@@ -8,7 +8,7 @@ export function Navbar() {
     const pathname = usePathname()
     const isOnline = useOnlineStatus()
 
-    if (pathname === '/') {
+    if (pathname === '/' || pathname.startsWith('/auth')) {
         return null
     }
 
