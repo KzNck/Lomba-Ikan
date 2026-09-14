@@ -1,90 +1,110 @@
 """
-Freshness predictor — rule-based dulu, siap di-swap ke ML model.
+Freshness predictor — VERSI MODEL ASLI (RandomForest 6-kelas, fusion visual+tabular).
 
-Untuk swap ke ML:
-1. Load model.pkl di __init__
-2. Ganti metode predict() pakai model.predict(features)
-3. API contract (input/output) tidak berubah sama sekali
+Load bycatch_unified_model.joblib + bycatch_preprocessor.joblib sekali saat startup,
+reuse tiap request. Ikuti persis alur evaluate_bycatch() di notebook (Cell 12).
 """
 
-from datetime import datetime, timezone
-from dataclasses import dataclass
+import os
+import joblib
+import numpy as np
+import pandas as pd
+from PIL import Image
 
-MODEL_VERSION = "rule-based-v1"
+from app.models.visual_features import extract_visual_features_vector
+from app.models.guardrail import rule_based_sanity_check, HILIRISASI_MAP
 
+MODEL_VERSION = "bycatch-unified-rf-v1"
 
-@dataclass
-class PredictionInput:
-    species: str
-    weight_kg: float
-    catch_time: datetime
-    storage_method: str
-    vessel_condition: str | None
+NUMERIC_COLS = ["hours_post_haul", "ice_to_fish_ratio", "ambient_temp_celsius"]
+CATEGORICAL_COLS = ["storage_method", "fish_category", "status_awal"]
+
+MODEL_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+MODEL_PATH = os.path.join(MODEL_DIR, "bycatch_unified_model.joblib")
+PREPROCESSOR_PATH = os.path.join(MODEL_DIR, "bycatch_preprocessor.joblib")
 
 
 class FreshnessPredictor:
-    # Penalti per jam berdasarkan metode penyimpanan
-    STORAGE_DECAY = {
-        "es_balok": 1.8,    # paling lambat busuk
-        "es_curah": 2.5,
-        "tanpa_es": 5.0,    # paling cepat busuk
-    }
+    def __init__(self):
+        if not os.path.exists(MODEL_PATH) or not os.path.exists(PREPROCESSOR_PATH):
+            raise FileNotFoundError(
+                f"Model atau preprocessor tidak ditemukan. Pastikan "
+                f"bycatch_unified_model.joblib dan bycatch_preprocessor.joblib "
+                f"ada di {MODEL_DIR}"
+            )
+        self.model = joblib.load(MODEL_PATH)
+        self.preprocessor = joblib.load(PREPROCESSOR_PATH)
 
-    # Bonus/penalti species (ikan kecil lebih cepat turun kualitas)
-    SPECIES_FACTOR = {
-        "tongkol": 1.0,
-        "kakap": 0.9,       # lebih tahan
-        "kembung": 1.2,     # lebih cepat turun
-        "tenggiri": 0.95,
-        "cakalang": 1.0,
-    }
+    def predict(self, image: Image.Image, form_data: dict) -> dict:
+        """
+        form_data wajib berisi:
+          - status_ikan: 'HIDUP' | 'MATI'
+          - hours_post_haul: float
+          - ice_to_fish_ratio: float
+          - ambient_temp_celsius: float
+          - storage_method: 'crushed_ice' | 'chilled_seawater' | 'ambient'
+          - fish_category: 'campuran' | 'teri_non_grade' | 'rucah'
+        """
+        status_ikan = form_data.get("status_ikan")
+        if status_ikan not in ("HIDUP", "MATI"):
+            raise ValueError("form_data['status_ikan'] harus 'HIDUP' atau 'MATI'")
 
-    VESSEL_PENALTY = {
-        "baik": 0,
-        "cukup": 5,
-        "buruk": 15,
-    }
+        required = [
+            "hours_post_haul", "ice_to_fish_ratio", "ambient_temp_celsius",
+            "storage_method", "fish_category",
+        ]
+        missing = [k for k in required if k not in form_data]
+        if missing:
+            raise ValueError(f"form_data kekurangan field: {missing}")
 
-    def predict(self, data: PredictionInput) -> dict:
-        now = datetime.now(timezone.utc)
+        # Build tabular row — nama kolom internal "status_awal" (sesuai training)
+        tab_row = pd.DataFrame([{
+            "hours_post_haul": form_data["hours_post_haul"],
+            "ice_to_fish_ratio": form_data["ice_to_fish_ratio"],
+            "ambient_temp_celsius": form_data["ambient_temp_celsius"],
+            "storage_method": form_data["storage_method"],
+            "fish_category": form_data["fish_category"],
+            "status_awal": status_ikan,
+        }])[NUMERIC_COLS + CATEGORICAL_COLS]
 
-        # Pastikan catch_time timezone-aware
-        catch_time = data.catch_time
-        if catch_time.tzinfo is None:
-            catch_time = catch_time.replace(tzinfo=timezone.utc)
+        tab_feats = self.preprocessor.transform(tab_row)
+        if hasattr(tab_feats, "toarray"):
+            tab_feats = tab_feats.toarray()
 
-        hours = max(0, (now - catch_time).total_seconds() / 3600)
+        visual_feats = extract_visual_features_vector(image).reshape(1, -1)
+        X = np.hstack([tab_feats, visual_feats]).astype(np.float32)
 
-        # Hitung decay rate
-        decay_rate = self.STORAGE_DECAY.get(data.storage_method, 3.0)
-        species_factor = self.SPECIES_FACTOR.get(data.species.lower(), 1.0)
-        vessel_penalty = self.VESSEL_PENALTY.get(data.vessel_condition or "baik", 0)
+        probs = self.model.predict_proba(X)[0]
+        classes = self.model.classes_
+        pred_idx = int(np.argmax(probs))
+        predicted_grade_raw = str(classes[pred_idx])
+        confidence = float(probs[pred_idx])
 
-        # Skor awal 100, turun berdasarkan jam + faktor
-        score = 100.0
-        score -= hours * decay_rate * species_factor
-        score -= vessel_penalty
-        score = max(0.0, min(100.0, score))
+        final_grade, override_applied, override_reason = rule_based_sanity_check(
+            status_ikan, predicted_grade_raw, form_data
+        )
 
-        # Grade mapping
-        if score >= 75:
-            grade = "A"
-            notes = f"Sangat segar. {hours:.1f} jam sejak tangkap dengan penyimpanan {data.storage_method}."
-        elif score >= 50:
-            grade = "B"
-            notes = f"Masih layak jual. Direkomendasikan segera diproses dalam 12 jam ke depan."
+        if override_applied:
+            rationale = override_reason
         else:
-            grade = "C"
-            notes = f"Kualitas menurun. {hours:.1f} jam sejak tangkap. Pertimbangkan pengolahan segera."
+            rationale = (
+                f"Prediksi model unified (fitur visual+tabular, Random Forest 6-kelas) untuk grade "
+                f"{final_grade} dengan confidence {confidence:.2f}, konsisten dengan status_ikan="
+                f"{status_ikan}, hours_post_haul={form_data['hours_post_haul']}, "
+                f"ice_to_fish_ratio={form_data['ice_to_fish_ratio']}, "
+                f"ambient_temp_celsius={form_data['ambient_temp_celsius']}, "
+                f"storage_method={form_data['storage_method']}."
+            )
 
         return {
-            "grade": grade,
-            "score": round(score, 2),
-            "notes": notes,
+            "predicted_grade": final_grade,
+            "confidence_score": round(confidence, 4),
+            "hilirisasi_recommendation": HILIRISASI_MAP[final_grade],
+            "override_applied": override_applied,
+            "rationale": rationale,
             "model_version": MODEL_VERSION,
-            "hours_since_catch": round(hours, 2),
         }
 
 
-# Singleton — load sekali, reuse tiap request
+# Singleton — load sekali saat container start, reuse tiap request
 predictor = FreshnessPredictor()
