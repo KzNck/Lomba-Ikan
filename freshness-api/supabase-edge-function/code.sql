@@ -1,18 +1,26 @@
 -- Migration: tambah kolom yang dibutuhkan model AI (bycatch_unified_model)
 -- Jalankan ini SETELAH schema.sql utama, di Supabase SQL Editor.
 
--- freshness_grade & freshness_score sudah ada di schema.sql, tapi tipe
--- freshness_grade perlu diperluas dari 'A'|'B'|'C' jadi 6 kelas.
+-- freshness_grade dipakai di 2 tabel: catches.freshness_grade DAN
+-- ai_inference_log.grade_result -- keduanya harus di-convert bersamaan.
 
 ALTER TYPE freshness_grade RENAME TO freshness_grade_old;
 
 CREATE TYPE freshness_grade AS ENUM ('A1', 'A2', 'A3', 'B1', 'B2', 'B3');
 
+-- Convert catches.freshness_grade
 ALTER TABLE public.catches
   ALTER COLUMN freshness_grade DROP DEFAULT,
   ALTER COLUMN freshness_grade TYPE freshness_grade
     USING NULL; -- data lama (grade A/B/C) tidak bisa dipetakan otomatis, reset ke NULL
 
+-- Convert ai_inference_log.grade_result (kolom ini juga pakai tipe freshness_grade)
+ALTER TABLE public.ai_inference_log
+  ALTER COLUMN grade_result DROP DEFAULT,
+  ALTER COLUMN grade_result TYPE freshness_grade
+    USING NULL;
+
+-- Baru sekarang tipe lama aman dihapus, tidak ada lagi kolom yang depend padanya
 DROP TYPE freshness_grade_old;
 
 -- Kolom tambahan yang dibutuhkan model (fusion visual+tabular)
@@ -22,7 +30,7 @@ ALTER TABLE public.catches
   ADD COLUMN IF NOT EXISTS ambient_temp_celsius NUMERIC(4, 1),
   ADD COLUMN IF NOT EXISTS fish_category TEXT CHECK (fish_category IN ('campuran', 'teri_non_grade', 'rucah'));
 
--- storage_method sebelumnya TEXT bebas — batasi ke 3 nilai yang dikenali model
+-- storage_method sebelumnya TEXT bebas -- batasi ke 3 nilai yang dikenali model
 ALTER TABLE public.catches
   ADD CONSTRAINT chk_storage_method
   CHECK (storage_method IN ('crushed_ice', 'chilled_seawater', 'ambient'));
