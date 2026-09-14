@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Nelayan Marketplace",
-  description: "Platform Marketplace & Transparansi Tangkapan Nelayan",
+  title: "ByCatch Loop | Sirkular Bahari Nusantara",
+  description: "Platform Sirkular Maritim Terintegrasi. Ubah hasil tangkapan sampingan menjadi peluang bernilai tambah.",
 };
 
 export default function RootLayout({

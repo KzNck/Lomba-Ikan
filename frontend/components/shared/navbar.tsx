@@ -8,6 +8,10 @@ export function Navbar() {
     const pathname = usePathname()
     const isOnline = useOnlineStatus()
 
+    if (pathname === '/') {
+        return null
+    }
+
     const navLinks = [
         { href: '/', label: 'Beranda' },
         { href: '/marketplace', label: 'Marketplace' },
