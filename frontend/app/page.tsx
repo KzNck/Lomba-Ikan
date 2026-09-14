@@ -9,7 +9,6 @@ import { OperationalPillars } from '@/components/landing/operational-pillars'
 import { WorkflowSteps } from '@/components/landing/workflow-steps'
 import { RoleEcosystem } from '@/components/landing/role-ecosystem'
 import { SdgImpact } from '@/components/landing/sdg-impact'
-import { GroundOperations } from '@/components/landing/ground-operations'
 import { CtaBanner } from '@/components/landing/cta-banner'
 import { LandingFooter } from '@/components/landing/landing-footer'
 import { ContactModal } from '@/components/landing/contact-modal'
@@ -47,10 +46,7 @@ export default function HomePage() {
         {/* 6. Measurable Impact Metrics & 5 SDG Contributions */}
         <SdgImpact />
 
-        {/* 7. Real-world Ground Operations at Pelabuhan Muncar */}
-        <GroundOperations />
-
-        {/* 8. Unified Blue Economy Final Call-to-Action Banner */}
+        {/* 7. Unified Blue Economy Final Call-to-Action Banner */}
         <CtaBanner
           onOpenContact={() => setContactOpen(true)}
           onOpenReport={() => setReportOpen(true)}

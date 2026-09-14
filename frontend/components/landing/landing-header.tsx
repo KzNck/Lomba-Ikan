@@ -31,7 +31,6 @@ export function LandingHeader() {
     { href: '#cara-kerja', label: 'Cara Kerja' },
     { href: '#tentang', label: 'Ekosistem' },
     { href: '#dampak-sdg', label: 'Dampak & SDGs' },
-    { href: '#kemitraan', label: 'Kemitraan' },
   ]
 
   return (

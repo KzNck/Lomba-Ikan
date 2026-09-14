@@ -92,11 +92,6 @@ export function LandingFooter({ onOpenContact }: LandingFooterProps) {
             </h4>
             <ul className="space-y-2.5 text-sm text-slate-600">
               <li>
-                <Link href="#kemitraan" className="hover:text-sky-600 transition-colors">
-                  Pelabuhan Mitra (Muncar)
-                </Link>
-              </li>
-              <li>
                 <Link href="/auth/register?role=ppi" className="hover:text-sky-600 transition-colors">
                   Koperasi Nelayan & PPI
                 </Link>
