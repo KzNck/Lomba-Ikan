@@ -40,30 +40,13 @@ export async function getTransactionById(id: string): Promise<Transaction | null
  * secara atomik dengan service role — tidak aman dilakukan langsung dari client.
  */
 export async function claimCatch(catchId: string, estimatedTotal: number): Promise<Transaction> {
-    const {
-        data: { session },
-    } = await supabase.auth.getSession()
+    const { data, error } = await supabase.functions.invoke<Transaction>('process-escrow', {
+        body: { catch_id: catchId, estimated_total: estimatedTotal },
+    })
 
-    if (!session) throw new Error('User belum login')
-
-    const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/process-escrow`,
-        {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${session.access_token}`,
-            },
-            body: JSON.stringify({ catch_id: catchId, estimated_total: estimatedTotal }),
-        }
-    )
-
-    if (!response.ok) {
-        const err = await response.json()
-        throw new Error(err.message ?? 'Gagal klaim tangkapan')
-    }
-
-    return response.json()
+    if (error) throw new Error(error.message ?? 'Gagal klaim tangkapan')
+    if (!data) throw new Error('Response kosong dari server')
+    return data
 }
 
 /**
@@ -74,30 +57,13 @@ export async function confirmHandover(
     qrScanCode: string,
     finalWeightKg: number
 ): Promise<Transaction> {
-    const {
-        data: { session },
-    } = await supabase.auth.getSession()
+    const { data, error } = await supabase.functions.invoke<Transaction>('confirm-handover', {
+        body: { qr_scan_code: qrScanCode, final_weight_kg: finalWeightKg },
+    })
 
-    if (!session) throw new Error('User belum login')
-
-    const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/confirm-handover`,
-        {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${session.access_token}`,
-            },
-            body: JSON.stringify({ qr_scan_code: qrScanCode, final_weight_kg: finalWeightKg }),
-        }
-    )
-
-    if (!response.ok) {
-        const err = await response.json()
-        throw new Error(err.message ?? 'Gagal konfirmasi serah terima')
-    }
-
-    return response.json()
+    if (error) throw new Error(error.message ?? 'Gagal konfirmasi serah terima')
+    if (!data) throw new Error('Response kosong dari server')
+    return data
 }
 
 /**
