@@ -26,10 +26,12 @@ export function LandingHeader() {
   }, [mobileMenuOpen])
 
   const navLinks = [
-    { href: '#tentang', label: 'Tentang' },
+    { href: '#masalah', label: 'Tantangan' },
+    { href: '#pilar', label: 'Pilar & Alur' },
     { href: '#cara-kerja', label: 'Cara Kerja' },
-    { href: '#dampak', label: 'Dampak' },
-    { href: '#bantuan', label: 'Bantuan' },
+    { href: '#tentang', label: 'Ekosistem' },
+    { href: '#dampak-sdg', label: 'Dampak & SDGs' },
+    { href: '#kemitraan', label: 'Kemitraan' },
   ]
 
   return (
@@ -44,7 +46,7 @@ export function LandingHeader() {
         {/* Brand Logo */}
         <Link
           href="/"
-          className="group flex items-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 focus-visible:ring-offset-2 rounded-lg py-1 px-1.5"
+          className="group flex items-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 focus-visible:ring-offset-2 rounded-lg py-1 px-1.5 shrink-0"
           aria-label="ByCatch Loop Beranda"
         >
           {/* Logo mark */}
@@ -80,12 +82,12 @@ export function LandingHeader() {
         </Link>
 
         {/* Center Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-8" aria-label="Navigasi Utama">
+        <nav className="hidden lg:flex items-center gap-6" aria-label="Navigasi Utama">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-slate-600 hover:text-sky-700 transition-colors py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 rounded-md px-2"
+              className="text-xs sm:text-sm font-medium text-slate-600 hover:text-sky-700 transition-colors py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 rounded-md px-1.5"
             >
               {link.label}
             </Link>
@@ -93,7 +95,7 @@ export function LandingHeader() {
         </nav>
 
         {/* Right CTA Actions */}
-        <div className="hidden sm:flex items-center gap-4">
+        <div className="hidden sm:flex items-center gap-3 shrink-0">
           <Link
             href="/auth/login"
             className="text-sm font-semibold text-slate-700 hover:text-sky-700 px-3 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 rounded-lg"
@@ -102,7 +104,7 @@ export function LandingHeader() {
           </Link>
           <Link
             href="/auth/register"
-            className="inline-flex items-center gap-2 rounded-full bg-sky-600 px-5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-sky-700 active:scale-95 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 focus-visible:ring-offset-2"
+            className="inline-flex items-center gap-2 rounded-full bg-sky-600 px-4.5 py-2 text-sm font-semibold text-white shadow-xs hover:bg-sky-700 active:scale-95 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 focus-visible:ring-offset-2"
           >
             <svg
               className="h-4 w-4"
@@ -122,46 +124,28 @@ export function LandingHeader() {
         </div>
 
         {/* Mobile menu button */}
-        <div className="flex md:hidden items-center gap-2">
+        <div className="flex lg:hidden items-center gap-2">
           <Link
             href="/auth/login"
-            className="text-sm font-semibold text-slate-700 hover:text-sky-700 px-2.5 py-1.5"
+            className="text-sm font-semibold text-slate-700 hover:text-sky-700 px-2 py-1.5"
           >
             Masuk
           </Link>
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="inline-flex items-center justify-center rounded-lg p-2.5 text-slate-700 hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600"
+            className="inline-flex items-center justify-center rounded-lg p-2 text-slate-700 hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600"
             aria-expanded={mobileMenuOpen}
             aria-label="Buka menu navigasi"
           >
             <span className="sr-only">Buka menu</span>
             {mobileMenuOpen ? (
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.75"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.75" stroke="currentColor" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             ) : (
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.75"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                />
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.75" stroke="currentColor" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
               </svg>
             )}
           </button>
@@ -170,34 +154,25 @@ export function LandingHeader() {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-b border-slate-200 bg-white px-4 pt-3 pb-6 shadow-lg animate-in slide-in-from-top-2 duration-150">
-          <div className="flex flex-col gap-2">
+        <div className="lg:hidden border-b border-slate-200 bg-white px-4 pt-3 pb-6 shadow-lg animate-in slide-in-from-top-2 duration-150">
+          <div className="flex flex-col gap-1.5">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className="rounded-lg px-3 py-2.5 text-base font-medium text-slate-700 hover:bg-sky-50 hover:text-sky-700 transition-colors"
+                className="rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-sky-50 hover:text-sky-700 transition-colors"
               >
                 {link.label}
               </Link>
             ))}
-            <div className="mt-3 pt-3 border-t border-slate-100 flex flex-col gap-2.5">
+            <div className="mt-3 pt-3 border-t border-slate-100 flex flex-col gap-2">
               <Link
                 href="/auth/register"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-center gap-2 rounded-xl bg-sky-600 py-3 text-center text-sm font-semibold text-white shadow-xs hover:bg-sky-700"
+                className="flex items-center justify-center gap-2 rounded-xl bg-sky-600 py-2.5 text-center text-sm font-semibold text-white shadow-xs hover:bg-sky-700"
               >
-                <svg
-                  className="h-4 w-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
                   <circle cx="12" cy="7" r="4" />
                 </svg>

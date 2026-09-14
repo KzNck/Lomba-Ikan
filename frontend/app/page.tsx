@@ -1,46 +1,70 @@
 'use client'
 
 import { useState } from 'react'
+import { TopNoticeBar } from '@/components/landing/top-notice-bar'
 import { LandingHeader } from '@/components/landing/landing-header'
 import { HeroSection } from '@/components/landing/hero-section'
-import { ImpactMetrics } from '@/components/landing/impact-metrics'
+import { ProblemSolution } from '@/components/landing/problem-solution'
+import { OperationalPillars } from '@/components/landing/operational-pillars'
 import { WorkflowSteps } from '@/components/landing/workflow-steps'
 import { RoleEcosystem } from '@/components/landing/role-ecosystem'
+import { SdgImpact } from '@/components/landing/sdg-impact'
+import { GroundOperations } from '@/components/landing/ground-operations'
 import { CtaBanner } from '@/components/landing/cta-banner'
 import { LandingFooter } from '@/components/landing/landing-footer'
 import { ContactModal } from '@/components/landing/contact-modal'
+import { ReportModal } from '@/components/landing/report-modal'
 
 export default function HomePage() {
   const [contactOpen, setContactOpen] = useState(false)
+  const [reportOpen, setReportOpen] = useState(false)
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-900 flex flex-col selection:bg-sky-500 selection:text-white">
-      {/* Top Header Navigation */}
+      {/* Top Active Port Network Notice Bar */}
+      <TopNoticeBar />
+
+      {/* Primary Sticky Header Navigation */}
       <LandingHeader />
 
-      {/* Main Content Area */}
+      {/* Main Narrative Flow */}
       <main className="flex-1">
-        {/* Hero Section with Headline & Circular Loop Diagram */}
+        {/* 1. Hero Section with Circular Diagram & Trust Chips */}
         <HeroSection />
 
-        {/* Impact Metrics Bar */}
-        <ImpactMetrics />
+        {/* 2. Problem vs Solution Comparison Matrix */}
+        <ProblemSolution />
 
-        {/* 4-Step Process Section */}
+        {/* 3. Three Operational Pillars & Deep-Dive Circular Journey */}
+        <OperationalPillars />
+
+        {/* 4. Four-Step Process Overview */}
         <WorkflowSteps />
 
-        {/* Role Ecosystem Section */}
+        {/* 5. Three-Tier Maritime Role Ecosystem */}
         <RoleEcosystem />
 
-        {/* Pre-footer Call to Action Card */}
-        <CtaBanner onOpenContact={() => setContactOpen(true)} />
+        {/* 6. Measurable Impact Metrics & 5 SDG Contributions */}
+        <SdgImpact />
+
+        {/* 7. Real-world Ground Operations at Pelabuhan Muncar */}
+        <GroundOperations />
+
+        {/* 8. Unified Blue Economy Final Call-to-Action Banner */}
+        <CtaBanner
+          onOpenContact={() => setContactOpen(true)}
+          onOpenReport={() => setReportOpen(true)}
+        />
       </main>
 
-      {/* Landing Footer */}
+      {/* Expanded 4-Column Footer */}
       <LandingFooter onOpenContact={() => setContactOpen(true)} />
 
-      {/* Interactive Contact / Support Dialog */}
+      {/* Interactive Consultation Request Modal */}
       <ContactModal isOpen={contactOpen} onClose={() => setContactOpen(false)} />
+
+      {/* Interactive Impact Report Download Modal */}
+      <ReportModal isOpen={reportOpen} onClose={() => setReportOpen(false)} />
     </div>
   )
 }
