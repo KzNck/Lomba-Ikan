@@ -1,6 +1,5 @@
 FROM python:3.11-slim
 
-# Tidak perlu root
 RUN useradd -m appuser
 WORKDIR /app
 
@@ -9,9 +8,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY app/ ./app/
 
+# File model — WAJIB ada di folder ini sebelum build (lihat README.md)
+COPY bycatch_unified_model.joblib .
+COPY bycatch_preprocessor.joblib .
+
 USER appuser
 
-# Cloud Run inject PORT env otomatis
 ENV PORT=8080
 EXPOSE 8080
 
