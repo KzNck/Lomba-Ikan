@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from datetime import datetime
 from typing import Optional
-
+from typing import Literal
 
 class CatchInput(BaseModel):
     catch_id: str = Field(..., description="UUID catch dari Supabase")
@@ -27,8 +27,9 @@ class CatchInput(BaseModel):
 
 class FreshnessResult(BaseModel):
     catch_id: str
-    grade: str = Field(..., description="'A' | 'B' | 'C'")
-    score: float = Field(..., ge=0, le=100)
-    notes: str
+    predicted_grade: Literal["A1", "A2", "A3", "B1", "B2", "B3"]
+    confidence_score: float
+    hilirisasi_recommendation: str
+    override_applied: bool
+    rationale: str
     model_version: str
-    hours_since_catch: float
