@@ -10,12 +10,74 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-inter: var(--font-inter-family), system-ui, sans-serif;
+  --font-poppins: var(--font-poppins-family), system-ui, sans-serif;
+}
+
+/* Motion tokens. Apply with `motion-safe:` so reduced-motion users get the static page. */
+@theme {
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-fade-up: fade-up 400ms var(--ease-out-soft) both;
+  --animate-fade-in: fade-in 400ms var(--ease-out-soft) both;
+  --animate-wave-drift: wave-drift 7s ease-in-out infinite alternate;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: scale(1.02);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Only the translucent back layers drift; the solid front wave stays put so the seam never shows. */
+  @keyframes wave-drift {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(4px);
+    }
+  }
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+  }
+}
+
+/* Scroll-triggered reveal, driven by components/home/scroll-reveal.tsx. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  [data-reveal-ready] [data-reveal] {
+    transition:
+      opacity 400ms var(--ease-out-soft),
+      transform 400ms var(--ease-out-soft);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  [data-reveal-ready] [data-reveal]:not([data-revealed]) {
+    opacity: 0;
+    transform: translateY(16px);
   }
 }
 
