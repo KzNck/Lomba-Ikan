@@ -1,66 +1,39 @@
-'use client'
-
-import { useState } from 'react'
-import { TopNoticeBar } from '@/components/landing/top-notice-bar'
-import { LandingHeader } from '@/components/landing/landing-header'
-import { HeroSection } from '@/components/landing/hero-section'
-import { ProblemSolution } from '@/components/landing/problem-solution'
-import { OperationalPillars } from '@/components/landing/operational-pillars'
-import { WorkflowSteps } from '@/components/landing/workflow-steps'
-import { RoleEcosystem } from '@/components/landing/role-ecosystem'
-import { SdgImpact } from '@/components/landing/sdg-impact'
-import { CtaBanner } from '@/components/landing/cta-banner'
-import { LandingFooter } from '@/components/landing/landing-footer'
-import { ContactModal } from '@/components/landing/contact-modal'
-import { ReportModal } from '@/components/landing/report-modal'
+import { Navbar } from '@/components/home/navbar'
+import { Hero } from '@/components/home/hero'
+import { HowItWorks } from '@/components/home/how-it-works'
+import { Impact } from '@/components/home/impact'
+import { Sdgs } from '@/components/home/sdgs'
+import { Footer } from '@/components/home/footer'
+import { ScrollReveal } from '@/components/home/scroll-reveal'
+import {
+  AUTH_LINKS,
+  FOOTER,
+  HERO,
+  HOW_IT_WORKS,
+  IMPACT,
+  NAV_ITEMS,
+  SDGS,
+  SECTION_IDS,
+} from '@/components/home/content'
 
 export default function HomePage() {
-  const [contactOpen, setContactOpen] = useState(false)
-  const [reportOpen, setReportOpen] = useState(false)
-
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 flex flex-col selection:bg-sky-500 selection:text-white">
-      {/* Top Active Port Network Notice Bar */}
-      <TopNoticeBar />
-
-      {/* Primary Sticky Header Navigation */}
-      <LandingHeader />
-
-      {/* Main Narrative Flow */}
-      <main className="flex-1">
-        {/* 1. Hero Section with Circular Diagram & Trust Chips */}
-        <HeroSection />
-
-        {/* 2. Problem vs Solution Comparison Matrix */}
-        <ProblemSolution />
-
-        {/* 3. Three Operational Pillars & Deep-Dive Circular Journey */}
-        <OperationalPillars />
-
-        {/* 4. Four-Step Process Overview */}
-        <WorkflowSteps />
-
-        {/* 5. Three-Tier Maritime Role Ecosystem */}
-        <RoleEcosystem />
-
-        {/* 6. Measurable Impact Metrics & 5 SDG Contributions */}
-        <SdgImpact />
-
-        {/* 7. Unified Blue Economy Final Call-to-Action Banner */}
-        <CtaBanner
-          onOpenContact={() => setContactOpen(true)}
-          onOpenReport={() => setReportOpen(true)}
+    <div className="bg-[#FFFFFF]">
+      {/* Fixed 1440px frame, as exported. Centered like the export's body. overflow-clip (not hidden) keeps the navbar sticky. */}
+      <div className="box-border w-[1440px] mx-auto h-fit flex flex-col gap-0 justify-start items-start bg-[#FFFFFF] overflow-clip">
+        <Navbar
+          items={NAV_ITEMS}
+          activeHref={`#${SECTION_IDS.home}`}
+          login={AUTH_LINKS.login}
+          register={AUTH_LINKS.register}
         />
-      </main>
-
-      {/* Expanded 4-Column Footer */}
-      <LandingFooter onOpenContact={() => setContactOpen(true)} />
-
-      {/* Interactive Consultation Request Modal */}
-      <ContactModal isOpen={contactOpen} onClose={() => setContactOpen(false)} />
-
-      {/* Interactive Impact Report Download Modal */}
-      <ReportModal isOpen={reportOpen} onClose={() => setReportOpen(false)} />
+        <Hero id={SECTION_IDS.home} {...HERO} />
+        <HowItWorks id={SECTION_IDS.howItWorks} {...HOW_IT_WORKS} />
+        <Impact id={SECTION_IDS.impact} {...IMPACT} />
+        <Sdgs id={SECTION_IDS.sdgs} {...SDGS} />
+        <Footer {...FOOTER} />
+      </div>
+      <ScrollReveal />
     </div>
   )
 }
