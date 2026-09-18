@@ -13,7 +13,7 @@ export function Sdgs({ id, eyebrow, title, subtitle, goals }: SdgsProps) {
   return (
     <section
       id={id}
-      className="box-border w-full h-fit shrink-0 scroll-mt-[80px] flex flex-col gap-[32px] p-[64px_120px_88px_120px] justify-start items-start bg-[#FFFFFF]"
+      className="box-border w-full h-fit shrink-0 scroll-mt-[80px] flex flex-col gap-[32px] pt-[64px] pb-[88px] px-frame justify-start items-start bg-[#FFFFFF]"
     >
       <SectionHeader
         eyebrow={eyebrow}

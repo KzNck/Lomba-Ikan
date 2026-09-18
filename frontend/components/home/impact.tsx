@@ -17,7 +17,7 @@ export function Impact({ id, eyebrow, title, benefits, statsLabelLines, stats }:
   return (
     <section
       id={id}
-      className="box-border w-full h-fit shrink-0 scroll-mt-[80px] flex flex-col gap-[24px] p-[64px_120px_72px_120px] justify-start items-start [background-image:linear-gradient(90deg,_#E8F8F2_0%,_#DDF4FF_100%)] bg-no-repeat bg-[length:100%_100%]"
+      className="box-border w-full h-fit shrink-0 scroll-mt-[80px] flex flex-col gap-[24px] pt-[64px] pb-[72px] px-frame justify-start items-start [background-image:linear-gradient(90deg,_#E8F8F2_0%,_#DDF4FF_100%)] bg-no-repeat bg-[length:100%_100%]"
     >
       <SectionHeader eyebrow={eyebrow} title={title} className="p-[0px_0px_12px_0px]" />
       <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[24px] justify-start items-start">

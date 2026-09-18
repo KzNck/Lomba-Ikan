@@ -14,6 +14,12 @@
   --font-poppins: var(--font-poppins-family), system-ui, sans-serif;
 }
 
+/* Pen.dev frames are 1440px wide with a 1200px content column. Backgrounds run full width; this padding
+   keeps content in that centred column (exactly 120px at 1440px, wider gutters beyond). */
+@utility px-frame {
+  padding-inline: max(120px, calc((100% - 1200px) / 2));
+}
+
 /* Motion tokens. Apply with `motion-safe:` so reduced-motion users get the static page. */
 @theme {
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);

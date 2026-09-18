@@ -43,7 +43,7 @@ export function Footer({
           viewBox="0 0 1440 90"
           preserveAspectRatio="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="box-border w-[1440px] h-[90px] absolute left-0 top-0 overflow-visible [z-index:0]"
+          className="box-border w-full h-[90px] absolute left-0 top-0 overflow-visible [z-index:0]"
         >
           <path d="M0 40 C 240 0 520 70 800 40 C 1060 12 1260 10 1440 30 L1440 90 L0 90 Z" fill="#1F7FB080" />
         </svg>
@@ -51,12 +51,12 @@ export function Footer({
           viewBox="0 0 1440 70"
           preserveAspectRatio="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="box-border w-[1440px] h-[70px] absolute left-0 top-[20px] overflow-visible [z-index:1]"
+          className="box-border w-full h-[70px] absolute left-0 top-[20px] overflow-visible [z-index:1]"
         >
           <path d="M0 45 C 320 0 620 60 940 30 C 1160 10 1320 30 1440 18 L1440 70 L0 70 Z" fill="#0F5C82" />
         </svg>
       </div>
-      <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[36px] p-[24px_120px_32px_120px] justify-start items-start bg-[#0F5C82]">
+      <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[36px] pt-[24px] pb-[32px] px-frame justify-start items-start bg-[#0F5C82]">
         <div data-reveal className="box-border w-full h-fit shrink-0 flex flex-row gap-[48px] justify-start items-start">
           <div className="box-border [flex:1_1_0] h-fit flex flex-col gap-[16px] justify-start items-start">
             <Logo tone="light" />

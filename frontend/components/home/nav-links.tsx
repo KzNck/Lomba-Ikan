@@ -52,7 +52,7 @@ export function NavLinks({ items, initialHref }: NavLinksProps) {
   return items.map((item) => <NavLink key={item.href} {...item} active={item.href === activeHref} />)
 }
 
-function NavLink({ href, label, active }: NavItem & { active: boolean }) {
+export function NavLink({ href, label, active }: NavItem & { active: boolean }) {
   return (
     <Link
       href={href}

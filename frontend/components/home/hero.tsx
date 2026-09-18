@@ -20,11 +20,12 @@ type HeroProps = {
 export function Hero({ id, eyebrow, headline, subheadline, image, primaryCta, secondaryCta }: HeroProps) {
   return (
     <section id={id} className="box-border w-full h-[640px] shrink-0 scroll-mt-[80px] bg-[#F3FAFF] overflow-hidden relative">
-      <div className="box-border w-[880px] h-[640px] absolute left-[560px] top-0 [z-index:0] motion-safe:animate-fade-in">
-        <Image src={image.src} alt={image.alt} fill preload sizes="880px" className="object-cover object-center" />
+      {/* Positions are offsets from the centre of the 1440px grid; the photo and waves bleed to the viewport edges. */}
+      <div className="box-border h-[640px] absolute left-[calc(50%_-_160px)] right-0 top-0 [z-index:0] motion-safe:animate-fade-in">
+        <Image src={image.src} alt={image.alt} fill preload sizes="calc(50vw + 160px)" className="object-cover object-center" />
       </div>
-      <div className="box-border w-[400px] h-[640px] absolute left-[540px] top-0 [background-image:linear-gradient(90deg,_#F3FAFFFF_0%,_#F3FAFFFF_32%,_#F3FAFFB3_55%,_#F3FAFF00_100%)] bg-no-repeat bg-[length:100%_100%] [z-index:1]" />
-      <div className="box-border w-[600px] h-fit absolute left-[120px] top-[72px] flex flex-col gap-[20px] justify-start items-start [z-index:2]">
+      <div className="box-border w-[400px] h-[640px] absolute left-[calc(50%_-_180px)] top-0 [background-image:linear-gradient(90deg,_#F3FAFFFF_0%,_#F3FAFFFF_32%,_#F3FAFFB3_55%,_#F3FAFF00_100%)] bg-no-repeat bg-[length:100%_100%] [z-index:1]" />
+      <div className="box-border w-[600px] h-fit absolute left-[calc(50%_-_600px)] top-[72px] flex flex-col gap-[20px] justify-start items-start [z-index:2]">
         <p className="text-[13px]/[normal] box-border text-[#0F6CB8] font-poppins font-semibold tracking-[1.6px] text-left [white-space:nowrap] motion-safe:animate-fade-up">
           {eyebrow}
         </p>
@@ -58,7 +59,7 @@ export function Hero({ id, eyebrow, headline, subheadline, image, primaryCta, se
         viewBox="0 0 1440 120"
         preserveAspectRatio="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="box-border w-[1440px] h-[120px] absolute left-0 top-[520px] overflow-visible [z-index:3] motion-safe:animate-wave-drift"
+        className="box-border w-full h-[120px] absolute left-0 top-[520px] overflow-visible [z-index:3] motion-safe:animate-wave-drift"
         aria-hidden="true"
       >
         <defs>
@@ -78,7 +79,7 @@ export function Hero({ id, eyebrow, headline, subheadline, image, primaryCta, se
         viewBox="0 0 1440 92"
         preserveAspectRatio="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="box-border w-[1440px] h-[92px] absolute left-0 top-[548px] overflow-visible [z-index:4] motion-safe:animate-wave-drift"
+        className="box-border w-full h-[92px] absolute left-0 top-[548px] overflow-visible [z-index:4] motion-safe:animate-wave-drift"
         style={{ animationDelay: '-3.5s' }}
         aria-hidden="true"
       >
@@ -98,7 +99,7 @@ export function Hero({ id, eyebrow, headline, subheadline, image, primaryCta, se
         viewBox="0 0 1440 68"
         preserveAspectRatio="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="box-border w-[1440px] h-[68px] absolute left-0 top-[572px] overflow-visible [z-index:5]"
+        className="box-border w-full h-[68px] absolute left-0 top-[572px] overflow-visible [z-index:5]"
         aria-hidden="true"
       >
         <path d="M0 46 C 320 74 640 22 940 36 C 1180 46 1320 22 1440 10 L1440 68 L0 68 Z" fill="#F7F9FC" />

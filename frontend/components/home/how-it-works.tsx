@@ -15,7 +15,7 @@ export function HowItWorks({ id, eyebrow, title, subtitle, steps }: HowItWorksPr
   return (
     <section
       id={id}
-      className="box-border w-full h-fit shrink-0 scroll-mt-[80px] flex flex-col gap-[40px] p-[56px_120px_72px_120px] justify-start items-start bg-[#F7F9FC]"
+      className="box-border w-full h-fit shrink-0 scroll-mt-[80px] flex flex-col gap-[40px] pt-[56px] pb-[72px] px-frame justify-start items-start bg-[#F7F9FC]"
     >
       <SectionHeader
         eyebrow={eyebrow}

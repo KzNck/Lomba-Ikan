@@ -22,7 +22,7 @@ export const NAV_ITEMS: NavItem[] = [
 
 export const AUTH_LINKS = {
   login: { href: '/auth/login', label: 'Masuk' },
-  register: { href: '/auth/register', label: 'Daftar' },
+  register: { href: '/auth/choose-role', label: 'Daftar' },
 }
 
 export const HERO = {
@@ -34,7 +34,7 @@ export const HERO = {
     src: '/images/landing/hero-boat.jpg',
     alt: 'Nelayan berdiri di atas perahu kayu dengan hasil tangkapan di dek',
   },
-  primaryCta: { href: '/auth/register?role=nelayan', label: 'Daftar sebagai Nelayan' },
+  primaryCta: { href: '/auth/register/nelayan', label: 'Daftar sebagai Nelayan' },
   secondaryCta: { href: '/auth/register?role=pembeli', label: 'Daftar sebagai Pembeli' },
 }
 
