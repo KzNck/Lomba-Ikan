@@ -29,10 +29,12 @@ const PROVINSI_OPTIONS = toOptions(PROVINSI)
 export function LocationFields({ provinsi, kabKota, pelabuhan }: LocationFieldsContent) {
   const [provinsiKode, setProvinsiKode] = useState('')
   const [kabKotaKode, setKabKotaKode] = useState('')
-  const [pelabuhanKode, setPelabuhanKode] = useState('')
+  const [pelabuhanId, setPelabuhanId] = useState('')
 
   const kabKotaOptions = provinsiKode ? toOptions(getKabupatenKota(provinsiKode)) : []
-  const pelabuhanOptions = kabKotaKode ? toOptions(getPelabuhan(kabKotaKode)) : []
+  const pelabuhanOptions = kabKotaKode
+    ? getPelabuhan(kabKotaKode).map((p) => ({ value: p.id, label: p.nama }))
+    : []
   const noPelabuhan = kabKotaKode !== '' && pelabuhanOptions.length === 0
 
   return (
@@ -46,7 +48,7 @@ export function LocationFields({ provinsi, kabKota, pelabuhan }: LocationFieldsC
         onChange={(kode) => {
           setProvinsiKode(kode)
           setKabKotaKode('')
-          setPelabuhanKode('')
+          setPelabuhanId('')
         }}
       />
       <FormField
@@ -59,7 +61,7 @@ export function LocationFields({ provinsi, kabKota, pelabuhan }: LocationFieldsC
         value={kabKotaKode}
         onChange={(kode) => {
           setKabKotaKode(kode)
-          setPelabuhanKode('')
+          setPelabuhanId('')
         }}
       />
       <FormField
@@ -69,8 +71,8 @@ export function LocationFields({ provinsi, kabKota, pelabuhan }: LocationFieldsC
         disabled={!kabKotaKode || noPelabuhan}
         helper={!kabKotaKode ? pelabuhan.lockedHelper : noPelabuhan ? pelabuhan.emptyHelper : undefined}
         options={pelabuhanOptions}
-        value={pelabuhanKode}
-        onChange={setPelabuhanKode}
+        value={pelabuhanId}
+        onChange={setPelabuhanId}
       />
     </>
   )

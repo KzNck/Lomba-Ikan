@@ -7,7 +7,12 @@ export type FormFieldConfig = {
   label: string
   icon: IconName
   placeholder: string
+  // Text inputs only.
+  inputType?: 'text' | 'email'
+  autoComplete?: string
   required?: boolean
+  // Still required, but without the red asterisk (e.g. the login form's single field).
+  hideRequiredMark?: boolean
   disabled?: boolean
   // Neutral hint under the control, e.g. why a dependent field is locked.
   helper?: string
@@ -22,6 +27,8 @@ export type SelectOption = {
 
 // Selects get their options and value from whoever owns the dependent-field logic.
 type FormFieldProps = FormFieldConfig & {
+  // Share a row with sibling fields instead of taking the full width.
+  grow?: boolean
   options?: SelectOption[]
   value?: string
   onChange?: (value: string) => void
@@ -43,10 +50,14 @@ export function FormField({
   label,
   icon,
   placeholder,
+  inputType = 'text',
+  autoComplete,
   required,
+  hideRequiredMark,
   disabled,
   helper,
   error,
+  grow,
   options = [],
   value,
   onChange,
@@ -57,12 +68,12 @@ export function FormField({
   const messageId = message ? `${id}-message` : undefined
 
   return (
-    <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[8px] justify-start items-start">
+    <div className={`box-border ${grow ? '[flex:1_1_0]' : 'w-full shrink-0'} h-fit flex flex-col gap-[8px] justify-start items-start`}>
       <label htmlFor={id} className="box-border w-fit h-fit shrink-0 flex flex-row gap-[4px] justify-start items-center">
         <span className="text-[15px]/[normal] box-border text-[#0B3B5C] font-inter font-semibold text-left [white-space:nowrap]">
           {label}
         </span>
-        {required && (
+        {required && !hideRequiredMark && (
           <span
             aria-hidden="true"
             className="text-[15px]/[normal] box-border text-[#C23B35] font-inter font-semibold text-left [white-space:nowrap]"
@@ -79,7 +90,8 @@ export function FormField({
           <input
             id={id}
             name={id}
-            type="text"
+            type={inputType}
+            autoComplete={autoComplete}
             placeholder={placeholder}
             required={required}
             disabled={disabled}

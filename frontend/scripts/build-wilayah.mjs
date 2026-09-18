@@ -81,6 +81,31 @@ function pickByProvince(list, port) {
   return list.find((k) => k.kode.startsWith(`${provinsi}.`)) ?? list[0]
 }
 
+// PIPP reuses some kode_pelabuhan for different ports (e.g. PP. Panarukan and PP. Pondok Mimbo are both
+// 712.35.31), and its id_pelabuhan is re-encrypted on every request. So each port gets a stable id of our own:
+// the code when it's unique, otherwise the code plus a slug of the name ("712.35.31-panarukan").
+const slug = (name) =>
+  name
+    .replace(/^[A-Z]+\.\s*/, '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+
+function assignIds(ports) {
+  const perKode = new Map()
+  for (const p of ports) perKode.set(p.kode, (perKode.get(p.kode) ?? 0) + 1)
+  const withIds = ports.map((p) => ({ id: perKode.get(p.kode) > 1 ? `${p.kode}-${slug(p.nama)}` : p.kode, ...p }))
+
+  const seen = new Set()
+  for (const { id } of withIds) {
+    if (seen.has(id)) throw new Error(`Duplicate pelabuhan id ${id}; extend slug() to tell these ports apart.`)
+    seen.add(id)
+  }
+  return withIds
+}
+
 const { provinsi, kabKota } = await fetchWilayah()
 const ports = await fetchPorts()
 
@@ -92,7 +117,7 @@ for (const k of kabKota) {
 
 const unmatched = []
 const movedProvince = []
-const pelabuhan = ports
+const matchedPorts = ports
   .map((port) => {
     const matches = matchKabKota(port, kabKotaByName)
     if (matches.length === 0) unmatched.push(`${port.nama_pelabuhan} (${port.provinsi} / ${port.kab_kota})`)
@@ -109,6 +134,7 @@ const pelabuhan = ports
   })
   .filter((p) => p.kabKota.length > 0)
   .sort((a, b) => a.nama.localeCompare(b.nama, 'id'))
+const pelabuhan = assignIds(matchedPorts)
 
 provinsi.sort((a, b) => a.nama.localeCompare(b.nama, 'id'))
 kabKota.sort(byPlaceName)

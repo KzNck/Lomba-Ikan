@@ -2,14 +2,22 @@ import Link from 'next/link'
 import { Icon } from '@/components/ui/icon'
 import type { NavItem } from '@/components/home/navbar'
 
-type LoginPromptProps = {
-  question: string
-  link: NavItem
+// Pilih Role hugs the prompt; the login card centres it across the card's width.
+const PROMPT_LAYOUTS = {
+  hug: 'w-fit justify-start',
+  centered: 'w-full justify-center',
 }
 
-export function LoginPrompt({ question, link }: LoginPromptProps) {
+type AccountPromptProps = {
+  question: string
+  link: NavItem
+  layout?: keyof typeof PROMPT_LAYOUTS
+}
+
+// "Sudah punya akun? Masuk di sini →" and its mirror on the login page.
+export function AccountPrompt({ question, link, layout = 'hug' }: AccountPromptProps) {
   return (
-    <div className="box-border w-fit h-fit shrink-0 flex flex-row gap-[8px] justify-start items-center">
+    <div className={`box-border ${PROMPT_LAYOUTS[layout]} h-fit shrink-0 flex flex-row gap-[8px] items-center`}>
       <p className="text-[15px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left [white-space:nowrap]">
         {question}
       </p>

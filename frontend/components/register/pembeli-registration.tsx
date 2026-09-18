@@ -1,0 +1,110 @@
+'use client'
+
+import { useState } from 'react'
+import Link from 'next/link'
+import { RegisterLayout } from '@/components/register/register-layout'
+import { FormCard } from '@/components/register/form-card'
+import { FormField } from '@/components/register/form-field'
+import { ChipGroup } from '@/components/register/chip-group'
+import { Chip } from '@/components/register/chip'
+import { PreferenceSection } from '@/components/register/preference-section'
+import { GradeGroup } from '@/components/register/grade-group'
+import { PpiCombobox } from '@/components/register/ppi-combobox'
+import { FormCardFooter } from '@/components/register/form-card-footer'
+import { SubStepProgress } from '@/components/register/sub-step-progress'
+import { SubmitButton } from '@/components/register/submit-button'
+import { BackButton } from '@/components/register/back-button'
+import { PEMBELI_PREFERENSI, PEMBELI_USAHA } from '@/components/register/content'
+
+const { jenisUsaha } = PEMBELI_USAHA
+const { jenisBahan, grade, ppi } = PEMBELI_PREFERENSI
+
+// Both parts stay mounted and the inactive one is hidden, so going back keeps what was entered.
+export function PembeliRegistration() {
+  const [part, setPart] = useState<1 | 2>(1)
+  const [jenisUsahaError, setJenisUsahaError] = useState(false)
+
+  const showPart = (next: 1 | 2) => {
+    setPart(next)
+    window.scrollTo({ top: 0 })
+  }
+
+  // The browser has already checked the required text fields; a checkbox group needs checking by hand.
+  const continueToPreferences = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    if (new FormData(event.currentTarget).getAll(jenisUsaha.id).length === 0) {
+      setJenisUsahaError(true)
+      event.currentTarget.querySelector<HTMLInputElement>(`input[name="${jenisUsaha.id}"]`)?.focus()
+      return
+    }
+    showPart(2)
+  }
+
+  return (
+    <RegisterLayout
+      kind="form"
+      currentStep={1}
+      heading={part === 1 ? PEMBELI_USAHA.heading : PEMBELI_PREFERENSI.heading}
+    >
+      <FormCard
+        {...PEMBELI_USAHA.card}
+        size="lg"
+        hidden={part !== 1}
+        onSubmit={continueToPreferences}
+        onChange={(event) => {
+          const target = event.target as HTMLInputElement
+          if (target.name === jenisUsaha.id && target.checked) setJenisUsahaError(false)
+        }}
+      >
+        <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[24px] justify-start items-start">
+          {PEMBELI_USAHA.nameFields.map((field) => (
+            <FormField key={field.id} {...field} grow />
+          ))}
+        </div>
+        <ChipGroup {...jenisUsaha} error={jenisUsahaError ? PEMBELI_USAHA.jenisUsahaError : undefined} />
+        <FormCardFooter>
+          <SubStepProgress {...PEMBELI_USAHA.progress} />
+          <SubmitButton label={PEMBELI_USAHA.submitLabel} icon="arrow-right" inline />
+        </FormCardFooter>
+      </FormCard>
+
+      <FormCard {...PEMBELI_PREFERENSI.card} size="lg" hidden={part !== 2}>
+        <PreferenceSection {...jenisBahan.section}>
+          <div className="box-border w-full h-fit shrink-0 flex flex-row flex-wrap gap-[12px] justify-start items-start">
+            {jenisBahan.options.map((option) => (
+              <Chip key={option.value} name={jenisBahan.name} {...option} />
+            ))}
+          </div>
+        </PreferenceSection>
+        <PreferenceSection {...grade.section}>
+          <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[16px] justify-start items-start">
+            {grade.groups.map((group) => (
+              <GradeGroup key={group.title} name={grade.name} {...group} />
+            ))}
+          </div>
+          <p className="text-[13px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left [white-space:nowrap]">
+            {grade.disclaimer}
+          </p>
+        </PreferenceSection>
+        <PreferenceSection {...ppi.section}>
+          <PpiCombobox {...ppi.combobox} />
+        </PreferenceSection>
+        <Link
+          href={PEMBELI_PREFERENSI.skipLink.href}
+          className="box-border w-fit h-fit shrink-0 flex flex-row gap-0 p-[4px_0px] justify-start items-start"
+        >
+          <span className="text-[14px]/[normal] box-border text-[#0F6CB8] font-inter font-semibold text-left [white-space:nowrap]">
+            {PEMBELI_PREFERENSI.skipLink.label}
+          </span>
+        </Link>
+        <FormCardFooter>
+          <SubStepProgress {...PEMBELI_PREFERENSI.progress} />
+          <div className="box-border w-fit shrink-0 h-fit flex flex-row gap-[12px] justify-start items-center">
+            <BackButton label={PEMBELI_PREFERENSI.backLabel} onClick={() => showPart(1)} />
+            <SubmitButton label={PEMBELI_PREFERENSI.submitLabel} icon="check" inline />
+          </div>
+        </FormCardFooter>
+      </FormCard>
+    </RegisterLayout>
+  )
+}

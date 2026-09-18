@@ -11,7 +11,9 @@ export type Wilayah = {
 }
 
 export type Pelabuhan = {
-  // KKP code: WPP.provinsi.urutan, e.g. "571.11.01".
+  // Unique and stable: the KKP code, or code plus name slug where KKP reuses a code ("712.35.31-panarukan").
+  id: string
+  // KKP code: WPP.provinsi.urutan, e.g. "571.11.01". Not unique; use id to tell ports apart.
   kode: string
   nama: string
   // PPS, PPN, PPP, PPI, PP, or CP.
@@ -30,4 +32,20 @@ export function getKabupatenKota(provinsiKode: string): Wilayah[] {
 
 export function getPelabuhan(kabKotaKode: string): Pelabuhan[] {
   return PELABUHAN.filter((p) => p.kabKota.includes(kabKotaKode))
+}
+
+const KAB_KOTA_NAMA = new Map(KAB_KOTA.map((k) => [k.kode, k.nama.trim()]))
+const PROVINSI_NAMA = new Map(PROVINSI.map((p) => [p.kode, p.nama.trim()]))
+
+// Case-insensitive match on the port's name. An empty query returns every port.
+export function searchPelabuhan(query: string): Pelabuhan[] {
+  const needle = query.trim().toLowerCase()
+  return needle ? PELABUHAN.filter((p) => p.nama.toLowerCase().includes(needle)) : PELABUHAN
+}
+
+// "Kota Bitung, Sulawesi Utara", from the port's first kabupaten/kota.
+export function getLokasiPelabuhan(pelabuhan: Pelabuhan): string {
+  const kabKota = pelabuhan.kabKota[0]
+  const provinsi = kabKota.split('.')[0]
+  return [KAB_KOTA_NAMA.get(kabKota), PROVINSI_NAMA.get(provinsi)].filter(Boolean).join(', ')
 }
