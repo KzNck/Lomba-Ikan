@@ -223,7 +223,7 @@ export const PEMBELI_PREFERENSI = {
     } satisfies PpiComboboxContent,
   },
   // Points at the landing page until the Pembeli dashboard exists.
-  skipLink: { label: 'Lewati, atur nanti di Akun', href: '/' },
+  skipLink: { label: 'Lewati, atur nanti di Akun', href: '/pembeli' },
   progress: {
     current: 2,
     total: 2,

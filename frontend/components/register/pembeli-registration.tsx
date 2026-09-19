@@ -15,6 +15,7 @@ import { SubStepProgress } from '@/components/register/sub-step-progress'
 import { SubmitButton } from '@/components/register/submit-button'
 import { BackButton } from '@/components/register/back-button'
 import { PEMBELI_PREFERENSI, PEMBELI_USAHA } from '@/components/register/content'
+import { enterPembeliDashboard } from '@/app/pembeli/actions'
 
 const { jenisUsaha } = PEMBELI_USAHA
 const { jenisBahan, grade, ppi } = PEMBELI_PREFERENSI
@@ -68,7 +69,7 @@ export function PembeliRegistration() {
         </FormCardFooter>
       </FormCard>
 
-      <FormCard {...PEMBELI_PREFERENSI.card} size="lg" hidden={part !== 2}>
+      <FormCard {...PEMBELI_PREFERENSI.card} size="lg" hidden={part !== 2} action={enterPembeliDashboard}>
         <PreferenceSection {...jenisBahan.section}>
           <div className="box-border w-full h-fit shrink-0 flex flex-row flex-wrap gap-[12px] justify-start items-start">
             {jenisBahan.options.map((option) => (
