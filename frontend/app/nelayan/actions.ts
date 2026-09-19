@@ -6,3 +6,8 @@ import { redirect } from 'next/navigation'
 export async function enterNelayanDashboard() {
   redirect('/nelayan')
 }
+
+// Stand-in for publishing the graded catch as a listing (with the optional "Harga Jual" in `harga`).
+export async function publishListing() {
+  redirect('/nelayan')
+}

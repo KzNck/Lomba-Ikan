@@ -2,6 +2,12 @@
 import type { CategoryOptionContent } from '@/components/nelayan/category-option'
 import type { IconOptionContent } from '@/components/nelayan/icon-option'
 
+// Breadcrumb on the dashboard behind the modal, for every step and the "Hasil Kesegaran" result.
+export const CATCH_BREADCRUMB = {
+  trail: [{ href: '/nelayan', label: 'Dashboard' }],
+  current: 'Tambah Tangkapan',
+}
+
 export const CATCH_MODAL = {
   title: 'Tambah Tangkapan',
   subtitle: 'Catat hasil tangkapan hari ini dalam 5 langkah singkat.',
