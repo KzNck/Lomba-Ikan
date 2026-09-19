@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter, Poppins } from "next/font/google";
+import { Dancing_Script, Geist, Geist_Mono, Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/shared/navbar";
 
@@ -24,6 +24,11 @@ const poppins = Poppins({
   subsets: ["latin"],
 });
 
+const dancingScript = Dancing_Script({
+  variable: "--font-dancing-family",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
   title: "ByCatch Loop | Sirkular Bahari Nusantara",
   description: "Platform Sirkular Maritim Terintegrasi. Ubah hasil tangkapan sampingan menjadi peluang bernilai tambah.",
@@ -38,7 +43,7 @@ export default function RootLayout({
     <html
       lang="id"
       data-scroll-behavior="smooth"
-      className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${poppins.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${poppins.variable} ${dancingScript.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
         <Navbar />

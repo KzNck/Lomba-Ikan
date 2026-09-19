@@ -1,15 +1,16 @@
 import Link from 'next/link'
 import { Icon } from '@/components/ui/icon'
+import { OUTLINE_HOVER, PRESS, SOLID_HOVER } from '@/components/ui/interaction'
 
 const VARIANTS = {
   primary: {
     container:
-      '[background-image:linear-gradient(90deg,_#168BE5_0%,_#2FA6EC_100%)] bg-no-repeat bg-[length:100%_100%]',
+      '[background-image:linear-gradient(90deg,_#168BE5_0%,_#2FA6EC_100%)] bg-no-repeat bg-[length:100%_100%] ' + SOLID_HOVER,
     label: 'text-[#FFFFFF]',
     iconFill: '#FFFFFF',
   },
   outline: {
-    container: 'bg-[#FFFFFF] [outline:1.5px_solid_#168BE5] [outline-offset:-0.75px]',
+    container: `bg-[#FFFFFF] [outline:1.5px_solid_#168BE5] [outline-offset:-0.75px] ${OUTLINE_HOVER}`,
     label: 'text-[#168BE5]',
     iconFill: '#168BE5',
   },
@@ -43,7 +44,7 @@ export function PillLink({ href, label, variant, size, withArrow = false, classN
   return (
     <Link
       href={href}
-      className={`box-border w-fit shrink-0 h-fit flex flex-row gap-[12px] ${s.padding[variant]} justify-center items-center ${v.container} rounded-[999px] transition-transform duration-200 ease-out motion-safe:hover:scale-[1.03] motion-safe:active:scale-[0.97] motion-safe:active:duration-100 ${className}`}
+      className={`box-border w-fit shrink-0 h-fit flex flex-row gap-[12px] ${s.padding[variant]} justify-center items-center ${v.container} rounded-[999px] ${PRESS} ${className}`}
     >
       <span className={`${s.label} box-border ${v.label} font-poppins font-semibold text-left [white-space:nowrap]`}>
         {label}

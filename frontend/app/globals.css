@@ -12,6 +12,7 @@
   --font-mono: var(--font-geist-mono);
   --font-inter: var(--font-inter-family), system-ui, sans-serif;
   --font-poppins: var(--font-poppins-family), system-ui, sans-serif;
+  --font-dancing: var(--font-dancing-family), system-ui, sans-serif;
 }
 
 /* Pen.dev frames are 1440px wide with a 1200px content column. Backgrounds run full width; this padding
@@ -74,11 +75,15 @@
     scroll-behavior: smooth;
   }
 
+  /* This owns `transition` on revealed elements, so it also carries the cards' hover lift (translate, box-shadow
+     from CARD_LIFT in components/ui/interaction.ts). Only the reveal waits for the stagger delay; hover never does. */
   [data-reveal-ready] [data-reveal] {
     transition:
       opacity 400ms var(--ease-out-soft),
-      transform 400ms var(--ease-out-soft);
-    transition-delay: var(--reveal-delay, 0ms);
+      transform 400ms var(--ease-out-soft),
+      translate 200ms ease-out,
+      box-shadow 200ms ease-out;
+    transition-delay: var(--reveal-delay, 0ms), var(--reveal-delay, 0ms), 0ms, 0ms;
   }
 
   [data-reveal-ready] [data-reveal]:not([data-revealed]) {

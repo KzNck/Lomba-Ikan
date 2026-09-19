@@ -1,37 +1,34 @@
-import Link from 'next/link'
+import { DashboardHeader } from '@/components/nelayan/dashboard-header'
+import { Breadcrumb } from '@/components/nelayan/breadcrumb'
+import { SummaryCard } from '@/components/nelayan/summary-card'
+import { QuickActionCard } from '@/components/nelayan/quick-action-card'
+import { ListingSection } from '@/components/nelayan/listing-section'
+import { NotificationSection } from '@/components/nelayan/notification-section'
+import { MainDecoration } from '@/components/nelayan/main-decoration'
+import { DASHBOARD, NELAYAN_USER } from '@/components/nelayan/content'
 
 export default function NelayanDashboardPage() {
   return (
-    <div className="min-h-[80vh] flex flex-col items-center justify-center px-4 py-16 text-center">
-      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-sky-50 text-sky-600 border border-sky-200 mb-6 shadow-xs">
-        <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <path d="M6.5 12c.94-3.46 4.94-6 8.5-6 3.56 0 6.06 2.54 7 6-.94 3.46-3.44 6-7 6-3.56 0-7.56-2.54-8.5-6Z" />
-          <path d="M18 12v.5" />
-          <path d="M16 17.93a12.6 12.6 0 0 1-5.07-4.32" />
-          <path d="M2 12h4.5" />
-        </svg>
+    <div className="box-border [flex:1_1_0] flex flex-col gap-0 justify-start items-start relative">
+      <DashboardHeader
+        greeting={DASHBOARD.greeting}
+        subtitle={DASHBOARD.subtitle}
+        notifications={DASHBOARD.notifications}
+        user={NELAYAN_USER}
+      />
+      <MainDecoration tagline={DASHBOARD.tagline} />
+      <div className="box-border w-full [flex:1_1_0] flex flex-col gap-[20px] p-[20px_32px_32px_32px] justify-start items-start relative [z-index:2]">
+        <Breadcrumb current={DASHBOARD.breadcrumb} />
+        <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[24px] justify-start items-start">
+          <SummaryCard {...DASHBOARD.summary} />
+          <QuickActionCard {...DASHBOARD.quickAction} />
+        </div>
+        {/* Stretched (the export has items-start) so both panels end on the same line. */}
+        <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[24px] justify-start items-stretch">
+          <ListingSection {...DASHBOARD.listings} />
+          <NotificationSection {...DASHBOARD.notificationList} />
+        </div>
       </div>
-
-      <div className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 border border-amber-200 px-3 py-1 text-xs font-semibold text-amber-800 mb-3">
-        <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-        <span>Tahap Integrasi Pelabuhan</span>
-      </div>
-
-      <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mb-3">
-        Dashboard Nelayan & Nakhoda
-      </h1>
-
-      <p className="text-sm text-slate-600 max-w-md mb-8 leading-relaxed">
-        Fitur pencatatan tangkapan offline-ready di tengah laut dan nota timbang PPI sedang dalam tahap finalisasi audit bersama mitra koperasi nelayan.
-      </p>
-
-      <Link
-        href="/"
-        className="inline-flex items-center gap-2 rounded-xl bg-sky-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-sky-700 transition-colors"
-      >
-        <span aria-hidden="true">←</span>
-        <span>Kembali ke Beranda</span>
-      </Link>
     </div>
   )
 }

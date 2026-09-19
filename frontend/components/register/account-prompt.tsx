@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Icon } from '@/components/ui/icon'
 import type { NavItem } from '@/components/home/navbar'
+import { ARROW_NUDGE_RIGHT } from '@/components/ui/interaction'
 
 // Pilih Role hugs the prompt; the login card centres it across the card's width.
 const PROMPT_LAYOUTS = {
@@ -23,12 +24,12 @@ export function AccountPrompt({ question, link, layout = 'hug' }: AccountPromptP
       </p>
       <Link
         href={link.href}
-        className="box-border w-fit shrink-0 h-fit flex flex-row gap-[6px] p-[10px_4px] justify-start items-center"
+        className="group box-border w-fit shrink-0 h-fit flex flex-row gap-[6px] p-[10px_4px] justify-start items-center"
       >
         <span className="text-[15px]/[normal] box-border text-[#0F6CB8] font-inter font-semibold text-left [white-space:nowrap]">
           {link.label}
         </span>
-        <Icon name="arrow-right" fill="#0F6CB8" className="box-border w-[16px] shrink-0 h-[16px]" />
+        <Icon name="arrow-right" fill="#0F6CB8" className={`box-border w-[16px] shrink-0 h-[16px] ${ARROW_NUDGE_RIGHT}`} />
       </Link>
     </div>
   )

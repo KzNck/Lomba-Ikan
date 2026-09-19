@@ -1,4 +1,5 @@
 import { Icon, type IconName } from '@/components/ui/icon'
+import { CARD_LIFT } from '@/components/ui/interaction'
 
 export type Sdg = {
   number: number
@@ -12,7 +13,7 @@ export type Sdg = {
 
 export function SdgCard({ number, badgeClassName, icon, title, target, description }: Sdg) {
   return (
-    <div data-reveal className="box-border [flex:1_1_0] h-full [box-shadow:0px_0px_0px_1px_#0000000F,_0px_1px_2px_-1px_#0000000F,_0px_2px_4px_0px_#0000000A] flex flex-col gap-[14px] p-[24px] justify-start items-start bg-[#FFFFFF] rounded-[20px]">
+    <div data-reveal className={`box-border [flex:1_1_0] h-full [box-shadow:0px_0px_0px_1px_#0000000F,_0px_1px_2px_-1px_#0000000F,_0px_2px_4px_0px_#0000000A] flex flex-col gap-[14px] p-[24px] justify-start items-start bg-[#FFFFFF] rounded-[20px] ${CARD_LIFT}`}>
       <div
         className={`box-border w-[72px] h-[72px] shrink-0 flex flex-col gap-0 p-[10px] justify-between items-start ${badgeClassName} rounded-[14px]`}
       >

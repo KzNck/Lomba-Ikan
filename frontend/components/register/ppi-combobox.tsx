@@ -127,7 +127,7 @@ export function PpiCombobox({ name, label, placeholder, emptyTitle, emptyHint, m
                       aria-selected={chosen}
                       onClick={() => toggle(pelabuhan)}
                       onMouseEnter={() => setActiveIndex(index)}
-                      className={`box-border w-full h-fit shrink-0 flex flex-row gap-[12px] p-[10px_12px] justify-start items-center ${index === activeIndex ? 'bg-[#F3FAFF]' : ''} rounded-[8px] cursor-pointer`}
+                      className={`box-border w-full h-fit shrink-0 flex flex-row gap-[12px] p-[10px_12px] justify-start items-center ${index === activeIndex ? 'bg-[#F3FAFF]' : ''} hover:bg-[#F3FAFF] transition-colors duration-150 ease-out rounded-[8px] cursor-pointer`}
                     >
                       <span className="box-border w-[16px] shrink-0 h-[16px] flex flex-row gap-0 justify-start items-start">
                         {chosen && <Icon name="check" fill="#0F6CB8" className="box-border w-[16px] shrink-0 h-[16px]" />}

@@ -17,22 +17,25 @@ type FormCardProps = FormCardHeader & {
   size?: keyof typeof CARD_WIDTHS
   // Keeps the form mounted (and its values) while another part of a multi-part form is shown.
   hidden?: boolean
+  action?: (formData: FormData) => void | Promise<void>
   onSubmit?: React.FormEventHandler<HTMLFormElement>
   onChange?: React.FormEventHandler<HTMLFormElement>
   children: React.ReactNode
 }
 
 // The white card is the <form> itself, so its children keep the export's 32px rhythm.
-export function FormCard({ icon, title, subtitle, size = 'md', hidden, onSubmit, onChange, children }: FormCardProps) {
+export function FormCard({ icon, title, subtitle, size = 'md', hidden, action, onSubmit, onChange, children }: FormCardProps) {
   const titleId = useId()
 
   return (
     <form
       aria-labelledby={titleId}
       hidden={hidden}
+      action={action}
       onSubmit={onSubmit}
       onChange={onChange}
-      className={`box-border ${CARD_WIDTHS[size]} h-fit shrink-0 [box-shadow:0px_0px_0px_1px_#0000000F,_0px_1px_2px_-1px_#0000000F,_0px_2px_4px_0px_#0000000A] flex flex-col gap-[32px] p-[40px] justify-start items-start bg-[#FFFFFF] rounded-[24px]`}
+      className={`box-border ${CARD_WIDTHS[size]} h-fit shrink-0 [box-shadow:0px_0px_0px_1px_#0000000F,_0px_1px_2px_-1px_#0000000F,_0px_2px_4px_0px_#0000000A] flex flex-col gap-[32px] p-[40px] justify-start items-start bg-[#FFFFFF] rounded-[24px] motion-safe:animate-fade-up`}
+      style={{ animationDelay: '300ms' }}
     >
       <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[20px] justify-start items-center">
         <div className="box-border w-[64px] shrink-0 h-[64px] flex flex-row gap-0 justify-center items-center bg-[#DCEEFB] rounded-[999px]">

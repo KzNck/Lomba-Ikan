@@ -93,7 +93,7 @@ export function PembeliRegistration() {
           href={PEMBELI_PREFERENSI.skipLink.href}
           className="box-border w-fit h-fit shrink-0 flex flex-row gap-0 p-[4px_0px] justify-start items-start"
         >
-          <span className="text-[14px]/[normal] box-border text-[#0F6CB8] font-inter font-semibold text-left [white-space:nowrap]">
+          <span className="text-[14px]/[normal] box-border text-[#0F6CB8] font-inter font-semibold text-left [white-space:nowrap] underline decoration-transparent underline-offset-4 transition-[text-decoration-color] duration-200 ease-out hover:decoration-current">
             {PEMBELI_PREFERENSI.skipLink.label}
           </span>
         </Link>

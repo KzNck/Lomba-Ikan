@@ -26,7 +26,7 @@ type StepperProps = {
 
 export function Stepper({ steps, currentStep }: StepperProps) {
   return (
-    <ol className="box-border w-fit h-fit shrink-0 flex flex-row gap-0 justify-start items-start">
+    <ol className="box-border w-fit h-fit shrink-0 flex flex-row gap-0 justify-start items-start motion-safe:animate-fade-up">
       {steps.map((label, index) => {
         const status = index < currentStep ? 'completed' : index === currentStep ? 'active' : 'upcoming'
         const state = STEP_STATES[status]

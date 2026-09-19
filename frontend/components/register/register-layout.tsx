@@ -3,6 +3,7 @@ import { Footer } from '@/components/home/footer'
 import { Stepper } from '@/components/register/stepper'
 import { PageHeading, type PageHeadingProps } from '@/components/register/page-heading'
 import { WaveDecoration } from '@/components/register/wave-decoration'
+import { ScrollReveal } from '@/components/home/scroll-reveal'
 import { AUTH_LINKS, FOOTER } from '@/components/home/content'
 import { REGISTER_NAV_ITEMS, REGISTER_STEPS } from '@/components/register/content'
 
@@ -36,6 +37,8 @@ export function RegisterLayout({ kind, currentStep, heading, children }: Registe
         </div>
         {kind === 'role' ? <WaveDecoration /> : <Footer {...FOOTER} quickLinks={REGISTER_NAV_ITEMS} />}
       </div>
+      {/* Drives the footer's `data-reveal`, as on the landing page. */}
+      <ScrollReveal />
     </div>
   )
 }

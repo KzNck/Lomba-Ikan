@@ -19,7 +19,7 @@ export function RoleOptionCard({ href, icon, title, description, image }: RoleOp
   return (
     <Link
       href={href}
-      className={`box-border w-[420px] shrink-0 h-full ${CARD_STATES} flex flex-col gap-[20px] p-[24px_32px_28px_32px] justify-start items-start bg-[#FFFFFF] rounded-[24px]`}
+      className={`box-border w-[420px] shrink-0 h-full ${CARD_STATES} flex flex-col gap-[20px] p-[24px_32px_28px_32px] justify-start items-start bg-[#FFFFFF] rounded-[24px] transition-[translate,box-shadow] duration-200 ease-out motion-safe:hover:-translate-y-1 motion-safe:active:translate-y-0 motion-safe:active:duration-100`}
     >
       <div className="box-border w-full h-[190px] shrink-0 rounded-[16px] overflow-hidden relative">
         <Image src={image.src} alt={image.alt} fill sizes="356px" className="object-cover object-center" />

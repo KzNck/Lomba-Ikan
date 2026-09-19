@@ -1,5 +1,6 @@
 import { Icon, type IconName } from '@/components/ui/icon'
 import { ACCENTS, type Accent } from '@/components/home/accents'
+import { CountUp } from '@/components/ui/count-up'
 
 export type Stat = {
   icon: IconName
@@ -20,7 +21,7 @@ export function StatItem({ icon, accent, value, caption }: Stat) {
       </div>
       <div className="box-border w-fit shrink-0 h-fit flex flex-col gap-[2px] justify-start items-start">
         <p className="text-[26px]/[normal] box-border text-[#0B3B5C] font-poppins font-bold text-left [white-space:nowrap]">
-          {value}
+          <CountUp value={value} />
         </p>
         <p className="text-[13px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left [white-space:nowrap]">
           {caption}

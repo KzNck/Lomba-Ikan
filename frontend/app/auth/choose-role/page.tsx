@@ -6,7 +6,10 @@ import { CHOOSE_ROLE } from '@/components/register/content'
 export default function ChooseRolePage() {
   return (
     <RegisterLayout kind="role" currentStep={0} heading={CHOOSE_ROLE.heading}>
-      <div className="box-border w-fit h-[426px] shrink-0 flex flex-row gap-[32px] justify-start items-start">
+      <div
+        className="box-border w-fit h-[426px] shrink-0 flex flex-row gap-[32px] justify-start items-start motion-safe:animate-fade-up"
+        style={{ animationDelay: '300ms' }}
+      >
         {CHOOSE_ROLE.roles.map((role) => (
           <RoleOptionCard key={role.href} {...role} />
         ))}

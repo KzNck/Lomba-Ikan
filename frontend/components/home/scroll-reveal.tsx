@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 
-const STAGGER_MS = 45
+const STAGGER_MS = 80
 const MAX_DELAY_MS = 360
 
 // Fades in every `[data-reveal]` element as it scrolls into view. Renders nothing.

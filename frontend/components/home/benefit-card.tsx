@@ -2,6 +2,7 @@ import Image from 'next/image'
 import { Icon, type IconName } from '@/components/ui/icon'
 import { ACCENTS, type Accent } from '@/components/home/accents'
 import type { ImageContent } from '@/components/home/hero'
+import { CARD_LIFT } from '@/components/ui/interaction'
 
 export type BenefitPoint = {
   icon: IconName
@@ -22,7 +23,7 @@ export function BenefitCard({ icon, accent, title, subtitle, image, points }: Be
   const colors = ACCENTS[accent]
 
   return (
-    <div data-reveal className="box-border [flex:1_1_0] h-[320px] [box-shadow:0px_0px_0px_1px_#0000000F,_0px_1px_2px_-1px_#0000000F,_0px_2px_4px_0px_#0000000A] bg-[#FFFFFF] rounded-[24px] overflow-hidden relative">
+    <div data-reveal className={`box-border [flex:1_1_0] h-[320px] [box-shadow:0px_0px_0px_1px_#0000000F,_0px_1px_2px_-1px_#0000000F,_0px_2px_4px_0px_#0000000A] bg-[#FFFFFF] rounded-[24px] overflow-hidden relative ${CARD_LIFT}`}>
       <div className="box-border w-[307px] h-[322px] absolute left-[282px] top-[-1px] [z-index:0]">
         <Image src={image.src} alt={image.alt} fill sizes="307px" className="object-cover object-center" />
       </div>

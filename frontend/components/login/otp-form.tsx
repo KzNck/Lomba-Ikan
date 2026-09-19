@@ -3,6 +3,7 @@
 import { OtpInput } from '@/components/login/otp-input'
 import { SubmitButton } from '@/components/register/submit-button'
 import { Icon } from '@/components/ui/icon'
+import { enterNelayanDashboard } from '@/app/nelayan/actions'
 
 export type OtpFormContent = {
   otp: {
@@ -19,8 +20,8 @@ export type OtpFormContent = {
 // The code field and "Verifikasi & masuk". `contents` keeps both on the card's 28px rhythm.
 export function OtpForm({ otp, resendText, submitLabel }: OtpFormContent) {
   return (
-    // Verification waits on Supabase; until it's wired up, submitting stays on this page.
-    <form className="contents" onSubmit={(event) => event.preventDefault()}>
+    // Verification waits on Supabase; until it's wired up, submitting goes straight to the nelayan dashboard.
+    <form className="contents" action={enterNelayanDashboard}>
       <OtpInput {...otp}>
         <div className="box-border w-fit h-fit shrink-0 flex flex-row gap-[6px] p-[4px_0px_0px_0px] justify-start items-center">
           <Icon name="timer" fill="#5B6B7C" className="box-border w-[16px] shrink-0 h-[16px]" />

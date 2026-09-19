@@ -23,10 +23,15 @@ export function PageHeading({ title, subtitle, variant = 'nowrap' }: PageHeading
 
   return (
     <div className="box-border w-fit h-fit shrink-0 flex flex-col gap-[12px] justify-start items-center">
-      <h1 className={`text-[40px]/[46px] box-border text-[#0B3B5C] font-poppins ${styles.title} text-left [white-space:nowrap]`}>
+      <h1
+        className={`text-[40px]/[46px] box-border text-[#0B3B5C] font-poppins ${styles.title} text-left [white-space:nowrap] motion-safe:animate-fade-up`}
+        style={{ animationDelay: '100ms' }}
+      >
         {title}
       </h1>
-      <p className={styles.subtitle}>{subtitle}</p>
+      <p className={`${styles.subtitle} motion-safe:animate-fade-up`} style={{ animationDelay: '200ms' }}>
+        {subtitle}
+      </p>
     </div>
   )
 }
