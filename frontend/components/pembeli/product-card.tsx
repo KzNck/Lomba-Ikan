@@ -17,8 +17,17 @@ export type ProductCardContent = {
   distance: string
   location: string
   price: string
-  // "Lihat detail" while active, "Lihat serupa" once sold.
+  // Marketplace only: the whole batch at that price, e.g. "Total Rp 576.000".
+  total?: string
+  // Dashboard: "Lihat detail" while active, "Lihat serupa" once sold. Marketplace: "Beli sekarang", or "Stok habis"
+  // once sold, which renders as a disabled button.
   actionLabel: string
+}
+
+type ProductCardProps = ProductCardContent & {
+  variant?: keyof typeof VARIANTS
+  // Load the photo straight away: for cards in the first row, which are on screen at load.
+  eager?: boolean
 }
 
 const GRADE_STYLES = {
@@ -31,7 +40,14 @@ const STATUS_STYLES = {
   sold: { badge: 'bg-[#E2E8F0]', text: 'text-[#0B3B5C]' },
 }
 
-// One recommendation tile. The export paints the photo as a CSS background; it's a next/image here, with the
+// The dashboard's fixed 230px recommendation tile, or the marketplace's grid card: a third of the row, 8px gaps, a
+// darker favourite disc and a cart on the action.
+const VARIANTS = {
+  recommendation: { card: 'w-[230px] shrink-0 gap-[10px]', favorite: 'bg-[#0B3B5C40]', actionIcon: 'arrow-right', sizes: '206px' },
+  marketplace: { card: '[flex:1_1_0] min-w-0 gap-[8px]', favorite: 'bg-[#0B3B5C99]', actionIcon: 'shopping-cart', sizes: '240px' },
+} as const
+
+// One batch tile. The export paints the photo as a CSS background; it's a next/image here, with the
 // favourite and badge rows stacked above it.
 export function ProductCard({
   href,
@@ -44,20 +60,26 @@ export function ProductCard({
   distance,
   location,
   price,
+  total,
   actionLabel,
-}: ProductCardContent) {
+  variant = 'recommendation',
+  eager = false,
+}: ProductCardProps) {
   const gradeStyle = GRADE_STYLES[grade[0] as keyof typeof GRADE_STYLES]
   const statusStyle = STATUS_STYLES[status]
+  const style = VARIANTS[variant]
+  // A sold batch can't be bought, so the marketplace swaps its link for a disabled "Stok habis".
+  const soldOut = variant === 'marketplace' && status === 'sold'
 
   return (
     <article
-      className={`box-border w-[230px] shrink-0 h-fit [box-shadow:0px_4px_16px_0px_#0B3B5C0F] flex flex-col gap-[10px] p-[12px] justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[16px] ${CARD_LIFT}`}
+      className={`box-border ${style.card} h-fit [box-shadow:0px_4px_16px_0px_#0B3B5C0F] flex flex-col p-[12px] justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[16px] ${CARD_LIFT}`}
     >
       <div className="box-border w-full h-[124px] shrink-0 flex flex-col gap-0 p-[8px] justify-between items-start [border:1px_solid_#0000001A] rounded-[4px] overflow-hidden relative">
-        <Image src={image.src} alt={image.alt} fill sizes="206px" className="object-cover object-center" />
+        <Image src={image.src} alt={image.alt} fill sizes={style.sizes} loading={eager ? 'eager' : undefined} className="object-cover object-center" />
         {/* Favourite toggle from the design; not wired up yet, so it's shown but not interactive. */}
         <div className="box-border w-full h-fit shrink-0 flex flex-row gap-0 justify-end items-start relative">
-          <span aria-hidden="true" className="box-border w-[28px] shrink-0 h-[28px] flex flex-row gap-0 justify-center items-center bg-[#0B3B5C40] rounded-[999px]">
+          <span aria-hidden="true" className={`box-border w-[28px] shrink-0 h-[28px] flex flex-row gap-0 justify-center items-center ${style.favorite} rounded-[999px]`}>
             <Icon name="heart" fill="#FFFFFF" className="box-border w-[16px] shrink-0 h-[16px]" />
           </span>
         </div>
@@ -83,14 +105,30 @@ export function ProductCard({
         <Meta icon="map-pin" value={location} />
       </div>
       <p className="text-[18px]/[normal] box-border text-[#0B3B5C] font-poppins font-bold text-left [white-space:nowrap]">{price}</p>
-      <Link
-        href={href}
-        aria-label={`${actionLabel} ${name}`}
-        className={`group box-border w-full h-[36px] shrink-0 flex flex-row gap-[6px] justify-center items-center bg-[#F3FAFF] [outline:1px_solid_#DCEEFB] [outline-offset:-0.5px] rounded-[999px] ${PRESS_WIDE} ${FOCUS_RING}`}
-      >
-        <span className="text-[13px]/[normal] box-border text-[#0F6CB8] font-poppins font-semibold text-left [white-space:nowrap]">{actionLabel}</span>
-        <Icon name="arrow-right" fill="#0F6CB8" className={`box-border w-[14px] shrink-0 h-[14px] ${ARROW_NUDGE_RIGHT}`} />
-      </Link>
+      {total && <p className="text-[13px]/[normal] box-border text-[#5B6B7C] font-inter font-medium text-left [white-space:nowrap]">{total}</p>}
+      {soldOut ? (
+        <button
+          type="button"
+          disabled
+          className="box-border w-full h-[36px] shrink-0 flex flex-row gap-[6px] justify-center items-center bg-[#F7F9FC] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[999px] cursor-not-allowed"
+        >
+          <span className="text-[13px]/[normal] box-border text-[#5B6B7C] font-poppins font-semibold text-left [white-space:nowrap]">{actionLabel}</span>
+          <Icon name="ban" fill="#5B6B7C" className="box-border w-[14px] shrink-0 h-[14px]" />
+        </button>
+      ) : (
+        <Link
+          href={href}
+          aria-label={`${actionLabel} ${name}`}
+          className={`group box-border w-full h-[36px] shrink-0 flex flex-row gap-[6px] justify-center items-center bg-[#F3FAFF] [outline:1px_solid_#DCEEFB] [outline-offset:-0.5px] rounded-[999px] ${PRESS_WIDE} ${FOCUS_RING}`}
+        >
+          <span className="text-[13px]/[normal] box-border text-[#0F6CB8] font-poppins font-semibold text-left [white-space:nowrap]">{actionLabel}</span>
+          <Icon
+            name={style.actionIcon}
+            fill="#0F6CB8"
+            className={`box-border w-[14px] shrink-0 h-[14px] ${style.actionIcon === 'arrow-right' ? ARROW_NUDGE_RIGHT : ''}`}
+          />
+        </Link>
+      )}
     </article>
   )
 }

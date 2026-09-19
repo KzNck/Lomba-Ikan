@@ -8,7 +8,7 @@ export function Navbar() {
     const pathname = usePathname()
     const isOnline = useOnlineStatus()
 
-    if (pathname === '/' || pathname.startsWith('/auth') || pathname.startsWith('/nelayan') || pathname.startsWith('/pembeli')) {
+    if (pathname === '/' || pathname.startsWith('/auth') || pathname.startsWith('/nelayan') || pathname.startsWith('/pembeli') || pathname.startsWith('/marketplace')) {
         return null
     }
 

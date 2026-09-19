@@ -3,11 +3,14 @@ import { Icon } from '@/components/ui/icon'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
 import { OUTLINE_HOVER, PRESS } from '@/components/ui/interaction'
 
-type TopBarProps = {
-  greeting: string
-  subtitle: string
+type TopBarActionsProps = {
   notifications: { href: string; label: string; unreadCount: number }
   user: { name: string }
+}
+
+type TopBarProps = TopBarActionsProps & {
+  greeting: string
+  subtitle: string
 }
 
 export function TopBar({ greeting, subtitle, notifications, user }: TopBarProps) {
@@ -17,6 +20,15 @@ export function TopBar({ greeting, subtitle, notifications, user }: TopBarProps)
         <h1 className="text-[26px]/[33px] box-border w-full text-[#0B3B5C] font-poppins font-bold text-left">{greeting}</h1>
         <p className="text-[15px]/[normal] box-border w-full text-[#5B6B7C] font-inter font-normal text-left">{subtitle}</p>
       </div>
+      <TopBarActions notifications={notifications} user={user} />
+    </header>
+  )
+}
+
+// The notification bell and account pill at the right of the pembeli top bars (dashboard and marketplace).
+export function TopBarActions({ notifications, user }: TopBarActionsProps) {
+  return (
+    <>
       <Link
         href={notifications.href}
         aria-label={`${notifications.label}, ${notifications.unreadCount} belum dibaca`}
@@ -39,6 +51,6 @@ export function TopBar({ greeting, subtitle, notifications, user }: TopBarProps)
         <span className="text-[14px]/[18px] box-border w-[180px] shrink-0 text-[#0B3B5C] font-poppins font-semibold text-left">{user.name}</span>
         <Icon name="chevron-down" fill="#5B6B7C" className="box-border w-[16px] shrink-0 h-[16px]" />
       </div>
-    </header>
+    </>
   )
 }
