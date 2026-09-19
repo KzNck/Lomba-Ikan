@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { CatchModal } from '@/components/nelayan/catch-modal'
 import { CategoryForm } from '@/components/nelayan/category-form'
 import { VolumeForm } from '@/components/nelayan/volume-form'
@@ -33,6 +34,7 @@ const STEP_HEADING_IDS = ['category-title', 'volume-title', 'waktu-title', 'es-t
 export function CatchWizard({ modal, category, volume, time, ice, photo }: CatchWizardProps) {
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState<CatchAnswers>({})
+  const router = useRouter()
 
   // Only move focus on an actual step change, so the modal opens on page load without stealing it. Comparing
   // steps (rather than a "has mounted" flag) also holds up when Strict Mode runs the effect twice.
@@ -107,8 +109,10 @@ export function CatchWizard({ modal, category, volume, time, ice, photo }: Catch
           }}
           onNext={(value) => {
             setAnswers((current) => ({ ...current, photo: value }))
-            // Submitting the catch (and grading the photo) is not wired up yet. Hook it in here: pass `status`
-            // to PhotoForm as 'analyzing' while the request runs, or 'saved-offline' once it is queued offline.
+            // Stand-in until the photo is graded: open the "Hasil Kesegaran" result, which shows sample figures.
+            // The real flow submits `answers` here, passes `status` to PhotoForm as 'analyzing' while the request
+            // runs (or 'saved-offline' once it is queued offline), then opens the result for that catch.
+            router.push('/nelayan/catat/hasil')
           }}
         />
       )}
