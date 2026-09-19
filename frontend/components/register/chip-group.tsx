@@ -15,10 +15,20 @@ export type ChipGroupContent = {
 type ChipGroupProps = ChipGroupContent & {
   // Shown under the helper, e.g. when a required group is submitted empty.
   error?: string
+  // Values that start selected.
+  defaultValues?: string[]
+  look?: keyof typeof LOOKS
+}
+
+// Registration's group, or the account page's: Poppins label, wrapping helper, tighter gaps.
+const LOOKS = {
+  register: { group: 'gap-[16px]', label: 'font-inter', helper: '[white-space:nowrap]', chips: 'gap-[12px]' },
+  settings: { group: 'gap-[12px]', label: 'font-poppins', helper: 'w-full', chips: 'gap-[10px]' },
 }
 
 // A labelled multi-select of toggle chips.
-export function ChipGroup({ id, label, helper, required, options, error }: ChipGroupProps) {
+export function ChipGroup({ id, label, helper, required, options, error, defaultValues = [], look = 'register' }: ChipGroupProps) {
+  const style = LOOKS[look]
   const labelId = useId()
   const helperId = useId()
   const errorId = useId()
@@ -28,20 +38,20 @@ export function ChipGroup({ id, label, helper, required, options, error }: ChipG
       role="group"
       aria-labelledby={labelId}
       aria-describedby={error ? `${helperId} ${errorId}` : helperId}
-      className="box-border w-full h-fit shrink-0 flex flex-col gap-[16px] justify-start items-start"
+      className={`box-border w-full h-fit shrink-0 flex flex-col ${style.group} justify-start items-start`}
     >
       <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[4px] justify-start items-start">
         <div className="box-border w-fit h-fit shrink-0 flex flex-row gap-[4px] justify-start items-start">
           <span
             id={labelId}
-            className="text-[15px]/[normal] box-border text-[#0B3B5C] font-inter font-semibold text-left [white-space:nowrap]"
+            className={`text-[15px]/[normal] box-border text-[#0B3B5C] ${style.label} font-semibold text-left [white-space:nowrap]`}
           >
             {label}
           </span>
           {required && (
             <span
               aria-hidden="true"
-              className="text-[15px]/[normal] box-border text-[#C23B35] font-inter font-semibold text-left [white-space:nowrap]"
+              className={`text-[15px]/[normal] box-border text-[#C23B35] ${style.label} font-semibold text-left [white-space:nowrap]`}
             >
               *
             </span>
@@ -49,7 +59,7 @@ export function ChipGroup({ id, label, helper, required, options, error }: ChipG
         </div>
         <p
           id={helperId}
-          className="text-[14px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left [white-space:nowrap]"
+          className={`text-[14px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left ${style.helper}`}
         >
           {helper}
         </p>
@@ -67,9 +77,9 @@ export function ChipGroup({ id, label, helper, required, options, error }: ChipG
         )}
       </div>
       {/* The export splits the chips into two hand-made rows; wrapping at the same 12px gap lands on the same break. */}
-      <div className="box-border w-full h-fit shrink-0 flex flex-row flex-wrap gap-[12px] justify-start items-start">
+      <div className={`box-border w-full h-fit shrink-0 flex flex-row flex-wrap ${style.chips} justify-start items-start`}>
         {options.map((option) => (
-          <Chip key={option.value} name={id} {...option} />
+          <Chip key={option.value} name={id} {...option} defaultChecked={defaultValues.includes(option.value)} />
         ))}
       </div>
     </div>

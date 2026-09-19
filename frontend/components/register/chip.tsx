@@ -10,15 +10,17 @@ type ChipProps = {
   name: string
   value: string
   label: string
+  // Starts selected, e.g. a saved choice in an edit form.
+  defaultChecked?: boolean
 }
 
 // A toggle chip. Selection is plain checkbox state, so it needs no React state.
-export function Chip({ name, value, label }: ChipProps) {
+export function Chip({ name, value, label, defaultChecked }: ChipProps) {
   return (
     <label
       className={`group box-border w-fit shrink-0 h-fit flex flex-row gap-[8px] p-[10px_16px_10px_12px] justify-start items-center ${CHIP_STATES} rounded-[999px] cursor-pointer transition-colors duration-200 ease-out`}
     >
-      <input type="checkbox" name={name} value={value} className="sr-only" />
+      <input type="checkbox" name={name} value={value} defaultChecked={defaultChecked} className="sr-only" />
       <Icon
         name="plus"
         fill="currentColor"
