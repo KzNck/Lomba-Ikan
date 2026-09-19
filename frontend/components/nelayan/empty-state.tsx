@@ -9,9 +9,10 @@ type EmptyStateProps = {
   title: string
   description: string
   action?: NavItem
+  actionIcon?: IconName
 }
 
-export function EmptyState({ icon, title, description, action }: EmptyStateProps) {
+export function EmptyState({ icon, title, description, action, actionIcon = 'plus' }: EmptyStateProps) {
   return (
     <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[8px] p-[24px_16px] justify-start items-center">
       <div className="box-border w-[56px] h-[56px] shrink-0 flex flex-row gap-0 justify-center items-center bg-[#DCEEFB] rounded-[999px]">
@@ -24,7 +25,7 @@ export function EmptyState({ icon, title, description, action }: EmptyStateProps
           href={action.href}
           className={`box-border w-fit h-fit shrink-0 flex flex-row gap-[8px] p-[10px_18px] justify-start items-center bg-[#0F6CB8] rounded-[8px] ${SOLID_HOVER} ${PRESS} ${FOCUS_RING}`}
         >
-          <Icon name="plus" fill="#FFFFFF" className="box-border w-[18px] shrink-0 h-[18px]" />
+          <Icon name={actionIcon} fill="#FFFFFF" className="box-border w-[18px] shrink-0 h-[18px]" />
           <span className="text-[14px]/[normal] box-border text-[#FFFFFF] font-inter font-semibold text-left [white-space:nowrap]">{action.label}</span>
         </Link>
       )}

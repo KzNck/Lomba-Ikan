@@ -1,6 +1,6 @@
 // All copy and imagery for the nelayan dashboard. Edit here to swap content without touching layout.
 // Figures, listings and notifications are the export's sample data until they come from Supabase.
-import type { SidebarNavItem } from '@/components/nelayan/sidebar-nav'
+import type { SidebarNavItem } from '@/components/dashboard/sidebar-nav'
 import type { SummaryStatContent } from '@/components/nelayan/summary-stat'
 import type { ListingCardContent } from '@/components/nelayan/listing-card'
 import type { NotificationContent } from '@/components/nelayan/notification-item'
