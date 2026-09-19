@@ -15,20 +15,32 @@ export type ListingCardContent = {
   grade: { label: string; condition: keyof typeof GRADE_STYLES }
   weight: string
   pricePerKg: string
-  // "Sisa 2 j 15 mnt" while active, "Telah terjual" once sold.
+  // "Sisa 2 j 15 mnt" while active, "Telah terjual" once sold, "Terjual 12 jam lalu" on the "Terjual/Diambil" tab.
   footer: string
 }
 
 type ListingCardProps = ListingCardContent & {
   metricLabels: { weight: string; pricePerKg: string }
   detailLabel: string
+  // The dashboard panel's photo is 132px tall; the "Listing Saya" grid's is 112px.
+  photo?: keyof typeof PHOTO_SIZES
+  // Outlined while its "Detail Listing" drawer is open.
+  selected?: boolean
 }
 
-// Status drives the chip and the footer; condition drives the grade badge.
+// `sizes` is the widest the card gets: a third of the dashboard panel, or of the grid with the drawer closed.
+const PHOTO_SIZES = {
+  tall: { height: 'h-[132px]', sizes: '235px' },
+  short: { height: 'h-[112px]', sizes: '380px' },
+}
+
+// Status drives the chip and the footer; condition drives the grade badge. `sold` is a card that just sold in the
+// dashboard's active panel; `closed` is one on the "Terjual/Diambil" tab, which adds a check to the chip.
 const STATUS_STYLES = {
   active: {
     chip: 'bg-[#DCEEFB]',
     chipText: 'text-[#0F6CB8]',
+    chipIcon: null,
     footerIcon: 'timer',
     footerFill: '#5B6B7C',
     footerText: 'text-[#5B6B7C]',
@@ -36,9 +48,18 @@ const STATUS_STYLES = {
   sold: {
     chip: 'bg-[#E8F8F2]',
     chipText: 'text-[#17704A]',
+    chipIcon: null,
     footerIcon: 'circle-check',
     footerFill: '#17704A',
     footerText: 'text-[#17704A]',
+  },
+  closed: {
+    chip: 'bg-[#E8F8F2]',
+    chipText: 'text-[#17704A]',
+    chipIcon: { name: 'circle-check', fill: '#17704A' },
+    footerIcon: 'clock',
+    footerFill: '#5B6B7C',
+    footerText: 'text-[#5B6B7C]',
   },
 } as const
 
@@ -57,7 +78,7 @@ const GRADE_STYLES = {
   },
 } as const
 
-// The export fixes the photo at content-box 234.667×131.5px and the footer at 206.667×27.5px (their sizes in a
+// The export fixes the photo at content-box 234.667×131.5px (111.5px on "Listing Saya") and the footer at 206.667×27.5px (their sizes in a
 // three-up row) and adds padding on top; here they fill the card width and take the design's outer heights.
 export function ListingCard({
   href,
@@ -72,16 +93,18 @@ export function ListingCard({
   footer,
   metricLabels,
   detailLabel,
+  photo = 'tall',
+  selected = false,
 }: ListingCardProps) {
   const statusStyle = STATUS_STYLES[status]
   const gradeStyle = GRADE_STYLES[grade.condition]
 
   return (
     <article
-      className={`box-border [flex:1_1_0] self-stretch [box-shadow:0px_0px_0px_1px_#0000000F,_0px_1px_2px_-1px_#0000000F,_0px_2px_4px_0px_#0000000A] flex flex-col gap-0 justify-start items-start bg-[#FFFFFF] rounded-[16px] overflow-hidden ${CARD_LIFT}`}
+      className={`box-border [flex:1_1_0] self-stretch [box-shadow:0px_0px_0px_1px_#0000000F,_0px_1px_2px_-1px_#0000000F,_0px_2px_4px_0px_#0000000A] flex flex-col gap-0 justify-start items-start bg-[#FFFFFF] ${selected ? '[outline:2px_solid_#0F6CB8] [outline-offset:-1px]' : ''} rounded-[16px] overflow-hidden ${CARD_LIFT}`}
     >
-      <div className="box-border w-full h-[132px] shrink-0 [border-width:0px_0px_1px_0px] [border-style:solid] [border-color:#0000001A] [margin:0px_0px_-0.5px_0px] relative">
-        <Image src={image.src} alt={image.alt} fill sizes="235px" className="object-cover object-center" />
+      <div className={`box-border w-full ${PHOTO_SIZES[photo].height} shrink-0 [border-width:0px_0px_1px_0px] [border-style:solid] [border-color:#0000001A] [margin:0px_0px_-0.5px_0px] relative`}>
+        <Image src={image.src} alt={image.alt} fill sizes={PHOTO_SIZES[photo].sizes} className="object-cover object-center" />
       </div>
       <div className="box-border w-full [flex:1_1_auto] flex flex-col gap-[14px] p-[14px] justify-start items-start">
         {/* The export nests the location beside the chip, which wraps longer PPI names (e.g. "PPI Karangsong,
@@ -90,6 +113,9 @@ export function ListingCard({
           <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[8px] justify-between items-start">
             <h3 className="text-[15px]/[normal] box-border [flex:1_1_0] text-[#0B3B5C] font-poppins font-semibold text-left">{category}</h3>
             <span className={`box-border w-fit shrink-0 h-fit flex flex-row gap-[6px] p-[4px_10px] justify-start items-center ${statusStyle.chip} rounded-[999px]`}>
+              {statusStyle.chipIcon && (
+                <Icon name={statusStyle.chipIcon.name} fill={statusStyle.chipIcon.fill} className="box-border w-[14px] shrink-0 h-[14px]" />
+              )}
               <span className={`text-[13px]/[normal] box-border ${statusStyle.chipText} font-inter font-semibold text-left [white-space:nowrap]`}>
                 {statusLabel}
               </span>
@@ -114,6 +140,7 @@ export function ListingCard({
         <Link
           href={href}
           aria-label={`${detailLabel} ${category}`}
+          aria-current={selected ? 'true' : undefined}
           className={`group box-border w-full h-[40px] shrink-0 flex flex-row gap-[8px] justify-center items-center [outline:1.5px_solid_#0F6CB8] [outline-offset:-0.75px] rounded-[8px] ${OUTLINE_HOVER} ${PRESS_WIDE} ${FOCUS_RING}`}
         >
           <span className="text-[14px]/[normal] box-border text-[#0F6CB8] font-inter font-semibold text-left [white-space:nowrap]">{detailLabel}</span>
