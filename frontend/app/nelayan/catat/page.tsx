@@ -1,0 +1,13 @@
+import NelayanDashboardPage from '@/app/nelayan/page'
+import { CatchWizard } from '@/components/nelayan/catch-wizard'
+import { CATCH_MODAL, CATEGORY_STEP, VOLUME_STEP, TIME_STEP, ICE_STEP, PHOTO_STEP } from '@/components/nelayan/catch-content'
+
+// The "07 Tambah Tangkapan" frames: the dashboard stays in place behind the modal's scrim while the wizard steps.
+export default function TambahTangkapanPage() {
+  return (
+    <>
+      <NelayanDashboardPage />
+      <CatchWizard modal={CATCH_MODAL} category={CATEGORY_STEP} volume={VOLUME_STEP} time={TIME_STEP} ice={ICE_STEP} photo={PHOTO_STEP} />
+    </>
+  )
+}
