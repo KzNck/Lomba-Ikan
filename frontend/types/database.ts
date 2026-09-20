@@ -165,7 +165,15 @@ export type Database = {
                     created_at?: string
                     updated_at?: string
                 }
-                Relationships: []
+                Relationships: [
+                    {
+                        foreignKeyName: 'catches_nelayan_id_fkey'
+                        columns: ['nelayan_id']
+                        isOneToOne: false
+                        referencedRelation: 'profiles'
+                        referencedColumns: ['id']
+                    },
+                ]
             }
             transactions: {
                 Row: Transaction
@@ -211,7 +219,29 @@ export type Database = {
                     created_at?: string
                     updated_at?: string
                 }
-                Relationships: []
+                Relationships: [
+                    {
+                        foreignKeyName: 'transactions_catch_id_fkey'
+                        columns: ['catch_id']
+                        isOneToOne: false
+                        referencedRelation: 'catches'
+                        referencedColumns: ['id']
+                    },
+                    {
+                        foreignKeyName: 'transactions_pembeli_id_fkey'
+                        columns: ['pembeli_id']
+                        isOneToOne: false
+                        referencedRelation: 'profiles'
+                        referencedColumns: ['id']
+                    },
+                    {
+                        foreignKeyName: 'transactions_nelayan_id_fkey'
+                        columns: ['nelayan_id']
+                        isOneToOne: false
+                        referencedRelation: 'profiles'
+                        referencedColumns: ['id']
+                    },
+                ]
             }
         }
         Views: {

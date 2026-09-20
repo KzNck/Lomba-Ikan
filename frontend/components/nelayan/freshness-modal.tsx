@@ -8,6 +8,8 @@ import type { FRESHNESS_MODAL, GRADE_PANEL, PRICE_FIELD } from '@/components/nel
 
 type FreshnessModalProps = {
   modal: typeof FRESHNESS_MODAL
+  // The catch being published, submitted with the form as `id`.
+  catchId: string
   result: FreshnessResult
   gradePanel: typeof GRADE_PANEL
   recommendations: { title: string; subtitle: string; options: UsageOptionContent[] }
@@ -18,7 +20,7 @@ type FreshnessModalProps = {
 
 // The "Overlay" + "Modal Hasil Kesegaran" layers, shown once the catch photo has been graded. Like CatchModal, the
 // scrim is fixed to the viewport (the export pins it to the 1440×1100 frame) and scrolls if the modal outgrows it.
-export function FreshnessModal({ modal, result, gradePanel, recommendations, price, action }: FreshnessModalProps) {
+export function FreshnessModal({ modal, catchId, result, gradePanel, recommendations, price, action }: FreshnessModalProps) {
   return (
     <div className="box-border fixed inset-0 overflow-y-auto flex flex-col gap-0 p-[72px_0px_0px_0px] justify-start items-center bg-[#0B3B5CA6] [z-index:2]">
       <form
@@ -28,6 +30,7 @@ export function FreshnessModal({ modal, result, gradePanel, recommendations, pri
         aria-labelledby="freshness-modal-title"
         className="box-border w-[940px] h-fit shrink-0 [box-shadow:0px_24px_64px_0px_#0B3B5C33] flex flex-col gap-[24px] p-[32px] justify-start items-start bg-[#FFFFFF] rounded-[24px]"
       >
+        <input type="hidden" name="id" value={catchId} />
         <ModalHeader
           icon="scan-eye"
           title={modal.title}

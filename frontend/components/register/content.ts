@@ -50,6 +50,44 @@ export const CHOOSE_ROLE = {
   loginLink: { href: AUTH_LINKS.login.href, label: 'Masuk di sini' },
 }
 
+// The credentials the account is created with. Kept here so both registration
+// forms ask for exactly the same thing in the same words.
+export const EMAIL_FIELD = {
+  kind: 'text',
+  inputType: 'email',
+  autoComplete: 'email',
+  id: 'email',
+  label: 'Email',
+  icon: 'mail',
+  placeholder: 'Contoh: dulmatin@gmail.com',
+  helper: 'Dipakai untuk masuk ke akun Anda.',
+  required: true,
+} satisfies FormFieldConfig
+
+export const PASSWORD_FIELDS = [
+  {
+    kind: 'text',
+    inputType: 'password',
+    autoComplete: 'new-password',
+    id: 'password',
+    label: 'Password',
+    icon: 'lock',
+    placeholder: 'Minimal 8 karakter',
+    helper: 'Gunakan minimal 8 karakter.',
+    required: true,
+  },
+  {
+    kind: 'text',
+    inputType: 'password',
+    autoComplete: 'new-password',
+    id: 'konfirmasi-password',
+    label: 'Konfirmasi Password',
+    icon: 'lock',
+    placeholder: 'Ketik ulang password Anda',
+    required: true,
+  },
+] satisfies FormFieldConfig[]
+
 export const NELAYAN_PROFILE = {
   heading: {
     title: 'Lengkapi Profil Nelayan',
@@ -92,7 +130,7 @@ export const NELAYAN_PROFILE = {
     description: 'Hubungi tim kami untuk menambahkan PPI Anda.',
     href: 'mailto:info@bycatchloop.id',
   } satisfies InfoCalloutContent,
-  submitLabel: 'Simpan & lanjut',
+  submitLabel: 'Daftar',
 }
 
 // The two-part Pembeli profile: 04a Informasi Usaha, then 04b Preferensi Pencarian.
@@ -138,6 +176,8 @@ export const PEMBELI_USAHA = {
       { value: 'lainnya', label: 'Lainnya' },
     ],
   } satisfies ChipGroupContent,
+  emailField: { ...EMAIL_FIELD, placeholder: 'Contoh: rina@usahaanda.co.id' } satisfies FormFieldConfig,
+  passwordFields: PASSWORD_FIELDS,
   jenisUsahaError: 'Pilih minimal satu jenis usaha untuk melanjutkan.',
   progress: {
     current: 1,
@@ -222,13 +262,13 @@ export const PEMBELI_PREFERENSI = {
       removeLabel: 'Hapus {nama}',
     } satisfies PpiComboboxContent,
   },
-  // Points at the landing page until the Pembeli dashboard exists.
-  skipLink: { label: 'Lewati, atur nanti di Akun', href: '/pembeli' },
+  // Submits the registration without preferences; they can be set later in Akun.
+  skipLabel: 'Lewati, atur nanti di Akun',
   progress: {
     current: 2,
     total: 2,
     label: 'Bagian 2 dari 2: Preferensi pencarian',
   } satisfies SubStepProgressContent,
   backLabel: 'Kembali',
-  submitLabel: 'Simpan & selesai',
+  submitLabel: 'Daftar',
 }

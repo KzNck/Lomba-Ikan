@@ -8,7 +8,7 @@ export type FormFieldConfig = {
   icon: IconName
   placeholder: string
   // Text inputs only.
-  inputType?: 'text' | 'email' | 'tel'
+  inputType?: 'text' | 'email' | 'tel' | 'password'
   inputMode?: 'text' | 'numeric' | 'tel' | 'email'
   autoComplete?: string
   // Text inputs only: the saved value an edit form opens with.

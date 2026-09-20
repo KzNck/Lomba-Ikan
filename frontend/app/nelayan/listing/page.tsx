@@ -13,9 +13,18 @@ import {
   LISTING_DRAWER,
   LISTING_PAGE,
   LISTING_PATH,
+  type EmptyTabContent,
 } from '@/components/nelayan/listing-content'
+import { toActiveListing, toListingCard } from '@/lib/catches/present'
+import { getMyCatches } from '@/lib/supabase/catches'
+import { getMyTransactions } from '@/lib/supabase/transactions'
+import { requireProfile } from '@/lib/supabase/auth'
+import { greetingFor, initialsOf, recentNotifications } from '@/lib/nelayan/dashboard-data'
 
 const detailHref = (slug: string) => `${LISTING_PATH}?detail=${slug}`
+
+// A listing is still running while it is LISTED or waiting to sync; everything else belongs to the second tab.
+const isOpen = (status: string) => status === 'LISTED' || status === 'WAITING_FOR_SYNC'
 
 // The "09 Listing Saya" frame. The URL holds the view: ?tab=terjual for the second tab, ?detail=<slug> for the open
 // drawer, and &konfirmasi=batal for the "Batalkan listing" dialog over it.
@@ -26,21 +35,35 @@ export default async function ListingSayaPage({
 }) {
   const { tab, detail, konfirmasi } = await searchParams
   const showClosed = tab === 'terjual'
-  const selected = showClosed ? undefined : ACTIVE_TAB.items.find((item) => item.slug === detail)
+
+  const profile = await requireProfile('nelayan')
+  const [catches, transactions] = await Promise.all([getMyCatches(), getMyTransactions()])
+
+  const active = catches.filter((entry) => isOpen(entry.status)).map(toActiveListing)
+  const closed = catches.filter((entry) => !isOpen(entry.status))
+  const selected = showClosed ? undefined : active.find((item) => item.slug === detail)
 
   const tabs = [
-    { href: LISTING_PATH, label: ACTIVE_TAB.label, count: ACTIVE_TAB.items.length, active: !showClosed },
-    { href: `${LISTING_PATH}?tab=terjual`, label: CLOSED_TAB.label, count: CLOSED_TAB.items.length, active: showClosed },
+    { href: LISTING_PATH, label: ACTIVE_TAB.label, count: active.length, active: !showClosed },
+    { href: `${LISTING_PATH}?tab=terjual`, label: CLOSED_TAB.label, count: closed.length, active: showClosed },
   ]
 
   const cards = showClosed
-    ? CLOSED_TAB.items.map((item) => ({ ...item, key: item.category + item.location }))
-    : ACTIVE_TAB.items.map((item) => ({ ...item, key: item.slug, href: detailHref(item.slug) }))
-  const { detailLabel, empty } = showClosed ? CLOSED_TAB : ACTIVE_TAB
+    ? closed.map((entry) => ({ ...toListingCard(entry, '/nelayan/riwayat'), key: entry.id }))
+    : active.map((item) => ({ ...item, key: item.slug, href: detailHref(item.slug) }))
+  // Typed as the shared shape so the optional `action` reads the same on both tabs.
+  const { detailLabel, empty }: { detailLabel: string; empty: EmptyTabContent } = showClosed
+    ? CLOSED_TAB
+    : ACTIVE_TAB
 
   return (
     <>
       <ListingShell
+        header={{
+          greeting: greetingFor(profile.full_name),
+          user: { name: profile.full_name, initials: initialsOf(profile.full_name) },
+          unreadCount: recentNotifications(catches, transactions).length,
+        }}
         drawer={
           selected && (
             <ListingDrawer listing={selected} labels={LISTING_DRAWER} cancelHref={`${detailHref(selected.slug)}&konfirmasi=batal`} />
@@ -64,7 +87,7 @@ export default async function ListingSayaPage({
           </ul>
         ) : (
           <ListingPanel title={empty.panelTitle}>
-            <EmptyState icon="fish" title={empty.title} description={empty.description} action={'action' in empty ? empty.action : undefined} />
+            <EmptyState icon="fish" title={empty.title} description={empty.description} action={empty.action} />
           </ListingPanel>
         )}
       </ListingShell>

@@ -5,7 +5,7 @@ import { FilterBar } from '@/components/pembeli/filter-bar'
 import { ProductCard } from '@/components/pembeli/product-card'
 import { NoResults } from '@/components/pembeli/no-results'
 import { PpiMap } from '@/components/pembeli/ppi-map'
-import { PEMBELI_NOTIFICATIONS, PEMBELI_USER } from '@/components/pembeli/content'
+import { PEMBELI_NOTIFICATIONS } from '@/components/pembeli/content'
 import {
   CATEGORIES,
   FILTERS,
@@ -28,6 +28,7 @@ import {
   type MarketplaceQuery,
 } from '@/components/pembeli/marketplace-query'
 import type { FilterChipProps } from '@/components/pembeli/filter-chip'
+import type { Batch } from '@/lib/marketplace/batches'
 
 // The three filter chips for the current view: value, editor options and the URL their "x" goes to.
 function filterChips(query: MarketplaceQuery): (FilterChipProps & { key: string })[] {
@@ -85,8 +86,17 @@ function filterChips(query: MarketplaceQuery): (FilterChipProps & { key: string 
 // The "10 Marketplace" frame for a view from the URL (see marketplace-query.ts): the search and filters narrow the
 // batches, "Urutkan" orders them and a map marker limits them to one PPI. With no match it shows "Tidak ada hasil".
 // /marketplace renders it alone; /marketplace/<slug> renders it behind a batch's detail drawer.
-export function MarketplaceView({ query }: { query: MarketplaceQuery }) {
-  const batches = selectBatches(query)
+export function MarketplaceView({
+  all,
+  query,
+  user,
+}: {
+  // Every listed batch; the query narrows and orders them here.
+  all: Batch[]
+  query: MarketplaceQuery
+  user: { name: string; role: string }
+}) {
+  const batches = selectBatches(all, query)
   // Cards open their drawer over this same view, so closing it comes back here.
   const search = marketplaceParams(query).toString()
   const reset = { href: resetHref(query), label: MARKETPLACE.resetLabel }
@@ -98,7 +108,7 @@ export function MarketplaceView({ query }: { query: MarketplaceQuery }) {
   }))
   const sortLabel = SORT_MENU.buttonLabel(SORT_OPTIONS.find(({ value }) => value === query.sort)!.label)
 
-  const markers = [...availableByPpi(query)]
+  const markers = [...availableByPpi(all, query)]
     .filter(([name]) => name in PPI_LOCATIONS)
     .map(([name, count]) => {
       const selected = name === query.ppi
@@ -118,7 +128,7 @@ export function MarketplaceView({ query }: { query: MarketplaceQuery }) {
       <header className="box-border w-full h-fit shrink-0 flex flex-row gap-[20px] justify-start items-center">
         <MarketplaceSearch action={MARKETPLACE_PATH} query={query.q} hidden={hiddenFields(query, 'q')} {...MARKETPLACE.search} />
         <SortMenu label={sortLabel} options={sortOptions} />
-        <TopBarActions notifications={PEMBELI_NOTIFICATIONS} user={PEMBELI_USER} />
+        <TopBarActions notifications={PEMBELI_NOTIFICATIONS} user={user} />
       </header>
       <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[4px] justify-start items-start">
         <h1 className="text-[28px]/[32px] box-border text-[#0B3B5C] font-poppins font-bold text-left [white-space:nowrap]">{MARKETPLACE.title}</h1>

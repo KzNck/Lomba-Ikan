@@ -7,7 +7,6 @@
 //   ?prioritas=  PPIs to list first (repeatable), or "semua" for none
 // A filter left out of the URL falls back to the buyer's saved preferences, so /marketplace opens with them.
 import {
-  BATCHES,
   CATEGORIES,
   GRADES,
   MARKETPLACE_PATH,
@@ -18,8 +17,8 @@ import {
   type Grade,
   type SortValue,
 } from '@/components/pembeli/marketplace-content'
+import type { Batch } from '@/lib/marketplace/batches'
 
-type Batch = (typeof BATCHES)[number]
 type SearchParams = { [key: string]: string | string[] | undefined }
 
 export type MarketplaceQuery = {
@@ -106,16 +105,23 @@ export function resetHref(query: MarketplaceQuery) {
   })
 }
 
-// "A1" is freshest, "B3" least fresh: compare the letter, then the number.
-const gradeRank = (grade: string) => (grade.charCodeAt(0) - 65) * 10 + Number(grade.slice(1))
+// "A1" is freshest, "B3" least fresh: compare the letter, then the number. An ungraded batch ("—") ranks last.
+const UNGRADED = Number.MAX_SAFE_INTEGER
+const gradeRank = (grade: string) =>
+  /^[AB]\d$/.test(grade) ? (grade.charCodeAt(0) - 65) * 10 + Number(grade.slice(1)) : UNGRADED
+
+// A batch whose distance is unknown sorts after every batch with one.
+const byDistance = (a: Batch, b: Batch) =>
+  (a.distanceKm ?? Infinity) - (b.distanceKm ?? Infinity)
 
 const COMPARE: Record<SortValue, (a: Batch, b: Batch) => number> = {
-  terdekat: (a, b) => a.distanceKm - b.distanceKm,
-  kesegaran: (a, b) => gradeRank(a.grade) - gradeRank(b.grade) || a.distanceKm - b.distanceKm,
+  terdekat: byDistance,
+  kesegaran: (a, b) => gradeRank(a.grade) - gradeRank(b.grade) || byDistance(a, b),
   terbaru: (a, b) => Date.parse(b.listedAt) - Date.parse(a.listedAt),
 }
 
 // Whether a batch passes the grade and category filters (the search and map pick are applied separately).
+// A grade filter hides ungraded batches, since there is nothing to compare them against.
 function passesFilters(batch: Batch, { maxGrade, categories }: MarketplaceQuery) {
   return (
     (!maxGrade || gradeRank(batch.grade) <= gradeRank(maxGrade)) &&
@@ -124,10 +130,10 @@ function passesFilters(batch: Batch, { maxGrade, categories }: MarketplaceQuery)
 }
 
 // The batches to show, in order: sold ones last, then priority PPIs first, then the chosen sort.
-export function selectBatches(query: MarketplaceQuery) {
+export function selectBatches(batches: Batch[], query: MarketplaceQuery) {
   const needle = query.q.toLocaleLowerCase('id')
   const prioritised = (batch: Batch) => Number(!query.priorityPpis.includes(batch.location))
-  return BATCHES.filter(
+  return batches.filter(
     (batch) =>
       passesFilters(batch, query) &&
       (!needle || `${batch.name} ${batch.location}`.toLocaleLowerCase('id').includes(needle)) &&
@@ -141,9 +147,9 @@ export function selectBatches(query: MarketplaceQuery) {
 }
 
 // Available (not sold) batches per PPI under the current grade and category filters, for the map markers.
-export function availableByPpi(query: MarketplaceQuery) {
+export function availableByPpi(batches: Batch[], query: MarketplaceQuery) {
   const counts = new Map<string, number>()
-  for (const batch of BATCHES) {
+  for (const batch of batches) {
     if (batch.status !== 'sold' && passesFilters(batch, query)) counts.set(batch.location, (counts.get(batch.location) ?? 0) + 1)
   }
   return counts

@@ -1,31 +1,16 @@
 // lib/supabase/profiles.ts
 //
-// Fungsi terkait profil user + helper auth dasar.
+// Query tabel `profiles`. Helper auth (kirim/verifikasi OTP, sesi) ada di auth.ts.
 
-import { supabase } from './client'
-import type { Profile, UserRole } from '@/types/database'
+import { createClient } from './server'
+import type { Profile } from '@/types/database'
 
-export async function getCurrentProfile(): Promise<Profile | null> {
-    const {
-        data: { user },
-    } = await supabase.auth.getUser()
-
-    if (!user) return null
-
-    const { data, error } = await supabase.from('profiles').select('*').eq('id', user.id).single()
-
-    if (error) {
-        if (error.code === 'PGRST116') return null
-        throw new Error(`Gagal ambil profil: ${error.message}`)
-    }
-    return data
-}
-
+/** Ubah profil user yang sedang login. RLS membatasi ke row miliknya sendiri. */
 export async function updateProfile(updates: Partial<Profile>): Promise<Profile> {
+    const supabase = await createClient()
     const {
         data: { user },
     } = await supabase.auth.getUser()
-
     if (!user) throw new Error('User belum login')
 
     const { data, error } = await supabase
@@ -40,38 +25,15 @@ export async function updateProfile(updates: Partial<Profile>): Promise<Profile>
 }
 
 /**
- * Sign up + langsung buat row profiles.
- * Dipanggil dari halaman "Masuk / Daftar Akun".
+ * Nama nelayan pemilik tiap tangkapan, untuk ditampilkan di marketplace.
+ * Dikembalikan sebagai Map id → nama supaya pemanggilnya tidak perlu query per baris.
  */
-export async function signUp(params: {
-    email: string
-    password: string
-    fullName: string
-    role: UserRole
-}): Promise<void> {
-    const { data, error } = await supabase.auth.signUp({
-        email: params.email,
-        password: params.password,
-    })
+export async function getProfileNames(ids: string[]): Promise<Map<string, Profile>> {
+    if (ids.length === 0) return new Map()
 
-    if (error) throw new Error(`Gagal daftar: ${error.message}`)
-    if (!data.user) throw new Error('Gagal daftar: user tidak dibuat')
+    const supabase = await createClient()
+    const { data, error } = await supabase.from('profiles').select('*').in('id', [...new Set(ids)])
 
-    const { error: profileError } = await supabase.from('profiles').insert({
-        id: data.user.id,
-        full_name: params.fullName,
-        role: params.role,
-    })
-
-    if (profileError) throw new Error(`Gagal buat profil: ${profileError.message}`)
-}
-
-export async function signIn(email: string, password: string): Promise<void> {
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) throw new Error(`Gagal masuk: ${error.message}`)
-}
-
-export async function signOut(): Promise<void> {
-    const { error } = await supabase.auth.signOut()
-    if (error) throw new Error(`Gagal keluar: ${error.message}`)
+    if (error) throw new Error(`Gagal ambil profil penjual: ${error.message}`)
+    return new Map((data ?? []).map((profile) => [profile.id, profile]))
 }

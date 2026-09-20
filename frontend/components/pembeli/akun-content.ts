@@ -1,9 +1,9 @@
 // All copy for the pembeli account page (/pembeli/akun). Edit here to swap content without touching layout.
-// PEMBELI_PROFILE is the export's sample account until it's read from Supabase.
+// The account itself is read from Supabase — see lib/pembeli/account.ts.
 import type { IconName } from '@/components/ui/icon'
 import type { FormFieldConfig } from '@/components/register/form-field'
 import { PEMBELI_USAHA } from '@/components/register/content'
-import { PEMBELI_USER } from '@/components/pembeli/content'
+import { PEMBELI_ROLE_LABEL } from '@/components/pembeli/content'
 
 export const AKUN_PATH = '/pembeli/akun'
 
@@ -19,19 +19,6 @@ export type AccountValues = {
   kecamatan: string
   kodePos: string
   jenisUsaha: string[]
-}
-
-export const PEMBELI_PROFILE: AccountValues = {
-  contactName: 'Rina Wulandari',
-  businessName: PEMBELI_USER.name,
-  email: 'contact@maggotsejahtera.id',
-  phone: '+62 812 3456 7890',
-  address: 'Jl. Raya Industri No. 12, Surabaya',
-  provinsi: '35',
-  kabKota: '35.78',
-  kecamatan: 'Tandes',
-  kodePos: '60185',
-  jenisUsaha: ['maggot-bsf', 'silase-ikan'],
 }
 
 export const AKUN_PAGE = {
@@ -53,7 +40,7 @@ export const AKUN_NAV = {
 }
 
 export const PROFILE_HEADER = {
-  roleLabel: PEMBELI_USER.role,
+  roleLabel: PEMBELI_ROLE_LABEL,
   changePhotoLabel: 'Ubah foto',
   // Photo upload isn't built yet, so the button is shown disabled with this reason.
   changePhotoUnavailable: 'Unggah foto belum tersedia.',

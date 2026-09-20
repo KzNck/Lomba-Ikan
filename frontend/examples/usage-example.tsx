@@ -6,19 +6,17 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { getListedCatches, subscribeToNewListings } from '@/lib/supabase/catches'
+import { subscribeToNewListings } from '@/lib/supabase/realtime'
 import { claimCatch } from '@/lib/supabase/transactions'
 import type { Catch } from '@/types/database'
 
 export function MarketplaceExample() {
+    // Data awal datang dari Server Component (getListedCatches dipanggil di sana);
+    // di client tinggal menambahkan listing baru yang masuk lewat realtime.
     const [catches, setCatches] = useState<Catch[]>([])
 
     useEffect(() => {
-        // Ambil data awal
-        getListedCatches().then(setCatches).catch(console.error)
-
-        // Subscribe realtime — listing baru langsung muncul tanpa refresh
-        const unsubscribe = subscribeToNewListings((newCatch) => {
+        const unsubscribe = subscribeToNewListings((newCatch: Catch) => {
             setCatches((prev) => [newCatch, ...prev])
         })
 

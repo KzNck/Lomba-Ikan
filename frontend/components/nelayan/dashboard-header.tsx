@@ -9,7 +9,8 @@ type DashboardHeaderProps = {
   greeting: string
   subtitle: string
   notifications: { href: string; label: string; unreadCount: number }
-  user: { name: string; avatar: ImageContent }
+  // Profiles carry no photo, so the avatar falls back to initials like the sidebar's.
+  user: { name: string; initials: string; avatar?: ImageContent }
 }
 
 // The export sizes this bar as content-box w-[1180px] plus 64px padding, which overflows the 1180px column and
@@ -51,8 +52,14 @@ export function DashboardHeader({ greeting, subtitle, notifications, user }: Das
         <div className="box-border w-[1px] shrink-0 h-[36px] bg-[#E2E8F0]" />
         {/* The chevron hints at a menu the design doesn't specify yet, so this stays non-interactive. */}
         <div className="box-border w-fit shrink-0 h-fit flex flex-row gap-[12px] justify-start items-center">
-          <div className="box-border w-[40px] shrink-0 h-[40px] [border:1px_solid_#0000001A] rounded-[999px] overflow-hidden relative">
-            <Image src={user.avatar.src} alt={user.avatar.alt} fill sizes="40px" className="object-cover object-center" />
+          <div className="box-border w-[40px] shrink-0 h-[40px] [border:1px_solid_#0000001A] rounded-[999px] overflow-hidden relative flex flex-row gap-0 justify-center items-center bg-[#DCEEFB]">
+            {user.avatar ? (
+              <Image src={user.avatar.src} alt={user.avatar.alt} fill sizes="40px" className="object-cover object-center" />
+            ) : (
+              <span aria-hidden="true" className="text-[14px]/[normal] box-border text-[#0F6CB8] font-poppins font-semibold text-left [white-space:nowrap]">
+                {user.initials}
+              </span>
+            )}
           </div>
           <span className="text-[14px]/[normal] box-border text-[#0B3B5C] font-inter font-semibold text-left [white-space:nowrap]">
             {user.name}

@@ -5,29 +5,46 @@ import { QuickActionCard } from '@/components/nelayan/quick-action-card'
 import { ListingSection } from '@/components/nelayan/listing-section'
 import { NotificationSection } from '@/components/nelayan/notification-section'
 import { MainDecoration } from '@/components/nelayan/main-decoration'
-import { DASHBOARD, NELAYAN_USER } from '@/components/nelayan/content'
+import type { ListingCardContent } from '@/components/nelayan/listing-card'
+import type { NotificationContent } from '@/components/nelayan/notification-item'
+import type { SummaryStatContent } from '@/components/nelayan/summary-stat'
+import { DASHBOARD } from '@/components/nelayan/content'
+
+export type NelayanDashboardData = {
+  greeting: string
+  user: { name: string; initials: string }
+  stats: SummaryStatContent[]
+  listings: ListingCardContent[]
+  notifications: NotificationContent[]
+}
 
 // The dashboard's main column. The "Tambah Tangkapan" pages render it behind their modal with a longer breadcrumb.
-export function NelayanDashboard({ breadcrumb = { current: DASHBOARD.breadcrumb } }: { breadcrumb?: BreadcrumbContent }) {
+export function NelayanDashboard({
+  data,
+  breadcrumb = { current: DASHBOARD.breadcrumb },
+}: {
+  data: NelayanDashboardData
+  breadcrumb?: BreadcrumbContent
+}) {
   return (
     <div className="box-border [flex:1_1_0] flex flex-col gap-0 justify-start items-start relative">
       <DashboardHeader
-        greeting={DASHBOARD.greeting}
+        greeting={data.greeting}
         subtitle={DASHBOARD.subtitle}
-        notifications={DASHBOARD.notifications}
-        user={NELAYAN_USER}
+        notifications={{ ...DASHBOARD.notifications, unreadCount: data.notifications.length }}
+        user={data.user}
       />
       <MainDecoration tagline={DASHBOARD.tagline} />
       <div className="box-border w-full [flex:1_1_0] flex flex-col gap-[20px] p-[20px_32px_32px_32px] justify-start items-start relative [z-index:2]">
         <Breadcrumb {...breadcrumb} />
         <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[24px] justify-start items-start">
-          <SummaryCard {...DASHBOARD.summary} />
+          <SummaryCard {...DASHBOARD.summary} stats={data.stats} />
           <QuickActionCard {...DASHBOARD.quickAction} />
         </div>
         {/* Stretched (the export has items-start) so both panels end on the same line. */}
         <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[24px] justify-start items-stretch">
-          <ListingSection {...DASHBOARD.listings} />
-          <NotificationSection {...DASHBOARD.notificationList} />
+          <ListingSection {...DASHBOARD.listings} items={data.listings} />
+          <NotificationSection {...DASHBOARD.notificationList} items={data.notifications} />
         </div>
       </div>
     </div>

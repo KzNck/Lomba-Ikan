@@ -1,13 +1,14 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { CatchModal } from '@/components/nelayan/catch-modal'
 import { CategoryForm } from '@/components/nelayan/category-form'
 import { VolumeForm } from '@/components/nelayan/volume-form'
 import { IconChoiceForm } from '@/components/nelayan/icon-choice-form'
 import { PhotoForm, type CatchPhoto } from '@/components/nelayan/photo-form'
 import type { CATCH_MODAL, CATEGORY_STEP, VOLUME_STEP, TIME_STEP, ICE_STEP, PHOTO_STEP } from '@/components/nelayan/catch-content'
+import { submitCatch } from '@/app/nelayan/actions'
+import { saveCatchLocally } from '@/lib/offline/storage'
 
 // What the user has entered so far. Each step writes its answer on "Lanjut", and steps 2+ also on "Kembali".
 type CatchAnswers = {
@@ -34,7 +35,7 @@ const STEP_HEADING_IDS = ['category-title', 'volume-title', 'waktu-title', 'es-t
 export function CatchWizard({ modal, category, volume, time, ice, photo }: CatchWizardProps) {
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState<CatchAnswers>({})
-  const router = useRouter()
+  const [status, setStatus] = useState<'analyzing' | 'saved-offline' | undefined>()
 
   // Only move focus on an actual step change, so the modal opens on page load without stealing it. Comparing
   // steps (rather than a "has mounted" flag) also holds up when Strict Mode runs the effect twice.
@@ -44,6 +45,48 @@ export function CatchWizard({ modal, category, volume, time, ice, photo }: Catch
     focusedStep.current = step
     document.getElementById(STEP_HEADING_IDS[step])?.focus()
   }, [step])
+
+  // Offline, the catch goes to the device's queue instead; online, it is saved and graded, and
+  // submitCatch redirects to the result. A failed request falls back to the same local queue, so
+  // nothing entered at sea is lost.
+  async function submit(entered: CatchAnswers) {
+    const { category: species, weight, time: hauledAt, ice: iceLevel, photo: taken } = entered
+    if (!species || !weight || !hauledAt || !iceLevel || !taken) return
+
+    const queueLocally = () => {
+      saveCatchLocally({
+        species,
+        weight_kg: weight,
+        catch_location: '',
+        catch_time: new Date().toISOString(),
+        storage_method: iceLevel,
+        vessel_name: '-',
+      })
+      setStatus('saved-offline')
+    }
+
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      queueLocally()
+      return
+    }
+
+    setStatus('analyzing')
+    const form = new FormData()
+    form.set('category', species)
+    form.set('weight', String(weight))
+    form.set('time', hauledAt)
+    form.set('ice', iceLevel)
+    form.set('photo', taken.blob, 'catch.jpg')
+
+    try {
+      await submitCatch(form)
+    } catch (error) {
+      // A redirect from the action surfaces as a thrown control-flow signal; let it through.
+      if (error && typeof error === 'object' && 'digest' in error) throw error
+      console.error('Gagal simpan tangkapan:', error)
+      queueLocally()
+    }
+  }
 
   return (
     <CatchModal {...modal} currentStep={step}>
@@ -103,16 +146,14 @@ export function CatchWizard({ modal, category, volume, time, ice, photo }: Catch
         <PhotoForm
           {...photo}
           defaultPhoto={answers.photo}
+          status={status}
           onBack={(value) => {
             setAnswers((current) => ({ ...current, photo: value }))
             setStep(3)
           }}
           onNext={(value) => {
             setAnswers((current) => ({ ...current, photo: value }))
-            // Stand-in until the photo is graded: open the "Hasil Kesegaran" result, which shows sample figures.
-            // The real flow submits `answers` here, passes `status` to PhotoForm as 'analyzing' while the request
-            // runs (or 'saved-offline' once it is queued offline), then opens the result for that catch.
-            router.push('/nelayan/catat/hasil')
+            void submit({ ...answers, photo: value })
           }}
         />
       )}

@@ -1,149 +1,134 @@
 // lib/supabase/catches.ts
 //
-// Semua fungsi terkait tabel `catches`.
-// Frontend tinggal import & panggil — tidak perlu tahu query SQL/Supabase-nya.
+// Semua query tabel `catches`. Dipanggil dari Server Component / Server Action,
+// jadi memakai client dari server.ts (bawa cookie sesi) — RLS yang menentukan
+// baris mana yang kelihatan, bukan filter manual di sini.
 
-import { supabase } from './client'
-import type { Catch, CreateCatchInput, CatchStatus } from '@/types/database'
+import { createClient } from './server'
+import type { Catch, CatchStatus, CreateCatchInput } from '@/types/database'
 
-/**
- * Ambil semua tangkapan milik nelayan yang sedang login.
- * RLS otomatis filter berdasarkan auth.uid() — tidak perlu pass user id manual.
- */
+/** Tangkapan milik nelayan yang sedang login. RLS memfilter berdasarkan auth.uid(). */
 export async function getMyCatches(): Promise<Catch[]> {
+    const supabase = await createClient()
     const { data, error } = await supabase
         .from('catches')
         .select('*')
         .order('created_at', { ascending: false })
 
     if (error) throw new Error(`Gagal ambil data tangkapan: ${error.message}`)
-    return data
+    return data ?? []
 }
 
-/**
- * Ambil satu tangkapan by ID.
- */
 export async function getCatchById(id: string): Promise<Catch | null> {
-    const { data, error } = await supabase
-        .from('catches')
-        .select('*')
-        .eq('id', id)
-        .single()
+    const supabase = await createClient()
+    const { data, error } = await supabase.from('catches').select('*').eq('id', id).maybeSingle()
 
-    if (error) {
-        if (error.code === 'PGRST116') return null // not found
-        throw new Error(`Gagal ambil tangkapan: ${error.message}`)
-    }
+    if (error) throw new Error(`Gagal ambil tangkapan: ${error.message}`)
     return data
 }
 
 /**
- * Ambil semua tangkapan berstatus LISTED — buat marketplace pembeli.
+ * Listing yang tampil di marketplace pembeli: berstatus LISTED dan belum lewat
+ * batas waktu klaim. Row yang sudah kedaluwarsa masih berstatus LISTED sampai
+ * ada job yang mengubahnya, jadi disaring di sini juga.
  */
 export async function getListedCatches(): Promise<Catch[]> {
+    const supabase = await createClient()
     const { data, error } = await supabase
         .from('catches')
         .select('*')
         .eq('status', 'LISTED')
+        .gt('expires_at', new Date().toISOString())
         .order('listed_at', { ascending: false })
 
     if (error) throw new Error(`Gagal ambil listing: ${error.message}`)
-    return data
+    return data ?? []
 }
 
 /**
- * Buat entri tangkapan baru. Dipanggil saat nelayan submit form
- * "Catat Tangkapan Baru" — baik online maupun setelah offline sync.
- *
- * `local_id` dipakai untuk idempotent upsert: kalau sync ulang
- * dengan local_id yang sama, tidak akan duplikat.
+ * Simpan tangkapan baru. `local_id` membuat upsert idempotent: sync ulang dari
+ * antrean offline dengan local_id yang sama tidak menghasilkan baris ganda.
  */
 export async function createCatch(input: CreateCatchInput): Promise<Catch> {
+    const supabase = await createClient()
     const {
         data: { user },
     } = await supabase.auth.getUser()
-
     if (!user) throw new Error('User belum login')
 
-    const { data, error } = await supabase
-        .from('catches')
-        .upsert(
-            {
-                nelayan_id: user.id,
-                species: input.species,
-                weight_kg: input.weight_kg,
-                catch_location: input.catch_location,
-                catch_time: input.catch_time,
-                storage_method: input.storage_method,
-                vessel_name: input.vessel_name,
-                price_per_kg: input.price_per_kg ?? null,
-                local_id: input.local_id ?? null,
-                photo_url: input.photo_url ?? null,
-                status: 'WAITING_FOR_SYNC' as CatchStatus,
-            },
-            { onConflict: 'local_id' } // idempotent: re-sync tidak duplikat
-        )
-        .select()
-        .single()
+    const row = {
+        nelayan_id: user.id,
+        species: input.species,
+        weight_kg: input.weight_kg,
+        catch_location: input.catch_location,
+        catch_time: input.catch_time,
+        storage_method: input.storage_method,
+        vessel_name: input.vessel_name,
+        price_per_kg: input.price_per_kg ?? null,
+        photo_url: input.photo_url ?? null,
+        status: 'WAITING_FOR_SYNC' as CatchStatus,
+    }
 
+    // onConflict hanya berlaku kalau ada local_id; tanpa itu upsert tanpa key unik
+    // akan menimpa baris lain, jadi insert biasa.
+    const query = input.local_id
+        ? supabase.from('catches').upsert({ ...row, local_id: input.local_id }, { onConflict: 'local_id' })
+        : supabase.from('catches').insert(row)
+
+    const { data, error } = await query.select().single()
     if (error) throw new Error(`Gagal simpan tangkapan: ${error.message}`)
     return data
 }
 
 /**
- * Update status tangkapan ke LISTED setelah berhasil sync ke cloud.
- * Trigger di DB otomatis set listed_at & expires_at (+48 jam).
+ * Terbitkan tangkapan ke marketplace. Trigger `trg_catch_expiry` di database
+ * yang mengisi listed_at dan expires_at (+48 jam).
  */
-export async function markAsListed(catchId: string): Promise<Catch> {
+export async function publishCatch(catchId: string, pricePerKg: number | null): Promise<Catch> {
+    const supabase = await createClient()
     const { data, error } = await supabase
         .from('catches')
-        .update({ status: 'LISTED' as CatchStatus, synced_at: new Date().toISOString() })
+        .update({
+            status: 'LISTED' as CatchStatus,
+            price_per_kg: pricePerKg,
+            synced_at: new Date().toISOString(),
+        })
         .eq('id', catchId)
         .select()
         .single()
 
-    if (error) throw new Error(`Gagal update status listing: ${error.message}`)
+    if (error) throw new Error(`Gagal pasang listing: ${error.message}`)
     return data
 }
 
-/**
- * Subscribe realtime ke perubahan status tangkapan tertentu.
- * Berguna untuk notifikasi "Status: CLAIMED" muncul live di UI nelayan.
- *
- * Return function unsubscribe — panggil di useEffect cleanup.
- */
-export function subscribeToCatchStatus(
-    catchId: string,
-    onUpdate: (updated: Catch) => void
-): () => void {
-    const channel = supabase
-        .channel(`catch-${catchId}`)
-        .on(
-            'postgres_changes',
-            { event: 'UPDATE', schema: 'public', table: 'catches', filter: `id=eq.${catchId}` },
-            (payload) => onUpdate(payload.new as Catch)
-        )
-        .subscribe()
+/** Batalkan listing. Row-nya tetap disimpan sebagai riwayat, statusnya jadi EXPIRED. */
+export async function cancelListing(catchId: string): Promise<void> {
+    const supabase = await createClient()
+    const { error } = await supabase
+        .from('catches')
+        .update({ status: 'EXPIRED' as CatchStatus })
+        .eq('id', catchId)
 
-    return () => {
-        supabase.removeChannel(channel)
-    }
+    if (error) throw new Error(`Gagal batalkan listing: ${error.message}`)
 }
 
-/**
- * Subscribe realtime ke semua listing baru — buat halaman marketplace pembeli.
- */
-export function subscribeToNewListings(onNewListing: (newCatch: Catch) => void): () => void {
-    const channel = supabase
-        .channel('marketplace-listings')
-        .on(
-            'postgres_changes',
-            { event: 'INSERT', schema: 'public', table: 'catches', filter: `status=eq.LISTED` },
-            (payload) => onNewListing(payload.new as Catch)
-        )
-        .subscribe()
+/** Simpan hasil penilaian AI ke row tangkapan. */
+export async function saveFreshness(
+    catchId: string,
+    result: { grade: Catch['freshness_grade']; score: number | null; notes: string | null }
+): Promise<Catch> {
+    const supabase = await createClient()
+    const { data, error } = await supabase
+        .from('catches')
+        .update({
+            freshness_grade: result.grade,
+            freshness_score: result.score,
+            freshness_notes: result.notes,
+        })
+        .eq('id', catchId)
+        .select()
+        .single()
 
-    return () => {
-        supabase.removeChannel(channel)
-    }
+    if (error) throw new Error(`Gagal simpan hasil kesegaran: ${error.message}`)
+    return data
 }

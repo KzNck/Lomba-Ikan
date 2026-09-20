@@ -8,16 +8,16 @@ import { BuyButton } from '@/components/pembeli/buy-button'
 import { DetailChip, DetailSection } from '@/components/pembeli/detail-section'
 import {
   BATCH_DRAWER,
-  BATCHES,
   CATEGORIES,
   CONDITIONS,
   PPI_LOCATIONS,
   PPI_MAP,
 } from '@/components/pembeli/marketplace-content'
+import type { Batch } from '@/lib/marketplace/batches'
 import { PRESS, PRESS_WIDE, SOLID_HOVER } from '@/components/ui/interaction'
 
 type BatchDrawerProps = {
-  batch: (typeof BATCHES)[number]
+  batch: Batch
   // The marketplace view behind the drawer, which close, Escape and a click on the scrim go back to.
   closeHref: string
   // "Lihat batch serupa" on a sold batch: the same category in the marketplace.
@@ -34,7 +34,8 @@ const TITLE_ID = 'batch-drawer-title'
 export function BatchDrawer({ batch, closeHref, similarHref, buyAction }: BatchDrawerProps) {
   const { detail } = batch
   const condition = CONDITIONS[detail.condition]
-  const category = CATEGORIES.find(({ value }) => value === batch.category)!.label
+  // A category the marketplace doesn't list falls back to the batch's own name.
+  const category = CATEGORIES.find(({ value }) => value === batch.category)?.label ?? batch.name
   const location = PPI_LOCATIONS[batch.location]
   const sold = batch.status === 'sold'
 
@@ -98,9 +99,12 @@ export function BatchDrawer({ batch, closeHref, similarHref, buyAction }: BatchD
             aside={location && <PpiMiniMap lat={location.lat} lng={location.lng} tiles={PPI_MAP.tiles} />}
           >
             <p className="text-[14px]/[normal] box-border text-[#0F5C82] font-poppins font-semibold text-left [white-space:nowrap]">{batch.location}</p>
-            <p className="text-[13px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left [white-space:nowrap]">
-              {BATCH_DRAWER.distance(batch.distanceKm)}
-            </p>
+            {/* Only shown once both PPIs have coordinates — see distanceFrom in lib/marketplace/batches.ts. */}
+            {batch.distanceKm !== null && (
+              <p className="text-[13px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left [white-space:nowrap]">
+                {BATCH_DRAWER.distance(batch.distanceKm)}
+              </p>
+            )}
           </DetailSection>
           <DetailSection icon="recycle" title={BATCH_DRAWER.usageTitle}>
             <p className="text-[14px]/[21px] box-border w-full text-[#5B6B7C] font-inter font-normal text-left">{detail.usage}</p>

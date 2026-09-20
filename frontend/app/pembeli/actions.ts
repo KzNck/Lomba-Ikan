@@ -1,13 +1,10 @@
 'use server'
 
-import { redirect } from 'next/navigation'
+import { revalidatePath } from 'next/cache'
 import { getKabupatenKota, PROVINSI } from '@/lib/wilayah'
 import { INFO_PRIBADI, VALIDATION, type AccountValues } from '@/components/pembeli/akun-content'
-
-// Stand-in for saving the registration: until Supabase handles it, finishing the form lands on the dashboard.
-export async function enterPembeliDashboard() {
-  redirect('/pembeli')
-}
+import { saveAccountValues } from '@/lib/pembeli/account'
+import { requireProfile } from '@/lib/supabase/auth'
 
 export type AccountFormState = {
   status: 'idle' | 'saved' | 'error'
@@ -19,9 +16,11 @@ export type AccountFormState = {
 // Indonesian mobile or landline: +62/62/0, then 8–12 more digits. Spaces and dashes are ignored.
 const PHONE = /^(\+62|62|0)\d{8,12}$/
 
-// Checks and "saves" the Info Pribadi form. Until the account lives in Supabase nothing is stored: a valid form
-// returns "saved" and the page shows the sample profile again on reload.
+// Checks and saves the Info Pribadi form. The name and phone go to `profiles`; the business details have no
+// columns yet, so they go to the account's user_metadata — see lib/pembeli/account.ts.
 export async function saveAccount(previous: AccountFormState, formData: FormData): Promise<AccountFormState> {
+  await requireProfile('pembeli')
+
   const text = (name: keyof AccountValues) => String(formData.get(name) ?? '').trim()
   const values: AccountValues = {
     contactName: text('contactName'),
@@ -50,10 +49,15 @@ export async function saveAccount(previous: AccountFormState, formData: FormData
   if (values.kodePos && !/^\d{5}$/.test(values.kodePos)) errors.kodePos = VALIDATION.kodePos
   if (values.jenisUsaha.length === 0) errors.jenisUsaha = VALIDATION.jenisUsaha
 
-  return { status: Object.keys(errors).length > 0 ? 'error' : 'saved', values, errors }
-}
+  if (Object.keys(errors).length > 0) return { status: 'error', values, errors }
 
-// Stand-in for signing out: until Supabase sessions are wired up, it goes back to the login page.
-export async function signOut() {
-  redirect('/auth/login')
+  try {
+    await saveAccountValues(values)
+  } catch (error) {
+    return { status: 'error', values, errors: { contactName: (error as Error).message } }
+  }
+
+  // The sidebar and top bar print the business name, so they need re-rendering too.
+  revalidatePath('/pembeli', 'layout')
+  return { status: 'saved', values, errors }
 }

@@ -14,18 +14,32 @@ type SubmitButtonProps = {
   // Hug the label instead of spanning the card.
   inline?: boolean
   tone?: keyof typeof TONES
+  // Set while the form's action is in flight, so the request can't be fired twice.
+  // The label stays put and a spinner replaces the trailing icon, so the button
+  // keeps the same accessible name it had when the user pressed it.
+  disabled?: boolean
 }
 
-export function SubmitButton({ label, icon, inline, tone = 'bright' }: SubmitButtonProps) {
+export function SubmitButton({ label, icon, inline, tone = 'bright', disabled }: SubmitButtonProps) {
   return (
     <button
       type="submit"
-      className={`box-border ${inline ? 'w-fit' : 'w-full'} h-fit shrink-0 ${TONES[tone]} flex flex-row gap-[12px] ${icon ? 'p-[16px_26px_16px_28px]' : 'p-[16px_28px]'} justify-center items-center bg-no-repeat bg-[length:100%_100%] rounded-[999px] cursor-pointer ${SOLID_HOVER} ${inline ? PRESS : PRESS_WIDE}`}
+      disabled={disabled}
+      aria-busy={disabled || undefined}
+      className={`box-border ${inline ? 'w-fit' : 'w-full'} h-fit shrink-0 ${TONES[tone]} flex flex-row gap-[12px] ${icon ? 'p-[16px_26px_16px_28px]' : 'p-[16px_28px]'} justify-center items-center bg-no-repeat bg-[length:100%_100%] rounded-[999px] cursor-pointer ${SOLID_HOVER} ${inline ? PRESS : PRESS_WIDE} disabled:cursor-progress disabled:opacity-70 disabled:shadow-none`}
     >
       <span className="text-[16px]/[normal] box-border text-[#FFFFFF] font-poppins font-semibold text-left [white-space:nowrap]">
         {label}
       </span>
-      {icon && <Icon name={icon} fill="#FFFFFF" className="box-border w-[18px] shrink-0 h-[18px]" />}
+      {disabled ? (
+        <Icon
+          name="loader-circle"
+          fill="#FFFFFF"
+          className="box-border w-[18px] shrink-0 h-[18px] motion-safe:animate-spin"
+        />
+      ) : (
+        icon && <Icon name={icon} fill="#FFFFFF" className="box-border w-[18px] shrink-0 h-[18px]" />
+      )}
     </button>
   )
 }

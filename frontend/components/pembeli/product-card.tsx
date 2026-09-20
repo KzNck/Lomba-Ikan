@@ -9,8 +9,8 @@ export type ProductCardContent = {
   href: string
   image: ImageContent
   name: string
-  // "A1" … "B3"; the letter picks the badge colour.
-  grade: `${keyof typeof GRADE_STYLES}${number}`
+  // "A1" … "B3"; the letter picks the badge colour. "—" for a catch the AI has not graded.
+  grade: string
   status: keyof typeof STATUS_STYLES
   statusLabel: string
   weight: string
@@ -34,6 +34,13 @@ const GRADE_STYLES = {
   A: { badge: 'bg-[#E8F8F2]', text: 'text-[#17704A]' },
   B: { badge: 'bg-[#DCEEFB]', text: 'text-[#0F6CB8]' },
 }
+
+// Anything that isn't grade A — including an ungraded catch — takes B's neutral badge.
+const gradeStyle = (grade: string) => GRADE_STYLES[grade[0] as keyof typeof GRADE_STYLES] ?? GRADE_STYLES.B
+
+// The badge prints the grade alone, so the accessible name has to supply the rest.
+export const gradeName = (grade: string) =>
+  /^[AB]\d$/.test(grade) ? `Grade ${grade}` : 'Grade belum dinilai'
 
 const STATUS_STYLES = {
   active: { badge: 'bg-[#E8F8F2]', text: 'text-[#17704A]' },
@@ -65,7 +72,7 @@ export function ProductCard({
   variant = 'recommendation',
   eager = false,
 }: ProductCardProps) {
-  const gradeStyle = GRADE_STYLES[grade[0] as keyof typeof GRADE_STYLES]
+  const gradeTone = gradeStyle(grade)
   const statusStyle = STATUS_STYLES[status]
   const style = VARIANTS[variant]
   // A sold batch can't be bought, so the marketplace swaps its link for a disabled "Stok habis".
@@ -84,8 +91,14 @@ export function ProductCard({
           </span>
         </div>
         <div className="box-border w-full h-fit shrink-0 flex flex-row gap-0 justify-between items-center relative">
-          <span className={`box-border w-fit shrink-0 h-[22px] flex flex-row gap-0 p-[0px_8px] justify-center items-center ${gradeStyle.badge} rounded-[999px]`}>
-            <span className={`text-[12px]/[normal] box-border ${gradeStyle.text} font-poppins font-semibold text-left [white-space:nowrap]`}>
+          <span
+            aria-label={gradeName(grade)}
+            className={`box-border w-fit shrink-0 h-[22px] flex flex-row gap-0 p-[0px_8px] justify-center items-center ${gradeTone.badge} rounded-[999px]`}
+          >
+            <span
+              aria-hidden="true"
+              className={`text-[12px]/[normal] box-border ${gradeTone.text} font-poppins font-semibold text-left [white-space:nowrap]`}
+            >
               {grade}
             </span>
           </span>

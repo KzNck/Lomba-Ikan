@@ -1,12 +1,9 @@
 // All copy and imagery for the login page. Edit here to swap content without touching layout.
 import type { FormFieldConfig } from '@/components/register/form-field'
 import type { TermsNoticeContent } from '@/components/login/terms-notice'
-import type { OtpFormContent } from '@/components/login/otp-form'
 import { AUTH_LINKS } from '@/components/home/content'
 
 export const LOGIN = {
-  // The email form submits here as ?email=… until Supabase sends the code.
-  verifyHref: '/auth/login/verifikasi',
   backLink: { href: '/', label: 'Kembali ke Beranda' },
   illustration: {
     src: '/images/login/illustration.jpg',
@@ -27,11 +24,23 @@ export const LOGIN = {
     label: 'Email',
     icon: 'mail',
     placeholder: 'Contoh: rina@usahaanda.co.id',
-    helper: 'Kami akan mengirim kode OTP 6 digit ke email Anda.',
     required: true,
     hideRequiredMark: true,
   } satisfies FormFieldConfig,
-  submitLabel: 'Kirim kode OTP',
+  passwordField: {
+    kind: 'text',
+    inputType: 'password',
+    autoComplete: 'current-password',
+    id: 'password',
+    label: 'Password',
+    icon: 'lock',
+    placeholder: 'Masukkan password Anda',
+    required: true,
+    hideRequiredMark: true,
+  } satisfies FormFieldConfig,
+  submitLabel: 'Masuk',
+  // Shown when the confirmation link in the signup email could not be used.
+  confirmFailed: 'Tautan konfirmasi sudah kedaluwarsa atau pernah dipakai. Masuk untuk meminta yang baru.',
   terms: {
     intro: 'Dengan melanjutkan, Anda menyetujui',
     terms: 'Syarat & Ketentuan',
@@ -42,15 +51,12 @@ export const LOGIN = {
   signupLink: { href: AUTH_LINKS.register.href, label: 'Daftar di sini' },
 }
 
-// Step two: the "Verifikasi OTP" state, reworded for email. Its "Masuk dengan email" fallback is left out.
-export const LOGIN_OTP = {
-  changeEmailLink: { href: '/auth/login', label: 'Ganti email' },
-  title: 'Masukkan Kode OTP',
-  // "{email}" is replaced with the address the code went to.
-  subtitle: 'Kode 6 digit telah dikirim ke {email}.',
-  form: {
-    otp: { name: 'otp', label: 'Kode OTP', length: 6, digitLabel: 'Digit {n} dari {total}' },
-    resendText: 'Kirim ulang kode dalam 00:45',
-    submitLabel: 'Verifikasi & masuk',
-  } satisfies OtpFormContent,
+// The "cek email" step, shown after registering when the project requires email confirmation.
+export const CONFIRM_EMAIL = {
+  title: 'Konfirmasi Email Anda',
+  // "{email}" is replaced with the address the link went to.
+  subtitle: 'Kami mengirim tautan konfirmasi ke {email}.',
+  body: 'Buka email tersebut dan klik tautannya untuk mengaktifkan akun. Periksa folder spam kalau belum masuk dalam beberapa menit.',
+  question: 'Sudah dikonfirmasi?',
+  link: { href: '/auth/login', label: 'Masuk di sini' },
 }

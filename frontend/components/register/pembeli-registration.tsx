@@ -1,7 +1,6 @@
 'use client'
 
-import { useState } from 'react'
-import Link from 'next/link'
+import { useActionState, useState } from 'react'
 import { RegisterLayout } from '@/components/register/register-layout'
 import { FormCard } from '@/components/register/form-card'
 import { FormField } from '@/components/register/form-field'
@@ -14,16 +13,25 @@ import { FormCardFooter } from '@/components/register/form-card-footer'
 import { SubStepProgress } from '@/components/register/sub-step-progress'
 import { SubmitButton } from '@/components/register/submit-button'
 import { BackButton } from '@/components/register/back-button'
+import { FormError } from '@/components/login/form-error'
+import { useErrorFocus } from '@/components/login/use-error-focus'
 import { PEMBELI_PREFERENSI, PEMBELI_USAHA } from '@/components/register/content'
-import { enterPembeliDashboard } from '@/app/pembeli/actions'
+import { registerPembeli, type AuthFormState } from '@/app/auth/actions'
 
 const { jenisUsaha } = PEMBELI_USAHA
 const { jenisBahan, grade, ppi } = PEMBELI_PREFERENSI
+
+// The two parts are separate <form>s, so part 1's answers are copied into part 2
+// as hidden inputs — the account is created from a single submit at the end.
+type BusinessInfo = [name: string, value: string][]
 
 // Both parts stay mounted and the inactive one is hidden, so going back keeps what was entered.
 export function PembeliRegistration() {
   const [part, setPart] = useState<1 | 2>(1)
   const [jenisUsahaError, setJenisUsahaError] = useState(false)
+  const [business, setBusiness] = useState<BusinessInfo>([])
+  const [state, action, pending] = useActionState<AuthFormState, FormData>(registerPembeli, {})
+  useErrorFocus(state)
 
   const showPart = (next: 1 | 2) => {
     setPart(next)
@@ -33,11 +41,13 @@ export function PembeliRegistration() {
   // The browser has already checked the required text fields; a checkbox group needs checking by hand.
   const continueToPreferences = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    if (new FormData(event.currentTarget).getAll(jenisUsaha.id).length === 0) {
+    const entries = new FormData(event.currentTarget)
+    if (entries.getAll(jenisUsaha.id).length === 0) {
       setJenisUsahaError(true)
       event.currentTarget.querySelector<HTMLInputElement>(`input[name="${jenisUsaha.id}"]`)?.focus()
       return
     }
+    setBusiness([...entries.entries()].map(([name, value]) => [name, String(value)]))
     showPart(2)
   }
 
@@ -62,6 +72,12 @@ export function PembeliRegistration() {
             <FormField key={field.id} {...field} grow />
           ))}
         </div>
+        <FormField {...PEMBELI_USAHA.emailField} defaultValue={state.email} />
+        <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[24px] justify-start items-start">
+          {PEMBELI_USAHA.passwordFields.map((field) => (
+            <FormField key={field.id} {...field} grow />
+          ))}
+        </div>
         <ChipGroup {...jenisUsaha} error={jenisUsahaError ? PEMBELI_USAHA.jenisUsahaError : undefined} />
         <FormCardFooter>
           <SubStepProgress {...PEMBELI_USAHA.progress} />
@@ -69,7 +85,10 @@ export function PembeliRegistration() {
         </FormCardFooter>
       </FormCard>
 
-      <FormCard {...PEMBELI_PREFERENSI.card} size="lg" hidden={part !== 2} action={enterPembeliDashboard}>
+      <FormCard {...PEMBELI_PREFERENSI.card} size="lg" hidden={part !== 2} action={action}>
+        {business.map(([name, value], index) => (
+          <input key={`${name}-${index}`} type="hidden" name={name} value={value} />
+        ))}
         <PreferenceSection {...jenisBahan.section}>
           <div className="box-border w-full h-fit shrink-0 flex flex-row flex-wrap gap-[12px] justify-start items-start">
             {jenisBahan.options.map((option) => (
@@ -90,19 +109,29 @@ export function PembeliRegistration() {
         <PreferenceSection {...ppi.section}>
           <PpiCombobox {...ppi.combobox} />
         </PreferenceSection>
-        <Link
-          href={PEMBELI_PREFERENSI.skipLink.href}
-          className="box-border w-fit h-fit shrink-0 flex flex-row gap-0 p-[4px_0px] justify-start items-start"
+        {/* Registers without preferences: the action drops them when this name is present,
+            so ticking a few boxes and then skipping does what the label says. */}
+        <button
+          type="submit"
+          name="lewati"
+          value="1"
+          className="box-border w-fit h-fit shrink-0 flex flex-row gap-0 p-[4px_0px] justify-start items-start cursor-pointer"
         >
           <span className="text-[14px]/[normal] box-border text-[#0F6CB8] font-inter font-semibold text-left [white-space:nowrap] underline decoration-transparent underline-offset-4 transition-[text-decoration-color] duration-200 ease-out hover:decoration-current">
-            {PEMBELI_PREFERENSI.skipLink.label}
+            {PEMBELI_PREFERENSI.skipLabel}
           </span>
-        </Link>
+        </button>
+        <FormError message={state.error} />
         <FormCardFooter>
           <SubStepProgress {...PEMBELI_PREFERENSI.progress} />
           <div className="box-border w-fit shrink-0 h-fit flex flex-row gap-[12px] justify-start items-center">
             <BackButton label={PEMBELI_PREFERENSI.backLabel} onClick={() => showPart(1)} />
-            <SubmitButton label={PEMBELI_PREFERENSI.submitLabel} icon="check" inline />
+            <SubmitButton
+              label={pending ? 'Mengirim kode…' : PEMBELI_PREFERENSI.submitLabel}
+              icon="check"
+              inline
+              disabled={pending}
+            />
           </div>
         </FormCardFooter>
       </FormCard>

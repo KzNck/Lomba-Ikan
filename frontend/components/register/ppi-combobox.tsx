@@ -57,10 +57,11 @@ export function PpiCombobox({ name, label, placeholder, emptyTitle, emptyHint, m
       if (results.length === 0) return
       const step = event.key === 'ArrowDown' ? 1 : -1
       moveActive((activeIndex + step + results.length) % results.length)
-    } else if (event.key === 'Enter' && open) {
-      // Picks the active option instead of submitting the form.
+    } else if (event.key === 'Enter') {
+      // A search box never submits the form: open, Enter picks the active option;
+      // closed, it does nothing rather than firing whichever submit button is first.
       event.preventDefault()
-      if (results[activeIndex]) toggle(results[activeIndex])
+      if (open && results[activeIndex]) toggle(results[activeIndex])
     } else if (event.key === 'Escape') {
       setOpen(false)
     }

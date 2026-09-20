@@ -34,6 +34,13 @@ export function getPelabuhan(kabKotaKode: string): Pelabuhan[] {
   return PELABUHAN.filter((p) => p.kabKota.includes(kabKotaKode))
 }
 
+const PELABUHAN_BY_ID = new Map(PELABUHAN.map((p) => [p.id, p]))
+
+// Satu pelabuhan berdasarkan id-nya — dipakai saat menyimpan pilihan PPI dari form.
+export function getPelabuhanById(id: string): Pelabuhan | undefined {
+  return PELABUHAN_BY_ID.get(id)
+}
+
 const KAB_KOTA_NAMA = new Map(KAB_KOTA.map((k) => [k.kode, k.nama.trim()]))
 const PROVINSI_NAMA = new Map(PROVINSI.map((p) => [p.kode, p.nama.trim()]))
 

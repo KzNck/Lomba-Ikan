@@ -1,6 +1,7 @@
 import { Icon } from '@/components/ui/icon'
 
 // Grade A reads as good (green); grade B uses the neutral tint from the "Grade B (tint netral)" state.
+// Grade C and an ungraded catch share B's neutral treatment — see the fallback in GradeRing.
 const GRADE_TONES = {
   A: {
     track: '#E8F8F2',
@@ -35,7 +36,8 @@ type GradeRingProps = {
 // The export cuts the ring out with a clip-path traced for 92%. It's an SVG stroke here with the same geometry
 // (236px ring, 16.52px band, starting at 12 o'clock and running clockwise) so any percentage draws correctly.
 export function GradeRing({ grade, gradeLabel, condition, freshness }: GradeRingProps) {
-  const tone = GRADE_TONES[grade[0] as keyof typeof GRADE_TONES]
+  // Anything that isn't grade A (C, or a catch the AI hasn't scored) takes the neutral tone.
+  const tone = GRADE_TONES[grade[0] as keyof typeof GRADE_TONES] ?? GRADE_TONES.B
 
   return (
     <div className="box-border w-full h-[260px] shrink-0 relative [z-index:1]">
@@ -61,7 +63,14 @@ export function GradeRing({ grade, gradeLabel, condition, freshness }: GradeRing
         <span className={`box-border w-fit h-fit shrink-0 flex flex-row gap-0 p-[3px_12px] justify-start items-start ${tone.badge} rounded-[999px]`}>
           <span className="text-[13px]/[normal] box-border text-[#FFFFFF] font-poppins font-semibold text-left [white-space:nowrap]">{gradeLabel}</span>
         </span>
-        <span className={`text-[56px]/[59px] box-border ${tone.grade} font-poppins font-bold text-left [white-space:nowrap]`}>{grade}</span>
+        {/* The figure is decorative once the pill below states the condition in words;
+            ungraded catches show "—", which announces as nothing on its own. */}
+        <span
+          aria-hidden="true"
+          className={`text-[56px]/[59px] box-border ${tone.grade} font-poppins font-bold text-left [white-space:nowrap]`}
+        >
+          {grade}
+        </span>
       </div>
       <div className="box-border w-[382px] h-fit absolute left-0 top-[210px] flex flex-row gap-0 justify-center items-start [z-index:3]">
         <span className={`box-border w-fit shrink-0 h-fit [box-shadow:0px_4px_14px_0px_#0F5C821A] flex flex-row gap-[8px] p-[10px_18px] justify-start items-center bg-[#FFFFFF] ${tone.pill} [outline-offset:-1px] rounded-[999px]`}>

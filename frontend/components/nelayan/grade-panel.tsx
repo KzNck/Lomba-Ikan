@@ -2,8 +2,8 @@ import { Icon, type IconName } from '@/components/ui/icon'
 import { GradeRing } from '@/components/nelayan/grade-ring'
 
 export type FreshnessResult = {
-  // "A1" … "B3"; the letter picks the ring's tone.
-  grade: `${'A' | 'B'}${number}`
+  // "A1" … "B3"; the letter picks the ring's tone. "–" while the AI hasn't graded the catch.
+  grade: string
   condition: string
   // 0–100; fills the ring and is shown as "Estimasi kesegaran".
   freshness: number
