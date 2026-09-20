@@ -9,6 +9,7 @@ import { PhotoForm, type CatchPhoto } from '@/components/nelayan/photo-form'
 import type { CATCH_MODAL, CATEGORY_STEP, VOLUME_STEP, TIME_STEP, ICE_STEP, PHOTO_STEP } from '@/components/nelayan/catch-content'
 import { submitCatch } from '@/app/nelayan/actions'
 import { saveCatchLocally } from '@/lib/offline/storage'
+import { catchTimestamp, toModelInputs } from '@/lib/catches/model-inputs'
 
 // What the user has entered so far. Each step writes its answer on "Lanjut", and steps 2+ also on "Kembali".
 type CatchAnswers = {
@@ -54,13 +55,20 @@ export function CatchWizard({ modal, category, volume, time, ice, photo }: Catch
     if (!species || !weight || !hauledAt || !iceLevel || !taken) return
 
     const queueLocally = () => {
+      // The queued row carries the same model inputs a synced one would, so the
+      // catch can be graded from it once the device is back online.
+      const inputs = toModelInputs({ category: species, time: hauledAt, ice: iceLevel })
       saveCatchLocally({
         species,
         weight_kg: weight,
         catch_location: '',
-        catch_time: new Date().toISOString(),
-        storage_method: iceLevel,
+        catch_time: catchTimestamp(hauledAt),
+        storage_method: inputs.storage_method,
         vessel_name: '-',
+        status_ikan: inputs.status_ikan,
+        ice_to_fish_ratio: inputs.ice_to_fish_ratio,
+        ambient_temp_celsius: inputs.ambient_temp_celsius,
+        fish_category: inputs.fish_category,
       })
       setStatus('saved-offline')
     }

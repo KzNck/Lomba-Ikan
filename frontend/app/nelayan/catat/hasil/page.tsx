@@ -7,10 +7,10 @@ import { CATCH_BREADCRUMB } from '@/components/nelayan/catch-content'
 import { FRESHNESS_MODAL, GRADE_PANEL, PRICE_FIELD, USAGE_RECOMMENDATIONS } from '@/components/nelayan/freshness-content'
 import { getCatchById } from '@/lib/supabase/catches'
 import { recommendationsFor } from '@/lib/catches/recommendations'
-import { displaySubgrade } from '@/lib/freshness/client'
+import { gradeCondition } from '@/lib/catches/present'
 
-// Estimated holding temperature per grade — the model reports a grade, not a reading.
-const TEMPERATURE = { A: '0–4°C', B: '5–10°C', C: '12–16°C' }
+// Estimated holding temperature per grade group — the model reports a grade, not a reading.
+const TEMPERATURE = { live: '0–4°C', dead: '5–10°C' }
 
 // The "07 Hasil Kesegaran" frame: the graded result over the dashboard, after the wizard's photo step.
 export default async function HasilKesegaranPage({
@@ -26,7 +26,7 @@ export default async function HasilKesegaranPage({
   if (!entry) notFound()
 
   const score = entry.freshness_score === null ? 0 : Math.round(Number(entry.freshness_score))
-  const graded = entry.freshness_grade !== null
+  const condition = gradeCondition(entry.freshness_grade)
 
   return (
     <>
@@ -35,15 +35,21 @@ export default async function HasilKesegaranPage({
         modal={FRESHNESS_MODAL}
         catchId={entry.id}
         result={{
-          grade: displaySubgrade(entry.freshness_grade, entry.freshness_score) ?? '–',
-          condition: graded
-            ? `${entry.freshness_grade === 'A' ? 'Hidup' : 'Mati'}, ${score}%`
+          grade: entry.freshness_grade ?? '—',
+          condition: entry.freshness_grade
+            ? `${condition === 'live' ? 'Hidup' : 'Mati'}, ${score}%`
             : 'Belum dinilai',
           freshness: score,
-          temperature: graded ? TEMPERATURE[entry.freshness_grade!] : '—',
+          temperature: entry.freshness_grade ? TEMPERATURE[condition] : '—',
         }}
         gradePanel={GRADE_PANEL}
-        recommendations={{ ...USAGE_RECOMMENDATIONS, options: recommendationsFor(entry) }}
+        recommendations={{
+          ...USAGE_RECOMMENDATIONS,
+          // The model's own recommendation is a sentence, not three cards, so it
+          // replaces the subtitle and the derived cards stay for the detail.
+          subtitle: entry.hilirisasi_recommendation ?? USAGE_RECOMMENDATIONS.subtitle,
+          options: recommendationsFor(entry),
+        }}
         price={PRICE_FIELD}
         action={publishListing}
       />

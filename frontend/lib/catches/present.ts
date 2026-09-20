@@ -8,7 +8,7 @@ import type { ImageContent } from '@/components/home/hero'
 import type { ListingCardContent } from '@/components/nelayan/listing-card'
 import type { ActiveListing } from '@/components/nelayan/listing-content'
 import { CATEGORY_STEP } from '@/components/nelayan/catch-content'
-import type { Catch, FreshnessGrade } from '@/types/database'
+import type { Catch, FreshnessGrade, StorageMethod } from '@/types/database'
 
 /** Kategori dari wizard "Tambah Tangkapan" — nilainya yang tersimpan di kolom `species`. */
 const CATEGORY = new Map(
@@ -39,17 +39,25 @@ export function catchImage(entry: Pick<Catch, 'photo_url' | 'species'>): ImageCo
 }
 
 /**
- * Grade A berarti ikan masih hidup, B dan C sudah mati — mengikuti pengelompokan
- * di form preferensi pembeli ("Hidup (Grade A)" / "Mati (Grade B)").
+ * Grade A berarti ikan masih hidup, B sudah mati — mengikuti pengelompokan di
+ * form preferensi pembeli ("Hidup (Grade A)" / "Mati (Grade B)"). Angkanya
+ * (A1…A3) menyatakan seberapa baik kondisinya dalam kelompok itu.
  */
 export function gradeCondition(grade: FreshnessGrade | null): 'live' | 'dead' {
-  return grade === 'A' ? 'live' : 'dead'
+  return grade?.startsWith('A') ? 'live' : 'dead'
 }
 
-/** "Grade A · Hidup". Tangkapan yang belum dinilai AI belum punya grade. */
+/** "Grade A1 · Hidup". Tangkapan yang belum dinilai AI belum punya grade. */
 export function gradeLabel(grade: FreshnessGrade | null): string {
   if (!grade) return 'Belum dinilai'
-  return `Grade ${grade} · ${grade === 'A' ? 'Hidup' : 'Mati'}`
+  return `Grade ${grade} · ${gradeCondition(grade) === 'live' ? 'Hidup' : 'Mati'}`
+}
+
+/** Cara penyimpanan, dalam kata-kata yang dipakai nelayan. */
+export const STORAGE_LABEL: Record<StorageMethod, string> = {
+  crushed_ice: 'Banyak es',
+  chilled_seawater: 'Sedikit es',
+  ambient: 'Tanpa es',
 }
 
 /** Kata sifat untuk skor kesegaran, dipakai di baris "Estimasi kesegaran". */
@@ -119,7 +127,12 @@ const USAGE: Record<string, { live: string[]; dead: string[] }> = {
 
 const USAGE_FALLBACK = { live: ['Konsumsi Langsung'], dead: ['Pakan Maggot (BSF)', 'Pupuk Organik'] }
 
-export function usageLabel(entry: Pick<Catch, 'species' | 'freshness_grade'>): string {
+export function usageLabel(
+  entry: Pick<Catch, 'species' | 'freshness_grade' | 'hilirisasi_recommendation'>
+): string {
+  // Kalau model sudah memberi rekomendasi, itu yang dipakai; sisanya diturunkan
+  // dari kategori dan grade.
+  if (entry.hilirisasi_recommendation) return entry.hilirisasi_recommendation
   const options = USAGE[entry.species] ?? USAGE_FALLBACK
   return options[gradeCondition(entry.freshness_grade)].join(', ')
 }

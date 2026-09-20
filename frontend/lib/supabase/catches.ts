@@ -64,6 +64,11 @@ export async function createCatch(input: CreateCatchInput): Promise<Catch> {
         catch_time: input.catch_time,
         storage_method: input.storage_method,
         vessel_name: input.vessel_name,
+        // Input model AI, disimpan supaya penilaian bisa diulang dengan data yang sama.
+        status_ikan: input.status_ikan ?? null,
+        ice_to_fish_ratio: input.ice_to_fish_ratio ?? null,
+        ambient_temp_celsius: input.ambient_temp_celsius ?? null,
+        fish_category: input.fish_category ?? null,
         price_per_kg: input.price_per_kg ?? null,
         photo_url: input.photo_url ?? null,
         status: 'WAITING_FOR_SYNC' as CatchStatus,
@@ -115,7 +120,13 @@ export async function cancelListing(catchId: string): Promise<void> {
 /** Simpan hasil penilaian AI ke row tangkapan. */
 export async function saveFreshness(
     catchId: string,
-    result: { grade: Catch['freshness_grade']; score: number | null; notes: string | null }
+    result: {
+        grade: Catch['freshness_grade']
+        score: number | null
+        notes: string | null
+        recommendation: string | null
+        overrideApplied: boolean
+    }
 ): Promise<Catch> {
     const supabase = await createClient()
     const { data, error } = await supabase
@@ -124,6 +135,8 @@ export async function saveFreshness(
             freshness_grade: result.grade,
             freshness_score: result.score,
             freshness_notes: result.notes,
+            hilirisasi_recommendation: result.recommendation,
+            ai_override_applied: result.overrideApplied,
         })
         .eq('id', catchId)
         .select()

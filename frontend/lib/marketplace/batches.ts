@@ -6,9 +6,17 @@
 import type { ImageContent } from '@/components/home/hero'
 import type { ProductCardContent } from '@/components/pembeli/product-card'
 import { CONDITIONS, MARKETPLACE_PATH, PPI_LOCATIONS } from '@/components/pembeli/marketplace-content'
-import { catchImage, categoryLabel, formatRupiah, formatWeight, timeAgo, timeLeft } from '@/lib/catches/present'
+import {
+  STORAGE_LABEL,
+  catchImage,
+  categoryLabel,
+  formatRupiah,
+  formatWeight,
+  gradeCondition,
+  timeAgo,
+  timeLeft,
+} from '@/lib/catches/present'
 import { recommendationsFor } from '@/lib/catches/recommendations'
-import { displaySubgrade } from '@/lib/freshness/client'
 import { getListedCatches } from '@/lib/supabase/catches'
 import { getProfileNames } from '@/lib/supabase/profiles'
 import { requireProfile } from '@/lib/supabase/auth'
@@ -63,9 +71,11 @@ function distanceFrom(origin: string | null, location: string): number | null {
   return haversineKm(from, to)
 }
 
-/** Metode penyimpanan (nilai dari wizard) → kondisi yang ditampilkan drawer. */
+/** Kondisi yang ditampilkan drawer, dari grade dan cara penyimpanannya. */
 function conditionOf(entry: Catch): keyof typeof CONDITIONS {
-  return entry.freshness_grade === 'A' && entry.storage_method !== 'tanpa' ? 'hidup' : 'es'
+    return gradeCondition(entry.freshness_grade) === 'live' && entry.storage_method !== 'ambient'
+        ? 'hidup'
+        : 'es'
 }
 
 /** Nomor batch yang enak dibaca, dari tahun dan potongan awal UUID row. */
@@ -88,7 +98,7 @@ export function toBatch(entry: Catch, seller: Profile | undefined, origin: strin
     name: categoryLabel(entry.species),
     category: entry.species,
     // "—" for a catch the AI has not graded yet; the badge falls back to the neutral tone.
-    grade: displaySubgrade(entry.freshness_grade, entry.freshness_score) ?? '—',
+    grade: entry.freshness_grade ?? '—',
     status: 'active',
     statusLabel: 'Aktif',
     actionLabel: 'Beli sekarang',
@@ -106,12 +116,16 @@ export function toBatch(entry: Catch, seller: Profile | undefined, origin: strin
       condition: conditionOf(entry),
       caught: `Ditangkap ${timeAgo(entry.catch_time)}`,
       auctionLeft: remaining ?? undefined,
-      usage: recommendationsFor(entry)
-        .map((option) => option.title)
-        .join(', '),
+      // The model's own recommendation when it graded this catch; the derived
+      // list stands in for anything it has not looked at yet.
+      usage:
+        entry.hilirisasi_recommendation ??
+        recommendationsFor(entry)
+          .map((option) => option.title)
+          .join(', '),
       fisherman: seller?.full_name ?? 'Nelayan terdaftar',
       // Metode tangkap belum ada kolomnya; yang tercatat baru cara penyimpanannya.
-      method: entry.storage_method === 'tanpa' ? 'Tanpa es' : `Es ${entry.storage_method}`,
+      method: STORAGE_LABEL[entry.storage_method],
       batchNumber: batchNumber(entry),
       photos: [image],
     },

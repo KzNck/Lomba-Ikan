@@ -5,7 +5,8 @@ import { revalidatePath } from 'next/cache'
 import { requireProfile } from '@/lib/supabase/auth'
 import { cancelListing as cancel, createCatch, publishCatch, saveFreshness } from '@/lib/supabase/catches'
 import { uploadCatchPhoto } from '@/lib/supabase/storage'
-import { catchTimestamp, predictFreshness } from '@/lib/freshness/client'
+import { catchTimestamp, toModelInputs } from '@/lib/catches/model-inputs'
+import { predictFreshness } from '@/lib/freshness/client'
 
 /**
  * Simpan tangkapan dari wizard "Tambah Tangkapan", lalu minta penilaian
@@ -25,33 +26,37 @@ export async function submitCatch(formData: FormData): Promise<void> {
         throw new Error('Data tangkapan belum lengkap.')
     }
 
+    // Jawaban wizard diterjemahkan sekali ke kosakata model; hasilnya ikut
+    // disimpan di row-nya, lalu dipakai lagi saat memanggil Freshness API.
+    const inputs = toModelInputs({ category, time, ice })
+
     const entry = await createCatch({
         species: category,
         weight_kg: weight,
         // PPI dari profil nelayan adalah titik pengambilannya.
         catch_location: profile.ppi_location ?? 'Belum diatur',
         catch_time: catchTimestamp(time),
-        storage_method: ice,
+        storage_method: inputs.storage_method,
         // Nama kapal belum ditanyakan di wizard; diisi setelah ada kolomnya di form.
         vessel_name: '-',
+        status_ikan: inputs.status_ikan,
+        ice_to_fish_ratio: inputs.ice_to_fish_ratio,
+        ambient_temp_celsius: inputs.ambient_temp_celsius,
+        fish_category: inputs.fish_category,
         local_id: String(formData.get('local_id') ?? '') || undefined,
     })
 
     if (photo instanceof Blob && photo.size > 0) {
-        const photoUrl = await uploadCatchPhoto(profile.id, entry.id, photo)
-        const result = await predictFreshness({
-            catchId: entry.id,
-            category,
-            time,
-            ice,
-            photo,
-        })
+        await uploadCatchPhoto(profile.id, entry.id, photo)
+        const result = await predictFreshness({ catchId: entry.id, inputs, photo })
 
-        if (result || photoUrl) {
+        if (result) {
             await saveFreshness(entry.id, {
-                grade: result?.grade ?? null,
-                score: result?.score ?? null,
-                notes: result ? `${result.rationale} Rekomendasi: ${result.recommendation}` : null,
+                grade: result.grade,
+                score: result.score,
+                notes: result.rationale,
+                recommendation: result.recommendation,
+                overrideApplied: result.overrideApplied,
             })
         }
     }

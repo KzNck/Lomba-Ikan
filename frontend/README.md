@@ -92,9 +92,6 @@ Ditulis di sini supaya tidak terlihat seperti bug:
 
 - **Data usaha pembeli** (nama usaha, alamat, wilayah, jenis usaha) disimpan di
   `user_metadata`, bukan `profiles` — lihat `lib/pembeli/account.ts`.
-- **Sub-grade kesegaran.** Model mengembalikan `A1`…`B3`, tapi enum
-  `freshness_grade` hanya `A`/`B`/`C`. Yang disimpan huruf depannya; angka yang
-  ditampilkan diturunkan dari skor (`displaySubgrade`).
 - **Foto** hanya satu per tangkapan (`photo_url`), jadi carousel drawer berisi
   satu foto.
 - **Koordinat PPI** tidak ada di data pelabuhan nasional, jadi peta hanya
@@ -105,6 +102,25 @@ Ditulis di sini supaya tidak terlihat seperti bug:
 - **Nama kapal dan metode tangkap** belum ditanyakan wizard.
 - **Lupa password** belum ada layarnya; `resetPasswordForEmail` tinggal
   dipasang kalau dibutuhkan.
+
+## Kosakata yang harus sama di tiga tempat
+
+Wizard "Tambah Tangkapan" memakai kata sehari-hari; database dan model AI
+memakai kosakata sendiri. Terjemahannya cuma ada di satu tempat,
+`lib/catches/model-inputs.ts`, dan hasilnya ikut disimpan di row-nya:
+
+| Wizard | `storage_method` | `ice_to_fish_ratio` |
+| --- | --- | --- |
+| Banyak Es | `crushed_ice` | 1.0 |
+| Sedikit Es | `chilled_seawater` | 0.5 |
+| Tanpa Es | `ambient` | 0.0 |
+
+Kategori tangkapan dipetakan ke `fish_category` (`campuran`,
+`teri_non_grade`, `rucah`). `status_ikan` masih selalu `MATI` — wizard belum
+menanyakannya. Kolom-kolom ini dibatasi CHECK di database, jadi nilai di luar
+daftar akan ditolak saat insert, bukan diam-diam tersimpan.
+
+`freshness_grade` memakai enum `A1`…`B3`, sama persis dengan keluaran model.
 
 ## Catatan: Edge Function `trigger-freshness`
 

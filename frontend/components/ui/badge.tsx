@@ -31,10 +31,14 @@ export function GradeBadge({ grade }: { grade: FreshnessGrade | null }) {
         return <Badge variant="default">Memeriksa AI...</Badge>
     }
 
+    // A1…A3 masih hidup, B1…B3 sudah mati; angkanya makin besar makin turun mutunya.
     const mapping: Record<FreshnessGrade, { variant: 'success' | 'warning' | 'danger'; label: string }> = {
-        A: { variant: 'success', label: 'Grade A (Sangat Segar)' },
-        B: { variant: 'warning', label: 'Grade B (Segar)' },
-        C: { variant: 'danger', label: 'Grade C (Layak Konsumsi)' },
+        A1: { variant: 'success', label: 'Grade A1 (Sangat Segar)' },
+        A2: { variant: 'success', label: 'Grade A2 (Segar)' },
+        A3: { variant: 'warning', label: 'Grade A3 (Cukup Segar)' },
+        B1: { variant: 'warning', label: 'Grade B1 (Layak Olah)' },
+        B2: { variant: 'warning', label: 'Grade B2 (Layak Olah)' },
+        B3: { variant: 'danger', label: 'Grade B3 (Non-Konsumsi)' },
     }
 
     const config = mapping[grade]

@@ -1,7 +1,18 @@
 // Types ini mengikuti schema.sql — update kalau ada perubahan tabel
 
 export type UserRole = 'nelayan' | 'pembeli' | 'admin'
-export type FreshnessGrade = 'A' | 'B' | 'C'
+// Sub-grade lengkap dari model AI. Enum `freshness_grade` di database memakai
+// nilai yang sama persis (lihat supabase/schema.sql).
+export type FreshnessGrade = 'A1' | 'A2' | 'A3' | 'B1' | 'B2' | 'B3'
+
+/** Metode penyimpanan yang dikenali model AI; dibatasi CHECK di database. */
+export type StorageMethod = 'crushed_ice' | 'chilled_seawater' | 'ambient'
+
+/** Status ikan saat ditangkap. */
+export type StatusIkan = 'HIDUP' | 'MATI'
+
+/** Kategori tangkapan untuk keperluan hilirisasi. */
+export type FishCategory = 'campuran' | 'teri_non_grade' | 'rucah'
 export type CatchStatus =
     | 'WAITING_FOR_SYNC'
     | 'LISTED'
@@ -35,11 +46,18 @@ export type Catch = {
     weight_kg: number
     catch_location: string
     catch_time: string
-    storage_method: string
+    storage_method: StorageMethod
     vessel_name: string
+    // Field tambahan yang dibutuhkan model AI (fusion visual+tabular).
+    status_ikan: StatusIkan | null
+    ice_to_fish_ratio: number | null
+    ambient_temp_celsius: number | null
+    fish_category: FishCategory | null
     freshness_grade: FreshnessGrade | null
     freshness_score: number | null
     freshness_notes: string | null
+    hilirisasi_recommendation: string | null
+    ai_override_applied: boolean | null
     status: CatchStatus
     listed_at: string | null
     expires_at: string | null
@@ -79,8 +97,13 @@ export type CreateCatchInput = {
     weight_kg: number
     catch_location: string
     catch_time: string
-    storage_method: string
+    storage_method: StorageMethod
     vessel_name: string
+    // Diturunkan dari jawaban wizard; ikut disimpan karena model AI memakainya.
+    status_ikan?: StatusIkan
+    ice_to_fish_ratio?: number
+    ambient_temp_celsius?: number
+    fish_category?: FishCategory
     price_per_kg?: number
     local_id?: string // untuk offline sync idempotent
     photo_url?: string
@@ -128,11 +151,17 @@ export type Database = {
                     weight_kg: number
                     catch_location: string
                     catch_time: string
-                    storage_method: string
+                    storage_method: StorageMethod
                     vessel_name: string
+                    status_ikan?: StatusIkan | null
+                    ice_to_fish_ratio?: number | null
+                    ambient_temp_celsius?: number | null
+                    fish_category?: FishCategory | null
                     freshness_grade?: FreshnessGrade | null
                     freshness_score?: number | null
                     freshness_notes?: string | null
+                    hilirisasi_recommendation?: string | null
+                    ai_override_applied?: boolean | null
                     status?: CatchStatus
                     listed_at?: string | null
                     expires_at?: string | null
@@ -150,11 +179,17 @@ export type Database = {
                     weight_kg?: number
                     catch_location?: string
                     catch_time?: string
-                    storage_method?: string
+                    storage_method?: StorageMethod
                     vessel_name?: string
+                    status_ikan?: StatusIkan | null
+                    ice_to_fish_ratio?: number | null
+                    ambient_temp_celsius?: number | null
+                    fish_category?: FishCategory | null
                     freshness_grade?: FreshnessGrade | null
                     freshness_score?: number | null
                     freshness_notes?: string | null
+                    hilirisasi_recommendation?: string | null
+                    ai_override_applied?: boolean | null
                     status?: CatchStatus
                     listed_at?: string | null
                     expires_at?: string | null
