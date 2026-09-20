@@ -12,7 +12,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TYPE user_role AS ENUM ('nelayan', 'pembeli', 'admin');
 
-CREATE TYPE freshness_grade AS ENUM ('A', 'B', 'C');
+CREATE TYPE freshness_grade AS ENUM ('A1', 'A2', 'A3', 'B1', 'B2', 'B3');
 
 CREATE TYPE catch_status AS ENUM (
   'WAITING_FOR_SYNC',   -- Tersimpan lokal, belum sync
@@ -62,13 +62,22 @@ CREATE TABLE public.catches (
   weight_kg           NUMERIC(8, 2) NOT NULL,      -- Berat estimasi (kg)
   catch_location      TEXT NOT NULL,               -- Lokasi tangkap (koordinat atau nama)
   catch_time          TIMESTAMPTZ NOT NULL,         -- Waktu tangkap
-  storage_method      TEXT NOT NULL,               -- Metode penyimpanan (es balok, dll)
+  storage_method      TEXT NOT NULL                -- Metode penyimpanan, dibatasi ke 3 nilai yang dikenali model AI
+    CHECK (storage_method IN ('crushed_ice', 'chilled_seawater', 'ambient')),
   vessel_name         TEXT NOT NULL,               -- Nama kapal
+
+  -- Field tambahan yang dibutuhkan model AI (fusion visual+tabular)
+  status_ikan          TEXT CHECK (status_ikan IN ('HIDUP', 'MATI')),  -- Status ikan saat ditangkap — wajib untuk model AI
+  ice_to_fish_ratio    NUMERIC(4, 3) CHECK (ice_to_fish_ratio BETWEEN 0 AND 1),  -- Rasio es terhadap berat ikan, 0.0-1.0
+  ambient_temp_celsius NUMERIC(4, 1),
+  fish_category        TEXT CHECK (fish_category IN ('campuran', 'teri_non_grade', 'rucah')),  -- Kategori tangkapan untuk keperluan hilirisasi
 
   -- AI freshness result
   freshness_grade     freshness_grade,             -- NULL sampai AI selesai proses
   freshness_score     NUMERIC(5, 2),               -- Skor mentah dari model (0-100)
   freshness_notes     TEXT,                        -- Penjelasan singkat dari model AI
+  hilirisasi_recommendation TEXT,                  -- Rekomendasi pemanfaatan dari model AI berdasarkan grade
+  ai_override_applied  BOOLEAN DEFAULT FALSE,
 
   -- Status & marketplace
   status              catch_status NOT NULL DEFAULT 'WAITING_FOR_SYNC',
@@ -89,6 +98,10 @@ CREATE TABLE public.catches (
 
 COMMENT ON COLUMN public.catches.local_id IS 'ID dari IndexedDB untuk idempotent upsert saat offline sync';
 COMMENT ON COLUMN public.catches.expires_at IS 'Auto-set 48 jam setelah listed_at via trigger';
+COMMENT ON COLUMN public.catches.status_ikan IS 'Status ikan saat ditangkap — wajib untuk model AI';
+COMMENT ON COLUMN public.catches.ice_to_fish_ratio IS 'Rasio es terhadap berat ikan, 0.0-1.0';
+COMMENT ON COLUMN public.catches.fish_category IS 'Kategori tangkapan untuk keperluan hilirisasi';
+COMMENT ON COLUMN public.catches.hilirisasi_recommendation IS 'Rekomendasi pemanfaatan dari model AI berdasarkan grade';
 
 -- Auto-set expires_at saat status berubah ke LISTED
 CREATE OR REPLACE FUNCTION set_catch_expiry()
