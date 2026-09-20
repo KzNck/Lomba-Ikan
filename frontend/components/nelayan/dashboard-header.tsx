@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { Icon } from '@/components/ui/icon'
+import { AccountMenu } from '@/components/dashboard/account-menu'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
 import type { ImageContent } from '@/components/home/hero'
 import { OUTLINE_HOVER, PRESS } from '@/components/ui/interaction'
@@ -11,13 +12,22 @@ type DashboardHeaderProps = {
   notifications: { href: string; label: string; unreadCount: number }
   // Profiles carry no photo, so the avatar falls back to initials like the sidebar's.
   user: { name: string; initials: string; avatar?: ImageContent }
+  // Where the account menu's "Akun" item goes.
+  accountHref?: string
 }
 
 // The export sizes this bar as content-box w-[1180px] plus 64px padding, which overflows the 1180px column and
 // pushes the right-hand cards off-frame; it's border-box full width here, which is what the design shows.
-export function DashboardHeader({ greeting, subtitle, notifications, user }: DashboardHeaderProps) {
+// No z-index of its own: that would trap the account menu below the main column (z-index 2) and the drawers (3).
+export function DashboardHeader({
+  greeting,
+  subtitle,
+  notifications,
+  user,
+  accountHref = '/nelayan/akun',
+}: DashboardHeaderProps) {
   return (
-    <header className="box-border w-full h-fit shrink-0 flex flex-row gap-0 p-[20px_32px] justify-between items-center bg-[#FFFFFF] [border-width:0px_0px_1px_0px] [border-style:solid] [border-color:#E2E8F0] [margin:0px_0px_-0.5px_0px] relative [z-index:0]">
+    <header className="box-border w-full h-fit shrink-0 flex flex-row gap-0 p-[20px_32px] justify-between items-center bg-[#FFFFFF] [border-width:0px_0px_1px_0px] [border-style:solid] [border-color:#E2E8F0] [margin:0px_0px_-0.5px_0px] relative">
       <div className="box-border w-fit shrink-0 h-fit flex flex-col gap-[4px] justify-start items-start">
         <div className="box-border w-fit h-fit shrink-0 flex flex-row gap-[8px] justify-start items-center motion-safe:animate-fade-up">
           <h1 className="text-[22px]/[normal] box-border text-[#0B3B5C] font-poppins font-semibold text-left [white-space:nowrap]">
@@ -50,21 +60,28 @@ export function DashboardHeader({ greeting, subtitle, notifications, user }: Das
           )}
         </Link>
         <div className="box-border w-[1px] shrink-0 h-[36px] bg-[#E2E8F0]" />
-        {/* The chevron hints at a menu the design doesn't specify yet, so this stays non-interactive. */}
-        <div className="box-border w-fit shrink-0 h-fit flex flex-row gap-[12px] justify-start items-center">
-          <div className="box-border w-[40px] shrink-0 h-[40px] [border:1px_solid_#0000001A] rounded-[999px] overflow-hidden relative flex flex-row gap-0 justify-center items-center bg-[#DCEEFB]">
-            {user.avatar ? (
-              <Image src={user.avatar.src} alt={user.avatar.alt} fill sizes="40px" className="object-cover object-center" />
-            ) : (
-              <span aria-hidden="true" className="text-[14px]/[normal] box-border text-[#0F6CB8] font-poppins font-semibold text-left [white-space:nowrap]">
-                {user.initials}
-              </span>
-            )}
-          </div>
-          <span className="text-[14px]/[normal] box-border text-[#0B3B5C] font-inter font-semibold text-left [white-space:nowrap]">
-            {user.name}
-          </span>
-          <Icon name="chevron-down" fill="#5B6B7C" className="box-border w-[18px] shrink-0 h-[18px]" />
+        {/* The design draws a pill with a chevron; it opens the account menu (Akun, then Keluar). */}
+        <div className="box-border w-fit shrink-0 h-fit">
+          <AccountMenu
+            name={user.name}
+            accountHref={accountHref}
+            placement="below"
+            chevronFill="#5B6B7C"
+            triggerClassName={`box-border w-fit shrink-0 h-fit flex flex-row gap-[12px] p-[4px] m-[-4px] justify-start items-center rounded-[999px] cursor-pointer hover:bg-[#F3FAFF] transition-colors duration-200 ease-out ${FOCUS_RING}`}
+          >
+            <span className="box-border w-[40px] shrink-0 h-[40px] [border:1px_solid_#0000001A] rounded-[999px] overflow-hidden relative flex flex-row gap-0 justify-center items-center bg-[#DCEEFB]">
+              {user.avatar ? (
+                <Image src={user.avatar.src} alt={user.avatar.alt} fill sizes="40px" className="object-cover object-center" />
+              ) : (
+                <span aria-hidden="true" className="text-[14px]/[normal] box-border text-[#0F6CB8] font-poppins font-semibold text-left [white-space:nowrap]">
+                  {user.initials}
+                </span>
+              )}
+            </span>
+            <span className="text-[14px]/[normal] box-border text-[#0B3B5C] font-inter font-semibold text-left [white-space:nowrap]">
+              {user.name}
+            </span>
+          </AccountMenu>
         </div>
       </div>
     </header>

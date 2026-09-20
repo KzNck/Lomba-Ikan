@@ -14,6 +14,7 @@ export default async function NelayanLayout({ children }: { children: React.Reac
       <Sidebar
         role="nelayan"
         nav={NELAYAN_NAV}
+        accountHref="/nelayan/akun"
         user={{
           name: profile.full_name,
           role: NELAYAN_ROLE_LABEL,

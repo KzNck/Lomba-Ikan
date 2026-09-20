@@ -19,6 +19,7 @@ export default async function PembeliLayout({ children }: { children: React.Reac
       <Sidebar
         role="pembeli"
         nav={PEMBELI_NAV}
+        accountHref="/pembeli/akun"
         notifications={PEMBELI_NOTIFICATIONS}
         user={{ name: displayName(profile, user?.user_metadata), role: PEMBELI_ROLE_LABEL }}
       />
