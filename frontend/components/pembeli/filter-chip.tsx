@@ -6,7 +6,7 @@ import Form from 'next/form'
 import { Icon, type IconName } from '@/components/ui/icon'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
 import { PRESS_WIDE, SOLID_HOVER } from '@/components/ui/interaction'
-import { usePopover } from '@/components/pembeli/use-popover'
+import { usePopover } from '@/components/ui/use-popover'
 
 export type FilterEditor = {
   // Radios pick one (grade); checkboxes pick any (categories, priority PPIs).

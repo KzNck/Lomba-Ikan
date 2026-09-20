@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Icon } from '@/components/ui/icon'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
 import { OUTLINE_HOVER } from '@/components/ui/interaction'
-import { usePopover } from '@/components/pembeli/use-popover'
+import { usePopover } from '@/components/ui/use-popover'
 
 export type SortMenuOption = {
   href: string
