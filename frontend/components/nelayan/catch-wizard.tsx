@@ -6,7 +6,15 @@ import { CategoryForm } from '@/components/nelayan/category-form'
 import { VolumeForm } from '@/components/nelayan/volume-form'
 import { IconChoiceForm } from '@/components/nelayan/icon-choice-form'
 import { PhotoForm, type CatchPhoto } from '@/components/nelayan/photo-form'
-import type { CATCH_MODAL, CATEGORY_STEP, VOLUME_STEP, TIME_STEP, ICE_STEP, PHOTO_STEP } from '@/components/nelayan/catch-content'
+import type {
+  CATCH_MODAL,
+  CATEGORY_STEP,
+  VOLUME_STEP,
+  TIME_STEP,
+  CONDITION_STEP,
+  ICE_STEP,
+  PHOTO_STEP,
+} from '@/components/nelayan/catch-content'
 import { submitCatch } from '@/app/nelayan/actions'
 import { saveCatchLocally } from '@/lib/offline/storage'
 import { catchTimestamp, toModelInputs } from '@/lib/catches/model-inputs'
@@ -16,6 +24,7 @@ type CatchAnswers = {
   category?: string
   weight?: number
   time?: string
+  condition?: string
   ice?: string
   photo?: CatchPhoto
 }
@@ -25,15 +34,16 @@ type CatchWizardProps = {
   category: typeof CATEGORY_STEP
   volume: typeof VOLUME_STEP
   time: typeof TIME_STEP
+  condition: typeof CONDITION_STEP
   ice: typeof ICE_STEP
   photo: typeof PHOTO_STEP
 }
 
 // Heading of each step, focused when the step changes so keyboard and screen-reader users land on the new question.
-const STEP_HEADING_IDS = ['category-title', 'volume-title', 'waktu-title', 'es-title', 'foto-title']
+const STEP_HEADING_IDS = ['category-title', 'volume-title', 'waktu-title', 'kondisi-title', 'es-title', 'foto-title']
 
 // The "Tambah Tangkapan" modal as a client-side wizard: one route, the step body swapped in place.
-export function CatchWizard({ modal, category, volume, time, ice, photo }: CatchWizardProps) {
+export function CatchWizard({ modal, category, volume, time, condition, ice, photo }: CatchWizardProps) {
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState<CatchAnswers>({})
   const [status, setStatus] = useState<'analyzing' | 'saved-offline' | undefined>()
@@ -51,13 +61,13 @@ export function CatchWizard({ modal, category, volume, time, ice, photo }: Catch
   // submitCatch redirects to the result. A failed request falls back to the same local queue, so
   // nothing entered at sea is lost.
   async function submit(entered: CatchAnswers) {
-    const { category: species, weight, time: hauledAt, ice: iceLevel, photo: taken } = entered
-    if (!species || !weight || !hauledAt || !iceLevel || !taken) return
+    const { category: species, weight, time: hauledAt, condition: alive, ice: iceLevel, photo: taken } = entered
+    if (!species || !weight || !hauledAt || !alive || !iceLevel || !taken) return
 
     const queueLocally = () => {
       // The queued row carries the same model inputs a synced one would, so the
       // catch can be graded from it once the device is back online.
-      const inputs = toModelInputs({ category: species, time: hauledAt, ice: iceLevel })
+      const inputs = toModelInputs({ category: species, time: hauledAt, ice: iceLevel, condition: alive })
       saveCatchLocally({
         species,
         weight_kg: weight,
@@ -83,6 +93,7 @@ export function CatchWizard({ modal, category, volume, time, ice, photo }: Catch
     form.set('category', species)
     form.set('weight', String(weight))
     form.set('time', hauledAt)
+    form.set('kondisi', alive)
     form.set('ice', iceLevel)
     form.set('photo', taken.blob, 'catch.jpg')
 
@@ -138,26 +149,40 @@ export function CatchWizard({ modal, category, volume, time, ice, photo }: Catch
       )}
       {step === 3 && (
         <IconChoiceForm
-          {...ice}
-          defaultValue={answers.ice}
+          {...condition}
+          defaultValue={answers.condition}
           onBack={(value) => {
-            setAnswers((current) => ({ ...current, ice: value }))
+            setAnswers((current) => ({ ...current, condition: value }))
             setStep(2)
           }}
           onNext={(value) => {
-            setAnswers((current) => ({ ...current, ice: value }))
+            setAnswers((current) => ({ ...current, condition: value }))
             setStep(4)
           }}
         />
       )}
       {step === 4 && (
+        <IconChoiceForm
+          {...ice}
+          defaultValue={answers.ice}
+          onBack={(value) => {
+            setAnswers((current) => ({ ...current, ice: value }))
+            setStep(3)
+          }}
+          onNext={(value) => {
+            setAnswers((current) => ({ ...current, ice: value }))
+            setStep(5)
+          }}
+        />
+      )}
+      {step === 5 && (
         <PhotoForm
           {...photo}
           defaultPhoto={answers.photo}
           status={status}
           onBack={(value) => {
             setAnswers((current) => ({ ...current, photo: value }))
-            setStep(3)
+            setStep(4)
           }}
           onNext={(value) => {
             setAnswers((current) => ({ ...current, photo: value }))

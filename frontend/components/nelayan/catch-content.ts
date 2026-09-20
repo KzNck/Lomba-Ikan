@@ -10,10 +10,10 @@ export const CATCH_BREADCRUMB = {
 
 export const CATCH_MODAL = {
   title: 'Tambah Tangkapan',
-  subtitle: 'Catat hasil tangkapan hari ini dalam 5 langkah singkat.',
+  subtitle: 'Catat hasil tangkapan hari ini dalam 6 langkah singkat.',
   closeHref: '/nelayan',
   closeLabel: 'Tutup',
-  steps: ['Kategori', 'Volume', 'Waktu', 'Es', 'Foto'],
+  steps: ['Kategori', 'Volume', 'Waktu', 'Kondisi', 'Es', 'Foto'],
 }
 
 export const CATEGORY_STEP = {
@@ -67,6 +67,22 @@ export const TIME_STEP = {
   ] satisfies IconOptionContent[],
   // Shown when "Lanjut" is pressed with nothing selected. Not in the export; worded after step 1's message.
   error: 'Pilih waktu jaring ditarik untuk melanjutkan.',
+  backLabel: 'Kembali',
+  submitLabel: 'Lanjut',
+}
+
+// Not in the export, which has five steps. The model grades a live catch (A) and a dead one (B) differently, so
+// without this question every catch would be graded as dead and grade A could never come out — see
+// lib/catches/model-inputs.ts. Worded and built like the other icon-card steps.
+export const CONDITION_STEP = {
+  name: 'kondisi',
+  title: 'Bagaimana Kondisi Tangkapan?',
+  description: 'Pilih kondisi saat tangkapan dicatat. Ini menentukan grade A (hidup) atau B (mati).',
+  options: [
+    { value: 'hidup', label: 'Masih Hidup', description: 'Masih bergerak di air', icon: 'leaf' },
+    { value: 'mati', label: 'Sudah Mati', description: 'Tidak bergerak lagi', icon: 'fish' },
+  ] satisfies IconOptionContent[],
+  error: 'Pilih kondisi tangkapan untuk melanjutkan.',
   backLabel: 'Kembali',
   submitLabel: 'Lanjut',
 }

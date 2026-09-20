@@ -67,13 +67,22 @@ export function catchTimestamp(time: string, now: Date = new Date()): string {
     return new Date(now.getTime() - hoursPostHaul(time, now) * 60 * 60 * 1000).toISOString()
 }
 
-/** Terjemahkan jawaban wizard ke input model. */
-export function toModelInputs(input: { category: string; time: string; ice: string }): ModelInputs {
+/**
+ * Terjemahkan jawaban wizard ke input model.
+ *
+ * `condition` berasal dari langkah "Kondisi": model memberi grade A untuk
+ * tangkapan hidup dan B untuk yang sudah mati, jadi jawaban ini yang menentukan
+ * grade-nya bisa sampai A. Antrean offline lama belum menyimpannya — anggap
+ * 'mati', sesuai perilaku sebelum langkah itu ada.
+ */
+export function toModelInputs(input: {
+    category: string
+    time: string
+    ice: string
+    condition?: string
+}): ModelInputs {
     return {
-        // Wizard tidak menanyakan hidup/mati. By-catch yang sudah ditarik dan
-        // diberi es praktis selalu mati, jadi itu yang dipakai sampai ada
-        // pertanyaannya di form.
-        status_ikan: 'MATI',
+        status_ikan: input.condition === 'hidup' ? 'HIDUP' : 'MATI',
         ice_to_fish_ratio: ICE_RATIO[input.ice] ?? 0,
         ambient_temp_celsius: ASSUMED_AMBIENT_TEMP,
         storage_method: STORAGE_METHOD[input.ice] ?? 'ambient',

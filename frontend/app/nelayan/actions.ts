@@ -19,16 +19,17 @@ export async function submitCatch(formData: FormData): Promise<void> {
     const category = String(formData.get('category') ?? '')
     const time = String(formData.get('time') ?? '')
     const ice = String(formData.get('ice') ?? '')
+    const condition = String(formData.get('kondisi') ?? '')
     const weight = Number(formData.get('weight') ?? 0)
     const photo = formData.get('photo')
 
-    if (!category || !time || !ice || !(weight > 0)) {
+    if (!category || !time || !ice || !condition || !(weight > 0)) {
         throw new Error('Data tangkapan belum lengkap.')
     }
 
     // Jawaban wizard diterjemahkan sekali ke kosakata model; hasilnya ikut
     // disimpan di row-nya, lalu dipakai lagi saat memanggil Freshness API.
-    const inputs = toModelInputs({ category, time, ice })
+    const inputs = toModelInputs({ category, time, ice, condition })
 
     const entry = await createCatch({
         species: category,
