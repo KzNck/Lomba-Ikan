@@ -77,7 +77,7 @@ CREATE TABLE public.catches (
   freshness_score     NUMERIC(5, 2),               -- Skor mentah dari model (0-100)
   freshness_notes     TEXT,                        -- Penjelasan singkat dari model AI
   hilirisasi_recommendation TEXT,                  -- Rekomendasi pemanfaatan dari model AI berdasarkan grade
-  ai_override_applied  BOOLEAN DEFAULT FALSE
+  ai_override_applied  BOOLEAN DEFAULT FALSE,
 
   -- Status & marketplace
   status              catch_status NOT NULL DEFAULT 'WAITING_FOR_SYNC',
