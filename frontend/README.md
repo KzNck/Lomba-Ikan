@@ -45,9 +45,11 @@ Tidak bisa diatur dari kode; kerjakan sekali di dashboard.
    `http://localhost:3000` saat pengembangan) dan tambahkan redirect URL tiap
    domain yang dipakai. `{{ .SiteURL }}` di template mengambil nilai ini, dan
    tautan ke domain yang tidak terdaftar akan ditolak.
-3. **Bucket foto.** *Storage > New bucket*, nama `catch-photos`, set public.
-   Tanpa bucket, pencatatan tangkapan tetap jalan dan foto tetap dinilai AI —
-   hanya `catches.photo_url` yang dibiarkan kosong.
+3. **Bucket foto.** Jalankan `supabase/storage.sql` di *SQL Editor*. Skrip itu
+   membuat bucket `catch-photos` beserta policy-nya (baca publik, tulis hanya ke
+   folder sendiri) dan aman dijalankan ulang. Tanpa bucket, pencatatan tangkapan
+   tetap jalan dan foto tetap dinilai AI — hanya `catches.photo_url` yang
+   dibiarkan kosong, dan log server menyebut "Bucket not found".
 4. **Schema.** `supabase/schema.sql` sudah ter-deploy. Jalankan ulang hanya
    kalau project-nya diganti.
 

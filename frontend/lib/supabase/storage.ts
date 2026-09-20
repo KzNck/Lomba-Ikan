@@ -24,7 +24,11 @@ export async function uploadCatchPhoto(userId: string, catchId: string, photo: B
         .upload(path, photo, { contentType: photo.type || 'image/jpeg', upsert: true })
 
     if (error) {
-        console.error(`Gagal upload foto tangkapan (bucket "${CATCH_PHOTOS_BUCKET}"):`, error.message)
+        // Penyebab paling sering: bucket-nya belum dibuat di project ini.
+        console.error(
+            `Gagal upload foto tangkapan (bucket "${CATCH_PHOTOS_BUCKET}"): ${error.message}. ` +
+                'Kalau pesannya "Bucket not found", jalankan supabase/storage.sql di SQL Editor.'
+        )
         return null
     }
 
