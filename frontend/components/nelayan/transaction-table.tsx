@@ -1,11 +1,14 @@
 import Link from 'next/link'
 import { Icon } from '@/components/ui/icon'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
-import { TABLE, TRANSACTION_STATES } from '@/components/nelayan/riwayat-content'
+import { TABLE, TRANSACTION_STATES, type SortOrder } from '@/components/nelayan/riwayat-content'
 import type { TransactionRowContent } from '@/lib/nelayan/riwayat'
 
 type TransactionTableProps = {
   rows: TransactionRowContent[]
+  order: SortOrder
+  // Where the "Tanggal" header goes: the same view in the opposite order.
+  toggleSortHref: string
   // Where a row goes: the same page with its drawer open.
   hrefFor: (id: string) => string
   // The row whose drawer is open, marked with the blue bar down its left edge.
@@ -33,12 +36,13 @@ const CELL = 'box-border p-[13px_0px] [border-width:0px_0px_1px_0px] [border-sty
 
 // "Tabel Transaksi". The export draws it with flex rows; a real table keeps the columns tied to their headers for
 // screen readers. Each row's chevron is the link, stretched across the row so anywhere in it opens the drawer.
-export function TransactionTable({ rows, hrefFor, selectedId }: TransactionTableProps) {
+export function TransactionTable({ rows, order, toggleSortHref, hrefFor, selectedId }: TransactionTableProps) {
+  const sort = TABLE.sort[order]
   return (
     <div className="box-border w-full h-fit shrink-0 flex flex-col gap-0 justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[16px] overflow-hidden">
       <table className="box-border w-full table-fixed border-collapse">
         <caption className="sr-only">
-          {TABLE.label}. {TABLE.sortedBy}.
+          {TABLE.label}. {sort.caption}.
         </caption>
         <thead>
           <tr className="box-border h-[46px] bg-[#F7F9FC] [border-width:0px_0px_1px_0px] [border-style:solid] [border-color:#E2E8F0]">
@@ -46,13 +50,22 @@ export function TransactionTable({ rows, hrefFor, selectedId }: TransactionTable
               <th
                 key={key}
                 scope="col"
-                aria-sort={key === 'date' ? 'descending' : undefined}
+                aria-sort={key === 'date' ? sort.aria : undefined}
                 className={`text-[12px]/[normal] box-border ${width} ${align} ${index === 0 ? 'p-[0px_0px_0px_16px]' : index === COLUMNS.length - 1 ? 'p-[0px_16px_0px_0px]' : 'p-[0px_10px_0px_0px]'} text-[#5B6B7C] font-poppins font-semibold [white-space:nowrap]`}
               >
-                <span className="box-border inline-flex flex-row gap-[4px] justify-start items-center align-middle">
-                  {TABLE.columns[key]}
-                  {key === 'date' && <Icon name="arrow-down" fill="#0F6CB8" className="box-border w-[13px] shrink-0 h-[13px]" />}
-                </span>
+                {key === 'date' ? (
+                  <Link
+                    href={toggleSortHref}
+                    scroll={false}
+                    aria-label={sort.action}
+                    className={`box-border inline-flex flex-row gap-[4px] justify-start items-center align-middle rounded-[4px] hover:text-[#0B3B5C] ${FOCUS_RING}`}
+                  >
+                    {TABLE.columns[key]}
+                    <Icon name={sort.icon} fill="#0F6CB8" className="box-border w-[13px] shrink-0 h-[13px]" />
+                  </Link>
+                ) : (
+                  <span className="box-border inline-flex flex-row gap-[4px] justify-start items-center align-middle">{TABLE.columns[key]}</span>
+                )}
               </th>
             ))}
           </tr>

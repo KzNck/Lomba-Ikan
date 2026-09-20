@@ -16,8 +16,20 @@ export const RIWAYAT_PAGE = {
 export const FILTERS = {
   dateRange: {
     label: 'Rentang tanggal',
-    // Shown when there is nothing to take a range from.
+    // Shown when no range is set: the button then reports what the loaded rows cover.
     empty: 'Semua tanggal',
+    // The panel is not in the export, which only draws the closed control. It follows the marketplace filters'
+    // panel: two native date fields and an apply button, plus a way back to the full history.
+    legend: 'Tampilkan transaksi antara',
+    fromLabel: 'Dari',
+    toLabel: 'Sampai',
+    apply: 'Terapkan',
+    reset: 'Semua tanggal',
+    // What the closed control reads once a range is set; an open-ended one names the bound it has.
+    between: (from: string, to: string) => `${from} – ${to}`,
+    since: (from: string) => `Sejak ${from}`,
+    until: (to: string) => `Sampai ${to}`,
+    editLabel: (value: string) => `Ubah rentang tanggal: ${value}`,
   },
   status: {
     label: 'Status',
@@ -31,6 +43,9 @@ export const FILTERS = {
 }
 
 export type StatusFilter = (typeof FILTERS.status.options)[number]['value']
+
+/** ?urut= — newest first unless the URL says otherwise. */
+export type SortOrder = 'baru' | 'lama'
 
 // The two outcomes the page lists. Everything still in flight is left out, as the subtitle says.
 export const TRANSACTION_STATES = {
@@ -74,8 +89,11 @@ export const TABLE = {
     // The chevron column; the header is blank in the export.
     action: '',
   },
-  // Sorted newest first; the design marks the column with an arrow.
-  sortedBy: 'Diurutkan dari yang terbaru',
+  // The export draws a down arrow on "Tanggal"; it toggles the order through ?urut=.
+  sort: {
+    baru: { caption: 'Diurutkan dari yang terbaru', icon: 'arrow-down', action: 'Urutkan dari yang terlama', aria: 'descending' },
+    lama: { caption: 'Diurutkan dari yang terlama', icon: 'arrow-up', action: 'Urutkan dari yang terbaru', aria: 'ascending' },
+  } satisfies Record<string, { caption: string; icon: IconName; action: string; aria: 'descending' | 'ascending' }>,
   detailLabel: (partner: string) => `Lihat detail transaksi dengan ${partner}`,
   // The buyer's profile is not readable under the current RLS policy (see lib/nelayan/riwayat.ts).
   unknownPartner: 'Pembeli',
