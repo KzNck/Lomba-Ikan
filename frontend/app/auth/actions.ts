@@ -8,6 +8,7 @@ import {
     MIN_PASSWORD_LENGTH,
     ensureProfile,
     getProfile,
+    resendConfirmation as resend,
     safeNext,
     signIn,
     signOut as endSession,
@@ -22,6 +23,8 @@ export type AuthFormState = {
     // Dikembalikan supaya form tidak kosong lagi setelah gagal. Password tidak
     // pernah ikut dikembalikan — user mengetik ulang.
     email?: string
+    // Diset setelah email konfirmasi berhasil dikirim ulang.
+    sent?: boolean
 }
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -38,9 +41,6 @@ function readableError(message: string): string {
     const lower = message.toLowerCase()
     if (lower.includes('invalid login credentials')) {
         return 'Email atau password salah. Periksa lagi, lalu coba masuk kembali.'
-    }
-    if (lower.includes('email not confirmed')) {
-        return 'Email ini belum dikonfirmasi. Buka tautan konfirmasi yang kami kirim ke email Anda.'
     }
     if (lower.includes('already registered') || lower.includes('already exists')) {
         return 'Email ini sudah terdaftar. Silakan masuk.'
@@ -85,7 +85,13 @@ export async function login(_previous: AuthFormState, formData: FormData): Promi
         // kalau konfirmasi email belum sempat membuatnya.
         role = (await ensureProfile(user)).role
     } catch (error) {
-        return { error: readableError((error as Error).message), email }
+        const message = (error as Error).message
+        // Akunnya benar, cuma belum dikonfirmasi: antar ke halaman yang bisa
+        // mengirim ulang tautannya, bukan pesan error yang buntu.
+        if (message.toLowerCase().includes('email not confirmed')) {
+            redirect(`/auth/daftar/konfirmasi?email=${encodeURIComponent(email)}`)
+        }
+        return { error: readableError(message), email }
     }
 
     revalidatePath('/', 'layout')
@@ -166,6 +172,22 @@ export async function registerPembeli(_previous: AuthFormState, formData: FormDa
         ppi_prioritas: ppiPrioritas,
         ppi_location: ppiPrioritas.map((id) => getPelabuhanById(id)?.nama ?? id)[0],
     })
+}
+
+/** Kirim ulang tautan konfirmasi dari halaman "Konfirmasi Email Anda". */
+export async function resendConfirmation(
+    _previous: AuthFormState,
+    formData: FormData
+): Promise<AuthFormState> {
+    const email = text(formData, 'email')
+    if (!EMAIL.test(email)) return { error: 'Alamat email tidak valid.', email }
+
+    try {
+        await resend(email, await confirmUrl('/'))
+    } catch (error) {
+        return { error: readableError((error as Error).message), email }
+    }
+    return { email, sent: true }
 }
 
 export async function signOut(): Promise<void> {

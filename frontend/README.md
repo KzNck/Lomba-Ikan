@@ -24,24 +24,27 @@ npm run dev
 
 Tidak bisa diatur dari kode; kerjakan sekali di dashboard.
 
-1. **Konfirmasi email.** Project ini saat ini mewajibkannya
-   (`mailer_autoconfirm: false`), jadi setelah mendaftar user diarahkan ke
-   `/auth/daftar/konfirmasi` dan baru bisa masuk setelah mengklik tautan di
-   email. Supaya tautannya bekerja, ubah template *Authentication > Email
-   Templates > Confirm signup* agar mengarah ke `/auth/confirm`:
+1. **Template Confirm signup.** Konfirmasi email menyala, jadi tautan di email
+   harus mengarah ke `/auth/confirm`. Ubah *Authentication > Email Templates >
+   Confirm signup* menjadi:
 
-   ```
-   <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=signup">
-     Konfirmasi email saya
-   </a>
+   ```html
+   <h2>Konfirmasi email Anda</h2>
+   <p>Klik tautan di bawah untuk mengaktifkan akun ByCatch Loop Anda.</p>
+   <p>
+     <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email">
+       Konfirmasi email saya
+     </a>
+   </p>
    ```
 
-   Tidak ingin ada langkah konfirmasi? Matikan *Confirm email* di
-   *Authentication > Providers > Email*. Registrasi lalu langsung masuk ke
-   dashboard — kodenya sudah menangani kedua kondisi, tidak perlu diubah.
-2. **Site URL.** *Authentication > URL Configuration*: isi Site URL dan
-   tambahkan redirect URL untuk domain yang dipakai, supaya tautan konfirmasi
-   tidak dibuang.
+   `type=email` — itu yang dipakai template Confirm signup. Template bawaan
+   memakai `{{ .ConfirmationURL }}`, yang menuju endpoint Supabase, bukan app
+   ini, jadi harus diganti.
+2. **Site URL.** *Authentication > URL Configuration*: isi Site URL (mis.
+   `http://localhost:3000` saat pengembangan) dan tambahkan redirect URL tiap
+   domain yang dipakai. `{{ .SiteURL }}` di template mengambil nilai ini, dan
+   tautan ke domain yang tidak terdaftar akan ditolak.
 3. **Bucket foto.** *Storage > New bucket*, nama `catch-photos`, set public.
    Tanpa bucket, pencatatan tangkapan tetap jalan dan foto tetap dinilai AI —
    hanya `catches.photo_url` yang dibiarkan kosong.
@@ -69,6 +72,11 @@ Registrasi ──> signUp(email, password)   profil dititipkan di user_metadata
 
 Masuk memakai email + password (`signInWithPassword`). Password minimal 8
 karakter — lihat `MIN_PASSWORD_LENGTH` di `lib/supabase/auth.ts`.
+
+Tautan konfirmasi hanya berlaku sekali dan bisa kedaluwarsa, jadi
+`/auth/daftar/konfirmasi` punya tombol kirim ulang (jeda 60 detik, karena
+Supabase membatasi frekuensinya). Mencoba masuk dengan akun yang belum
+dikonfirmasi juga diarahkan ke sana, bukan ditolak dengan pesan buntu.
 
 - Query Supabase ada di `lib/supabase/` — semuanya sisi server, memakai cookie
   sesi, jadi RLS yang menentukan baris mana yang kelihatan.

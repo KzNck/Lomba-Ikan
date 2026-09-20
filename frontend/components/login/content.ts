@@ -40,7 +40,7 @@ export const LOGIN = {
   } satisfies FormFieldConfig,
   submitLabel: 'Masuk',
   // Shown when the confirmation link in the signup email could not be used.
-  confirmFailed: 'Tautan konfirmasi sudah kedaluwarsa atau pernah dipakai. Masuk untuk meminta yang baru.',
+  confirmFailed: 'Tautan konfirmasi sudah kedaluwarsa atau pernah dipakai. Masuk, dan kami kirimkan tautan baru.',
   terms: {
     intro: 'Dengan melanjutkan, Anda menyetujui',
     terms: 'Syarat & Ketentuan',
@@ -57,6 +57,10 @@ export const CONFIRM_EMAIL = {
   // "{email}" is replaced with the address the link went to.
   subtitle: 'Kami mengirim tautan konfirmasi ke {email}.',
   body: 'Buka email tersebut dan klik tautannya untuk mengaktifkan akun. Periksa folder spam kalau belum masuk dalam beberapa menit.',
+  resendLabel: 'Kirim ulang email konfirmasi',
+  // "{time}" is replaced with the cooldown left before another send is allowed.
+  resendWaitLabel: 'Kirim ulang dalam {time}',
+  resentText: 'Email konfirmasi baru sudah dikirim. Tautan yang lama tidak berlaku lagi.',
   question: 'Sudah dikonfirmasi?',
   link: { href: '/auth/login', label: 'Masuk di sini' },
 }

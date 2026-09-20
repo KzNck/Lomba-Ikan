@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { LoginLayout } from '@/components/login/login-layout'
 import { AuthCard } from '@/components/login/auth-card'
 import { AccountPrompt } from '@/components/register/account-prompt'
+import { ResendConfirmation } from '@/components/login/resend-confirmation'
 import { Icon } from '@/components/ui/icon'
 import { LOGIN, CONFIRM_EMAIL } from '@/components/login/content'
 
@@ -26,6 +27,7 @@ export default async function KonfirmasiEmailPage({
             {CONFIRM_EMAIL.body}
           </p>
         </div>
+        <ResendConfirmation email={email} />
         <AccountPrompt question={CONFIRM_EMAIL.question} link={CONFIRM_EMAIL.link} layout="centered" />
       </AuthCard>
     </LoginLayout>

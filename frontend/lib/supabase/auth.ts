@@ -92,6 +92,20 @@ export async function signUp(params: {
     return data
 }
 
+/**
+ * Kirim ulang email konfirmasi pendaftaran. Hanya berlaku untuk akun yang sudah
+ * pernah mendaftar dan belum dikonfirmasi; Supabase membatasi frekuensinya.
+ */
+export async function resendConfirmation(email: string, confirmUrl: string): Promise<void> {
+    const supabase = await createClient()
+    const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email,
+        options: { emailRedirectTo: confirmUrl },
+    })
+    if (error) throw new Error(error.message)
+}
+
 export async function signIn(email: string, password: string): Promise<User> {
     const supabase = await createClient()
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
