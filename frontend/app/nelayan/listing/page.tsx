@@ -52,7 +52,11 @@ export default async function ListingSayaPage({
 
   const cards = showClosed
     ? closed.map((entry) => ({ ...toListingCard(entry, '/nelayan/riwayat'), key: entry.id }))
-    : active.map((item) => ({ ...item, key: item.slug, href: detailHref(item.slug) }))
+    : active.map((item) =>
+        item.status === 'draft'
+          ? { ...item, key: item.slug, href: ACTIVE_TAB.publishHref(item.slug), cta: ACTIVE_TAB.publishLabel }
+          : { ...item, key: item.slug, href: detailHref(item.slug) },
+      )
   // Typed as the shared shape so the optional `action` reads the same on both tabs.
   const { detailLabel, empty }: { detailLabel: string; empty: EmptyTabContent } = showClosed
     ? CLOSED_TAB

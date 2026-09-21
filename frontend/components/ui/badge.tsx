@@ -47,7 +47,7 @@ export function GradeBadge({ grade }: { grade: FreshnessGrade | null }) {
 
 export function CatchStatusBadge({ status }: { status: CatchStatus }) {
     const mapping: Record<CatchStatus, { variant: 'default' | 'info' | 'warning' | 'success' | 'danger'; label: string }> = {
-        WAITING_FOR_SYNC: { variant: 'warning', label: 'Tersimpan Lokal' },
+        WAITING_FOR_SYNC: { variant: 'warning', label: 'Belum Dipasang' },
         LISTED: { variant: 'info', label: 'Tersedia di Pasar' },
         CLAIMED: { variant: 'success', label: 'Sudah Diklaim' },
         COMPLETED: { variant: 'default', label: 'Selesai' },

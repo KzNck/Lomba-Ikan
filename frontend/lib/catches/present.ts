@@ -146,8 +146,10 @@ function cardStatus(entry: Catch): { status: ListingCardContent['status']; statu
       return { status: 'closed', statusLabel: 'Terjual', footer: `Terjual ${timeAgo(entry.updated_at)}` }
     case 'EXPIRED':
       return { status: 'closed', statusLabel: 'Kedaluwarsa', footer: 'Waktu klaim habis' }
+    // Saved and graded, but "Pasang ke listing" was never pressed. (The offline queue lives on the device and never
+    // reaches this list, so a row here is always a catch waiting to be published, not one waiting to sync.)
     case 'WAITING_FOR_SYNC':
-      return { status: 'active', statusLabel: 'Menunggu sync', footer: 'Belum tersinkron' }
+      return { status: 'draft', statusLabel: 'Belum dipasang', footer: 'Pasang untuk mulai 48 jam klaim' }
     default: {
       const remaining = timeLeft(entry.expires_at)
       return {

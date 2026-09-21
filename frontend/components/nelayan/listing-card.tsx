@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { Icon } from '@/components/ui/icon'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
 import type { ImageContent } from '@/components/home/hero'
-import { ARROW_NUDGE_RIGHT, CARD_LIFT, OUTLINE_HOVER, PRESS_WIDE } from '@/components/ui/interaction'
+import { ARROW_NUDGE_RIGHT, CARD_LIFT, OUTLINE_HOVER, PRESS_WIDE, SOLID_HOVER } from '@/components/ui/interaction'
 
 export type ListingCardContent = {
   href: string
@@ -17,6 +17,8 @@ export type ListingCardContent = {
   pricePerKg: string
   // "Sisa 2 j 15 mnt" while active, "Telah terjual" once sold, "Terjual 12 jam lalu" on the "Terjual/Diambil" tab.
   footer: string
+  // Replaces the outlined detail link with a filled call to action, e.g. "Pasang ke listing" on an unpublished catch.
+  cta?: string
 }
 
 type ListingCardProps = ListingCardContent & {
@@ -37,6 +39,15 @@ const PHOTO_SIZES = {
 // Status drives the chip and the footer; condition drives the grade badge. `sold` is a card that just sold in the
 // dashboard's active panel; `closed` is one on the "Terjual/Diambil" tab, which adds a check to the chip.
 const STATUS_STYLES = {
+  // Saved and graded but not yet published: amber, and a nudge to publish in the footer.
+  draft: {
+    chip: 'bg-[#FFF4E0]',
+    chipText: 'text-[#8A5300]',
+    chipIcon: { name: 'circle-alert', fill: '#8A5300' },
+    footerIcon: 'send',
+    footerFill: '#8A5300',
+    footerText: 'text-[#8A5300]',
+  },
   active: {
     chip: 'bg-[#DCEEFB]',
     chipText: 'text-[#0F6CB8]',
@@ -91,6 +102,7 @@ export function ListingCard({
   weight,
   pricePerKg,
   footer,
+  cta,
   metricLabels,
   detailLabel,
   photo = 'tall',
@@ -139,12 +151,12 @@ export function ListingCard({
         </div>
         <Link
           href={href}
-          aria-label={`${detailLabel} ${category}`}
+          aria-label={`${cta ?? detailLabel} ${category}`}
           aria-current={selected ? 'true' : undefined}
-          className={`group box-border w-full h-[40px] shrink-0 flex flex-row gap-[8px] justify-center items-center [outline:1.5px_solid_#0F6CB8] [outline-offset:-0.75px] rounded-[8px] ${OUTLINE_HOVER} ${PRESS_WIDE} ${FOCUS_RING}`}
+          className={`group box-border w-full h-[40px] shrink-0 flex flex-row gap-[8px] justify-center items-center ${cta ? `bg-[#0F6CB8] ${SOLID_HOVER}` : `[outline:1.5px_solid_#0F6CB8] [outline-offset:-0.75px] ${OUTLINE_HOVER}`} rounded-[8px] ${PRESS_WIDE} ${FOCUS_RING}`}
         >
-          <span className="text-[14px]/[normal] box-border text-[#0F6CB8] font-inter font-semibold text-left [white-space:nowrap]">{detailLabel}</span>
-          <Icon name="arrow-right" fill="#0F6CB8" className={`box-border w-[16px] shrink-0 h-[16px] ${ARROW_NUDGE_RIGHT}`} />
+          <span className={`text-[14px]/[normal] box-border ${cta ? 'text-[#FFFFFF]' : 'text-[#0F6CB8]'} font-inter font-semibold text-left [white-space:nowrap]`}>{cta ?? detailLabel}</span>
+          <Icon name={cta ? 'send' : 'arrow-right'} fill={cta ? '#FFFFFF' : '#0F6CB8'} className={`box-border w-[16px] shrink-0 h-[16px] ${ARROW_NUDGE_RIGHT}`} />
         </Link>
       </div>
     </article>

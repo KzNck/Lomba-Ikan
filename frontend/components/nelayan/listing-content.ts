@@ -37,6 +37,9 @@ export const LISTING_PAGE = {
 export const ACTIVE_TAB = {
   label: 'Aktif',
   detailLabel: 'Lihat detail',
+  // On a catch that was graded but never published: reopens its "Hasil Kesegaran" result, where it is published.
+  publishLabel: 'Pasang ke listing',
+  publishHref: (id: string) => `/nelayan/catat/hasil?id=${id}`,
   // Also the heading of the loading state's panel.
   panelTitle: 'Listing Aktif Saya',
   // Shown when there are no active listings (the "Aktif kosong" state).
