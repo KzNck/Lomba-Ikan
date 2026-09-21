@@ -47,7 +47,8 @@ export function ListingEditForm({ listing, action, cancelHref }: ListingEditForm
   return (
     <form ref={formRef} action={formAction} noValidate className="contents">
       <input type="hidden" name="id" value={listing.slug} />
-      <div className="box-border w-full [flex:1_1_0] flex flex-col gap-[20px] p-[24px] justify-start items-start">
+      {/* Scrolls on its own between the drawer's header and this form's footer (see ListingDrawer). */}
+      <div className="box-border w-full [flex:1_1_0] min-h-0 overflow-y-auto overscroll-contain flex flex-col gap-[20px] p-[24px] justify-start items-start">
         <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[14px] justify-start items-center">
           <div className="box-border w-[64px] h-[64px] shrink-0 [border:1px_solid_#0000001A] rounded-[12px] overflow-hidden relative">
             <Image src={listing.image.src} alt="" fill sizes="64px" className="object-cover object-center" />
@@ -102,7 +103,7 @@ export function ListingEditForm({ listing, action, cancelHref }: ListingEditForm
         <PriceField key={state.values.harga} {...PRICE_FIELD} defaultValue={state.values.harga} error={state.errors.harga} layout="stacked" />
       </div>
 
-      <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[12px] p-[16px_24px_24px_24px] justify-start items-start bg-[#FFFFFF] [border-width:1px_0px_0px_0px] [border-style:solid] [border-color:#E2E8F0] sticky bottom-0">
+      <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[12px] p-[16px_24px_24px_24px] justify-start items-start bg-[#FFFFFF] [border-width:1px_0px_0px_0px] [border-style:solid] [border-color:#E2E8F0]">
         {/* A stable live region, so a form-level error is announced when it appears. */}
         <div role="status" className="contents">
           {state.formError && (
