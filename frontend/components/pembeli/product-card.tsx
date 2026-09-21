@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import { CardPhoto } from '@/components/ui/card-photo'
 import Link from 'next/link'
 import { Icon, type IconName } from '@/components/ui/icon'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
@@ -87,7 +87,7 @@ export function ProductCard({
       className={`box-border ${style.card} h-fit [box-shadow:0px_4px_16px_0px_#0B3B5C0F] flex flex-col p-[12px] justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[16px] ${CARD_LIFT}`}
     >
       <div className="box-border w-full h-[124px] shrink-0 flex flex-col gap-0 p-[8px] justify-between items-start [border:1px_solid_#0000001A] rounded-[4px] overflow-hidden relative">
-        <Image src={image.src} alt={image.alt} fill sizes={style.sizes} loading={eager ? 'eager' : undefined} className="object-cover object-center" />
+        <CardPhoto src={image.src} alt={image.alt} sizes={style.sizes} loading={eager ? 'eager' : undefined} />
         {/* Favourite toggle from the design; not wired up yet, so it's shown but not interactive. */}
         <div className="box-border w-full h-fit shrink-0 flex flex-row gap-0 justify-end items-start relative">
           <span aria-hidden="true" className={`box-border w-[28px] shrink-0 h-[28px] flex flex-row gap-0 justify-center items-center ${style.favorite} rounded-[999px]`}>

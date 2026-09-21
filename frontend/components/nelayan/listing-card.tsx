@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import { CardPhoto } from '@/components/ui/card-photo'
 import Link from 'next/link'
 import { Icon } from '@/components/ui/icon'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
@@ -116,7 +116,7 @@ export function ListingCard({
       className={`box-border [flex:1_1_0] self-stretch [box-shadow:0px_0px_0px_1px_#0000000F,_0px_1px_2px_-1px_#0000000F,_0px_2px_4px_0px_#0000000A] flex flex-col gap-0 justify-start items-start bg-[#FFFFFF] ${selected ? '[outline:2px_solid_#0F6CB8] [outline-offset:-1px]' : ''} rounded-[16px] overflow-hidden ${CARD_LIFT}`}
     >
       <div className={`box-border w-full ${PHOTO_SIZES[photo].height} shrink-0 [border-width:0px_0px_1px_0px] [border-style:solid] [border-color:#0000001A] [margin:0px_0px_-0.5px_0px] relative`}>
-        <Image src={image.src} alt={image.alt} fill sizes={PHOTO_SIZES[photo].sizes} className="object-cover object-center" />
+        <CardPhoto src={image.src} alt={image.alt} sizes={PHOTO_SIZES[photo].sizes} />
       </div>
       <div className="box-border w-full [flex:1_1_auto] flex flex-col gap-[14px] p-[14px] justify-start items-start">
         {/* The export nests the location beside the chip, which wraps longer PPI names (e.g. "PPI Karangsong,
