@@ -186,6 +186,8 @@ export function toActiveListing(entry: Catch): ActiveListing {
     // Row id dipakai sebagai slug: stabil, dan drawer membukanya lewat ?detail=.
     slug: entry.id,
     detail: {
+      weightKg: Number(entry.weight_kg),
+      pricePerKg: entry.price_per_kg === null ? null : Number(entry.price_per_kg),
       timeLeft: timeLeft(entry.expires_at) ?? 'Habis',
       freshness: freshnessLabel(entry),
       usage: usageLabel(entry),

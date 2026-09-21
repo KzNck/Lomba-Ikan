@@ -3,7 +3,8 @@
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { requireProfile } from '@/lib/supabase/auth'
-import { cancelListing as cancel, createCatch, publishCatch, saveFreshness } from '@/lib/supabase/catches'
+import { cancelListing as cancel, createCatch, publishCatch, saveFreshness, updateListing } from '@/lib/supabase/catches'
+import { EDIT_LISTING, LISTING_PATH } from '@/components/nelayan/listing-content'
 import { uploadCatchPhoto } from '@/lib/supabase/storage'
 import { catchTimestamp, toModelInputs } from '@/lib/catches/model-inputs'
 import { predictFreshness } from '@/lib/freshness/client'
@@ -83,6 +84,44 @@ export async function publishListing(formData: FormData): Promise<void> {
     revalidatePath('/nelayan')
     revalidatePath('/nelayan/listing')
     redirect('/nelayan/listing')
+}
+
+export type ListingEditState = {
+    // What was submitted, so the form keeps it after an error.
+    values: { berat: string; harga: string }
+    errors: { berat?: string; harga?: string }
+    // Not tied to a field: the listing stopped being active, or the save failed.
+    formError?: string
+}
+
+/** Simpan edit listing dari drawer "Listing Saya", lalu kembali ke tampilan detailnya. */
+export async function saveListingEdit(_previous: ListingEditState, formData: FormData): Promise<ListingEditState> {
+    await requireProfile('nelayan')
+
+    const id = String(formData.get('id') ?? '')
+    const values = { berat: String(formData.get('berat') ?? '').trim(), harga: String(formData.get('harga') ?? '').trim() }
+    const { minWeight, maxWeight, errors: messages } = EDIT_LISTING
+
+    // "5,5" and "5.5" both mean five and a half kilos.
+    const weightKg = Number(values.berat.replace(',', '.'))
+    // "8.000" or "Rp 8000" → 8000. Empty means following the auction price.
+    const priceDigits = values.harga.replace(/[^\d]/g, '')
+
+    const errors: ListingEditState['errors'] = {}
+    if (!values.berat || !Number.isFinite(weightKg) || weightKg < minWeight || weightKg > maxWeight) errors.berat = messages.weight
+    if (values.harga && (!priceDigits || /[a-zA-Z]/.test(values.harga.replace(/^rp/i, '')))) errors.harga = messages.price
+    if (!id || Object.keys(errors).length > 0) return { values, errors }
+
+    try {
+        const updated = await updateListing(id, { weightKg: Math.round(weightKg * 100) / 100, pricePerKg: priceDigits ? Number(priceDigits) : null })
+        if (!updated) return { values, errors: {}, formError: messages.notListed }
+    } catch (error) {
+        console.error('saveListingEdit:', error)
+        return { values, errors: {}, formError: messages.saveFailed }
+    }
+
+    revalidatePath('/nelayan', 'layout')
+    redirect(`${LISTING_PATH}?detail=${id}`)
 }
 
 /** Batalkan listing dari dialog konfirmasi di "Listing Saya". */

@@ -7,6 +7,9 @@ import type { ListingCardContent } from '@/components/nelayan/listing-card'
 export const LISTING_PATH = '/nelayan/listing'
 
 export type ListingDetailContent = {
+  // The raw values behind the card's "5 kg" and "Rp 10.000", which the edit form opens with.
+  weightKg: number
+  pricePerKg: number | null
   timeLeft: string
   freshness: string
   usage: string
@@ -72,10 +75,36 @@ export const LISTING_DRAWER = {
   photosLabel: 'Foto',
   // Read after the "+N" tile's count by screen readers only.
   morePhotosLabel: 'foto lainnya',
-  // No edit screen exists yet, so the button renders disabled. Add `href` once one does and it becomes a link.
-  editAction: { label: 'Edit listing' } as { label: string; href?: string },
+  editLabel: 'Edit listing',
   cancelLabel: 'Batalkan listing',
   note: 'Listing tetap aktif sampai terjual atau Anda batalkan.',
+}
+
+// The drawer's edit mode (?detail=<id>&ubah=1). Only the weight and price change: the category, grade and photos come
+// from the freshness assessment, so editing them would leave a grade that no longer matches the catch.
+export const EDIT_LISTING = {
+  title: 'Edit Listing',
+  closeLabel: 'Tutup edit listing',
+  intro: 'Ubah berat atau harga. Kategori, grade, dan foto berasal dari penilaian kesegaran, jadi tidak bisa diubah.',
+  weight: {
+    name: 'berat',
+    label: 'Berat',
+    helper: 'Perkiraan berat tangkapan, 1–200 kg.',
+    suffix: 'kg',
+  },
+  // Min and max match the "Tambah Tangkapan" volume step.
+  minWeight: 1,
+  maxWeight: 200,
+  errors: {
+    weight: 'Masukkan berat antara 1 dan 200 kg, contoh 5 atau 5,5.',
+    price: 'Masukkan harga dalam angka saja, contoh 8000.',
+    // The listing was claimed, sold or cancelled while the form was open.
+    notListed: 'Listing ini sudah tidak aktif, jadi tidak bisa diubah lagi.',
+    saveFailed: 'Perubahan belum tersimpan. Periksa koneksi internet Anda, lalu coba simpan lagi.',
+  },
+  cancelLabel: 'Batal',
+  saveLabel: 'Simpan perubahan',
+  savingLabel: 'Menyimpan…',
 }
 
 export const CANCEL_DIALOG = {

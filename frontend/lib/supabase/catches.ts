@@ -106,6 +106,24 @@ export async function publishCatch(catchId: string, pricePerKg: number | null): 
     return data
 }
 
+/**
+ * Ubah berat dan harga listing yang masih aktif. Hanya baris LISTED yang
+ * tersentuh: kalau pembeli sudah mengklaimnya sementara form terbuka, tidak ada
+ * yang berubah dan fungsi ini mengembalikan false.
+ */
+export async function updateListing(catchId: string, changes: { weightKg: number; pricePerKg: number | null }): Promise<boolean> {
+    const supabase = await createClient()
+    const { data, error } = await supabase
+        .from('catches')
+        .update({ weight_kg: changes.weightKg, price_per_kg: changes.pricePerKg })
+        .eq('id', catchId)
+        .eq('status', 'LISTED' as CatchStatus)
+        .select('id')
+
+    if (error) throw new Error(`Gagal ubah listing: ${error.message}`)
+    return (data ?? []).length > 0
+}
+
 /** Batalkan listing. Row-nya tetap disimpan sebagai riwayat, statusnya jadi EXPIRED. */
 export async function cancelListing(catchId: string): Promise<void> {
     const supabase = await createClient()

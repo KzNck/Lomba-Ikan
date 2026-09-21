@@ -4,13 +4,15 @@ import { ListingCard } from '@/components/nelayan/listing-card'
 import { ListingPanel } from '@/components/nelayan/listing-panel'
 import { EmptyState } from '@/components/nelayan/empty-state'
 import { ListingDrawer } from '@/components/nelayan/listing-drawer'
+import { ListingEditForm } from '@/components/nelayan/listing-edit-form'
 import { CancelListingDialog } from '@/components/nelayan/cancel-listing-dialog'
-import { cancelListing } from '@/app/nelayan/actions'
+import { cancelListing, saveListingEdit } from '@/app/nelayan/actions'
 import {
   ACTIVE_TAB,
   CANCEL_DIALOG,
   CLOSED_TAB,
   LISTING_DRAWER,
+  EDIT_LISTING,
   LISTING_PAGE,
   LISTING_PATH,
   type EmptyTabContent,
@@ -28,13 +30,13 @@ const detailHref = (slug: string) => `${LISTING_PATH}?detail=${slug}`
 const isOpen = (status: string) => status === 'LISTED' || status === 'WAITING_FOR_SYNC'
 
 // The "09 Listing Saya" frame. The URL holds the view: ?tab=terjual for the second tab, ?detail=<slug> for the open
-// drawer, and &konfirmasi=batal for the "Batalkan listing" dialog over it.
+// drawer, &ubah=1 for its edit mode, and &konfirmasi=batal for the "Batalkan listing" dialog over it.
 export default async function ListingSayaPage({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
-  const { tab, detail, konfirmasi } = await searchParams
+  const { tab, detail, ubah, konfirmasi } = await searchParams
   const showClosed = tab === 'terjual'
 
   // Loaded together; RLS scopes the catches to this fisher, and the role check redirects if it fails.
@@ -72,7 +74,22 @@ export default async function ListingSayaPage({
         }}
         drawer={
           selected && (
-            <ListingDrawer listing={selected} labels={LISTING_DRAWER} cancelHref={`${detailHref(selected.slug)}&konfirmasi=batal`} />
+            <ListingDrawer
+              listing={selected}
+              labels={LISTING_DRAWER}
+              cancelHref={`${detailHref(selected.slug)}&konfirmasi=batal`}
+              editHref={`${detailHref(selected.slug)}&ubah=1`}
+              edit={
+                ubah === '1'
+                  ? {
+                      title: EDIT_LISTING.title,
+                      closeLabel: EDIT_LISTING.closeLabel,
+                      // Keyed by listing so switching cards while editing starts a fresh form.
+                      form: <ListingEditForm key={selected.slug} listing={selected} action={saveListingEdit} cancelHref={detailHref(selected.slug)} />,
+                    }
+                  : undefined
+              }
+            />
           )
         }
       >
