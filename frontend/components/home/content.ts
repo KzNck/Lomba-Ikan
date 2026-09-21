@@ -135,8 +135,7 @@ export const SDGS = {
   goals: [
     {
       number: 14,
-      badgeClassName: 'bg-[#0A97D9]',
-      icon: 'fish',
+      badge: '/images/sdgs/goal-14.svg',
       title: 'Ekosistem Lautan',
       target: 'Target: 14.4',
       description:
@@ -144,32 +143,28 @@ export const SDGS = {
     },
     {
       number: 12,
-      badgeClassName: 'bg-[#BF8B2E]',
-      icon: 'infinity',
+      badge: '/images/sdgs/goal-12.svg',
       title: 'Konsumsi & Produksi Bertanggung Jawab',
       target: 'Target: 12.3 & 12.5',
       description: 'Mengubah biomassa yang akan dibuang menjadi bahan baku pakan/pupuk (valorisasi limbah).',
     },
     {
       number: 2,
-      badgeClassName: 'bg-[#DDA63A]',
-      icon: 'utensils',
+      badge: '/images/sdgs/goal-02.svg',
       title: 'Tanpa Kelaparan',
       target: 'Target: 2.3',
       description: 'Nelayan kecil mendapat pendapatan tambahan dari komoditas yang sebelumnya tidak bernilai.',
     },
     {
       number: 8,
-      badgeClassName: 'bg-[#A21942]',
-      icon: 'trending-up',
+      badge: '/images/sdgs/goal-08.svg',
       title: 'Pekerjaan Layak & Pertumbuhan Ekonomi',
       target: 'Target: 8.3',
       description: 'Mendukung UMKM hilir (peternak maggot, produsen silase/pupuk) mendapat pasokan stabil.',
     },
     {
       number: 13,
-      badgeClassName: 'bg-[#3F7E44]',
-      icon: 'globe',
+      badge: '/images/sdgs/goal-13.svg',
       title: 'Aksi Iklim',
       target: 'Target: 13.2',
       description: 'Estimasi pengurangan emisi metana dari pembusukan biomassa laut di pesisir.',
