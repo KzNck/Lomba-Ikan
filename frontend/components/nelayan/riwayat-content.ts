@@ -142,7 +142,13 @@ export function transactionDrawer(t: RiwayatT) {
     banner: {
       diproses: (at: string) => t('drawer.inProgressSince', { at }),
       selesai: (at: string) => t('drawer.completedAt', { at }),
-      dibatalkan: (at: string) => t('drawer.cancelledAt', { at }),
+      // Names who cancelled when the row records it (cancel_transaction), so the other side knows.
+      dibatalkan: (at: string, by?: 'nelayan' | 'pembeli' | null) =>
+        by === 'pembeli'
+          ? t('drawer.cancelledByBuyerAt', { at })
+          : by === 'nelayan'
+            ? t('drawer.cancelledByFisherAt', { at })
+            : t('drawer.cancelledAt', { at }),
     },
     timelineTitle: t('drawer.timelineTitle'),
     // The four steps the export lists, in order. A step with no timestamp yet is left out.

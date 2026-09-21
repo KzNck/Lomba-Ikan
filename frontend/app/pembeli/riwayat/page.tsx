@@ -16,6 +16,8 @@ import {
 import { dateLabelFor, loadRiwayat, parseRiwayatView, riwayatHref } from '@/lib/nelayan/riwayat'
 import { getPresenter } from '@/lib/i18n/presenter'
 import { transactionChat } from '@/lib/contact/transaction-chat'
+import { CancelReservationForm } from '@/components/nelayan/cancel-reservation-form'
+import { cancelReservation } from '@/app/transaction-actions'
 import { requireProfile } from '@/lib/supabase/auth'
 import { displayNameFor } from '@/lib/supabase/display-name'
 
@@ -84,7 +86,25 @@ export default async function PembeliRiwayatPage({
             </div>
           )}
         </div>
-        {detail && <TransactionDrawer detail={detail} closeHref={hrefFor(detail.id)} copy={DRAWER_COPY} chat={chat} />}
+        {detail && (
+          <TransactionDrawer
+            detail={detail}
+            closeHref={hrefFor(detail.id)}
+            copy={DRAWER_COPY}
+            chat={chat}
+            cancel={
+              detail.state === 'diproses' && (
+                <CancelReservationForm
+                  key={detail.id}
+                  transactionId={detail.id}
+                  role="pembeli"
+                  returnHref={hrefWith({ transaksi: detail.id })}
+                  action={cancelReservation}
+                />
+              )
+            }
+          />
+        )}
       </div>
     </div>
   )

@@ -63,6 +63,8 @@ export type TransactionDetailContent = {
     photoUrl: string | null
     // "BL-2026-BABB", for the WhatsApp message; null when the catch row isn't readable.
     batch: string | null
+    // Who cancelled a cancelled transaction, as recorded by cancel_transaction; null when unknown.
+    cancelledBy: 'nelayan' | 'pembeli' | null
     pricePerKg: string
     total: string
     paid: boolean
@@ -148,6 +150,13 @@ function stepsOf(p: Presenter, entry: TransactionWithCatch, state: TransactionSt
     return steps
 }
 
+/** 'cancelled_by:pembeli' di `notes`, dari supabase/cancel-transaction.sql. */
+function cancelledBy(notes: string | null): TransactionDetailContent['cancelledBy'] {
+    if (notes === 'cancelled_by:pembeli') return 'pembeli'
+    if (notes === 'cancelled_by:nelayan') return 'nelayan'
+    return null
+}
+
 function toDetail(
     p: Presenter,
     entry: TransactionWithCatch,
@@ -175,6 +184,7 @@ function toDetail(
         ice: catchRow ? storageLabel(p, catchRow.storage_method) : '—',
         photoUrl: catchRow?.photo_url ?? null,
         batch: catchRow ? batchNumber(catchRow) : null,
+        cancelledBy: cancelledBy(entry.notes),
         // Harga satuan diturunkan dari nilai transaksi supaya cocok dengan totalnya,
         // termasuk setelah berat final berbeda dari estimasi.
         pricePerKg:

@@ -13,6 +13,8 @@ import { emptyState, riwayatPage, RIWAYAT_PATH, tableCopy, transactionDrawer } f
 import { dateLabelFor, loadRiwayat, nelayanSide, parseRiwayatView, riwayatHref } from '@/lib/nelayan/riwayat'
 import { getPresenter } from '@/lib/i18n/presenter'
 import { transactionChat } from '@/lib/contact/transaction-chat'
+import { CancelReservationForm } from '@/components/nelayan/cancel-reservation-form'
+import { cancelReservation } from '@/app/transaction-actions'
 import { requireProfile } from '@/lib/supabase/auth'
 import { displayNameFor } from '@/lib/supabase/display-name'
 import { getMyCatches } from '@/lib/supabase/catches'
@@ -98,6 +100,17 @@ export default async function RiwayatPage({
             closeHref={hrefFor(detail.id)}
             copy={drawerCopy}
             chat={chat}
+            cancel={
+              detail.state === 'diproses' && (
+                <CancelReservationForm
+                  key={detail.id}
+                  transactionId={detail.id}
+                  role="nelayan"
+                  returnHref={hrefWith({ transaksi: detail.id })}
+                  action={cancelReservation}
+                />
+              )
+            }
             handover={
               detail.state === 'diproses' && (
                 // Keyed by transaction so opening another row starts a fresh form.

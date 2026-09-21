@@ -86,3 +86,19 @@ export async function getTransactionContact(
     const contact = data?.[0]
     return contact ? { name: contact.full_name, phone: contact.phone } : null
 }
+
+export type CancelOutcome = 'relisted' | 'expired' | 'cancelled'
+
+/**
+ * Batalkan transaksi yang masih berjalan, lewat fungsi SQL `cancel_transaction`
+ * (supabase/cancel-transaction.sql): transaksi jadi CANCELLED dan batch-nya
+ * kembali ke marketplace dengan batas waktu lamanya. Melempar 'not_in_progress'
+ * kalau transaksinya sudah selesai atau dibatalkan.
+ */
+export async function cancelTransaction(transactionId: string): Promise<CancelOutcome> {
+    const supabase = await createClient()
+    const { data, error } = await supabase.rpc('cancel_transaction', { p_transaction_id: transactionId })
+
+    if (error) throw new Error(error.message)
+    return data as CancelOutcome
+}

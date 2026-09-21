@@ -16,6 +16,8 @@ type TransactionDrawerProps = {
   handover?: React.ReactNode
   // "Chat di WhatsApp" with the other party, while the transaction is still in progress.
   chat?: TransactionChat
+  // "Batalkan pesanan / reservasi", while the transaction is still in progress.
+  cancel?: React.ReactNode
 }
 
 const TITLE_ID = 'transaction-drawer-title'
@@ -23,9 +25,9 @@ const TITLE_ID = 'transaction-drawer-title'
 // "Detail Transaksi Drawer": a 400px panel docked to the right of the table, below the header. Like the listing
 // drawer it is not modal — the table stays readable — so the open row keeps its blue marker as the visible link
 // between the two. The export fixes it at 400×1126px inside the 1440×1220 frame.
-export function TransactionDrawer({ detail, closeHref, copy, handover, chat }: TransactionDrawerProps) {
+export function TransactionDrawer({ detail, closeHref, copy, handover, chat, cancel }: TransactionDrawerProps) {
   const state = TRANSACTION_STATES[detail.state]
-  const banner = copy.banner[detail.state](detail.bannerAt)
+  const banner = copy.banner[detail.state](detail.bannerAt, detail.cancelledBy)
 
   return (
     <aside
@@ -185,6 +187,7 @@ export function TransactionDrawer({ detail, closeHref, copy, handover, chat }: T
         </Panel>
 
         {handover}
+        {cancel}
 
         <p className="box-border w-full h-fit shrink-0 flex flex-row gap-[10px] p-[12px_14px] justify-start items-start bg-[#DCEEFB] rounded-[12px]">
           <Icon name="info" fill="#0F6CB8" className="box-border w-[16px] shrink-0 h-[16px]" />

@@ -469,7 +469,9 @@
         "noteCancelled": "This transaction was cancelled and can't be changed. If something's wrong, contact your partner from the Help menu.",
         "inProgressSince": "Claimed on {at}",
         "noteInProgress": "This transaction is still in progress. Once the buyer has paid and collected the batch at the PPI, confirm the handover here.",
-        "paidDirect": "Directly to the fisher"
+        "paidDirect": "Directly to the fisher",
+        "cancelledByBuyerAt": "Cancelled by the buyer on {at}",
+        "cancelledByFisherAt": "Cancelled by the fisher on {at}"
       },
       "pembeli": {
         "title": "Purchase History",
@@ -517,6 +519,18 @@
         "chatBuyer": "Chat the buyer on WhatsApp",
         "unavailable": "{name}'s WhatsApp number isn't available yet.",
         "message": "Halo {name}, saya {me} dari ByCatch Loop, soal batch {batch}."
+      },
+      "cancel": {
+        "buyerAction": "Cancel order",
+        "fisherAction": "Cancel reservation",
+        "title": "Cancel this order?",
+        "bodyBuyer": "The batch goes back to the marketplace for other buyers. If you'd already arranged pickup, let the fisher know on WhatsApp. This can't be undone.",
+        "bodyFisher": "The buyer can no longer collect this batch, and it goes back to the marketplace if its listing time hasn't run out. Let the buyer know on WhatsApp. This can't be undone.",
+        "back": "Back",
+        "confirm": "Yes, cancel",
+        "cancelling": "Cancelling…",
+        "notActive": "This order is no longer in progress, so it can't be cancelled.",
+        "failed": "The order wasn't cancelled. Check your internet connection, then try again."
       }
     },
     "akun": {

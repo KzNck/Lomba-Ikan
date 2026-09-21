@@ -284,6 +284,11 @@ export type Database = {
         }
         Functions: {
             // supabase/transaction-contact.sql
+            // supabase/cancel-transaction.sql
+            cancel_transaction: {
+                Args: { p_transaction_id: string }
+                Returns: string
+            }
             get_transaction_contact: {
                 Args: { p_transaction_id: string }
                 Returns: { full_name: string; phone: string | null }[]

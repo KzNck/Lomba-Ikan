@@ -469,7 +469,9 @@
         "noteCancelled": "Transaksi ini dibatalkan dan tidak bisa diubah. Kalau ada kendala, hubungi mitra lewat menu Bantuan.",
         "inProgressSince": "Diklaim pada {at}",
         "noteInProgress": "Transaksi ini masih berjalan. Setelah pembeli membayar dan mengambil batch di PPI, konfirmasi serah terimanya di sini.",
-        "paidDirect": "Langsung ke nelayan"
+        "paidDirect": "Langsung ke nelayan",
+        "cancelledByBuyerAt": "Dibatalkan pembeli pada {at}",
+        "cancelledByFisherAt": "Dibatalkan nelayan pada {at}"
       },
       "pembeli": {
         "title": "Riwayat Pembelian",
@@ -517,6 +519,18 @@
         "chatBuyer": "Chat pembeli di WhatsApp",
         "unavailable": "Nomor WhatsApp {name} belum tersedia.",
         "message": "Halo {name}, saya {me} dari ByCatch Loop, soal batch {batch}."
+      },
+      "cancel": {
+        "buyerAction": "Batalkan pesanan",
+        "fisherAction": "Batalkan reservasi",
+        "title": "Batalkan pesanan ini?",
+        "bodyBuyer": "Batch dikembalikan ke marketplace untuk pembeli lain. Kalau Anda sudah mengatur pengambilan, beri tahu nelayan lewat WhatsApp. Langkah ini tidak bisa dibatalkan.",
+        "bodyFisher": "Pembeli tidak bisa lagi mengambil batch ini, dan batch kembali ke marketplace kalau waktu listingnya masih ada. Beri tahu pembeli lewat WhatsApp. Langkah ini tidak bisa dibatalkan.",
+        "back": "Kembali",
+        "confirm": "Ya, batalkan",
+        "cancelling": "Membatalkan…",
+        "notActive": "Pesanan ini sudah tidak berjalan, jadi tidak bisa dibatalkan lagi.",
+        "failed": "Pesanan belum dibatalkan. Periksa koneksi internet Anda, lalu coba lagi."
       }
     },
     "akun": {
