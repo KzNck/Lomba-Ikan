@@ -1,3 +1,4 @@
 .DS_Store
 /fisherman-design/
-/supabase/.temp/
+# Supabase CLI cache, wherever the CLI was run from.
+**/supabase/.temp/
