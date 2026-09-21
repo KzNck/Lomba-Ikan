@@ -1,5 +1,7 @@
 import Link from 'next/link'
 import { Icon } from '@/components/ui/icon'
+import { AccountMenu } from '@/components/dashboard/account-menu'
+import { initialsOf } from '@/lib/nelayan/dashboard-data'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
 import { OUTLINE_HOVER, PRESS } from '@/components/ui/interaction'
 
@@ -25,31 +27,44 @@ export function TopBar({ greeting, subtitle, notifications, user }: TopBarProps)
   )
 }
 
-// The notification bell and account pill at the right of the pembeli top bars (dashboard and marketplace).
+// The notification bell and account pill at the right of the pembeli top bars (dashboard and marketplace), drawn
+// the same as the nelayan header's.
 export function TopBarActions({ notifications, user }: TopBarActionsProps) {
   return (
     <>
       <Link
         href={notifications.href}
         aria-label={`${notifications.label}, ${notifications.unreadCount} belum dibaca`}
-        className={`box-border w-[44px] shrink-0 h-[44px] flex flex-row gap-0 justify-center items-center bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[999px] relative ${OUTLINE_HOVER} ${PRESS} ${FOCUS_RING}`}
+        className={`box-border w-[40px] shrink-0 h-[40px] rounded-[999px] relative ${OUTLINE_HOVER} ${PRESS} ${FOCUS_RING}`}
       >
-        <Icon name="bell" fill="#0B3B5C" className="box-border w-[22px] shrink-0 h-[22px] relative [z-index:0]" />
+        <Icon name="bell" fill="#0B3B5C" className="box-border w-[22px] h-[22px] absolute left-[9px] top-[9px] [z-index:0]" />
         {notifications.unreadCount > 0 && (
-          <span className="box-border w-[18px] h-[18px] absolute left-[24px] top-[2px] flex flex-row gap-0 justify-center items-center bg-[#C23B35] [outline:2px_solid_#FFFFFF] [outline-offset:-1px] rounded-[999px] [z-index:1]">
-            <span className="text-[11px]/[normal] box-border text-[#FFFFFF] font-poppins font-semibold text-left [white-space:nowrap]">
+          <span className="box-border w-[18px] h-[18px] absolute left-[22px] top-[2px] flex flex-row gap-0 justify-center items-center bg-[#C23B35] [outline:2px_solid_#FFFFFF] [outline-offset:-1px] rounded-[999px] [z-index:1]">
+            <span className="text-[11px]/[normal] box-border text-[#FFFFFF] font-inter font-bold text-left [white-space:nowrap]">
               {notifications.unreadCount}
             </span>
           </span>
         )}
       </Link>
-      {/* The chevron hints at a menu the design doesn't specify yet, so this stays non-interactive. */}
-      <div className="box-border w-fit shrink-0 h-fit flex flex-row gap-[10px] p-[6px_12px_6px_6px] justify-start items-center bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[999px]">
-        <div className="box-border w-[36px] shrink-0 h-[36px] flex flex-row gap-0 justify-center items-center bg-[#DCEEFB] rounded-[999px]">
-          <Icon name="fish" fill="#0F6CB8" className="box-border w-[18px] shrink-0 h-[18px]" />
-        </div>
-        <span className="text-[14px]/[18px] box-border w-[180px] shrink-0 text-[#0B3B5C] font-poppins font-semibold text-left">{user.name}</span>
-        <Icon name="chevron-down" fill="#5B6B7C" className="box-border w-[16px] shrink-0 h-[16px]" />
+      <div className="box-border w-[1px] shrink-0 h-[36px] bg-[#E2E8F0]" />
+      {/* It opens the account menu (Akun, then Keluar). */}
+      <div className="box-border w-fit shrink-0 h-fit">
+        <AccountMenu
+          name={user.name}
+          accountHref="/pembeli/akun"
+          placement="below"
+          chevronFill="#5B6B7C"
+          triggerClassName={`box-border w-fit shrink-0 h-fit flex flex-row gap-[12px] p-[4px] m-[-4px] justify-start items-center rounded-[999px] cursor-pointer hover:bg-[#F3FAFF] transition-colors duration-200 ease-out ${FOCUS_RING}`}
+        >
+          <span className="box-border w-[40px] shrink-0 h-[40px] [border:1px_solid_#0000001A] rounded-[999px] overflow-hidden relative flex flex-row gap-0 justify-center items-center bg-[#DCEEFB]">
+            <span aria-hidden="true" className="text-[14px]/[normal] box-border text-[#0F6CB8] font-poppins font-semibold text-left [white-space:nowrap]">
+              {initialsOf(user.name)}
+            </span>
+          </span>
+          <span title={user.name} className="text-[14px]/[normal] box-border max-w-[220px] text-[#0B3B5C] font-inter font-semibold text-left truncate">
+            {user.name}
+          </span>
+        </AccountMenu>
       </div>
     </>
   )

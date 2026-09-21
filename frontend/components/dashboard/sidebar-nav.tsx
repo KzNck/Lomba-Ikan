@@ -21,8 +21,6 @@ const ITEM_STATES = {
 
 type SidebarNavProps = {
   items: SidebarNavItem[]
-  // Label typeface: the nelayan frame sets nav labels in Inter, the pembeli frame in Poppins.
-  labelFont: string
   // Pinned above the user card, below the spacer (pembeli only).
   notifications?: SidebarNotifications
 }
@@ -37,7 +35,7 @@ function activeHref(items: SidebarNavItem[], pathname: string) {
 }
 
 // The main nav, the spacer that pushes the rest to the bottom, and the optional notifications link.
-export function SidebarNav({ items, labelFont, notifications }: SidebarNavProps) {
+export function SidebarNav({ items, notifications }: SidebarNavProps) {
   const pathname = usePathname()
   const currentHref = activeHref(items, pathname)
 
@@ -55,7 +53,7 @@ export function SidebarNav({ items, labelFont, notifications }: SidebarNavProps)
               className={`box-border w-full h-[48px] shrink-0 flex flex-row gap-[12px] p-[0px_14px] justify-start items-center ${state.item} rounded-[12px] ${PRESS_WIDE} ${FOCUS_RING}`}
             >
               <Icon name={icon} fill={state.icon} className="box-border w-[20px] shrink-0 h-[20px]" />
-              <span className={`text-[15px]/[normal] box-border ${state.label} ${labelFont} text-left [white-space:nowrap]`}>
+              <span className={`text-[15px]/[normal] box-border ${state.label} font-inter text-left [white-space:nowrap]`}>
                 {label}
               </span>
             </Link>
@@ -70,7 +68,7 @@ export function SidebarNav({ items, labelFont, notifications }: SidebarNavProps)
           className={`box-border w-full h-[44px] shrink-0 flex flex-row gap-[12px] p-[0px_14px] justify-start items-center hover:bg-[#FFFFFF14] rounded-[12px] relative [z-index:4] ${PRESS_WIDE} ${FOCUS_RING}`}
         >
           <Icon name="bell" fill="#B9D6E8" className="box-border w-[20px] shrink-0 h-[20px]" />
-          <span className={`text-[15px]/[normal] box-border text-[#E3F0F9] ${labelFont} font-medium text-left [white-space:nowrap]`}>
+          <span className={`text-[15px]/[normal] box-border text-[#E3F0F9] font-inter font-medium text-left [white-space:nowrap]`}>
             {notifications.label}
           </span>
           {notifications.unreadCount > 0 && (

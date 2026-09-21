@@ -1,5 +1,6 @@
 import { Sidebar } from '@/components/dashboard/sidebar'
 import { PEMBELI_NAV, PEMBELI_NOTIFICATIONS, PEMBELI_ROLE_LABEL } from '@/components/pembeli/content'
+import { initialsOf } from '@/lib/nelayan/dashboard-data'
 import { requireProfile } from '@/lib/supabase/auth'
 import { displayNameFor } from '@/lib/supabase/display-name'
 
@@ -18,7 +19,7 @@ export default async function PembeliLayout({ children }: { children: React.Reac
         nav={PEMBELI_NAV}
         accountHref="/pembeli/akun"
         notifications={PEMBELI_NOTIFICATIONS}
-        user={{ name, role: PEMBELI_ROLE_LABEL }}
+        user={{ name, role: PEMBELI_ROLE_LABEL, initials: initialsOf(name) }}
       />
       {children}
     </div>
