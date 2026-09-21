@@ -6,6 +6,7 @@ import { StepError } from '@/components/nelayan/step-error'
 import { StepInfo } from '@/components/nelayan/step-info'
 import { CatchFooter } from '@/components/nelayan/catch-footer'
 import { CategoryOption, type CategoryOptionContent } from '@/components/nelayan/category-option'
+import { STEP_BODY } from '@/components/nelayan/catch-modal'
 
 type CategoryFormProps = {
   title: string
@@ -43,7 +44,7 @@ export function CategoryForm({ title, description, options, error, info, cancel,
 
   return (
     <form onSubmit={handleSubmit} onChange={() => setShowError(false)} noValidate className="contents">
-      <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[16px] justify-start items-start">
+      <div className={`${STEP_BODY} flex flex-col gap-[14px] justify-start items-start`}>
         <StepHeading id="category-title" title={title} description={description} />
         <div
           role="radiogroup"

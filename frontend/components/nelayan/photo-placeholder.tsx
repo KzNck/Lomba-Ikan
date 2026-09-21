@@ -1,3 +1,4 @@
+import { PHOTO_AREA_HEIGHT } from '@/components/nelayan/photo-frame'
 import { Icon, type IconName } from '@/components/ui/icon'
 import { PillButton } from '@/components/nelayan/pill-button'
 
@@ -31,7 +32,7 @@ export function PhotoPlaceholder({ tone, icon, title, description, action }: Pho
   return (
     <div
       role={tone === 'error' ? 'alert' : undefined}
-      className={`box-border w-full h-[220px] shrink-0 flex flex-col gap-[10px] p-[24px] justify-center items-center ${style.area} rounded-[16px]`}
+      className={`box-border w-full ${PHOTO_AREA_HEIGHT} shrink-0 flex flex-col gap-[10px] p-[24px] justify-center items-center ${style.area} rounded-[16px]`}
     >
       <div className={`box-border w-[56px] h-[56px] shrink-0 flex flex-row gap-0 justify-center items-center ${style.circle} rounded-[999px]`}>
         <Icon name={icon} fill={style.fill} className="box-border w-[26px] shrink-0 h-[26px]" />

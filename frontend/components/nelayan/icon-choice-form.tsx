@@ -5,6 +5,7 @@ import { StepHeading } from '@/components/nelayan/step-heading'
 import { StepError } from '@/components/nelayan/step-error'
 import { CatchFooter } from '@/components/nelayan/catch-footer'
 import { IconOption, type IconOptionContent } from '@/components/nelayan/icon-option'
+import { STEP_BODY } from '@/components/nelayan/catch-modal'
 
 type IconChoiceFormProps = {
   // Prefix for the heading and error ids, and the radio group's form field name.
@@ -48,7 +49,7 @@ export function IconChoiceForm(props: IconChoiceFormProps) {
 
   return (
     <form ref={formRef} onSubmit={handleSubmit} onChange={() => setShowError(false)} noValidate className="contents">
-      <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[20px] justify-start items-start">
+      <div className={`${STEP_BODY} flex flex-col gap-[16px] justify-start items-start`}>
         <StepHeading id={titleId} title={title} description={description} />
         <div
           role="radiogroup"

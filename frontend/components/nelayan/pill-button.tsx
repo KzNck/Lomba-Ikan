@@ -3,7 +3,7 @@ import { FOCUS_RING } from '@/components/nelayan/focus-ring'
 import { OUTLINE_HOVER, PRESS, SOLID_HOVER } from '@/components/ui/interaction'
 
 // The 40px pill buttons inside the photo step: solid = the Photo Area "Button" ("Nyalakan webcam", "Coba lagi"),
-// outline = "Ambil ulang" beside the preview.
+// outline = "Ambil ulang" on the preview.
 const VARIANTS = {
   solid: {
     button: `p-[0px_18px] bg-[#0F6CB8] ${SOLID_HOVER}`,
@@ -11,7 +11,8 @@ const VARIANTS = {
     label: 'text-[#FFFFFF]',
   },
   outline: {
-    button: `p-[0px_16px] [outline:1.5px_solid_#0F6CB8] [outline-offset:-0.75px] ${OUTLINE_HOVER}`,
+    // White-filled, so it stays legible laid over the photo.
+    button: `p-[0px_16px] bg-[#FFFFFF] [outline:1.5px_solid_#0F6CB8] [outline-offset:-0.75px] ${OUTLINE_HOVER}`,
     fill: '#0F6CB8',
     label: 'text-[#0F6CB8]',
   },

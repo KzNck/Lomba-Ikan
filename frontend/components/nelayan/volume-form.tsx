@@ -7,6 +7,7 @@ import { StepInfo } from '@/components/nelayan/step-info'
 import { CatchFooter } from '@/components/nelayan/catch-footer'
 import { VolumeControl } from '@/components/nelayan/volume-control'
 import { VolumeSlider } from '@/components/nelayan/volume-slider'
+import { STEP_BODY } from '@/components/nelayan/catch-modal'
 
 type VolumeFormProps = {
   title: string
@@ -51,7 +52,7 @@ export function VolumeForm(props: VolumeFormProps) {
 
   return (
     <form onSubmit={handleSubmit} noValidate className="contents">
-      <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[20px] justify-start items-start">
+      <div className={`${STEP_BODY} flex flex-col gap-[16px] justify-start items-start`}>
         <StepHeading id="volume-title" title={title} description={description} />
         <VolumeControl
           value={value}

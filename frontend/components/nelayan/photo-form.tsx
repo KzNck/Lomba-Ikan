@@ -12,6 +12,7 @@ import { PhotoPlaceholder } from '@/components/nelayan/photo-placeholder'
 import { PhotoFrame, PhotoMeta } from '@/components/nelayan/photo-frame'
 import { PhotoAnalyzing } from '@/components/nelayan/photo-analyzing'
 import type { PHOTO_STEP } from '@/components/nelayan/catch-content'
+import { STEP_BODY } from '@/components/nelayan/catch-modal'
 
 export type CatchPhoto = {
   blob: Blob
@@ -97,23 +98,21 @@ export function PhotoForm(props: PhotoFormProps) {
   function photoArea() {
     if (method === 'webcam' && webcam.status === 'live') {
       return (
-        <>
-          <PhotoFrame>
-            <video
-              ref={webcam.attachVideo}
-              autoPlay
-              playsInline
-              muted
-              aria-label={props.webcamLive.videoLabel}
-              className="box-border w-full h-full object-cover object-center"
-            />
-          </PhotoFrame>
+        <PhotoFrame>
+          <video
+            ref={webcam.attachVideo}
+            autoPlay
+            playsInline
+            muted
+            aria-label={props.webcamLive.videoLabel}
+            className="box-border w-full h-full object-contain object-center"
+          />
           <PhotoMeta
             icon="camera"
             caption={props.webcamLive.caption}
             action={{ variant: 'solid', icon: 'camera', label: props.webcamLive.action, onClick: takePhoto }}
           />
-        </>
+        </PhotoFrame>
       )
     }
     if (method === 'webcam' && webcam.status === 'denied') {
@@ -130,10 +129,8 @@ export function PhotoForm(props: PhotoFormProps) {
     }
     if (photo) {
       return (
-        <>
-          <PhotoFrame>
-            <Image src={photo.url} alt={preview.alt} fill unoptimized sizes="656px" className="object-cover object-center" />
-          </PhotoFrame>
+        <PhotoFrame>
+          <Image src={photo.url} alt={preview.alt} fill unoptimized sizes="656px" className="object-contain object-center" />
           <PhotoMeta
             icon="image"
             caption={`${photo.source === 'webcam' ? preview.takenCaption : preview.uploadedCaption} ${formatTime(photo.takenAt)}`}
@@ -143,7 +140,7 @@ export function PhotoForm(props: PhotoFormProps) {
                 : { variant: 'outline', icon: 'rotate-ccw', label: preview.replace, onClick: openFilePicker }
             }
           />
-        </>
+        </PhotoFrame>
       )
     }
     if (method === 'webcam') {
@@ -172,7 +169,7 @@ export function PhotoForm(props: PhotoFormProps) {
 
   return (
     <form onSubmit={handleSubmit} noValidate className="contents">
-      <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[20px] justify-start items-start">
+      <div className={`${STEP_BODY} flex flex-col gap-[16px] justify-start items-start`}>
         <StepHeading id={HEADING_ID} title={title} description={description} descriptionWraps />
         {status === 'analyzing' ? (
           <PhotoAnalyzing {...props.analyzing} />
