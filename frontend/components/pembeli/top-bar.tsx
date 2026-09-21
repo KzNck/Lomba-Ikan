@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 import { Icon } from '@/components/ui/icon'
 import { AccountMenu } from '@/components/dashboard/account-menu'
+import { LanguageSwitcher } from '@/components/ui/language-switcher'
 import { initialsOf } from '@/lib/nelayan/dashboard-data'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
 import { OUTLINE_HOVER, PRESS } from '@/components/ui/interaction'
@@ -28,12 +29,14 @@ export function TopBar({ greeting, subtitle, notifications, user }: TopBarProps)
   )
 }
 
-// The notification bell and account pill at the right of the pembeli top bars (dashboard and marketplace), drawn
+// The language switcher, notification bell and account pill at the right of the pembeli top bars (dashboard and marketplace), drawn
 // the same as the nelayan header's.
 export function TopBarActions({ notifications, user }: TopBarActionsProps) {
   const t = useTranslations('nav')
   return (
     <>
+      {/* The same switcher as the landing navbar. */}
+      <LanguageSwitcher />
       <Link
         href={notifications.href}
         aria-label={t('unread', { label: t('notifications'), count: notifications.unreadCount })}

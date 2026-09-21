@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 import { Icon } from '@/components/ui/icon'
 import { AccountMenu } from '@/components/dashboard/account-menu'
+import { LanguageSwitcher } from '@/components/ui/language-switcher'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
 import type { ImageContent } from '@/components/home/hero'
 import { OUTLINE_HOVER, PRESS } from '@/components/ui/interaction'
@@ -47,6 +48,8 @@ export function DashboardHeader({
         </p>
       </div>
       <div className="box-border w-fit shrink-0 h-fit flex flex-row gap-[20px] justify-start items-center">
+        {/* The same switcher as the landing navbar. */}
+        <LanguageSwitcher />
         <Link
           href={notifications.href}
           aria-label={t('unread', { label: t('notifications'), count: notifications.unreadCount })}
