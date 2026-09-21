@@ -1,5 +1,6 @@
 import { Sidebar } from '@/components/dashboard/sidebar'
-import { NELAYAN_NAV, NELAYAN_ROLE_LABEL } from '@/components/nelayan/content'
+import { getTranslations } from 'next-intl/server'
+import { NELAYAN_NAV } from '@/components/nelayan/content'
 import { requireProfile } from '@/lib/supabase/auth'
 import { initialsOf } from '@/lib/nelayan/dashboard-data'
 import { displayNameFor } from '@/lib/supabase/display-name'
@@ -11,6 +12,7 @@ export default async function NelayanLayout({ children }: { children: React.Reac
   // Guards the whole area: no session goes to login, a pembeli goes to their own dashboard.
   const profile = await requireProfile('nelayan')
   const name = await displayNameFor(profile)
+  const t = await getTranslations('nav')
 
   return (
     <div className="box-border w-full min-w-[1440px] min-h-dvh flex flex-row gap-0 justify-start items-stretch bg-[#F7F9FC] overflow-clip">
@@ -20,7 +22,7 @@ export default async function NelayanLayout({ children }: { children: React.Reac
         accountHref="/nelayan/akun"
         user={{
           name,
-          role: NELAYAN_ROLE_LABEL,
+          role: t('roles.nelayan'),
           initials: initialsOf(profile.full_name),
         }}
       />

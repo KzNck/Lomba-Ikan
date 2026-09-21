@@ -4,18 +4,19 @@ import type { SidebarNavItem } from '@/components/dashboard/sidebar-nav'
 
 export const NELAYAN_ROLE_LABEL = 'Nelayan'
 
+// Labels are in messages/*.json under `nav`.
 export const NELAYAN_NAV: SidebarNavItem[] = [
-  { href: '/nelayan', label: 'Dashboard', icon: 'house' },
-  { href: '/nelayan/catat', label: 'Tambah Tangkapan', icon: 'circle-plus' },
-  { href: '/nelayan/listing', label: 'Listing Saya', icon: 'tag' },
-  { href: '/nelayan/riwayat', label: 'Riwayat', icon: 'history' },
-  { href: '/nelayan/akun', label: 'Akun', icon: 'user' },
+  { href: '/nelayan', labelKey: 'dashboard', icon: 'house' },
+  { href: '/nelayan/catat', labelKey: 'addCatch', icon: 'circle-plus' },
+  { href: '/nelayan/listing', labelKey: 'myListings', icon: 'tag' },
+  { href: '/nelayan/riwayat', labelKey: 'history', icon: 'history' },
+  { href: '/nelayan/akun', labelKey: 'account', icon: 'user' },
 ]
 
 export const DASHBOARD = {
   // The greeting is built per request from the profile name and the time of day.
   subtitle: 'Semoga hari ini banyak tangkapan dan rezeki yang lancar.',
-  notifications: { href: '/nelayan/notifikasi', label: 'Notifikasi', unreadCount: 3 },
+  notifications: { href: '/nelayan/notifikasi', unreadCount: 3 },
   breadcrumb: 'Dashboard',
   summary: {
     title: 'Ringkasan Hari Ini',

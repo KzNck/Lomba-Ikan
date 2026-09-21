@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl'
 import { MainDecoration } from '@/components/nelayan/main-decoration'
 
 // Placeholder bar and block shapes, pulsing only when motion is allowed.
@@ -9,9 +10,10 @@ const PANEL =
 // header, a title and two content panels in the dashboard's proportions. Generic on purpose — the pages it stands in
 // for (dashboard, riwayat, akun, marketplace) differ, and a close-enough shape beats a blank column.
 export function MainSkeleton({ role }: { role: 'nelayan' | 'pembeli' }) {
+  const t = useTranslations('dashboard')
   const content = (
     <div role="status" className="box-border w-full h-fit shrink-0 flex flex-col gap-[20px] justify-start items-start motion-safe:animate-pulse">
-      <span className="sr-only">Memuat halaman…</span>
+      <span className="sr-only">{t('loading')}</span>
       <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[10px] justify-start items-start">
         <div className={`${BAR} w-[180px] h-[28px]`} />
         <div className={`${BAR} w-[320px] h-[14px]`} />

@@ -2,7 +2,8 @@
 // The account itself is read from Supabase — see lib/pembeli/account.ts.
 import type { IconName } from '@/components/ui/icon'
 import type { FormFieldConfig } from '@/components/register/form-field'
-import { PEMBELI_USAHA } from '@/components/register/content'
+import { pembeliUsaha } from '@/components/register/content'
+import { registerCopyId } from '@/lib/i18n/indonesian'
 import { PEMBELI_ROLE_LABEL } from '@/components/pembeli/content'
 
 export const AKUN_PATH = '/pembeli/akun'
@@ -92,7 +93,7 @@ export const INFO_PRIBADI = {
     lockedHelper: 'Pilih provinsi terlebih dahulu.',
   } satisfies SelectField & { lockedHelper: string },
   jenisUsaha: {
-    ...PEMBELI_USAHA.jenisUsaha,
+    ...pembeliUsaha(registerCopyId).jenisUsaha,
     label: 'Klasifikasi jenis usaha',
     helper: 'Pilih satu atau lebih. Dipakai untuk menyesuaikan rekomendasi dan penawaran untuk Anda.',
   },

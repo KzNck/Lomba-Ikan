@@ -4,15 +4,16 @@ import type { SidebarNavItem } from '@/components/dashboard/sidebar-nav'
 
 export const PEMBELI_ROLE_LABEL = 'Pembeli'
 
+// Labels are in messages/*.json under `nav`.
 export const PEMBELI_NAV: SidebarNavItem[] = [
-  { href: '/pembeli', label: 'Dashboard', icon: 'house' },
-  { href: '/marketplace', label: 'Marketplace', icon: 'store' },
-  { href: '/pembeli/riwayat', label: 'Riwayat', icon: 'history' },
-  { href: '/pembeli/akun', label: 'Akun', icon: 'user' },
+  { href: '/pembeli', labelKey: 'dashboard', icon: 'house' },
+  { href: '/marketplace', labelKey: 'marketplace', icon: 'store' },
+  { href: '/pembeli/riwayat', labelKey: 'history', icon: 'history' },
+  { href: '/pembeli/akun', labelKey: 'account', icon: 'user' },
 ]
 
 // `unreadCount` is replaced per request with the number of notifications actually shown.
-export const PEMBELI_NOTIFICATIONS = { href: '/pembeli/notifikasi', label: 'Notifikasi', unreadCount: 0 }
+export const PEMBELI_NOTIFICATIONS = { href: '/pembeli/notifikasi', unreadCount: 0 }
 
 export const DASHBOARD = {
   // "Selamat datang, <nama usaha> 👋", built per request from the account.

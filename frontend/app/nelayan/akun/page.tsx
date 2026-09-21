@@ -14,6 +14,7 @@ import { getMyCatches } from '@/lib/supabase/catches'
 import { getMyTransactions } from '@/lib/supabase/transactions'
 import { greetingFor, initialsOf, recentNotifications } from '@/lib/nelayan/dashboard-data'
 import { displayNameOf } from '@/lib/supabase/display-name'
+import { getPresenter } from '@/lib/i18n/presenter'
 import { getLokasiPelabuhan, getPelabuhanById } from '@/lib/wilayah'
 
 // "PPI Muncar · Banyuwangi, Jawa Timur", as the profile header shows the landing site.
@@ -26,8 +27,13 @@ function ppiLabel(ppiId: string) {
 // The nelayan account page. No frame of its own yet: the pembeli "12 Akun" layout (sections beside the Info Pribadi
 // card) inside the fisher's dashboard chrome, with the fisher's fields.
 export default async function NelayanAkunPage() {
-  const [profile, catches, transactions] = await Promise.all([getAccountValues(), getMyCatches(), getMyTransactions()])
-  const notifications = recentNotifications(catches, transactions)
+  const [profile, catches, transactions, p] = await Promise.all([
+    getAccountValues(),
+    getMyCatches(),
+    getMyTransactions(),
+    getPresenter(),
+  ])
+  const notifications = recentNotifications(p, catches, transactions)
   const name = displayNameOf({ full_name: profile.fullName, role: 'nelayan' }, { nickname: profile.nickname })
 
   return (

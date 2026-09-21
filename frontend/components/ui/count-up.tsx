@@ -1,17 +1,20 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import { useFormatter } from 'next-intl'
 
 const DURATION_MS = 1000
-// Text before the first number, the number (Indonesian format: "." groups thousands), and everything after it.
-const PATTERN = /^(\D*)(\d[\d.]*)(.*)$/
-const formatter = new Intl.NumberFormat('id-ID')
+// Text before the first number, the whole number with its group separators ("3.000" in id, "3,000" in en), and
+// everything after it.
+const PATTERN = /^(\D*)(\d[\d.,]*)(.*)$/
 
 // Counts the number inside `value` up from 0 when it scrolls into view, e.g. "≥70%" or "3.000 kg/bulan".
 // The server renders the final value, so it reads correctly without JS, with reduced motion, and when the
 // stat is already on screen at load (those skip the count, like the scroll reveals do).
 export function CountUp({ value }: { value: string }) {
   const ref = useRef<HTMLSpanElement>(null)
+  // Formats the in-between numbers in the active locale, so they group like the final value.
+  const format = useFormatter()
 
   useEffect(() => {
     const el = ref.current
@@ -21,10 +24,10 @@ export function CountUp({ value }: { value: string }) {
     if (el.getBoundingClientRect().top < window.innerHeight) return
 
     const [, prefix, digits, suffix] = match
-    const target = Number(digits.replaceAll('.', ''))
+    const target = Number(digits.replace(/\D/g, ''))
     // Written straight to the DOM: one frame per update without re-rendering React.
     const render = (n: number) => {
-      el.textContent = `${prefix}${formatter.format(n)}${suffix}`
+      el.textContent = `${prefix}${format.number(n)}${suffix}`
     }
     render(0)
 
@@ -50,7 +53,7 @@ export function CountUp({ value }: { value: string }) {
       cancelAnimationFrame(frame)
       render(target)
     }
-  }, [value])
+  }, [value, format])
 
   return (
     // The invisible final value reserves the full width, so the text beside it doesn't shift while counting.

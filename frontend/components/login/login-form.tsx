@@ -1,11 +1,12 @@
 'use client'
 
 import { useActionState } from 'react'
+import { useTranslations } from 'next-intl'
 import { FormField } from '@/components/register/form-field'
 import { SubmitButton } from '@/components/register/submit-button'
 import { FormError } from '@/components/login/form-error'
 import { useErrorFocus } from '@/components/login/use-error-focus'
-import { LOGIN } from '@/components/login/content'
+import { loginContent } from '@/components/login/content'
 import { login, type AuthFormState } from '@/app/auth/actions'
 
 // The /auth/login form: email and password straight to Supabase. Whatever the
@@ -20,6 +21,7 @@ export function LoginForm({
   // A message from elsewhere, e.g. a confirmation link that had already been used.
   notice?: string
 }) {
+  const content = loginContent(useTranslations('auth.login'))
   const [state, action, pending] = useActionState<AuthFormState, FormData>(login, {})
   useErrorFocus(state)
 
@@ -29,10 +31,10 @@ export function LoginForm({
       className="box-border w-full h-fit shrink-0 flex flex-col gap-[20px] justify-start items-start"
     >
       {next && <input type="hidden" name="next" value={next} />}
-      <FormField {...LOGIN.emailField} defaultValue={state.email} />
-      <FormField {...LOGIN.passwordField} />
+      <FormField {...content.emailField} defaultValue={state.email} />
+      <FormField {...content.passwordField} />
       <FormError message={state.error ?? notice} />
-      <SubmitButton label={LOGIN.submitLabel} icon="arrow-right" disabled={pending} />
+      <SubmitButton label={content.submitLabel} icon="arrow-right" disabled={pending} />
     </form>
   )
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import { useLocale } from 'next-intl'
 
 const STAGGER_MS = 80
 const MAX_DELAY_MS = 360
@@ -9,6 +10,10 @@ const MAX_DELAY_MS = 360
 // Elements stay visible until this runs, so the page still works without JS, and
 // anything already on screen at hydration is shown immediately instead of flickering.
 export function ScrollReveal() {
+  // A language switch re-renders the page in place; rescanning then picks up any element React had to recreate,
+  // which would otherwise stay hidden (it has no `data-revealed` and nothing observes it).
+  const locale = useLocale()
+
   useEffect(() => {
     const root = document.documentElement
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
@@ -45,7 +50,7 @@ export function ScrollReveal() {
       observer.disconnect()
       root.removeAttribute('data-reveal-ready')
     }
-  }, [])
+  }, [locale])
 
   return null
 }

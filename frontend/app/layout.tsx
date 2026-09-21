@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Dancing_Script, Geist, Geist_Mono, Inter, Poppins } from "next/font/google";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getTranslations } from "next-intl/server";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -28,24 +30,29 @@ const dancingScript = Dancing_Script({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "ByCatch Loop | Sirkular Bahari Nusantara",
-  description: "Platform Sirkular Maritim Terintegrasi. Ubah hasil tangkapan sampingan menjadi peluang bernilai tambah.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("meta");
+  return { title: t("title"), description: t("description") };
+}
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // The active locale (i18n/request.ts), so screen readers and hyphenation follow the chosen language.
+  const locale = await getLocale();
+
   return (
     <html
-      lang="id"
+      lang={locale}
       data-scroll-behavior="smooth"
       className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${poppins.variable} ${dancingScript.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
-        <main className="flex-1">{children}</main>
+        <main className="flex-1">
+          <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        </main>
       </body>
     </html>
   );

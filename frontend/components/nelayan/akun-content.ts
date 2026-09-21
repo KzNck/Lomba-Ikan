@@ -2,7 +2,8 @@
 // The account itself is read from Supabase — see lib/nelayan/account.ts. The layout follows the pembeli account page.
 import type { FormFieldConfig } from '@/components/register/form-field'
 import type { AccountNavItem } from '@/components/pembeli/akun-content'
-import { NELAYAN_PROFILE } from '@/components/register/content'
+import { nelayanProfile } from '@/components/register/content'
+import { registerCopyId } from '@/lib/i18n/indonesian'
 import { NELAYAN_ROLE_LABEL } from '@/components/nelayan/content'
 
 export const AKUN_PATH = '/nelayan/akun'
@@ -45,7 +46,7 @@ export const PROFILE_HEADER = {
 type TextField = Pick<FormFieldConfig, 'id' | 'label' | 'icon' | 'placeholder' | 'required'> &
   Partial<Pick<FormFieldConfig, 'inputType' | 'inputMode' | 'autoComplete' | 'helper' | 'locked'>>
 
-const { location } = NELAYAN_PROFILE
+const { location } = nelayanProfile(registerCopyId)
 
 export const INFO_PRIBADI = {
   title: 'Info Pribadi',

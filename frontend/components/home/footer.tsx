@@ -80,7 +80,7 @@ export function Footer({
             <FooterHeading>{contactHeading}</FooterHeading>
             {contacts.map((contact) => (
               <div
-                key={contact.text}
+                key={contact.icon}
                 className="box-border w-fit h-fit shrink-0 flex flex-row gap-[10px] justify-start items-center"
               >
                 <Icon name={contact.icon} fill="#D6E9F5" className="box-border w-[16px] shrink-0 h-[16px]" />
@@ -112,9 +112,9 @@ export function Footer({
             {copyright}
           </p>
           <div className="box-border w-fit shrink-0 h-fit flex flex-row gap-[32px] justify-start items-start">
-            {legalItems.map((item) => (
+            {legalItems.map((item, index) => (
               <span
-                key={item}
+                key={index}
                 className="text-[13px]/[normal] box-border text-[#B9D6E8] font-inter font-normal text-left [white-space:nowrap]"
               >
                 {item}

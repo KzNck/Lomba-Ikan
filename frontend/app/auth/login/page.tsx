@@ -1,10 +1,11 @@
 import { redirect } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
 import { LoginLayout } from '@/components/login/login-layout'
 import { AuthCard } from '@/components/login/auth-card'
 import { LoginForm } from '@/components/login/login-form'
 import { TermsNotice } from '@/components/login/terms-notice'
 import { AccountPrompt } from '@/components/register/account-prompt'
-import { LOGIN } from '@/components/login/content'
+import { loginContent } from '@/components/login/content'
 import { homeForCurrentUser } from '@/app/auth/actions'
 
 export default async function LoginPage({
@@ -17,16 +18,17 @@ export default async function LoginPage({
   if (home) redirect(home)
 
   const { next, konfirmasi } = await searchParams
+  const content = loginContent(await getTranslations('auth.login'))
 
   return (
-    <LoginLayout backLink={LOGIN.backLink} illustration={LOGIN.illustration} tagline={LOGIN.tagline}>
-      <AuthCard title={LOGIN.title} subtitle={LOGIN.subtitle}>
+    <LoginLayout backLink={content.backLink} illustration={content.illustration} tagline={content.tagline}>
+      <AuthCard title={content.title} subtitle={content.subtitle}>
         <LoginForm
           next={typeof next === 'string' ? next : undefined}
-          notice={konfirmasi === 'gagal' ? LOGIN.confirmFailed : undefined}
+          notice={konfirmasi === 'gagal' ? content.confirmFailed : undefined}
         />
-        <TermsNotice {...LOGIN.terms} />
-        <AccountPrompt question={LOGIN.signupQuestion} link={LOGIN.signupLink} layout="centered" />
+        <TermsNotice {...content.terms} />
+        <AccountPrompt question={content.signupQuestion} link={content.signupLink} layout="centered" />
       </AuthCard>
     </LoginLayout>
   )

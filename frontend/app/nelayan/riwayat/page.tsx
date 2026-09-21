@@ -8,6 +8,7 @@ import { TransactionDrawer } from '@/components/nelayan/transaction-drawer'
 import { DASHBOARD } from '@/components/nelayan/content'
 import { EMPTY_STATE, RIWAYAT_PAGE, RIWAYAT_PATH, TRANSACTION_DRAWER } from '@/components/nelayan/riwayat-content'
 import { dateLabelFor, loadRiwayat, parseRiwayatView, riwayatHref } from '@/lib/nelayan/riwayat'
+import { getPresenter } from '@/lib/i18n/presenter'
 import { requireProfile } from '@/lib/supabase/auth'
 import { displayNameFor } from '@/lib/supabase/display-name'
 import { getMyCatches } from '@/lib/supabase/catches'
@@ -24,14 +25,15 @@ export default async function RiwayatPage({
   const view = parseRiwayatView(await searchParams)
   const { status, range, order, openId } = view
 
-  const [profile, { rows, details, range: shownRange }, catches, transactions] = await Promise.all([
+  const [profile, { rows, details, range: shownRange }, catches, transactions, p] = await Promise.all([
     requireProfile('nelayan'),
     loadRiwayat(status, range, order, TRANSACTION_DRAWER.steps),
     getMyCatches(),
     getMyTransactions(),
+    getPresenter(),
   ])
 
-  const notifications = recentNotifications(catches, transactions)
+  const notifications = recentNotifications(p, catches, transactions)
   const name = await displayNameFor(profile)
   const detail = openId ? details.get(openId) : undefined
   // Every link keeps the rest of the view; only the part it changes differs.
@@ -58,7 +60,7 @@ export default async function RiwayatPage({
             <h2 className="text-[28px]/[32px] box-border text-[#0B3B5C] font-poppins font-bold text-left [white-space:nowrap]">{RIWAYAT_PAGE.title}</h2>
             <p className="text-[15px]/[normal] box-border w-full text-[#5B6B7C] font-inter font-normal text-left">{RIWAYAT_PAGE.subtitle}</p>
           </div>
-          <RiwayatFilters action={RIWAYAT_PATH} status={status} range={range} dateLabel={dateLabelFor(range, shownRange)} />
+          <RiwayatFilters action={RIWAYAT_PATH} status={status} range={range} dateLabel={dateLabelFor(p, range, shownRange)} />
           <p className="box-border w-full h-fit shrink-0 flex flex-row gap-[6px] justify-start items-center">
             <span className="text-[13px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left [white-space:nowrap]">
               {RIWAYAT_PAGE.resultCount(rows.length)}

@@ -40,6 +40,8 @@ export type PendingProfile = {
     jenis_bahan?: string[]
     grade?: string[]
     ppi_prioritas?: string[]
+    // Bahasa antarmuka yang dipilih (lihat app/locale-actions.ts); ikut ke perangkat lain saat login.
+    locale?: string
 }
 
 /** User yang sedang login, atau null. Memakai getUser() — token diverifikasi ke server Supabase. */

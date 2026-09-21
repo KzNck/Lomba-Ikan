@@ -3,6 +3,10 @@
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
+import { getLocale, getTranslations } from 'next-intl/server'
+import { isLocale } from '@/i18n/config'
+import { writeLocaleCookie } from '@/lib/i18n/cookie'
+import type { Translator } from '@/lib/i18n/translator'
 import {
     HOME_BY_ROLE,
     MIN_PASSWORD_LENGTH,
@@ -32,34 +36,31 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const text = (formData: FormData, name: string) => String(formData.get(name) ?? '').trim()
 const list = (formData: FormData, name: string) => formData.getAll(name).map(String).filter(Boolean)
 
+type ErrorTranslator = Translator<'auth.errors'>
+
 /**
  * Pesan error Supabase (bahasa Inggris, kadang teknis) diterjemahkan ke kalimat
- * yang berguna buat user. Sisanya diteruskan apa adanya supaya masalah tak
- * terduga tetap kelihatan alih-alih tersembunyi di balik pesan umum.
+ * yang berguna buat user, dalam bahasa yang sedang aktif. Sisanya diteruskan apa
+ * adanya supaya masalah tak terduga tetap kelihatan alih-alih tersembunyi di balik
+ * pesan umum.
  */
-function readableError(message: string): string {
+function readableError(t: ErrorTranslator, message: string): string {
     const lower = message.toLowerCase()
-    if (lower.includes('invalid login credentials')) {
-        return 'Email atau password salah. Periksa lagi, lalu coba masuk kembali.'
-    }
-    if (lower.includes('already registered') || lower.includes('already exists')) {
-        return 'Email ini sudah terdaftar. Silakan masuk.'
-    }
-    if (lower.includes('password') && lower.includes('at least')) {
-        return `Password minimal ${MIN_PASSWORD_LENGTH} karakter.`
-    }
+    if (lower.includes('invalid login credentials')) return t('invalidCredentials')
+    if (lower.includes('already registered') || lower.includes('already exists')) return t('alreadyRegistered')
+    if (lower.includes('password') && lower.includes('at least')) return t('passwordTooShort', { min: MIN_PASSWORD_LENGTH })
     if (lower.includes('rate limit') || lower.includes('too many') || lower.includes('security purposes')) {
-        return 'Terlalu banyak percobaan. Tunggu sebentar sebelum mencoba lagi.'
+        return t('rateLimited')
     }
-    if (lower.includes('invalid') && lower.includes('email')) return 'Alamat email tidak valid.'
+    if (lower.includes('invalid') && lower.includes('email')) return t('invalidEmail')
     return message
 }
 
 /** Validasi email + password yang sama-sama dipakai kedua form registrasi. */
-function checkCredentials(email: string, password: string, confirmation: string): string | undefined {
-    if (!EMAIL.test(email)) return 'Masukkan alamat email yang valid.'
-    if (password.length < MIN_PASSWORD_LENGTH) return `Password minimal ${MIN_PASSWORD_LENGTH} karakter.`
-    if (password !== confirmation) return 'Konfirmasi password belum sama dengan password.'
+function checkCredentials(t: ErrorTranslator, email: string, password: string, confirmation: string): string | undefined {
+    if (!EMAIL.test(email)) return t('enterValidEmail')
+    if (password.length < MIN_PASSWORD_LENGTH) return t('passwordTooShort', { min: MIN_PASSWORD_LENGTH })
+    if (password !== confirmation) return t('passwordMismatch')
 }
 
 /** URL absolut tujuan tautan konfirmasi email, dari host permintaan ini. */
@@ -74,13 +75,17 @@ async function confirmUrl(next: string): Promise<string> {
 export async function login(_previous: AuthFormState, formData: FormData): Promise<AuthFormState> {
     const email = text(formData, 'email')
     const password = String(formData.get('password') ?? '')
+    const t = await getTranslations('auth.errors')
 
-    if (!EMAIL.test(email)) return { error: 'Masukkan alamat email yang valid.', email }
-    if (!password) return { error: 'Masukkan password Anda.', email }
+    if (!EMAIL.test(email)) return { error: t('enterValidEmail'), email }
+    if (!password) return { error: t('enterPassword'), email }
 
     let role: UserRole
     try {
         const user = await signIn(email, password)
+        // The language this account last chose (app/locale-actions.ts) follows it to this device.
+        const saved = user.user_metadata?.locale
+        if (isLocale(saved)) await writeLocaleCookie(saved)
         // Registrasi menitipkan profil di user_metadata; di sinilah row-nya dibuat
         // kalau konfirmasi email belum sempat membuatnya.
         role = (await ensureProfile(user)).role
@@ -91,7 +96,7 @@ export async function login(_previous: AuthFormState, formData: FormData): Promi
         if (message.toLowerCase().includes('email not confirmed')) {
             redirect(`/auth/daftar/konfirmasi?email=${encodeURIComponent(email)}`)
         }
-        return { error: readableError(message), email }
+        return { error: readableError(t, message), email }
     }
 
     revalidatePath('/', 'layout')
@@ -109,14 +114,21 @@ async function completeSignUp(
     pending: PendingProfile
 ): Promise<AuthFormState> {
     const home = HOME_BY_ROLE[pending.role]
+    const t = await getTranslations('auth.errors')
 
     let hasSession: boolean
     try {
-        const data = await signUp({ email, password, pending, confirmUrl: await confirmUrl(home) })
+        // The language the account signed up in becomes its saved choice.
+        const data = await signUp({
+            email,
+            password,
+            pending: { ...pending, locale: await getLocale() },
+            confirmUrl: await confirmUrl(home),
+        })
         hasSession = Boolean(data.session)
         if (data.session && data.user) await ensureProfile(data.user)
     } catch (error) {
-        return { error: readableError((error as Error).message), email }
+        return { error: readableError(t, (error as Error).message), email }
     }
 
     revalidatePath('/', 'layout')
@@ -128,11 +140,12 @@ export async function registerNelayan(_previous: AuthFormState, formData: FormDa
     const email = text(formData, 'email')
     const fullName = text(formData, 'nama-lengkap')
     const ppiId = text(formData, 'ppi')
+    const t = await getTranslations('auth.errors')
 
-    if (!fullName) return { error: 'Nama lengkap wajib diisi.', email }
-    if (!ppiId) return { error: 'Pilih Pangkalan Pendaratan Ikan (PPI) Anda.', email }
+    if (!fullName) return { error: t('fullNameRequired'), email }
+    if (!ppiId) return { error: t('ppiRequired'), email }
 
-    const invalid = checkCredentials(email, String(formData.get('password') ?? ''), String(formData.get('konfirmasi-password') ?? ''))
+    const invalid = checkCredentials(t, email, String(formData.get('password') ?? ''), String(formData.get('konfirmasi-password') ?? ''))
     if (invalid) return { error: invalid, email }
 
     return completeSignUp(email, String(formData.get('password') ?? ''), {
@@ -149,12 +162,13 @@ export async function registerPembeli(_previous: AuthFormState, formData: FormDa
     const fullName = text(formData, 'nama-lengkap')
     const businessName = text(formData, 'nama-usaha')
     const jenisUsaha = list(formData, 'jenis-usaha')
+    const t = await getTranslations('auth.errors')
 
-    if (!fullName) return { error: 'Nama lengkap wajib diisi.', email }
-    if (!businessName) return { error: 'Nama usaha wajib diisi.', email }
-    if (jenisUsaha.length === 0) return { error: 'Pilih minimal satu jenis usaha.', email }
+    if (!fullName) return { error: t('fullNameRequired'), email }
+    if (!businessName) return { error: t('businessNameRequired'), email }
+    if (jenisUsaha.length === 0) return { error: t('businessTypeRequired'), email }
 
-    const invalid = checkCredentials(email, String(formData.get('password') ?? ''), String(formData.get('konfirmasi-password') ?? ''))
+    const invalid = checkCredentials(t, email, String(formData.get('password') ?? ''), String(formData.get('konfirmasi-password') ?? ''))
     if (invalid) return { error: invalid, email }
 
     // "Lewati" mengirim tanda ini: preferensi yang sempat dicentang tidak ikut disimpan.
@@ -180,12 +194,13 @@ export async function resendConfirmation(
     formData: FormData
 ): Promise<AuthFormState> {
     const email = text(formData, 'email')
-    if (!EMAIL.test(email)) return { error: 'Alamat email tidak valid.', email }
+    const t = await getTranslations('auth.errors')
+    if (!EMAIL.test(email)) return { error: t('invalidEmail'), email }
 
     try {
         await resend(email, await confirmUrl('/'))
     } catch (error) {
-        return { error: readableError((error as Error).message), email }
+        return { error: readableError(t, (error as Error).message), email }
     }
     return { email, sent: true }
 }

@@ -5,7 +5,7 @@
 
 import type { NotificationContent } from '@/components/nelayan/notification-item'
 import type { SummaryStatContent } from '@/components/nelayan/summary-stat'
-import { categoryLabel, formatRupiah, timeAgo, timeLeft } from '@/lib/catches/present'
+import { categoryLabel, formatRupiah, timeAgo, timeLeft, type Presenter } from '@/lib/catches/present'
 import type { Catch, Transaction } from '@/types/database'
 
 /** Selisih hari ini vs kemarin, misalnya "20% dari kemarin". */
@@ -34,6 +34,7 @@ function on(day: Date, iso: string): boolean {
 }
 
 export function summaryStats(
+    p: Presenter,
     catches: Catch[],
     transactions: Transaction[],
     now: Date = new Date()
@@ -63,20 +64,20 @@ export function summaryStats(
     return [
         {
             icon: 'fish',
-            value: Math.round(soldToday).toLocaleString('id-ID'),
+            value: p.format.number(Math.round(soldToday)),
             unit: 'kg',
             label: 'Total Terjual',
             ...trendNote(soldToday, weightOn(yesterday)),
         },
         {
             icon: 'coins',
-            value: formatRupiah(revenueToday),
+            value: formatRupiah(p, revenueToday),
             label: 'Pendapatan',
             ...trendNote(revenueToday, revenueOn(yesterday)),
         },
         {
             icon: 'recycle',
-            value: Math.round(rescued).toLocaleString('id-ID'),
+            value: p.format.number(Math.round(rescued)),
             unit: 'kg',
             label: 'Biomassa Terselamatkan',
             note: 'dari by-catch yang sebelumnya terbuang',
@@ -90,6 +91,7 @@ export function summaryStats(
  * hampir kedaluwarsa. Terbaru di atas.
  */
 export function recentNotifications(
+    p: Presenter,
     catches: Catch[],
     transactions: Transaction[],
     now: Date = new Date()
@@ -100,7 +102,7 @@ export function recentNotifications(
 
     for (const tx of transactions) {
         const entry = byId.get(tx.catch_id)
-        const name = entry ? categoryLabel(entry.species) : 'tangkapan Anda'
+        const name = entry ? categoryLabel(p, entry.species) : 'tangkapan Anda'
         const at = new Date(tx.updated_at).getTime()
 
         if (tx.status === 'COMPLETED') {
@@ -110,9 +112,10 @@ export function recentNotifications(
                     tone: 'success',
                     icon: 'shopping-cart',
                     message: `Batch Anda (${name}) telah terjual dengan harga ${formatRupiah(
+                        p,
                         Number(tx.final_total ?? tx.estimated_total)
                     )}.`,
-                    time: timeAgo(tx.updated_at, now),
+                    time: timeAgo(p, tx.updated_at, now),
                 },
             ])
         } else if (tx.status === 'CANCELLED') {
@@ -122,7 +125,7 @@ export function recentNotifications(
                     tone: 'warning',
                     icon: 'circle-alert',
                     message: `Transaksi untuk ${name} dibatalkan.`,
-                    time: timeAgo(tx.updated_at, now),
+                    time: timeAgo(p, tx.updated_at, now),
                 },
             ])
         } else {
@@ -132,7 +135,7 @@ export function recentNotifications(
                     tone: 'info',
                     icon: 'check',
                     message: `Pembeli mengklaim listing Anda (${name}). Dana escrow sedang diproses.`,
-                    time: timeAgo(tx.updated_at, now),
+                    time: timeAgo(p, tx.updated_at, now),
                 },
             ])
         }
@@ -149,7 +152,7 @@ export function recentNotifications(
             {
                 tone: 'warning',
                 icon: 'badge-check',
-                message: `Listing ${categoryLabel(entry.species)} akan berakhir dalam ${timeLeft(entry.expires_at, now)}.`,
+                message: `Listing ${categoryLabel(p, entry.species)} akan berakhir dalam ${timeLeft(p, entry.expires_at, now)}.`,
                 time: 'Segera berakhir',
             },
         ])

@@ -1,10 +1,10 @@
 'use client'
 
 import { useActionState, useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { SubmitButton } from '@/components/register/submit-button'
 import { FormError } from '@/components/login/form-error'
 import { FormStatus } from '@/components/login/form-status'
-import { CONFIRM_EMAIL } from '@/components/login/content'
 import { resendConfirmation, type AuthFormState } from '@/app/auth/actions'
 
 // Supabase rejects a second send made too soon, so the button locks for this long
@@ -16,6 +16,7 @@ const countdown = (seconds: number) =>
 
 // "Kirim ulang email konfirmasi" on /auth/daftar/konfirmasi.
 export function ResendConfirmation({ email }: { email: string }) {
+  const t = useTranslations('auth.confirmEmail')
   const [state, action, pending] = useActionState<AuthFormState, FormData>(resendConfirmation, {})
   // Started from the submit itself rather than from the result, so the countdown
   // begins when the request does.
@@ -38,10 +39,10 @@ export function ResendConfirmation({ email }: { email: string }) {
       className="box-border w-full h-fit shrink-0 flex flex-col gap-[16px] justify-start items-start"
     >
       <input type="hidden" name="email" value={email} />
-      <FormStatus message={state.sent ? CONFIRM_EMAIL.resentText : undefined} />
+      <FormStatus message={state.sent ? t('resent') : undefined} />
       <FormError message={state.error} />
       <SubmitButton
-        label={waiting ? CONFIRM_EMAIL.resendWaitLabel.replace('{time}', countdown(secondsLeft)) : CONFIRM_EMAIL.resendLabel}
+        label={waiting ? t('resendWait', { time: countdown(secondsLeft) }) : t('resend')}
         icon="send"
         disabled={pending || waiting}
       />

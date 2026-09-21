@@ -22,7 +22,7 @@ export function Impact({ id, eyebrow, title, benefits, statsLabelLines, stats }:
       <SectionHeader eyebrow={eyebrow} title={title} className="p-[0px_0px_12px_0px]" />
       <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[24px] justify-start items-start">
         {benefits.map((benefit) => (
-          <BenefitCard key={benefit.title} {...benefit} />
+          <BenefitCard key={benefit.icon} {...benefit} />
         ))}
       </div>
       <div data-reveal className="box-border w-full h-fit shrink-0 [box-shadow:0px_0px_0px_1px_#0000000F,_0px_1px_2px_-1px_#0000000F,_0px_2px_4px_0px_#0000000A] flex flex-row gap-[24px] p-[24px_32px] justify-between items-center bg-[#FFFFFF] rounded-[20px]">
@@ -30,7 +30,7 @@ export function Impact({ id, eyebrow, title, benefits, statsLabelLines, stats }:
           <Icon name="target" fill="#2FAE6E" className="box-border w-[34px] shrink-0 h-[34px]" />
           <p className="text-[17px]/[22px] box-border text-[#0B3B5C] font-poppins font-semibold text-left [white-space:nowrap]">
             {statsLabelLines.map((line, index) => (
-              <Fragment key={line}>
+              <Fragment key={index}>
                 {index > 0 && <br />}
                 {line}
               </Fragment>
@@ -38,7 +38,7 @@ export function Impact({ id, eyebrow, title, benefits, statsLabelLines, stats }:
           </p>
         </div>
         {stats.map((stat) => (
-          <Fragment key={stat.caption}>
+          <Fragment key={stat.icon}>
             <div className="box-border w-[1px] shrink-0 h-[48px] bg-[#E2E8F0]" />
             <StatItem {...stat} />
           </Fragment>

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { Icon } from '@/components/ui/icon'
 import { AccountMenu } from '@/components/dashboard/account-menu'
 import { initialsOf } from '@/lib/nelayan/dashboard-data'
@@ -6,7 +7,7 @@ import { FOCUS_RING } from '@/components/nelayan/focus-ring'
 import { OUTLINE_HOVER, PRESS } from '@/components/ui/interaction'
 
 type TopBarActionsProps = {
-  notifications: { href: string; label: string; unreadCount: number }
+  notifications: { href: string; unreadCount: number }
   user: { name: string }
 }
 
@@ -30,11 +31,12 @@ export function TopBar({ greeting, subtitle, notifications, user }: TopBarProps)
 // The notification bell and account pill at the right of the pembeli top bars (dashboard and marketplace), drawn
 // the same as the nelayan header's.
 export function TopBarActions({ notifications, user }: TopBarActionsProps) {
+  const t = useTranslations('nav')
   return (
     <>
       <Link
         href={notifications.href}
-        aria-label={`${notifications.label}, ${notifications.unreadCount} belum dibaca`}
+        aria-label={t('unread', { label: t('notifications'), count: notifications.unreadCount })}
         className={`box-border w-[40px] shrink-0 h-[40px] rounded-[999px] relative ${OUTLINE_HOVER} ${PRESS} ${FOCUS_RING}`}
       >
         <Icon name="bell" fill="#0B3B5C" className="box-border w-[22px] h-[22px] absolute left-[9px] top-[9px] [z-index:0]" />

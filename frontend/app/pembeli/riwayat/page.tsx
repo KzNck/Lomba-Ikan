@@ -13,6 +13,7 @@ import {
   TABLE_COPY,
 } from '@/components/pembeli/riwayat-content'
 import { dateLabelFor, loadRiwayat, parseRiwayatView, riwayatHref } from '@/lib/nelayan/riwayat'
+import { getPresenter } from '@/lib/i18n/presenter'
 import { requireProfile } from '@/lib/supabase/auth'
 import { displayNameFor } from '@/lib/supabase/display-name'
 
@@ -27,9 +28,10 @@ export default async function PembeliRiwayatPage({
   const view = parseRiwayatView(await searchParams)
   const { status, range, order, openId } = view
 
-  const [profile, { rows, details, range: shownRange }] = await Promise.all([
+  const [profile, { rows, details, range: shownRange }, p] = await Promise.all([
     requireProfile('pembeli'),
     loadRiwayat(status, range, order, DRAWER_COPY.steps, PEMBELI_SIDE),
+    getPresenter(),
   ])
   const name = await displayNameFor(profile)
 
@@ -48,7 +50,7 @@ export default async function PembeliRiwayatPage({
         <div
           className={`box-border w-full [flex:1_1_0] flex flex-col gap-[20px] ${detail ? 'p-[28px_424px_32px_32px]' : 'p-[28px_32px_32px_32px]'} justify-start items-start`}
         >
-          <RiwayatFilters action={RIWAYAT_PATH} status={status} range={range} dateLabel={dateLabelFor(range, shownRange)} />
+          <RiwayatFilters action={RIWAYAT_PATH} status={status} range={range} dateLabel={dateLabelFor(p, range, shownRange)} />
           <p className="box-border w-full h-fit shrink-0 flex flex-row gap-[6px] justify-start items-center">
             <span className="text-[13px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left [white-space:nowrap]">
               {RIWAYAT_PAGE.resultCount(rows.length)}

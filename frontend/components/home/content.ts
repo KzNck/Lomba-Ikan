@@ -1,10 +1,14 @@
 // All copy and imagery for the landing page. Edit here to swap content without touching layout.
+// Text lives in messages/*.json under `landing` (and `auth.links`); this file pairs it with links, icons and images.
 import type { NavItem } from '@/components/home/navbar'
 import type { Step } from '@/components/home/step-card'
 import type { Benefit } from '@/components/home/benefit-card'
 import type { Stat } from '@/components/home/stat-item'
 import type { Sdg } from '@/components/home/sdg-card'
 import type { FooterContact, FooterSocial } from '@/components/home/footer'
+import type { Translator } from '@/lib/i18n/translator'
+
+type LandingT = Translator<'landing'>
 
 export const SECTION_IDS = {
   home: 'beranda',
@@ -13,181 +17,177 @@ export const SECTION_IDS = {
   sdgs: 'sdgs',
 }
 
-export const NAV_ITEMS: NavItem[] = [
-  { href: `#${SECTION_IDS.home}`, label: 'Beranda' },
-  { href: `#${SECTION_IDS.howItWorks}`, label: 'Cara Kerja' },
-  { href: `#${SECTION_IDS.impact}`, label: 'Dampak' },
-  { href: `#${SECTION_IDS.sdgs}`, label: 'SDGs' },
-]
-
-export const AUTH_LINKS = {
-  login: { href: '/auth/login', label: 'Masuk' },
-  register: { href: '/auth/choose-role', label: 'Daftar' },
+export function navItems(t: LandingT): NavItem[] {
+  return [
+    { href: `#${SECTION_IDS.home}`, label: t('nav.home') },
+    { href: `#${SECTION_IDS.howItWorks}`, label: t('nav.howItWorks') },
+    { href: `#${SECTION_IDS.impact}`, label: t('nav.impact') },
+    { href: `#${SECTION_IDS.sdgs}`, label: t('nav.sdgs') },
+  ]
 }
 
-export const HERO = {
-  eyebrow: 'PLATFORM B2B EKONOMI LAUT SIRKULAR',
-  headline: 'Dari By-catch Menjadi Nilai Ekonomi Bersama',
-  subheadline:
-    'ByCatch Loop menghubungkan nelayan dengan industri hilir sirkular melalui pencatatan batch, lelang cepat, dan estimasi kesegaran berbasis AI ringan.',
-  image: {
-    src: '/images/landing/hero-boat.jpg',
-    alt: 'Nelayan berdiri di atas perahu kayu dengan hasil tangkapan di dek',
-  },
-  primaryCta: { href: '/auth/register/nelayan', label: 'Daftar sebagai Nelayan' },
-  secondaryCta: { href: '/auth/register?role=pembeli', label: 'Daftar sebagai Pembeli' },
+export const AUTH_HREFS = {
+  login: '/auth/login',
+  register: '/auth/choose-role',
 }
 
-export const HOW_IT_WORKS = {
-  eyebrow: 'CARA KERJA',
-  title: 'Mudah, Transparan, dan Terhubung',
-  subtitle: 'Proses sederhana dari laut hingga ke industri hilir, dengan teknologi yang memudahkan semua pihak.',
-  steps: [
-    {
-      icon: 'sailboat',
-      title: 'Nelayan Mencatat',
-      description: 'Catat estimasi by‑catch (kategori, volume, waktu tarik, kondisi es) — bisa offline.',
-    },
-    {
-      icon: 'shield-check',
-      title: 'Cek Kesegaran',
-      description: 'Sistem hitung estimasi kesegaran otomatis berbasis AI ringan.',
-    },
-    {
-      icon: 'file-text',
-      title: 'Pasang Listing',
-      description: 'Data tersinkron & jadi listing saat sinyal tersedia.',
-    },
-    {
-      icon: 'shopping-cart',
-      title: 'Pembeli Beli Langsung',
-      description: 'Pembeli dapat notifikasi dan membeli dalam jendela waktu tetap.',
-    },
-    {
-      icon: 'package-check',
-      title: 'Serah Terima di PPI',
-      description: 'Batch diverifikasi PPI saat kapal merapat, lalu diserahkan ke pembeli.',
-    },
-  ] satisfies Step[],
+export function authLinks(t: Translator<'auth.links'>) {
+  return {
+    login: { href: AUTH_HREFS.login, label: t('login') },
+    register: { href: AUTH_HREFS.register, label: t('register') },
+  }
 }
 
-export const IMPACT = {
-  eyebrow: 'DAMPAK',
-  title: 'Manfaat Nyata untuk Semua Pihak',
-  benefits: [
-    {
-      icon: 'ship',
-      accent: 'blue',
-      title: 'Bagi Nelayan',
-      subtitle: 'Pendapatan lebih baik, laut lebih lestari',
-      image: {
-        src: '/images/landing/benefit-nelayan.jpg',
-        alt: 'Nelayan menarik jaring dari perahu di perairan dangkal',
+export function hero(t: LandingT) {
+  return {
+    eyebrow: t('hero.eyebrow'),
+    headline: t('hero.headline'),
+    subheadline: t('hero.subheadline'),
+    image: {
+      src: '/images/landing/hero-boat.jpg',
+      alt: t('hero.imageAlt'),
+    },
+    primaryCta: { href: '/auth/register/nelayan', label: t('hero.primaryCta') },
+    secondaryCta: { href: '/auth/register?role=pembeli', label: t('hero.secondaryCta') },
+  }
+}
+
+const STEPS = [
+  { key: 'record', icon: 'sailboat' },
+  { key: 'freshness', icon: 'shield-check' },
+  { key: 'listing', icon: 'file-text' },
+  { key: 'buy', icon: 'shopping-cart' },
+  { key: 'handover', icon: 'package-check' },
+] as const
+
+export function howItWorks(t: LandingT) {
+  return {
+    eyebrow: t('howItWorks.eyebrow'),
+    title: t('howItWorks.title'),
+    subtitle: t('howItWorks.subtitle'),
+    steps: STEPS.map(({ key, icon }) => ({
+      icon,
+      title: t(`howItWorks.steps.${key}.title`),
+      description: t(`howItWorks.steps.${key}.description`),
+    })) satisfies Step[],
+  }
+}
+
+export function impact(t: LandingT) {
+  return {
+    eyebrow: t('impact.eyebrow'),
+    title: t('impact.title'),
+    benefits: [
+      {
+        icon: 'ship',
+        accent: 'blue',
+        title: t('impact.nelayan.title'),
+        subtitle: t('impact.nelayan.subtitle'),
+        image: {
+          src: '/images/landing/benefit-nelayan.jpg',
+          alt: t('impact.nelayan.imageAlt'),
+        },
+        points: [
+          {
+            icon: 'coins',
+            title: t('impact.nelayan.income.title'),
+            description: t('impact.nelayan.income.description'),
+          },
+          {
+            icon: 'fish',
+            title: t('impact.nelayan.noWaste.title'),
+            description: t('impact.nelayan.noWaste.description'),
+          },
+        ],
       },
-      points: [
-        {
-          icon: 'coins',
-          title: 'Pendapatan Tambahan',
-          description: 'Dari komoditas yang sebelumnya bernilai nol/negatif.',
+      {
+        icon: 'factory',
+        accent: 'green',
+        title: t('impact.pembeli.title'),
+        subtitle: t('impact.pembeli.subtitle'),
+        image: {
+          src: '/images/landing/benefit-pembeli.jpg',
+          alt: t('impact.pembeli.imageAlt'),
         },
-        {
-          icon: 'fish',
-          title: 'Tangkapan Tidak Terbuang',
-          description: 'Mengurangi discard mortality dan memaksimalkan manfaat by‑catch.',
-        },
-      ],
-    },
-    {
-      icon: 'factory',
-      accent: 'green',
-      title: 'Bagi Pembeli',
-      subtitle: 'Pasokan stabil, harga transparan',
-      image: {
-        src: '/images/landing/benefit-pembeli.jpg',
-        alt: 'Fasilitas pengolahan industri di tepi sungai',
+        points: [
+          {
+            icon: 'leaf',
+            title: t('impact.pembeli.supply.title'),
+            description: t('impact.pembeli.supply.description'),
+          },
+          {
+            icon: 'shield-check',
+            title: t('impact.pembeli.pricing.title'),
+            description: t('impact.pembeli.pricing.description'),
+          },
+        ],
       },
-      points: [
-        {
-          icon: 'leaf',
-          title: 'Pasokan Konsisten',
-          description: 'Bahan baku hewani lebih stabil untuk kebutuhan industri hilir.',
-        },
-        {
-          icon: 'shield-check',
-          title: 'Harga Transparan',
-          description: 'Bisa memilih berdasarkan grade kesegaran dan lokasi terdekat.',
-        },
-      ],
-    },
-  ] satisfies Benefit[],
-  statsLabelLines: ['Target Dampak', 'Pilot Program'],
-  stats: [
-    { icon: 'fish', accent: 'blue', value: '3.000 kg/bulan', caption: 'Biomassa by‑catch terselamatkan' },
-    { icon: 'handshake', accent: 'blue', value: '≥70%', caption: 'Closing rate transaksi' },
-    { icon: 'sprout', accent: 'green', value: '<90 menit', caption: 'Rata-rata waktu listing → kesepakatan' },
-  ] satisfies Stat[],
+    ] satisfies Benefit[],
+    statsLabelLines: [t('impact.statsLabelLines.first'), t('impact.statsLabelLines.second')],
+    stats: [
+      {
+        icon: 'fish',
+        accent: 'blue',
+        value: t('impact.stats.biomass.value', { kg: 3000 }),
+        caption: t('impact.stats.biomass.caption'),
+      },
+      {
+        icon: 'handshake',
+        accent: 'blue',
+        value: t('impact.stats.closing.value', { percent: 70 }),
+        caption: t('impact.stats.closing.caption'),
+      },
+      {
+        icon: 'sprout',
+        accent: 'green',
+        value: t('impact.stats.speed.value', { minutes: 90 }),
+        caption: t('impact.stats.speed.caption'),
+      },
+    ] satisfies Stat[],
+  }
 }
 
-export const SDGS = {
-  eyebrow: 'SDGs',
-  title: 'Bersama untuk Masa Depan yang Lebih Baik',
-  subtitle: 'ByCatch Loop mendukung 5 Tujuan Pembangunan Berkelanjutan yang relevan dengan misi kami.',
-  goals: [
-    {
-      number: 14,
-      badge: '/images/sdgs/goal-14.svg',
-      title: 'Ekosistem Lautan',
-      target: 'Target: 14.4',
-      description:
-        'Mengurangi discard mortality dengan memberi nilai ekonomi pada by‑catch, sekaligus mendata volume tangkapan non‑target.',
-    },
-    {
-      number: 12,
-      badge: '/images/sdgs/goal-12.svg',
-      title: 'Konsumsi & Produksi Bertanggung Jawab',
-      target: 'Target: 12.3 & 12.5',
-      description: 'Mengubah biomassa yang akan dibuang menjadi bahan baku pakan/pupuk (valorisasi limbah).',
-    },
-    {
-      number: 2,
-      badge: '/images/sdgs/goal-02.svg',
-      title: 'Tanpa Kelaparan',
-      target: 'Target: 2.3',
-      description: 'Nelayan kecil mendapat pendapatan tambahan dari komoditas yang sebelumnya tidak bernilai.',
-    },
-    {
-      number: 8,
-      badge: '/images/sdgs/goal-08.svg',
-      title: 'Pekerjaan Layak & Pertumbuhan Ekonomi',
-      target: 'Target: 8.3',
-      description: 'Mendukung UMKM hilir (peternak maggot, produsen silase/pupuk) mendapat pasokan stabil.',
-    },
-    {
-      number: 13,
-      badge: '/images/sdgs/goal-13.svg',
-      title: 'Aksi Iklim',
-      target: 'Target: 13.2',
-      description: 'Estimasi pengurangan emisi metana dari pembusukan biomassa laut di pesisir.',
-    },
-  ] satisfies Sdg[],
+const GOALS = [
+  { number: 14, badge: '/images/sdgs/goal-14.svg', targets: '14.4' },
+  { number: 12, badge: '/images/sdgs/goal-12.svg', targets: '12.3 & 12.5' },
+  { number: 2, badge: '/images/sdgs/goal-02.svg', targets: '2.3' },
+  { number: 8, badge: '/images/sdgs/goal-08.svg', targets: '8.3' },
+  { number: 13, badge: '/images/sdgs/goal-13.svg', targets: '13.2' },
+] as const
+
+export function sdgs(t: LandingT) {
+  return {
+    eyebrow: t('sdgs.eyebrow'),
+    title: t('sdgs.title'),
+    subtitle: t('sdgs.subtitle'),
+    goals: GOALS.map(({ number, badge, targets }) => ({
+      number,
+      badge,
+      title: t(`sdgs.goals.${number}.title`),
+      target: t('sdgs.target', { targets }),
+      description: t(`sdgs.goals.${number}.description`),
+    })) satisfies Sdg[],
+  }
 }
 
-export const FOOTER = {
-  tagline: 'Menghubungkan nelayan dengan industri hilir untuk masa depan laut yang lebih baik.',
-  quickLinksHeading: 'Tautan Cepat',
-  quickLinks: NAV_ITEMS,
-  contactHeading: 'Kontak',
-  contacts: [
-    { icon: 'phone', text: '+62 812-3456-7890' },
-    { icon: 'mail', text: 'info@bycatchloop.id' },
-    { icon: 'map-pin', text: 'Jakarta, Indonesia' },
-  ] satisfies FooterContact[],
-  socialHeading: 'Ikuti Kami',
-  socials: [
-    { icon: 'instagram', label: 'Instagram' },
-    { icon: 'youtube', label: 'YouTube' },
-    { icon: 'linkedin', label: 'LinkedIn' },
-  ] satisfies FooterSocial[],
-  copyright: '© 2025 ByCatch Loop. Semua hak dilindungi.',
-  legalItems: ['Syarat & Ketentuan', 'Kebijakan Privasi'],
+export function footer(t: LandingT) {
+  return {
+    tagline: t('footer.tagline'),
+    quickLinksHeading: t('footer.quickLinksHeading'),
+    quickLinks: navItems(t),
+    contactHeading: t('footer.contactHeading'),
+    contacts: [
+      { icon: 'phone', text: '+62 812-3456-7890' },
+      { icon: 'mail', text: 'info@bycatchloop.id' },
+      { icon: 'map-pin', text: t('footer.location') },
+    ] satisfies FooterContact[],
+    socialHeading: t('footer.socialHeading'),
+    socials: [
+      { icon: 'instagram', label: 'Instagram' },
+      { icon: 'youtube', label: 'YouTube' },
+      { icon: 'linkedin', label: 'LinkedIn' },
+    ] satisfies FooterSocial[],
+    copyright: t('footer.copyright', { year: 2025 }),
+    legalItems: [t('footer.terms'), t('footer.privacy')],
+  }
 }

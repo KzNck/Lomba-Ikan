@@ -4,8 +4,9 @@ import { Stepper } from '@/components/register/stepper'
 import { PageHeading, type PageHeadingProps } from '@/components/register/page-heading'
 import { WaveDecoration } from '@/components/register/wave-decoration'
 import { ScrollReveal } from '@/components/home/scroll-reveal'
-import { AUTH_LINKS, FOOTER } from '@/components/home/content'
-import { REGISTER_NAV_ITEMS, REGISTER_STEPS } from '@/components/register/content'
+import { useTranslations } from 'next-intl'
+import { authLinks, footer } from '@/components/home/content'
+import { registerNavItems, registerSteps } from '@/components/register/content'
 
 // The Pilih Role frame is roomier and ends in a wave; the profile forms sit tighter above the full footer.
 const LAYOUT_KINDS = {
@@ -15,7 +16,7 @@ const LAYOUT_KINDS = {
 
 type RegisterLayoutProps = {
   kind: keyof typeof LAYOUT_KINDS
-  // Zero-based index into REGISTER_STEPS.
+  // Zero-based index into registerSteps().
   currentStep: number
   heading: PageHeadingProps
   children: React.ReactNode
@@ -23,19 +24,23 @@ type RegisterLayoutProps = {
 
 // Navbar, stepper, heading, and page ending shared by every registration screen.
 export function RegisterLayout({ kind, currentStep, heading, children }: RegisterLayoutProps) {
+  const t = useTranslations('landing')
+  const links = authLinks(useTranslations('auth.links'))
+  const navItems = registerNavItems(t)
+  const steps = registerSteps(useTranslations('auth.register'))
   return (
     <div className="bg-[#F3FAFF]">
       {/* Full-width frame; content stays on the export's 1440px grid (min width), centred by px-frame. overflow-clip (not hidden) keeps the navbar sticky. */}
       <div className="box-border w-full min-w-[1440px] h-fit flex flex-col gap-0 justify-start items-start bg-[#F3FAFF] overflow-clip">
-        <Navbar items={REGISTER_NAV_ITEMS} login={AUTH_LINKS.login} register={AUTH_LINKS.register} />
+        <Navbar items={navItems} login={links.login} register={links.register} />
         <div className={`box-border w-full h-fit shrink-0 flex flex-col ${LAYOUT_KINDS[kind]} justify-start items-center`}>
           <div className="box-border w-fit h-fit shrink-0 flex flex-col gap-[32px] justify-start items-center">
-            <Stepper steps={REGISTER_STEPS} currentStep={currentStep} />
+            <Stepper steps={steps} currentStep={currentStep} />
             <PageHeading {...heading} />
           </div>
           {children}
         </div>
-        {kind === 'role' ? <WaveDecoration /> : <Footer {...FOOTER} quickLinks={REGISTER_NAV_ITEMS} />}
+        {kind === 'role' ? <WaveDecoration /> : <Footer {...footer(t)} quickLinks={navItems} />}
       </div>
       {/* Drives the footer's `data-reveal`, as on the landing page. */}
       <ScrollReveal />

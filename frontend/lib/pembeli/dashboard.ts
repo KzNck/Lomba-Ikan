@@ -7,7 +7,8 @@ import type { ProductCardContent } from '@/components/pembeli/product-card'
 import type { NotificationItemContent } from '@/components/pembeli/notification-item'
 import type { ActivityStatContent } from '@/components/pembeli/activity-stat'
 import { MARKETPLACE_PATH } from '@/components/pembeli/marketplace-content'
-import { categoryLabel, formatRupiah, timeAgo } from '@/lib/catches/present'
+import { categoryLabel, formatRupiah, timeAgo, type Presenter } from '@/lib/catches/present'
+import { getPresenter } from '@/lib/i18n/presenter'
 import { loadBatches, type Batch } from '@/lib/marketplace/batches'
 import { getMyTransactions } from '@/lib/supabase/transactions'
 import { requireProfile } from '@/lib/supabase/auth'
@@ -100,31 +101,37 @@ const STATUS_NOTE: Record<Transaction['status'], { icon: NotificationItemContent
 }
 
 function notifications(
+    p: Presenter,
     transactions: (Transaction & { catches: Catch | null })[]
 ): NotificationItemContent[] {
     return transactions.slice(0, 4).map((tx) => {
         const note = STATUS_NOTE[tx.status]
-        const name = tx.catches ? categoryLabel(tx.catches.species) : 'Batch'
+        const name = tx.catches ? categoryLabel(p, tx.catches.species) : 'Batch'
         return {
             href: NOTIFICATIONS_PATH,
             icon: note.icon,
             title: note.title,
-            description: `${name} · ${formatRupiah(Number(tx.final_total ?? tx.estimated_total))}`,
-            time: timeAgo(tx.updated_at),
+            description: `${name} · ${formatRupiah(p, Number(tx.final_total ?? tx.estimated_total))}`,
+            time: timeAgo(p, tx.updated_at),
         }
     })
 }
 
 export async function loadPembeliDashboard(): Promise<PembeliDashboardData> {
     // Loaded together; RLS scopes the data, and the role check redirects if it fails.
-    const [profile, batches, transactions] = await Promise.all([requireProfile('pembeli'), loadBatches(), getMyTransactions()])
+    const [profile, batches, transactions, p] = await Promise.all([
+        requireProfile('pembeli'),
+        loadBatches(),
+        getMyTransactions(),
+        getPresenter(),
+    ])
     const name = await displayNameFor(profile)
 
     return {
         greeting: name,
         user: { name, role: 'Pembeli' },
         recommendations: topRecommendations(batches),
-        notifications: notifications(transactions),
+        notifications: notifications(p, transactions),
         activity: activityStats(transactions),
     }
 }

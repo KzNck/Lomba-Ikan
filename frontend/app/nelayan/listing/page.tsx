@@ -22,6 +22,7 @@ import { getMyCatches } from '@/lib/supabase/catches'
 import { getMyTransactions } from '@/lib/supabase/transactions'
 import { requireProfile } from '@/lib/supabase/auth'
 import { greetingFor, initialsOf, recentNotifications } from '@/lib/nelayan/dashboard-data'
+import { getPresenter } from '@/lib/i18n/presenter'
 import { displayNameFor } from '@/lib/supabase/display-name'
 
 const detailHref = (slug: string) => `${LISTING_PATH}?detail=${slug}`
@@ -40,10 +41,15 @@ export default async function ListingSayaPage({
   const showClosed = tab === 'terjual'
 
   // Loaded together; RLS scopes the catches to this fisher, and the role check redirects if it fails.
-  const [profile, catches, transactions] = await Promise.all([requireProfile('nelayan'), getMyCatches(), getMyTransactions()])
+  const [profile, catches, transactions, p] = await Promise.all([
+    requireProfile('nelayan'),
+    getMyCatches(),
+    getMyTransactions(),
+    getPresenter(),
+  ])
   const name = await displayNameFor(profile)
 
-  const active = catches.filter((entry) => isOpen(entry.status)).map(toActiveListing)
+  const active = catches.filter((entry) => isOpen(entry.status)).map((entry) => toActiveListing(p, entry))
   const closed = catches.filter((entry) => !isOpen(entry.status))
   const selected = showClosed ? undefined : active.find((item) => item.slug === detail)
 
@@ -53,7 +59,7 @@ export default async function ListingSayaPage({
   ]
 
   const cards = showClosed
-    ? closed.map((entry) => ({ ...toListingCard(entry, '/nelayan/riwayat'), key: entry.id }))
+    ? closed.map((entry) => ({ ...toListingCard(p, entry, '/nelayan/riwayat'), key: entry.id }))
     : active.map((item) =>
         item.status === 'draft'
           ? { ...item, key: item.slug, href: ACTIVE_TAB.publishHref(item.slug), cta: ACTIVE_TAB.publishLabel }
@@ -70,7 +76,7 @@ export default async function ListingSayaPage({
         header={{
           greeting: greetingFor(name),
           user: { name, initials: initialsOf(profile.full_name) },
-          unreadCount: recentNotifications(catches, transactions).length,
+          unreadCount: recentNotifications(p, catches, transactions).length,
         }}
         drawer={
           selected && (

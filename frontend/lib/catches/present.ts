@@ -3,38 +3,59 @@
 // Menerjemahkan row `catches` dari Supabase ke bentuk yang dipakai komponen UI.
 // Semua pemformatan (rupiah, berat, sisa waktu, grade) berkumpul di sini supaya
 // kartu di dashboard, "Listing Saya", dan marketplace menampilkan hal yang sama.
+// Kode di database (kategori, grade, status, cara simpan) tetap kode; teksnya
+// diambil dari messages/*.json (`common`) sesuai bahasa aktif lewat `Presenter`.
 
+import type { createFormatter } from 'next-intl'
 import type { ImageContent } from '@/components/home/hero'
 import type { ListingCardContent } from '@/components/nelayan/listing-card'
 import type { ActiveListing } from '@/components/nelayan/listing-content'
 import { CATEGORY_STEP } from '@/components/nelayan/catch-content'
+import type { Translator } from '@/lib/i18n/translator'
 import type { Catch, FreshnessGrade, StorageMethod } from '@/types/database'
 
+/** Pesan `common` dan formatter bahasa aktif. Di server: `await getPresenter()` (lib/i18n/presenter.ts). */
+export type Presenter = {
+  t: Translator<'common'>
+  format: ReturnType<typeof createFormatter>
+}
+
 /** Kategori dari wizard "Tambah Tangkapan" — nilainya yang tersimpan di kolom `species`. */
-const CATEGORY = new Map(
-  CATEGORY_STEP.options.map((option) => [
-    option.value,
-    { label: option.label, image: 'image' in option ? option.image : undefined },
-  ])
+const CATEGORIES = [
+  'campuran',
+  'teri',
+  'udang',
+  'cumi-cumi-sotong',
+  'ikan-pelagis-kecil',
+  'ikan-demersal',
+  'rajungan',
+  'lainnya',
+] as const
+type Category = (typeof CATEGORIES)[number]
+
+const isCategory = (species: string): species is Category => CATEGORIES.includes(species as Category)
+
+const CATEGORY_IMAGE = new Map<string, string>(
+  CATEGORY_STEP.options.flatMap((option): [string, string][] => ('image' in option && option.image ? [[option.value, option.image]] : []))
 )
 
 // Kategori "Lainnya" tidak punya foto sendiri; pakai foto campuran sebagai penampung.
 const FALLBACK_IMAGE = '/images/nelayan/kategori/campuran.jpg'
 
 /** Nama kategori yang enak dibaca. Species di luar daftar ditampilkan apa adanya. */
-export function categoryLabel(species: string): string {
-  return CATEGORY.get(species)?.label ?? species
+export function categoryLabel({ t }: Presenter, species: string): string {
+  return isCategory(species) ? t(`category.${species}`) : species
 }
 
 /**
  * Foto listing: foto asli dari nelayan kalau ada, kalau tidak foto kategori.
  * Alt text-nya menyebut kategori supaya tetap berguna di kedua kasus.
  */
-export function catchImage(entry: Pick<Catch, 'photo_url' | 'species'>): ImageContent {
-  const label = categoryLabel(entry.species)
+export function catchImage(p: Presenter, entry: Pick<Catch, 'photo_url' | 'species'>): ImageContent {
+  const category = categoryLabel(p, entry.species)
   return {
-    src: entry.photo_url || CATEGORY.get(entry.species)?.image || FALLBACK_IMAGE,
-    alt: entry.photo_url ? `Foto tangkapan ${label}` : `Ilustrasi ${label}`,
+    src: entry.photo_url || CATEGORY_IMAGE.get(entry.species) || FALLBACK_IMAGE,
+    alt: entry.photo_url ? p.t('catchImage.photo', { category }) : p.t('catchImage.illustration', { category }),
   }
 }
 
@@ -48,66 +69,62 @@ export function gradeCondition(grade: FreshnessGrade | null): 'live' | 'dead' {
 }
 
 /** "Grade A1 · Hidup". Tangkapan yang belum dinilai AI belum punya grade. */
-export function gradeLabel(grade: FreshnessGrade | null): string {
-  if (!grade) return 'Belum dinilai'
-  return `Grade ${grade} · ${gradeCondition(grade) === 'live' ? 'Hidup' : 'Mati'}`
+export function gradeLabel({ t }: Presenter, grade: FreshnessGrade | null): string {
+  if (!grade) return t('grade.unrated')
+  return t('grade.label', { grade, condition: gradeCondition(grade) })
 }
 
 /** Cara penyimpanan, dalam kata-kata yang dipakai nelayan. */
-export const STORAGE_LABEL: Record<StorageMethod, string> = {
-  crushed_ice: 'Banyak es',
-  chilled_seawater: 'Sedikit es',
-  ambient: 'Tanpa es',
+export function storageLabel({ t }: Presenter, method: StorageMethod): string {
+  return t(`storage.${method}`)
 }
 
 /** Kata sifat untuk skor kesegaran, dipakai di baris "Estimasi kesegaran". */
-function scoreWord(score: number): string {
-  if (score >= 85) return 'Bagus'
-  if (score >= 75) return 'Baik'
-  return 'Cukup'
+function scoreWord(score: number): 'good' | 'fine' | 'fair' {
+  if (score >= 85) return 'good'
+  if (score >= 75) return 'fine'
+  return 'fair'
 }
 
 /** "Grade A · Hidup, Bagus · 92%" — atau tanpa skor kalau AI belum selesai. */
-export function freshnessLabel(entry: Pick<Catch, 'freshness_grade' | 'freshness_score'>): string {
-  const base = gradeLabel(entry.freshness_grade)
-  if (entry.freshness_score === null) return base
+export function freshnessLabel(p: Presenter, entry: Pick<Catch, 'freshness_grade' | 'freshness_score'>): string {
+  const grade = gradeLabel(p, entry.freshness_grade)
+  if (entry.freshness_score === null) return grade
   const score = Number(entry.freshness_score)
-  return `${base}, ${scoreWord(score)} · ${Math.round(score)}%`
+  return p.t('grade.freshness', { grade, score: scoreWord(score), percent: Math.round(score) })
 }
 
 /** "Rp 8.000". Harga yang belum diisi nelayan ditandai, bukan ditampilkan sebagai Rp 0. */
-export function formatRupiah(value: number | null): string {
-  if (value === null) return 'Belum diatur'
-  return `Rp ${Math.round(Number(value)).toLocaleString('id-ID')}`
+export function formatRupiah({ t, format }: Presenter, value: number | null): string {
+  if (value === null) return t('price.unset')
+  return format.number(Math.round(Number(value)), 'rupiah')
 }
 
-/** "45 kg" — desimal dibuang kalau bulat, karena berat di sini cuma perkiraan. */
-export function formatWeight(kg: number): string {
-  const value = Number(kg)
-  return `${Number.isInteger(value) ? value : value.toFixed(1)} kg`
+/** "45 kg" — paling banyak satu desimal, karena berat di sini cuma perkiraan. */
+export function formatWeight({ t, format }: Presenter, kg: number): string {
+  return t('weight', { weight: format.number(Number(kg), 'weight') })
 }
 
 /**
  * Sisa waktu sampai `expires_at`, dalam gaya "2 j 15 mnt". Mengembalikan null
  * kalau listing sudah lewat batas waktunya.
  */
-export function timeLeft(expiresAt: string | null, now: Date = new Date()): string | null {
+export function timeLeft({ t }: Presenter, expiresAt: string | null, now: Date = new Date()): string | null {
   if (!expiresAt) return null
   const minutes = Math.floor((new Date(expiresAt).getTime() - now.getTime()) / 60000)
   if (minutes <= 0) return null
   const hours = Math.floor(minutes / 60)
-  return hours > 0 ? `${hours} j ${minutes % 60} mnt` : `${minutes} mnt`
+  return hours > 0 ? t('timeLeft.hours', { hours, minutes: minutes % 60 }) : t('timeLeft.minutes', { minutes })
 }
 
-/** "12 jam lalu" untuk listing yang sudah selesai. */
-export function timeAgo(iso: string | null, now: Date = new Date()): string {
+/** "12 jam yang lalu" untuk listing yang sudah selesai. */
+export function timeAgo({ t, format }: Presenter, iso: string | null, now: Date = new Date()): string {
   if (!iso) return ''
-  const minutes = Math.floor((now.getTime() - new Date(iso).getTime()) / 60000)
-  if (minutes < 1) return 'baru saja'
-  if (minutes < 60) return `${minutes} menit lalu`
-  const hours = Math.floor(minutes / 60)
-  if (hours < 24) return `${hours} jam lalu`
-  return `${Math.floor(hours / 24)} hari lalu`
+  const date = new Date(iso)
+  const minutes = Math.floor((now.getTime() - date.getTime()) / 60000)
+  if (minutes < 1) return t('justNow')
+  const unit = minutes < 60 ? 'minute' : minutes < 60 * 24 ? 'hour' : 'day'
+  return format.relativeTime(date, { now, unit })
 }
 
 /**
@@ -115,83 +132,84 @@ export function timeAgo(iso: string | null, now: Date = new Date()): string {
  * diturunkan dari kategori + grade: yang masih hidup layak konsumsi, yang sudah
  * mati diarahkan ke jalur pengolahan.
  */
-const USAGE: Record<string, { live: string[]; dead: string[] }> = {
-  campuran: { live: ['Konsumsi Langsung', 'Ikan Asin'], dead: ['Pakan Maggot (BSF)', 'Silase Ikan'] },
-  teri: { live: ['Teri Nasi Kering', 'Konsumsi Langsung'], dead: ['Terasi', 'Pakan Ternak'] },
-  udang: { live: ['Konsumsi Langsung', 'Udang Beku'], dead: ['Terasi', 'Pakan Ternak'] },
-  'cumi-cumi-sotong': { live: ['Konsumsi Langsung', 'Cumi Beku'], dead: ['Umpan Pancing', 'Tepung Ikan'] },
-  'ikan-pelagis-kecil': { live: ['Konsumsi Langsung', 'Pindang'], dead: ['Ikan Asin', 'Tepung Ikan'] },
-  'ikan-demersal': { live: ['Konsumsi Langsung', 'Ikan Asap'], dead: ['Silase Ikan', 'Pupuk Organik'] },
-  rajungan: { live: ['Konsumsi Langsung', 'Daging Rajungan'], dead: ['Tepung Cangkang', 'Pakan Ternak'] },
-}
-
-const USAGE_FALLBACK = { live: ['Konsumsi Langsung'], dead: ['Pakan Maggot (BSF)', 'Pupuk Organik'] }
+const USAGE_KEYS = new Set<string>(CATEGORIES.filter((category) => category !== 'lainnya'))
+type UsageKey = Exclude<Category, 'lainnya'> | 'fallback'
 
 export function usageLabel(
+  { t }: Presenter,
   entry: Pick<Catch, 'species' | 'freshness_grade' | 'hilirisasi_recommendation'>
 ): string {
-  // Kalau model sudah memberi rekomendasi, itu yang dipakai; sisanya diturunkan
-  // dari kategori dan grade.
+  // Kalau model sudah memberi rekomendasi, itu yang dipakai (teks dari model, apa
+  // adanya); sisanya diturunkan dari kategori dan grade.
   if (entry.hilirisasi_recommendation) return entry.hilirisasi_recommendation
-  const options = USAGE[entry.species] ?? USAGE_FALLBACK
-  return options[gradeCondition(entry.freshness_grade)].join(', ')
+  const key = (USAGE_KEYS.has(entry.species) ? entry.species : 'fallback') as UsageKey
+  return t(`usage.${key}.${gradeCondition(entry.freshness_grade)}`)
 }
 
 /** Status kartu: LISTED masih berjalan, CLAIMED/COMPLETED sudah tutup. */
-function cardStatus(entry: Catch): { status: ListingCardContent['status']; statusLabel: string; footer: string } {
+function cardStatus(p: Presenter, entry: Catch): { status: ListingCardContent['status']; statusLabel: string; footer: string } {
+  const { t } = p
   switch (entry.status) {
     case 'CLAIMED':
-      return { status: 'sold', statusLabel: 'Diklaim', footer: `Diklaim ${timeAgo(entry.updated_at)}` }
+      return {
+        status: 'sold',
+        statusLabel: t('listingStatus.claimed'),
+        footer: t('listingStatus.claimedFooter', { ago: timeAgo(p, entry.updated_at) }),
+      }
     case 'COMPLETED':
-      return { status: 'closed', statusLabel: 'Terjual', footer: `Terjual ${timeAgo(entry.updated_at)}` }
+      return {
+        status: 'closed',
+        statusLabel: t('listingStatus.completed'),
+        footer: t('listingStatus.completedFooter', { ago: timeAgo(p, entry.updated_at) }),
+      }
     case 'EXPIRED':
-      return { status: 'closed', statusLabel: 'Kedaluwarsa', footer: 'Waktu klaim habis' }
+      return { status: 'closed', statusLabel: t('listingStatus.expired'), footer: t('listingStatus.claimWindowOver') }
     // Saved and graded, but "Pasang ke listing" was never pressed. (The offline queue lives on the device and never
     // reaches this list, so a row here is always a catch waiting to be published, not one waiting to sync.)
     case 'WAITING_FOR_SYNC':
-      return { status: 'draft', statusLabel: 'Belum dipasang', footer: 'Pasang untuk mulai 48 jam klaim' }
+      return { status: 'draft', statusLabel: t('listingStatus.draft'), footer: t('listingStatus.draftFooter') }
     default: {
-      const remaining = timeLeft(entry.expires_at)
+      const remaining = timeLeft(p, entry.expires_at)
       return {
         status: 'active',
-        statusLabel: 'Aktif',
-        footer: remaining ? `Sisa ${remaining}` : 'Waktu klaim habis',
+        statusLabel: t('listingStatus.active'),
+        footer: remaining ? t('listingStatus.activeFooter', { time: remaining }) : t('listingStatus.claimWindowOver'),
       }
     }
   }
 }
 
 /** Isi kartu tanpa tujuan link — dipakai kedua bentuk kartu di bawah. */
-function cardContent(entry: Catch): Omit<ListingCardContent, 'href'> {
+function cardContent(p: Presenter, entry: Catch): Omit<ListingCardContent, 'href'> {
   return {
-    image: catchImage(entry),
-    category: categoryLabel(entry.species),
+    image: catchImage(p, entry),
+    category: categoryLabel(p, entry.species),
     location: entry.catch_location,
-    grade: { label: gradeLabel(entry.freshness_grade), condition: gradeCondition(entry.freshness_grade) },
-    weight: formatWeight(entry.weight_kg),
-    pricePerKg: formatRupiah(entry.price_per_kg),
-    ...cardStatus(entry),
+    grade: { label: gradeLabel(p, entry.freshness_grade), condition: gradeCondition(entry.freshness_grade) },
+    weight: formatWeight(p, entry.weight_kg),
+    pricePerKg: formatRupiah(p, entry.price_per_kg),
+    ...cardStatus(p, entry),
   }
 }
 
 /** Bentuk kartu yang dipakai panel dashboard dan tab "Terjual/Diambil". */
-export function toListingCard(entry: Catch, href: string): ListingCardContent {
-  return { href, ...cardContent(entry) }
+export function toListingCard(p: Presenter, entry: Catch, href: string): ListingCardContent {
+  return { href, ...cardContent(p, entry) }
 }
 
 /** Bentuk kartu + isi drawer untuk tab "Aktif" di halaman "Listing Saya". */
-export function toActiveListing(entry: Catch): ActiveListing {
+export function toActiveListing(p: Presenter, entry: Catch): ActiveListing {
   return {
-    ...cardContent(entry),
+    ...cardContent(p, entry),
     // Row id dipakai sebagai slug: stabil, dan drawer membukanya lewat ?detail=.
     slug: entry.id,
     detail: {
       weightKg: Number(entry.weight_kg),
       pricePerKg: entry.price_per_kg === null ? null : Number(entry.price_per_kg),
-      timeLeft: timeLeft(entry.expires_at) ?? 'Habis',
-      freshness: freshnessLabel(entry),
-      usage: usageLabel(entry),
-      photos: [catchImage(entry)],
+      timeLeft: timeLeft(p, entry.expires_at) ?? p.t('timeLeft.over'),
+      freshness: freshnessLabel(p, entry),
+      usage: usageLabel(p, entry),
+      photos: [catchImage(p, entry)],
     },
   }
 }

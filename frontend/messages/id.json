@@ -1,0 +1,394 @@
+{
+  "meta": {
+    "title": "ByCatch Loop | Sirkular Bahari Nusantara",
+    "description": "Platform Sirkular Maritim Terintegrasi. Ubah hasil tangkapan sampingan menjadi peluang bernilai tambah."
+  },
+  "common": {
+    "language": {
+      "label": "Bahasa",
+      "triggerLabel": "Bahasa: {language}. Ganti bahasa",
+      "names": {
+        "id": "Bahasa Indonesia",
+        "en": "English"
+      },
+      "codes": {
+        "id": "ID",
+        "en": "EN"
+      }
+    },
+    "category": {
+      "campuran": "Campuran",
+      "teri": "Teri",
+      "udang": "Udang",
+      "cumi-cumi-sotong": "Cumi-cumi / Sotong",
+      "ikan-pelagis-kecil": "Ikan Pelagis Kecil",
+      "ikan-demersal": "Ikan Demersal",
+      "rajungan": "Rajungan",
+      "lainnya": "Lainnya"
+    },
+    "catchImage": {
+      "photo": "Foto tangkapan {category}",
+      "illustration": "Ilustrasi {category}"
+    },
+    "grade": {
+      "unrated": "Belum dinilai",
+      "label": "Grade {grade} · {condition, select, live {Hidup} other {Mati}}",
+      "freshness": "{grade}, {score, select, good {Bagus} fine {Baik} other {Cukup}} · {percent}%"
+    },
+    "storage": {
+      "crushed_ice": "Banyak es",
+      "chilled_seawater": "Sedikit es",
+      "ambient": "Tanpa es"
+    },
+    "usage": {
+      "campuran": { "live": "Konsumsi Langsung, Ikan Asin", "dead": "Pakan Maggot (BSF), Silase Ikan" },
+      "teri": { "live": "Teri Nasi Kering, Konsumsi Langsung", "dead": "Terasi, Pakan Ternak" },
+      "udang": { "live": "Konsumsi Langsung, Udang Beku", "dead": "Terasi, Pakan Ternak" },
+      "cumi-cumi-sotong": { "live": "Konsumsi Langsung, Cumi Beku", "dead": "Umpan Pancing, Tepung Ikan" },
+      "ikan-pelagis-kecil": { "live": "Konsumsi Langsung, Pindang", "dead": "Ikan Asin, Tepung Ikan" },
+      "ikan-demersal": { "live": "Konsumsi Langsung, Ikan Asap", "dead": "Silase Ikan, Pupuk Organik" },
+      "rajungan": { "live": "Konsumsi Langsung, Daging Rajungan", "dead": "Tepung Cangkang, Pakan Ternak" },
+      "fallback": { "live": "Konsumsi Langsung", "dead": "Pakan Maggot (BSF), Pupuk Organik" }
+    },
+    "price": {
+      "unset": "Belum diatur"
+    },
+    "weight": "{weight} kg",
+    "timeLeft": {
+      "hours": "{hours} j {minutes} mnt",
+      "minutes": "{minutes} mnt",
+      "over": "Habis"
+    },
+    "justNow": "baru saja",
+    "listingStatus": {
+      "claimed": "Diklaim",
+      "claimedFooter": "Diklaim {ago}",
+      "completed": "Terjual",
+      "completedFooter": "Terjual {ago}",
+      "expired": "Kedaluwarsa",
+      "claimWindowOver": "Waktu klaim habis",
+      "draft": "Belum dipasang",
+      "draftFooter": "Pasang untuk mulai 48 jam klaim",
+      "active": "Aktif",
+      "activeFooter": "Sisa {time}"
+    }
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "addCatch": "Tambah Tangkapan",
+    "myListings": "Listing Saya",
+    "history": "Riwayat",
+    "account": "Akun",
+    "marketplace": "Marketplace",
+    "notifications": "Notifikasi",
+    "unread": "{label}, {count} belum dibaca",
+    "roles": {
+      "nelayan": "Nelayan",
+      "pembeli": "Pembeli"
+    }
+  },
+  "dashboard": {
+    "loading": "Memuat halaman…",
+    "accountMenu": {
+      "triggerLabel": "Menu akun, {name}",
+      "account": "Akun",
+      "signOut": "Keluar",
+      "signingOut": "Keluar…",
+      "confirm": {
+        "title": "Keluar sekarang?",
+        "body": "Ada {count} tangkapan belum tersinkron. Jika keluar, data ini bisa hilang.",
+        "cancel": "Batal",
+        "confirm": "Tetap Keluar"
+      }
+    }
+  },
+  "landing": {
+    "nav": {
+      "home": "Beranda",
+      "howItWorks": "Cara Kerja",
+      "impact": "Dampak",
+      "sdgs": "SDGs"
+    },
+    "hero": {
+      "eyebrow": "PLATFORM B2B EKONOMI LAUT SIRKULAR",
+      "headline": "Dari By-catch Menjadi Nilai Ekonomi Bersama",
+      "subheadline": "ByCatch Loop menghubungkan nelayan dengan industri hilir sirkular melalui pencatatan batch, lelang cepat, dan estimasi kesegaran berbasis AI ringan.",
+      "imageAlt": "Nelayan berdiri di atas perahu kayu dengan hasil tangkapan di dek",
+      "primaryCta": "Daftar sebagai Nelayan",
+      "secondaryCta": "Daftar sebagai Pembeli"
+    },
+    "howItWorks": {
+      "eyebrow": "CARA KERJA",
+      "title": "Mudah, Transparan, dan Terhubung",
+      "subtitle": "Proses sederhana dari laut hingga ke industri hilir, dengan teknologi yang memudahkan semua pihak.",
+      "steps": {
+        "record": {
+          "title": "Nelayan Mencatat",
+          "description": "Catat estimasi by‑catch (kategori, volume, waktu tarik, kondisi es) — bisa offline."
+        },
+        "freshness": {
+          "title": "Cek Kesegaran",
+          "description": "Sistem hitung estimasi kesegaran otomatis berbasis AI ringan."
+        },
+        "listing": {
+          "title": "Pasang Listing",
+          "description": "Data tersinkron & jadi listing saat sinyal tersedia."
+        },
+        "buy": {
+          "title": "Pembeli Beli Langsung",
+          "description": "Pembeli dapat notifikasi dan membeli dalam jendela waktu tetap."
+        },
+        "handover": {
+          "title": "Serah Terima di PPI",
+          "description": "Batch diverifikasi PPI saat kapal merapat, lalu diserahkan ke pembeli."
+        }
+      }
+    },
+    "impact": {
+      "eyebrow": "DAMPAK",
+      "title": "Manfaat Nyata untuk Semua Pihak",
+      "nelayan": {
+        "title": "Bagi Nelayan",
+        "subtitle": "Pendapatan lebih baik, laut lebih lestari",
+        "imageAlt": "Nelayan menarik jaring dari perahu di perairan dangkal",
+        "income": {
+          "title": "Pendapatan Tambahan",
+          "description": "Dari komoditas yang sebelumnya bernilai nol/negatif."
+        },
+        "noWaste": {
+          "title": "Tangkapan Tidak Terbuang",
+          "description": "Mengurangi discard mortality dan memaksimalkan manfaat by‑catch."
+        }
+      },
+      "pembeli": {
+        "title": "Bagi Pembeli",
+        "subtitle": "Pasokan stabil, harga transparan",
+        "imageAlt": "Fasilitas pengolahan industri di tepi sungai",
+        "supply": {
+          "title": "Pasokan Konsisten",
+          "description": "Bahan baku hewani lebih stabil untuk kebutuhan industri hilir."
+        },
+        "pricing": {
+          "title": "Harga Transparan",
+          "description": "Bisa memilih berdasarkan grade kesegaran dan lokasi terdekat."
+        }
+      },
+      "statsLabelLines": {
+        "first": "Target Dampak",
+        "second": "Pilot Program"
+      },
+      "stats": {
+        "biomass": {
+          "value": "{kg, number} kg/bulan",
+          "caption": "Biomassa by‑catch terselamatkan"
+        },
+        "closing": {
+          "value": "≥{percent}%",
+          "caption": "Closing rate transaksi"
+        },
+        "speed": {
+          "value": "'<'{minutes} menit",
+          "caption": "Rata-rata waktu listing → kesepakatan"
+        }
+      }
+    },
+    "sdgs": {
+      "eyebrow": "SDGs",
+      "title": "Bersama untuk Masa Depan yang Lebih Baik",
+      "subtitle": "ByCatch Loop mendukung 5 Tujuan Pembangunan Berkelanjutan yang relevan dengan misi kami.",
+      "target": "Target: {targets}",
+      "goals": {
+        "14": {
+          "title": "Ekosistem Lautan",
+          "description": "Mengurangi discard mortality dengan memberi nilai ekonomi pada by‑catch, sekaligus mendata volume tangkapan non‑target."
+        },
+        "12": {
+          "title": "Konsumsi & Produksi Bertanggung Jawab",
+          "description": "Mengubah biomassa yang akan dibuang menjadi bahan baku pakan/pupuk (valorisasi limbah)."
+        },
+        "2": {
+          "title": "Tanpa Kelaparan",
+          "description": "Nelayan kecil mendapat pendapatan tambahan dari komoditas yang sebelumnya tidak bernilai."
+        },
+        "8": {
+          "title": "Pekerjaan Layak & Pertumbuhan Ekonomi",
+          "description": "Mendukung UMKM hilir (peternak maggot, produsen silase/pupuk) mendapat pasokan stabil."
+        },
+        "13": {
+          "title": "Aksi Iklim",
+          "description": "Estimasi pengurangan emisi metana dari pembusukan biomassa laut di pesisir."
+        }
+      }
+    },
+    "footer": {
+      "tagline": "Menghubungkan nelayan dengan industri hilir untuk masa depan laut yang lebih baik.",
+      "quickLinksHeading": "Tautan Cepat",
+      "contactHeading": "Kontak",
+      "location": "Jakarta, Indonesia",
+      "socialHeading": "Ikuti Kami",
+      "copyright": "© {year} ByCatch Loop. Semua hak dilindungi.",
+      "terms": "Syarat & Ketentuan",
+      "privacy": "Kebijakan Privasi"
+    }
+  },
+  "auth": {
+    "links": {
+      "login": "Masuk",
+      "register": "Daftar"
+    },
+    "login": {
+      "backLink": "Kembali ke Beranda",
+      "illustrationAlt": "Ilustrasi dua nelayan memilah hasil tangkapan di atas kapal kayu di laut",
+      "taglineFirst": "Laut yang Sehat,",
+      "taglineSecond": "Masa Depan yang Kuat",
+      "taglineBody": "Bersama ByCatch Loop, kita menghubungkan nelayan, pembeli, dan industri untuk mengelola hasil laut dengan lebih baik.",
+      "title": "Selamat Datang Kembali",
+      "subtitle": "Masuk untuk melanjutkan ke akun ByCatch Loop Anda.",
+      "emailLabel": "Email",
+      "emailPlaceholder": "Contoh: rina@usahaanda.co.id",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Masukkan password Anda",
+      "submit": "Masuk",
+      "confirmFailed": "Tautan konfirmasi sudah kedaluwarsa atau pernah dipakai. Masuk, dan kami kirimkan tautan baru.",
+      "termsIntro": "Dengan melanjutkan, Anda menyetujui",
+      "terms": "Syarat & Ketentuan",
+      "termsConnector": "dan",
+      "privacy": "Kebijakan Privasi.",
+      "signupQuestion": "Belum punya akun?",
+      "signupLink": "Daftar di sini"
+    },
+    "confirmEmail": {
+      "title": "Konfirmasi Email Anda",
+      "subtitle": "Kami mengirim tautan konfirmasi ke {email}.",
+      "body": "Buka email tersebut dan klik tautannya untuk mengaktifkan akun. Periksa folder spam kalau belum masuk dalam beberapa menit.",
+      "resend": "Kirim ulang email konfirmasi",
+      "resendWait": "Kirim ulang dalam {time}",
+      "resent": "Email konfirmasi baru sudah dikirim. Tautan yang lama tidak berlaku lagi.",
+      "question": "Sudah dikonfirmasi?",
+      "link": "Masuk di sini"
+    },
+    "register": {
+      "steps": {
+        "role": "1. Pilih Role",
+        "profile": "2. Lengkapi Profil"
+      },
+      "chooseRole": {
+        "title": "Daftar sebagai Apa?",
+        "subtitle": "Pilih peran Anda untuk melanjutkan ke proses pendaftaran.",
+        "nelayan": {
+          "title": "Nelayan",
+          "description": "Untuk nelayan dan koperasi nelayan yang ingin menjual hasil tangkapan by-catch.",
+          "imageAlt": "Ilustrasi nelayan mendayung perahu kayu di laut"
+        },
+        "pembeli": {
+          "title": "Pembeli",
+          "description": "Untuk industri hilir seperti peternak maggot, produsen silase ikan, dan produsen pupuk organik cair.",
+          "imageAlt": "Ilustrasi fasilitas pengolahan industri dengan truk pengiriman"
+        },
+        "loginQuestion": "Sudah punya akun?",
+        "loginLink": "Masuk di sini"
+      },
+      "fields": {
+        "emailLabel": "Email",
+        "emailPlaceholder": "Contoh: dulmatin@gmail.com",
+        "emailHelper": "Dipakai untuk masuk ke akun Anda.",
+        "passwordLabel": "Password",
+        "passwordPlaceholder": "Minimal 8 karakter",
+        "passwordHelper": "Gunakan minimal 8 karakter.",
+        "confirmPasswordLabel": "Konfirmasi Password",
+        "confirmPasswordPlaceholder": "Ketik ulang password Anda",
+        "requiredNote": "Kolom bertanda * wajib diisi.",
+        "fullNameLabel": "Nama Lengkap"
+      },
+      "location": {
+        "provinsiLabel": "Provinsi",
+        "provinsiPlaceholder": "Pilih provinsi",
+        "kabKotaLabel": "Kota/Kabupaten",
+        "kabKotaPlaceholder": "Pilih kota/kabupaten",
+        "kabKotaLocked": "Pilih provinsi terlebih dahulu.",
+        "pelabuhanLabel": "Pangkalan Pendaratan Ikan (PPI)",
+        "pelabuhanPlaceholder": "Pilih PPI",
+        "pelabuhanLocked": "Pilih kota/kabupaten terlebih dahulu.",
+        "pelabuhanEmpty": "Belum ada PPI terdaftar di kota/kabupaten ini. Hubungi kami lewat tautan di bawah."
+      },
+      "nelayan": {
+        "title": "Lengkapi Profil Nelayan",
+        "subtitle": "Informasi ini membantu pembeli menemukan hasil tangkapan Anda lebih cepat.",
+        "cardTitle": "Data Diri Nelayan",
+        "namePlaceholder": "Contoh: Dulmatin",
+        "missingPpiTitle": "PPI saya tidak ada di daftar",
+        "missingPpiDescription": "Hubungi tim kami untuk menambahkan PPI Anda.",
+        "submit": "Daftar"
+      },
+      "pembeliUsaha": {
+        "title": "Informasi Usaha Anda",
+        "subtitle": "Lengkapi data usaha Anda agar kami bisa menampilkan pasokan yang sesuai dengan kebutuhan bisnis Anda.",
+        "cardTitle": "Data Usaha",
+        "namePlaceholder": "Contoh: Rina Wulandari",
+        "businessNameLabel": "Nama Usaha",
+        "businessNamePlaceholder": "Contoh: CV Maggot Sejahtera",
+        "businessTypeLabel": "Klasifikasi Jenis Usaha",
+        "businessTypeHelper": "Pilih satu atau lebih kategori yang sesuai dengan usaha Anda.",
+        "businessTypes": {
+          "maggot-bsf": "Peternak Maggot BSF",
+          "silase-ikan": "Produsen Silase Ikan",
+          "pupuk-organik-cair": "Produsen Pupuk Organik Cair",
+          "pakan-ternak": "Produsen Pakan Ternak",
+          "lainnya": "Lainnya"
+        },
+        "emailPlaceholder": "Contoh: rina@usahaanda.co.id",
+        "businessTypeError": "Pilih minimal satu jenis usaha untuk melanjutkan.",
+        "progress": "Bagian 1 dari 2: Informasi usaha",
+        "submit": "Lanjut"
+      },
+      "pembeliPreferensi": {
+        "title": "Preferensi Pencarian",
+        "subtitle": "Tentukan jenis bahan, grade, dan PPI prioritas agar marketplace langsung menampilkan batch yang relevan.",
+        "cardTitle": "Atur Preferensi",
+        "cardSubtitle": "Opsional. Anda bisa mengubahnya kapan saja di halaman Akun.",
+        "materialLabel": "Jenis Bahan/Tangkapan Dicari",
+        "materialHelper": "Pilih satu atau lebih jenis bahan yang Anda cari.",
+        "materials": {
+          "ikan-pelagis": "Ikan Pelagis",
+          "ikan-demersal": "Ikan Demersal",
+          "udang": "Udang",
+          "cumi-cumi": "Cumi-cumi",
+          "kepiting": "Kepiting",
+          "rajungan": "Rajungan"
+        },
+        "gradeLabel": "Grade Diinginkan",
+        "gradeHelper": "Pilih grade kesegaran yang sesuai dengan kebutuhan produksi Anda.",
+        "gradeLive": "Hidup (Grade A)",
+        "gradeDead": "Mati (Grade B)",
+        "gradeDisclaimer": "Grade adalah estimasi kesegaran indikatif, bukan sertifikasi mutu pangan.",
+        "ppiLabel": "PPI Prioritas",
+        "ppiHelper": "Pilih Pangkalan Pendaratan Ikan (PPI) tempat Anda biasa mengambil pasokan.",
+        "ppiSearchLabel": "Cari PPI prioritas",
+        "ppiSearchPlaceholder": "Cari PPI, contoh: PPI Muara Angke",
+        "ppiEmptyTitle": "Tidak ada PPI dengan nama “{query}”.",
+        "ppiEmptyHint": "Periksa ejaan, atau tambahkan PPI Anda secara manual.",
+        "ppiMissing": "PPI saya tidak ada di daftar",
+        "ppiRemove": "Hapus {name}",
+        "skip": "Lewati, atur nanti di Akun",
+        "progress": "Bagian 2 dari 2: Preferensi pencarian",
+        "back": "Kembali",
+        "submit": "Daftar",
+        "submitting": "Mengirim kode…"
+      }
+    },
+    "errors": {
+      "invalidCredentials": "Email atau password salah. Periksa lagi, lalu coba masuk kembali.",
+      "alreadyRegistered": "Email ini sudah terdaftar. Silakan masuk.",
+      "passwordTooShort": "Password minimal {min} karakter.",
+      "rateLimited": "Terlalu banyak percobaan. Tunggu sebentar sebelum mencoba lagi.",
+      "invalidEmail": "Alamat email tidak valid.",
+      "enterValidEmail": "Masukkan alamat email yang valid.",
+      "passwordMismatch": "Konfirmasi password belum sama dengan password.",
+      "enterPassword": "Masukkan password Anda.",
+      "fullNameRequired": "Nama lengkap wajib diisi.",
+      "ppiRequired": "Pilih Pangkalan Pendaratan Ikan (PPI) Anda.",
+      "businessNameRequired": "Nama usaha wajib diisi.",
+      "businessTypeRequired": "Pilih minimal satu jenis usaha."
+    }
+  }
+}

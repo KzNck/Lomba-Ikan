@@ -15,7 +15,8 @@
 // berat estimasinya tampil kosong.
 
 import { FILTERS, STATE_OF, TABLE, type SortOrder, type StatusFilter, type TransactionState } from '@/components/nelayan/riwayat-content'
-import { categoryLabel, gradeLabel, STORAGE_LABEL } from '@/lib/catches/present'
+import { categoryLabel, formatRupiah, gradeLabel, storageLabel, type Presenter } from '@/lib/catches/present'
+import { getPresenter } from '@/lib/i18n/presenter'
 import { getMyTransactions } from '@/lib/supabase/transactions'
 import { requireProfile } from '@/lib/supabase/auth'
 import type { Catch, FreshnessGrade, Transaction } from '@/types/database'
@@ -82,16 +83,12 @@ export type RiwayatData = {
 
 type TransactionWithCatch = Transaction & { catches: Catch | null }
 
-const DATE = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
-const TIME = new Intl.DateTimeFormat('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false })
-
 /** "2025-06-01" → "1 Jun 2025", untuk label filter tanggal. */
-export const formatDay = (day: string) => DATE.format(new Date(`${day}T00:00:00`))
+export const formatDay = ({ format }: Presenter, day: string) => format.dateTime(new Date(`${day}T00:00:00`), 'day')
 
-const rupiah = (amount: number) => `Rp ${new Intl.NumberFormat('id-ID').format(Math.round(amount))}`
-const dateOf = (iso: string) => DATE.format(new Date(iso))
-const timeOf = (iso: string) => TIME.format(new Date(iso))
-const dateTimeOf = (iso: string) => `${dateOf(iso)}, ${timeOf(iso)}`
+const dateOf = ({ format }: Presenter, iso: string) => format.dateTime(new Date(iso), 'day')
+const timeOf = ({ format }: Presenter, iso: string) => format.dateTime(new Date(iso), 'time')
+const dateTimeOf = (p: Presenter, iso: string) => `${dateOf(p, iso)}, ${timeOf(p, iso)}`
 
 /** Berat yang ditagihkan: hasil timbang di dermaga kalau sudah ada, kalau belum estimasi dari tangkapan. */
 const weightOf = (entry: TransactionWithCatch) => Number(entry.final_weight_kg ?? entry.catches?.weight_kg ?? 0)
@@ -108,33 +105,34 @@ function partnerOf(entry: TransactionWithCatch, side: RiwayatSide): TransactionR
     return { ...side.partner, type: ppi }
 }
 
-function toRow(entry: TransactionWithCatch, state: TransactionState, side: RiwayatSide): TransactionRowContent {
+function toRow(p: Presenter, entry: TransactionWithCatch, state: TransactionState, side: RiwayatSide): TransactionRowContent {
     const grade = entry.catches?.freshness_grade ?? null
     return {
         id: entry.id,
-        date: dateOf(entry.created_at),
-        time: timeOf(entry.created_at),
+        date: dateOf(p, entry.created_at),
+        time: timeOf(p, entry.created_at),
         partner: partnerOf(entry, side),
         gradeLetter: grade ? grade[0] : '—',
         grade,
         weight: weightText(weightOf(entry)),
-        total: rupiah(totalOf(entry)),
+        total: formatRupiah(p, totalOf(entry)),
         state,
     }
 }
 
 /** Langkah-langkah "Perjalanan Transaksi", dari stempel waktu yang sudah terisi. */
-function stepsOf(entry: TransactionWithCatch, state: TransactionState, labels: Record<string, string>) {
+function stepsOf(p: Presenter, entry: TransactionWithCatch, state: TransactionState, labels: Record<string, string>) {
     const steps: { label: string; time: string }[] = []
-    if (entry.catches?.listed_at) steps.push({ label: labels.listed, time: dateTimeOf(entry.catches.listed_at) })
-    steps.push({ label: labels.sold, time: dateTimeOf(entry.created_at) })
-    if (entry.handover_confirmed_at) steps.push({ label: labels.handover, time: dateTimeOf(entry.handover_confirmed_at) })
+    if (entry.catches?.listed_at) steps.push({ label: labels.listed, time: dateTimeOf(p, entry.catches.listed_at) })
+    steps.push({ label: labels.sold, time: dateTimeOf(p, entry.created_at) })
+    if (entry.handover_confirmed_at) steps.push({ label: labels.handover, time: dateTimeOf(p, entry.handover_confirmed_at) })
     const closedAt = entry.disbursed_at ?? entry.updated_at
-    steps.push({ label: state === 'selesai' ? labels.done : labels.cancelled, time: dateTimeOf(closedAt) })
+    steps.push({ label: state === 'selesai' ? labels.done : labels.cancelled, time: dateTimeOf(p, closedAt) })
     return steps
 }
 
 function toDetail(
+    p: Presenter,
     entry: TransactionWithCatch,
     state: TransactionState,
     labels: Record<string, string>,
@@ -146,22 +144,26 @@ function toDetail(
     return {
         id: entry.id,
         state,
-        bannerAt: dateTimeOf(entry.disbursed_at ?? entry.updated_at),
-        steps: stepsOf(entry, state, labels),
-        date: dateTimeOf(entry.created_at),
+        bannerAt: dateTimeOf(p, entry.disbursed_at ?? entry.updated_at),
+        steps: stepsOf(p, entry, state, labels),
+        date: dateTimeOf(p, entry.created_at),
         partner: partnerOf(entry, side),
-        gradeLabel: gradeLabel(catchRow?.freshness_grade ?? null),
+        gradeLabel: gradeLabel(p, catchRow?.freshness_grade ?? null),
         grade: catchRow?.freshness_grade ?? null,
-        category: catchRow ? categoryLabel(catchRow.species) : '—',
+        category: catchRow ? categoryLabel(p, catchRow.species) : '—',
         volume: weightText(weight),
-        hauledAt: catchRow ? dateTimeOf(catchRow.catch_time) : '—',
-        ice: catchRow ? STORAGE_LABEL[catchRow.storage_method] : '—',
+        hauledAt: catchRow ? dateTimeOf(p, catchRow.catch_time) : '—',
+        ice: catchRow ? storageLabel(p, catchRow.storage_method) : '—',
         photoUrl: catchRow?.photo_url ?? null,
         // Harga satuan diturunkan dari nilai transaksi supaya cocok dengan totalnya,
         // termasuk setelah berat final berbeda dari estimasi.
         pricePerKg:
-            weight > 0 ? rupiah(total / weight) : catchRow?.price_per_kg != null ? rupiah(Number(catchRow.price_per_kg)) : '—',
-        total: rupiah(total),
+            weight > 0
+                ? formatRupiah(p, total / weight)
+                : catchRow?.price_per_kg != null
+                  ? formatRupiah(p, Number(catchRow.price_per_kg))
+                  : '—',
+        total: formatRupiah(p, total),
         paid: entry.disbursed_at !== null,
     }
 }
@@ -196,7 +198,7 @@ export async function loadRiwayat(
     stepLabels: Record<string, string>,
     side: RiwayatSide = NELAYAN_SIDE
 ): Promise<RiwayatData> {
-    const [profile, transactions] = await Promise.all([requireProfile(side.role), getMyTransactions()])
+    const [profile, transactions, p] = await Promise.all([requireProfile(side.role), getMyTransactions(), getPresenter()])
 
     const history = transactions
         .filter((entry) => (side.role === 'pembeli' ? entry.pembeli_id : entry.nelayan_id) === profile.id)
@@ -211,8 +213,8 @@ export async function loadRiwayat(
                 : Date.parse(b.entry.created_at) - Date.parse(a.entry.created_at)
         )
 
-    const rows = history.map(({ entry, state }) => toRow(entry, state, side))
-    const details = new Map(history.map(({ entry, state }) => [entry.id, toDetail(entry, state, stepLabels, side)]))
+    const rows = history.map(({ entry, state }) => toRow(p, entry, state, side))
+    const details = new Map(history.map(({ entry, state }) => [entry.id, toDetail(p, entry, state, stepLabels, side)]))
     // Ujung-ujung daftar adalah rentang yang tampil — urutannya bisa dari salah satu ujung.
     const ends = rows.length > 0 ? [rows[0].date, rows[rows.length - 1].date] : null
     const shown = ends ? { from: order === 'lama' ? ends[0] : ends[1], to: order === 'lama' ? ends[1] : ends[0] } : null
@@ -254,10 +256,10 @@ export function riwayatHref(path: string, view: RiwayatView, change: { transaksi
 }
 
 /** The closed date control: the chosen range when there is one, otherwise what the listed rows cover. */
-export function dateLabelFor(range: DateRange, shown: { from: string; to: string } | null): string {
+export function dateLabelFor(p: Presenter, range: DateRange, shown: { from: string; to: string } | null): string {
     const { between, since, until, empty } = FILTERS.dateRange
-    if (range.from && range.to) return between(formatDay(range.from), formatDay(range.to))
-    if (range.from) return since(formatDay(range.from))
-    if (range.to) return until(formatDay(range.to))
+    if (range.from && range.to) return between(formatDay(p, range.from), formatDay(p, range.to))
+    if (range.from) return since(formatDay(p, range.from))
+    if (range.to) return until(formatDay(p, range.to))
     return shown ? between(shown.from, shown.to) : empty
 }

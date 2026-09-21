@@ -47,7 +47,7 @@ export function BenefitCard({ icon, accent, title, subtitle, image, points }: Be
         <ul className="box-border w-full h-fit shrink-0 flex flex-col gap-[20px] justify-start items-start">
           {points.map((point) => (
             <li
-              key={point.title}
+              key={point.icon}
               className="box-border w-full h-fit shrink-0 flex flex-row gap-[16px] justify-start items-start"
             >
               <div

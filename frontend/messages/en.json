@@ -1,0 +1,394 @@
+{
+  "meta": {
+    "title": "ByCatch Loop | Circular Maritime Indonesia",
+    "description": "An integrated circular maritime platform. Turn by-catch into value-added opportunities."
+  },
+  "common": {
+    "language": {
+      "label": "Language",
+      "triggerLabel": "Language: {language}. Change language",
+      "names": {
+        "id": "Bahasa Indonesia",
+        "en": "English"
+      },
+      "codes": {
+        "id": "ID",
+        "en": "EN"
+      }
+    },
+    "category": {
+      "campuran": "Mixed",
+      "teri": "Anchovy",
+      "udang": "Shrimp",
+      "cumi-cumi-sotong": "Squid / Cuttlefish",
+      "ikan-pelagis-kecil": "Small Pelagic Fish",
+      "ikan-demersal": "Demersal Fish",
+      "rajungan": "Blue Swimming Crab",
+      "lainnya": "Other"
+    },
+    "catchImage": {
+      "photo": "Photo of {category} catch",
+      "illustration": "{category} illustration"
+    },
+    "grade": {
+      "unrated": "Not graded yet",
+      "label": "Grade {grade} · {condition, select, live {Live} other {Dead}}",
+      "freshness": "{grade}, {score, select, good {Excellent} fine {Good} other {Fair}} · {percent}%"
+    },
+    "storage": {
+      "crushed_ice": "Plenty of ice",
+      "chilled_seawater": "Some ice",
+      "ambient": "No ice"
+    },
+    "usage": {
+      "campuran": { "live": "Direct Consumption, Salted Fish", "dead": "Maggot Feed (BSF), Fish Silage" },
+      "teri": { "live": "Dried Anchovies, Direct Consumption", "dead": "Shrimp Paste, Livestock Feed" },
+      "udang": { "live": "Direct Consumption, Frozen Shrimp", "dead": "Shrimp Paste, Livestock Feed" },
+      "cumi-cumi-sotong": { "live": "Direct Consumption, Frozen Squid", "dead": "Fishing Bait, Fish Meal" },
+      "ikan-pelagis-kecil": { "live": "Direct Consumption, Boiled Salted Fish", "dead": "Salted Fish, Fish Meal" },
+      "ikan-demersal": { "live": "Direct Consumption, Smoked Fish", "dead": "Fish Silage, Organic Fertilizer" },
+      "rajungan": { "live": "Direct Consumption, Crab Meat", "dead": "Shell Meal, Livestock Feed" },
+      "fallback": { "live": "Direct Consumption", "dead": "Maggot Feed (BSF), Organic Fertilizer" }
+    },
+    "price": {
+      "unset": "Not set"
+    },
+    "weight": "{weight} kg",
+    "timeLeft": {
+      "hours": "{hours} h {minutes} min",
+      "minutes": "{minutes} min",
+      "over": "Ended"
+    },
+    "justNow": "just now",
+    "listingStatus": {
+      "claimed": "Claimed",
+      "claimedFooter": "Claimed {ago}",
+      "completed": "Sold",
+      "completedFooter": "Sold {ago}",
+      "expired": "Expired",
+      "claimWindowOver": "Claim window ended",
+      "draft": "Not listed",
+      "draftFooter": "List it to start the 48-hour claim window",
+      "active": "Active",
+      "activeFooter": "{time} left"
+    }
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "addCatch": "Add Catch",
+    "myListings": "My Listings",
+    "history": "History",
+    "account": "Account",
+    "marketplace": "Marketplace",
+    "notifications": "Notifications",
+    "unread": "{label}, {count} unread",
+    "roles": {
+      "nelayan": "Fisher",
+      "pembeli": "Buyer"
+    }
+  },
+  "dashboard": {
+    "loading": "Loading page…",
+    "accountMenu": {
+      "triggerLabel": "Account menu, {name}",
+      "account": "Account",
+      "signOut": "Sign out",
+      "signingOut": "Signing out…",
+      "confirm": {
+        "title": "Sign out now?",
+        "body": "{count, plural, one {# catch hasn't} other {# catches haven't}} synced yet. If you sign out, this data may be lost.",
+        "cancel": "Cancel",
+        "confirm": "Sign Out Anyway"
+      }
+    }
+  },
+  "landing": {
+    "nav": {
+      "home": "Home",
+      "howItWorks": "How It Works",
+      "impact": "Impact",
+      "sdgs": "SDGs"
+    },
+    "hero": {
+      "eyebrow": "B2B PLATFORM FOR THE CIRCULAR OCEAN ECONOMY",
+      "headline": "Turning By-catch into Shared Economic Value",
+      "subheadline": "ByCatch Loop connects fishers with circular downstream industries through batch logging, fast auctions and lightweight AI freshness estimates.",
+      "imageAlt": "A fisher standing on a wooden boat with the catch on deck",
+      "primaryCta": "Sign Up as a Fisher",
+      "secondaryCta": "Sign Up as a Buyer"
+    },
+    "howItWorks": {
+      "eyebrow": "HOW IT WORKS",
+      "title": "Simple, Transparent and Connected",
+      "subtitle": "A simple process from the sea to downstream industry, with technology that makes it easy for everyone.",
+      "steps": {
+        "record": {
+          "title": "Fishers Log the Catch",
+          "description": "Log an estimate of the by‑catch (category, volume, haul time, ice condition), even offline."
+        },
+        "freshness": {
+          "title": "Freshness Check",
+          "description": "The system estimates freshness automatically with lightweight AI."
+        },
+        "listing": {
+          "title": "Post a Listing",
+          "description": "Data syncs and becomes a listing once there's signal."
+        },
+        "buy": {
+          "title": "Buyers Purchase Directly",
+          "description": "Buyers get notified and buy within a fixed time window."
+        },
+        "handover": {
+          "title": "Handover at the PPI",
+          "description": "The PPI verifies the batch when the boat docks, then hands it to the buyer."
+        }
+      }
+    },
+    "impact": {
+      "eyebrow": "IMPACT",
+      "title": "Real Benefits for Everyone",
+      "nelayan": {
+        "title": "For Fishers",
+        "subtitle": "Better income, healthier seas",
+        "imageAlt": "A fisher hauling a net from a boat in shallow water",
+        "income": {
+          "title": "Extra Income",
+          "description": "From catch that used to be worth nothing or less."
+        },
+        "noWaste": {
+          "title": "No Wasted Catch",
+          "description": "Reduces discard mortality and makes the most of by‑catch."
+        }
+      },
+      "pembeli": {
+        "title": "For Buyers",
+        "subtitle": "Steady supply, transparent prices",
+        "imageAlt": "An industrial processing facility on a riverbank",
+        "supply": {
+          "title": "Consistent Supply",
+          "description": "More stable animal-based raw material for downstream industry."
+        },
+        "pricing": {
+          "title": "Transparent Pricing",
+          "description": "Choose by freshness grade and the nearest location."
+        }
+      },
+      "statsLabelLines": {
+        "first": "Impact Targets",
+        "second": "Pilot Program"
+      },
+      "stats": {
+        "biomass": {
+          "value": "{kg, number} kg/month",
+          "caption": "By‑catch biomass saved"
+        },
+        "closing": {
+          "value": "≥{percent}%",
+          "caption": "Transaction closing rate"
+        },
+        "speed": {
+          "value": "'<'{minutes} minutes",
+          "caption": "Average time from listing → deal"
+        }
+      }
+    },
+    "sdgs": {
+      "eyebrow": "SDGs",
+      "title": "Together for a Better Future",
+      "subtitle": "ByCatch Loop supports 5 Sustainable Development Goals that align with our mission.",
+      "target": "Target: {targets}",
+      "goals": {
+        "14": {
+          "title": "Life Below Water",
+          "description": "Reduces discard mortality by giving by‑catch economic value, while recording non‑target catch volumes."
+        },
+        "12": {
+          "title": "Responsible Consumption & Production",
+          "description": "Turns biomass that would be thrown away into feed and fertilizer raw material (waste valorization)."
+        },
+        "2": {
+          "title": "Zero Hunger",
+          "description": "Small-scale fishers earn extra income from catch that used to have no value."
+        },
+        "8": {
+          "title": "Decent Work & Economic Growth",
+          "description": "Helps downstream small businesses (maggot farmers, silage and fertilizer makers) get a steady supply."
+        },
+        "13": {
+          "title": "Climate Action",
+          "description": "Estimates the methane emissions avoided from marine biomass rotting on the coast."
+        }
+      }
+    },
+    "footer": {
+      "tagline": "Connecting fishers with downstream industry for a better future for our seas.",
+      "quickLinksHeading": "Quick Links",
+      "contactHeading": "Contact",
+      "location": "Jakarta, Indonesia",
+      "socialHeading": "Follow Us",
+      "copyright": "© {year} ByCatch Loop. All rights reserved.",
+      "terms": "Terms & Conditions",
+      "privacy": "Privacy Policy"
+    }
+  },
+  "auth": {
+    "links": {
+      "login": "Sign In",
+      "register": "Sign Up"
+    },
+    "login": {
+      "backLink": "Back to Home",
+      "illustrationAlt": "Illustration of two fishers sorting the catch on a wooden boat at sea",
+      "taglineFirst": "Healthy Seas,",
+      "taglineSecond": "a Strong Future",
+      "taglineBody": "With ByCatch Loop, we connect fishers, buyers and industry to make better use of what the sea provides.",
+      "title": "Welcome Back",
+      "subtitle": "Sign in to continue to your ByCatch Loop account.",
+      "emailLabel": "Email",
+      "emailPlaceholder": "e.g. rina@yourbusiness.co.id",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "submit": "Sign In",
+      "confirmFailed": "The confirmation link has expired or was already used. Sign in and we'll send you a new one.",
+      "termsIntro": "By continuing, you agree to the",
+      "terms": "Terms & Conditions",
+      "termsConnector": "and",
+      "privacy": "Privacy Policy.",
+      "signupQuestion": "Don't have an account?",
+      "signupLink": "Sign up here"
+    },
+    "confirmEmail": {
+      "title": "Confirm Your Email",
+      "subtitle": "We sent a confirmation link to {email}.",
+      "body": "Open that email and click the link to activate your account. Check your spam folder if it hasn't arrived in a few minutes.",
+      "resend": "Resend confirmation email",
+      "resendWait": "Resend in {time}",
+      "resent": "A new confirmation email is on its way. The old link no longer works.",
+      "question": "Already confirmed?",
+      "link": "Sign in here"
+    },
+    "register": {
+      "steps": {
+        "role": "1. Choose Role",
+        "profile": "2. Complete Profile"
+      },
+      "chooseRole": {
+        "title": "Sign Up As?",
+        "subtitle": "Choose your role to continue signing up.",
+        "nelayan": {
+          "title": "Fisher",
+          "description": "For fishers and fishing cooperatives who want to sell their by-catch.",
+          "imageAlt": "Illustration of a fisher rowing a wooden boat at sea"
+        },
+        "pembeli": {
+          "title": "Buyer",
+          "description": "For downstream industry such as maggot farmers, fish silage producers and liquid organic fertilizer producers.",
+          "imageAlt": "Illustration of an industrial processing facility with a delivery truck"
+        },
+        "loginQuestion": "Already have an account?",
+        "loginLink": "Sign in here"
+      },
+      "fields": {
+        "emailLabel": "Email",
+        "emailPlaceholder": "e.g. dulmatin@gmail.com",
+        "emailHelper": "Used to sign in to your account.",
+        "passwordLabel": "Password",
+        "passwordPlaceholder": "At least 8 characters",
+        "passwordHelper": "Use at least 8 characters.",
+        "confirmPasswordLabel": "Confirm Password",
+        "confirmPasswordPlaceholder": "Type your password again",
+        "requiredNote": "Fields marked * are required.",
+        "fullNameLabel": "Full Name"
+      },
+      "location": {
+        "provinsiLabel": "Province",
+        "provinsiPlaceholder": "Choose a province",
+        "kabKotaLabel": "City/Regency",
+        "kabKotaPlaceholder": "Choose a city/regency",
+        "kabKotaLocked": "Choose a province first.",
+        "pelabuhanLabel": "Fish Landing Port (PPI)",
+        "pelabuhanPlaceholder": "Choose a PPI",
+        "pelabuhanLocked": "Choose a city/regency first.",
+        "pelabuhanEmpty": "No PPI is registered in this city/regency yet. Contact us using the link below."
+      },
+      "nelayan": {
+        "title": "Complete Your Fisher Profile",
+        "subtitle": "This helps buyers find your catch faster.",
+        "cardTitle": "Fisher Details",
+        "namePlaceholder": "e.g. Dulmatin",
+        "missingPpiTitle": "My PPI isn't listed",
+        "missingPpiDescription": "Contact our team to add your PPI.",
+        "submit": "Sign Up"
+      },
+      "pembeliUsaha": {
+        "title": "Your Business Information",
+        "subtitle": "Fill in your business details so we can show supply that fits your business needs.",
+        "cardTitle": "Business Details",
+        "namePlaceholder": "e.g. Rina Wulandari",
+        "businessNameLabel": "Business Name",
+        "businessNamePlaceholder": "e.g. CV Maggot Sejahtera",
+        "businessTypeLabel": "Business Type",
+        "businessTypeHelper": "Choose one or more categories that match your business.",
+        "businessTypes": {
+          "maggot-bsf": "BSF Maggot Farmer",
+          "silase-ikan": "Fish Silage Producer",
+          "pupuk-organik-cair": "Liquid Organic Fertilizer Producer",
+          "pakan-ternak": "Livestock Feed Producer",
+          "lainnya": "Other"
+        },
+        "emailPlaceholder": "e.g. rina@yourbusiness.co.id",
+        "businessTypeError": "Choose at least one business type to continue.",
+        "progress": "Part 1 of 2: Business information",
+        "submit": "Next"
+      },
+      "pembeliPreferensi": {
+        "title": "Search Preferences",
+        "subtitle": "Set the materials, grades and priority PPIs so the marketplace shows relevant batches right away.",
+        "cardTitle": "Set Preferences",
+        "cardSubtitle": "Optional. You can change these any time on the Account page.",
+        "materialLabel": "Materials/Catch Wanted",
+        "materialHelper": "Choose one or more materials you're looking for.",
+        "materials": {
+          "ikan-pelagis": "Pelagic Fish",
+          "ikan-demersal": "Demersal Fish",
+          "udang": "Shrimp",
+          "cumi-cumi": "Squid",
+          "kepiting": "Mud Crab",
+          "rajungan": "Blue Swimming Crab"
+        },
+        "gradeLabel": "Preferred Grade",
+        "gradeHelper": "Choose the freshness grades that suit your production needs.",
+        "gradeLive": "Live (Grade A)",
+        "gradeDead": "Dead (Grade B)",
+        "gradeDisclaimer": "Grades are indicative freshness estimates, not a food quality certification.",
+        "ppiLabel": "Priority PPIs",
+        "ppiHelper": "Choose the fish landing ports (PPI) where you usually source supply.",
+        "ppiSearchLabel": "Search priority PPIs",
+        "ppiSearchPlaceholder": "Search PPIs, e.g. PPI Muara Angke",
+        "ppiEmptyTitle": "No PPI named “{query}”.",
+        "ppiEmptyHint": "Check the spelling, or add your PPI manually.",
+        "ppiMissing": "My PPI isn't listed",
+        "ppiRemove": "Remove {name}",
+        "skip": "Skip, set this later in Account",
+        "progress": "Part 2 of 2: Search preferences",
+        "back": "Back",
+        "submit": "Sign Up",
+        "submitting": "Sending code…"
+      }
+    },
+    "errors": {
+      "invalidCredentials": "Wrong email or password. Check them and try signing in again.",
+      "alreadyRegistered": "This email is already registered. Please sign in.",
+      "passwordTooShort": "Password must be at least {min} characters.",
+      "rateLimited": "Too many attempts. Wait a moment before trying again.",
+      "invalidEmail": "Invalid email address.",
+      "enterValidEmail": "Enter a valid email address.",
+      "passwordMismatch": "The passwords don't match.",
+      "enterPassword": "Enter your password.",
+      "fullNameRequired": "Full name is required.",
+      "ppiRequired": "Choose your Fish Landing Port (PPI).",
+      "businessNameRequired": "Business name is required.",
+      "businessTypeRequired": "Choose at least one business type."
+    }
+  }
+}

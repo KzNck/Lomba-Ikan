@@ -4,7 +4,7 @@ import { useId, useRef, useSyncExternalStore } from 'react'
 import { useFormStatus } from 'react-dom'
 import { Icon } from '@/components/ui/icon'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
-import { ACCOUNT_MENU } from '@/components/dashboard/account-menu-content'
+import { useTranslations } from 'next-intl'
 import { getLocalCatches } from '@/lib/offline/storage'
 import { signOut } from '@/app/auth/actions'
 import { PRESS_WIDE, SOLID_HOVER } from '@/components/ui/interaction'
@@ -20,6 +20,7 @@ function subscribe(onChange: () => void) {
 }
 
 export function SignOutItem() {
+  const t = useTranslations('dashboard.accountMenu')
   const queued = useSyncExternalStore(
     subscribe,
     () => getLocalCatches().length,
@@ -56,10 +57,10 @@ export function SignOutItem() {
           </div>
           <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[6px] justify-start items-start">
             <h2 id={titleId} className="text-[20px]/[normal] box-border text-[#0B3B5C] font-poppins font-semibold text-left [white-space:nowrap]">
-              {ACCOUNT_MENU.confirm.title}
+              {t('confirm.title')}
             </h2>
             <p id={bodyId} className="text-[14px]/[21px] box-border w-full text-[#5B6B7C] font-inter font-normal text-left">
-              {ACCOUNT_MENU.confirm.body(queued)}
+              {t('confirm.body', { count: queued })}
             </p>
           </div>
           <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[12px] justify-end items-start">
@@ -74,6 +75,7 @@ export function SignOutItem() {
 
 // The menu item itself. Disabled while signing out, so a second press can't fire another request.
 function SignOutButton() {
+  const t = useTranslations('dashboard.accountMenu')
   const { pending } = useFormStatus()
   return (
     <button
@@ -87,7 +89,7 @@ function SignOutButton() {
         className={`box-border w-[16px] shrink-0 h-[16px] ${pending ? 'motion-safe:animate-spin' : ''}`}
       />
       <span className="text-[14px]/[normal] box-border text-[#C23B35] font-poppins font-medium text-left [white-space:nowrap]">
-        {pending ? ACCOUNT_MENU.signingOutLabel : ACCOUNT_MENU.signOutLabel}
+        {pending ? t('signingOut') : t('signOut')}
       </span>
     </button>
   )
@@ -95,6 +97,7 @@ function SignOutButton() {
 
 // Focused first when the dialog opens, so the safe choice is the one under the cursor and the keyboard.
 function CancelButton({ onCancel }: { onCancel: () => void }) {
+  const t = useTranslations('dashboard.accountMenu')
   const { pending } = useFormStatus()
   return (
     <button
@@ -105,13 +108,14 @@ function CancelButton({ onCancel }: { onCancel: () => void }) {
       className={`box-border w-fit shrink-0 h-fit flex flex-row gap-[12px] p-[13px_20px] justify-center items-center bg-[#FFFFFF] [outline:1.5px_solid_#0F6CB8] [outline-offset:-0.75px] rounded-[999px] cursor-pointer hover:bg-[#F3FAFF] disabled:cursor-wait ${FOCUS_RING}`}
     >
       <span className="text-[16px]/[normal] box-border text-[#0F6CB8] font-poppins font-semibold text-left [white-space:nowrap]">
-        {ACCOUNT_MENU.confirm.cancel}
+        {t('confirm.cancel')}
       </span>
     </button>
   )
 }
 
 function ConfirmButton({ onConfirm }: { onConfirm: () => void }) {
+  const t = useTranslations('dashboard.accountMenu')
   const { pending } = useFormStatus()
   return (
     <button
@@ -122,7 +126,7 @@ function ConfirmButton({ onConfirm }: { onConfirm: () => void }) {
     >
       {pending && <Icon name="loader-circle" fill="#FFFFFF" className="box-border w-[16px] shrink-0 h-[16px] motion-safe:animate-spin" />}
       <span className="text-[16px]/[normal] box-border text-[#FFFFFF] font-poppins font-semibold text-left [white-space:nowrap]">
-        {pending ? ACCOUNT_MENU.signingOutLabel : ACCOUNT_MENU.confirm.confirm}
+        {pending ? t('signingOut') : t('confirm.confirm')}
       </span>
     </button>
   )

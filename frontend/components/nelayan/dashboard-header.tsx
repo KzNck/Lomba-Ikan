@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { Icon } from '@/components/ui/icon'
 import { AccountMenu } from '@/components/dashboard/account-menu'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
@@ -9,7 +10,7 @@ import { OUTLINE_HOVER, PRESS } from '@/components/ui/interaction'
 type DashboardHeaderProps = {
   greeting: string
   subtitle: string
-  notifications: { href: string; label: string; unreadCount: number }
+  notifications: { href: string; unreadCount: number }
   // Profiles carry no photo, so the avatar falls back to initials like the sidebar's.
   user: { name: string; initials: string; avatar?: ImageContent }
   // Where the account menu's "Akun" item goes.
@@ -26,6 +27,7 @@ export function DashboardHeader({
   user,
   accountHref = '/nelayan/akun',
 }: DashboardHeaderProps) {
+  const t = useTranslations('nav')
   return (
     <header className="box-border w-full h-fit shrink-0 flex flex-row gap-0 p-[20px_32px] justify-between items-center bg-[#FFFFFF] [border-width:0px_0px_1px_0px] [border-style:solid] [border-color:#E2E8F0] [margin:0px_0px_-0.5px_0px] relative">
       <div className="box-border w-fit shrink-0 h-fit flex flex-col gap-[4px] justify-start items-start">
@@ -47,7 +49,7 @@ export function DashboardHeader({
       <div className="box-border w-fit shrink-0 h-fit flex flex-row gap-[20px] justify-start items-center">
         <Link
           href={notifications.href}
-          aria-label={`${notifications.label}, ${notifications.unreadCount} belum dibaca`}
+          aria-label={t('unread', { label: t('notifications'), count: notifications.unreadCount })}
           className={`box-border w-[40px] shrink-0 h-[40px] rounded-[999px] relative ${OUTLINE_HOVER} ${PRESS} ${FOCUS_RING}`}
         >
           <Icon name="bell" fill="#0B3B5C" className="box-border w-[22px] h-[22px] absolute left-[9px] top-[9px] [z-index:0]" />

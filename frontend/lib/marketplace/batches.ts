@@ -7,15 +7,17 @@ import type { ImageContent } from '@/components/home/hero'
 import type { ProductCardContent } from '@/components/pembeli/product-card'
 import { CONDITIONS, MARKETPLACE_PATH, PPI_LOCATIONS } from '@/components/pembeli/marketplace-content'
 import {
-  STORAGE_LABEL,
   catchImage,
   categoryLabel,
   formatRupiah,
   formatWeight,
   gradeCondition,
+  storageLabel,
   timeAgo,
   timeLeft,
+  type Presenter,
 } from '@/lib/catches/present'
+import { getPresenter } from '@/lib/i18n/presenter'
 import { recommendationsFor } from '@/lib/catches/recommendations'
 import { getListedCatches } from '@/lib/supabase/catches'
 import { getProfileNames } from '@/lib/supabase/profiles'
@@ -83,19 +85,19 @@ function batchNumber(entry: Catch): string {
   return `BL-${new Date(entry.created_at).getFullYear()}-${entry.id.slice(0, 4).toUpperCase()}`
 }
 
-export function toBatch(entry: Catch, seller: Profile | undefined, origin: string | null): Batch {
+export function toBatch(p: Presenter, entry: Catch, seller: Profile | undefined, origin: string | null): Batch {
   const weightKg = Number(entry.weight_kg)
   const pricePerKg = entry.price_per_kg === null ? 0 : Number(entry.price_per_kg)
   const total = weightKg * pricePerKg
   const distanceKm = distanceFrom(origin, entry.catch_location)
-  const remaining = timeLeft(entry.expires_at)
-  const image = catchImage(entry)
+  const remaining = timeLeft(p, entry.expires_at)
+  const image = catchImage(p, entry)
 
   return {
     slug: entry.id,
     href: `${MARKETPLACE_PATH}/${entry.id}`,
     image,
-    name: categoryLabel(entry.species),
+    name: categoryLabel(p, entry.species),
     category: entry.species,
     // "—" for a catch the AI has not graded yet; the badge falls back to the neutral tone.
     grade: entry.freshness_grade ?? '—',
@@ -107,14 +109,14 @@ export function toBatch(entry: Catch, seller: Profile | undefined, origin: strin
     distanceKm,
     listedAt: entry.listed_at ?? entry.created_at,
     location: entry.catch_location,
-    weight: formatWeight(weightKg),
+    weight: formatWeight(p, weightKg),
     distance: distanceKm === null ? '—' : `${distanceKm} km`,
-    price: `${formatRupiah(entry.price_per_kg)}/kg`,
-    totalPrice: total > 0 ? formatRupiah(total) : 'Harga lelang',
-    total: total > 0 ? `Total ${formatRupiah(total)}` : 'Harga lelang',
+    price: `${formatRupiah(p, entry.price_per_kg)}/kg`,
+    totalPrice: total > 0 ? formatRupiah(p, total) : 'Harga lelang',
+    total: total > 0 ? `Total ${formatRupiah(p, total)}` : 'Harga lelang',
     detail: {
       condition: conditionOf(entry),
-      caught: `Ditangkap ${timeAgo(entry.catch_time)}`,
+      caught: `Ditangkap ${timeAgo(p, entry.catch_time)}`,
       auctionLeft: remaining ?? undefined,
       // The model's own recommendation when it graded this catch; the derived
       // list stands in for anything it has not looked at yet.
@@ -125,7 +127,7 @@ export function toBatch(entry: Catch, seller: Profile | undefined, origin: strin
           .join(', '),
       fisherman: seller?.full_name ?? 'Nelayan terdaftar',
       // Metode tangkap belum ada kolomnya; yang tercatat baru cara penyimpanannya.
-      method: STORAGE_LABEL[entry.storage_method],
+      method: storageLabel(p, entry.storage_method),
       batchNumber: batchNumber(entry),
       photos: [image],
     },
@@ -141,6 +143,6 @@ export function batchTotal(batch: Batch): number {
 export async function loadBatches(): Promise<Batch[]> {
   const profile = await requireProfile('pembeli')
   const listed = await getListedCatches()
-  const sellers = await getProfileNames(listed.map((entry) => entry.nelayan_id))
-  return listed.map((entry) => toBatch(entry, sellers.get(entry.nelayan_id), profile.ppi_location))
+  const [sellers, p] = await Promise.all([getProfileNames(listed.map((entry) => entry.nelayan_id)), getPresenter()])
+  return listed.map((entry) => toBatch(p, entry, sellers.get(entry.nelayan_id), profile.ppi_location))
 }
