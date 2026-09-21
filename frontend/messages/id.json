@@ -392,7 +392,7 @@
     "riwayat": {
       "breadcrumb": "Riwayat",
       "title": "Riwayat Transaksi",
-      "subtitle": "Semua transaksi yang sudah selesai atau dibatalkan.",
+      "subtitle": "Semua transaksi Anda, dari yang masih diproses sampai yang selesai atau dibatalkan.",
       "resultCount": "{count} transaksi dalam rentang ini",
       "dateRange": {
         "label": "Rentang tanggal",
@@ -409,6 +409,7 @@
       "status": {
         "label": "Status",
         "semua": "Semua",
+        "diproses": "Diproses",
         "selesai": "Selesai",
         "dibatalkan": "Dibatalkan"
       },
@@ -427,8 +428,8 @@
         "detail": "Lihat detail transaksi dengan {partner}",
         "unknownPartner": "Pembeli"
       },
-      "emptyTitle": "Belum ada transaksi selesai",
-      "emptyDescription": "Transaksi yang sudah selesai akan muncul di sini.",
+      "emptyTitle": "Belum ada transaksi",
+      "emptyDescription": "Transaksi atas listing Anda akan muncul di sini begitu ada pembeli yang mengklaimnya.",
       "drawer": {
         "title": "Detail Transaksi",
         "close": "Tutup detail transaksi",
@@ -464,18 +465,20 @@
         "paid": "Lunas",
         "pending": "Menunggu pencairan",
         "noteCompleted": "Transaksi ini sudah selesai dan tidak bisa diubah. Kalau ada kendala, hubungi mitra lewat menu Bantuan.",
-        "noteCancelled": "Transaksi ini dibatalkan dan tidak bisa diubah. Kalau ada kendala, hubungi mitra lewat menu Bantuan."
+        "noteCancelled": "Transaksi ini dibatalkan dan tidak bisa diubah. Kalau ada kendala, hubungi mitra lewat menu Bantuan.",
+        "inProgressSince": "Diklaim pada {at}",
+        "noteInProgress": "Transaksi ini masih berjalan. Statusnya selesai setelah serah terima di PPI."
       },
       "pembeli": {
         "title": "Riwayat Pembelian",
-        "subtitle": "Semua pembelian yang sudah selesai atau dibatalkan.",
+        "subtitle": "Semua pembelian Anda, dari yang masih diproses sampai yang selesai atau dibatalkan.",
         "resultCount": "{count} pembelian dalam rentang ini",
         "partnerName": "Nelayan",
         "tableLabel": "Riwayat pembelian",
         "seller": "Penjual",
         "detail": "Lihat detail pembelian dari {partner}",
-        "emptyTitle": "Belum ada pembelian selesai",
-        "emptyDescription": "Pembelian yang sudah selesai atau dibatalkan akan muncul di sini.",
+        "emptyTitle": "Belum ada pembelian",
+        "emptyDescription": "Batch yang Anda beli di Marketplace akan muncul di sini.",
         "emptyAction": "Cari tangkapan di Marketplace",
         "drawerTitle": "Detail Pembelian",
         "drawerClose": "Tutup detail pembelian",
@@ -488,7 +491,9 @@
         },
         "pending": "Sedang diproses",
         "noteCompleted": "Pembelian ini sudah selesai dan tidak bisa diubah. Kalau ada kendala, hubungi kami lewat menu Bantuan.",
-        "noteCancelled": "Pembelian ini dibatalkan dan tidak bisa diubah. Kalau ada kendala, hubungi kami lewat menu Bantuan."
+        "noteCancelled": "Pembelian ini dibatalkan dan tidak bisa diubah. Kalau ada kendala, hubungi kami lewat menu Bantuan.",
+        "inProgressSince": "Dibeli pada {at}",
+        "noteInProgress": "Pembelian ini masih berjalan. Ambil batch di PPI untuk menyelesaikannya."
       }
     },
     "akun": {

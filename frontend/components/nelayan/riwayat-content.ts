@@ -20,7 +20,7 @@ export function riwayatPage(t: RiwayatT) {
 }
 
 // ?status= in the URL; "semua" is the default.
-export const STATUS_FILTERS = ['semua', 'selesai', 'dibatalkan'] as const
+export const STATUS_FILTERS = ['semua', 'diproses', 'selesai', 'dibatalkan'] as const
 export type StatusFilter = (typeof STATUS_FILTERS)[number]
 
 export function filtersCopy(t: RiwayatT) {
@@ -52,9 +52,17 @@ export function filtersCopy(t: RiwayatT) {
 /** ?urut= — newest first unless the URL says otherwise. */
 export type SortOrder = 'baru' | 'lama'
 
-// The two outcomes the page lists. Everything still in flight is left out, as the subtitle says. Their names are
-// under `dashboard.riwayat.status`.
+// The three states the page lists: still in progress (claimed, not yet handed over and settled), then the two
+// outcomes. Their names are under `dashboard.riwayat.status`.
 export const TRANSACTION_STATES = {
+  diproses: {
+    icon: 'clock',
+    chip: 'bg-[#DCEEFB]',
+    text: 'text-[#0F6CB8]',
+    fill: '#0F6CB8',
+    // The timeline's latest dot while the transaction is still running.
+    dot: 'bg-[#168BE5] [outline:3px_solid_#DCEEFB]',
+  },
   selesai: {
     icon: 'circle-check',
     chip: 'bg-[#E8F8F2]',
@@ -75,8 +83,17 @@ export const TRANSACTION_STATES = {
 
 export type TransactionState = keyof typeof TRANSACTION_STATES
 
-/** Which of the two the database status belongs to; anything still running is not history yet. */
-export const STATE_OF: Partial<Record<TransactionStatus, TransactionState>> = {
+/**
+ * Which state the database status belongs to. Everything between the claim and the payout is "diproses": nothing in
+ * the app completes a transaction yet (the handover is confirmed by the confirm-handover Edge Function), so without it
+ * a purchase would never show up.
+ */
+export const STATE_OF: Record<TransactionStatus, TransactionState> = {
+  ESCROW_PENDING: 'diproses',
+  ESCROW_HELD: 'diproses',
+  DELIVERY_SCHEDULED: 'diproses',
+  WEIGHING_DONE: 'diproses',
+  RECONCILED: 'diproses',
   COMPLETED: 'selesai',
   CANCELLED: 'dibatalkan',
 }
@@ -94,7 +111,11 @@ export function tableCopy(t: RiwayatT) {
       // The chevron column; the header is blank in the export.
       action: '',
     },
-    states: { selesai: t('status.selesai'), dibatalkan: t('status.dibatalkan') } satisfies Record<TransactionState, string>,
+    states: {
+      diproses: t('status.diproses'),
+      selesai: t('status.selesai'),
+      dibatalkan: t('status.dibatalkan'),
+    } satisfies Record<TransactionState, string>,
     // The export draws a down arrow on "Tanggal"; it toggles the order through ?urut=.
     sort: {
       baru: { caption: t('table.sortedNewest'), icon: 'arrow-down', action: t('table.sortOldest'), aria: 'descending' },
@@ -119,6 +140,7 @@ export function transactionDrawer(t: RiwayatT) {
     title: t('drawer.title'),
     closeLabel: t('drawer.close'),
     banner: {
+      diproses: (at: string) => t('drawer.inProgressSince', { at }),
       selesai: (at: string) => t('drawer.completedAt', { at }),
       dibatalkan: (at: string) => t('drawer.cancelledAt', { at }),
     },
@@ -155,6 +177,7 @@ export function transactionDrawer(t: RiwayatT) {
     paymentPaid: t('drawer.paid'),
     paymentPending: t('drawer.pending'),
     note: {
+      diproses: t('drawer.noteInProgress'),
       selesai: t('drawer.noteCompleted'),
       // Not in the export, which only draws the finished case.
       dibatalkan: t('drawer.noteCancelled'),

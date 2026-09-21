@@ -64,7 +64,9 @@ export function drawerCopy(t: RiwayatT): TransactionDrawerCopy {
     infoLabels: { ...drawer.infoLabels, partner: t('pembeli.seller') },
     // For the buyer "paid" means the escrow was settled; until then the payment is still being processed.
     paymentPending: t('pembeli.pending'),
+    banner: { ...drawer.banner, diproses: (at: string) => t('pembeli.inProgressSince', { at }) },
     note: {
+      diproses: t('pembeli.noteInProgress'),
       selesai: t('pembeli.noteCompleted'),
       dibatalkan: t('pembeli.noteCancelled'),
     },

@@ -392,7 +392,7 @@
     "riwayat": {
       "breadcrumb": "History",
       "title": "Transaction History",
-      "subtitle": "Every transaction that was completed or cancelled.",
+      "subtitle": "All your transactions, from those in progress to those completed or cancelled.",
       "resultCount": "{count, plural, one {# transaction} other {# transactions}} in this range",
       "dateRange": {
         "label": "Date range",
@@ -409,6 +409,7 @@
       "status": {
         "label": "Status",
         "semua": "All",
+        "diproses": "In progress",
         "selesai": "Completed",
         "dibatalkan": "Cancelled"
       },
@@ -427,8 +428,8 @@
         "detail": "See details of the transaction with {partner}",
         "unknownPartner": "Buyer"
       },
-      "emptyTitle": "No completed transactions yet",
-      "emptyDescription": "Completed transactions will show up here.",
+      "emptyTitle": "No transactions yet",
+      "emptyDescription": "Transactions on your listings show up here once a buyer claims one.",
       "drawer": {
         "title": "Transaction Details",
         "close": "Close transaction details",
@@ -464,18 +465,20 @@
         "paid": "Paid",
         "pending": "Awaiting payout",
         "noteCompleted": "This transaction is complete and can't be changed. If something's wrong, contact your partner from the Help menu.",
-        "noteCancelled": "This transaction was cancelled and can't be changed. If something's wrong, contact your partner from the Help menu."
+        "noteCancelled": "This transaction was cancelled and can't be changed. If something's wrong, contact your partner from the Help menu.",
+        "inProgressSince": "Claimed on {at}",
+        "noteInProgress": "This transaction is still in progress. It's completed after the handover at the PPI."
       },
       "pembeli": {
         "title": "Purchase History",
-        "subtitle": "Every purchase that was completed or cancelled.",
+        "subtitle": "All your purchases, from those in progress to those completed or cancelled.",
         "resultCount": "{count, plural, one {# purchase} other {# purchases}} in this range",
         "partnerName": "Fisher",
         "tableLabel": "Purchase history",
         "seller": "Seller",
         "detail": "See details of the purchase from {partner}",
-        "emptyTitle": "No completed purchases yet",
-        "emptyDescription": "Purchases that were completed or cancelled will show up here.",
+        "emptyTitle": "No purchases yet",
+        "emptyDescription": "Batches you buy in the Marketplace show up here.",
         "emptyAction": "Find catches in the Marketplace",
         "drawerTitle": "Purchase Details",
         "drawerClose": "Close purchase details",
@@ -488,7 +491,9 @@
         },
         "pending": "Being processed",
         "noteCompleted": "This purchase is complete and can't be changed. If something's wrong, contact us from the Help menu.",
-        "noteCancelled": "This purchase was cancelled and can't be changed. If something's wrong, contact us from the Help menu."
+        "noteCancelled": "This purchase was cancelled and can't be changed. If something's wrong, contact us from the Help menu.",
+        "inProgressSince": "Bought on {at}",
+        "noteInProgress": "This purchase is still in progress. Collect the batch at the PPI to complete it."
       }
     },
     "akun": {

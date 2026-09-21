@@ -136,6 +136,8 @@ function stepsOf(p: Presenter, entry: TransactionWithCatch, state: TransactionSt
     if (entry.catches?.listed_at) steps.push({ label: labels.listed, time: dateTimeOf(p, entry.catches.listed_at) })
     steps.push({ label: labels.sold, time: dateTimeOf(p, entry.created_at) })
     if (entry.handover_confirmed_at) steps.push({ label: labels.handover, time: dateTimeOf(p, entry.handover_confirmed_at) })
+    // Still running: the claim is the latest step so far.
+    if (state === 'diproses') return steps
     const closedAt = entry.disbursed_at ?? entry.updated_at
     steps.push({ label: state === 'selesai' ? labels.done : labels.cancelled, time: dateTimeOf(p, closedAt) })
     return steps
@@ -154,7 +156,8 @@ function toDetail(
     return {
         id: entry.id,
         state,
-        bannerAt: dateTimeOf(p, entry.disbursed_at ?? entry.updated_at),
+        // "Dibeli pada" while in progress; otherwise when it closed.
+        bannerAt: dateTimeOf(p, state === 'diproses' ? entry.created_at : (entry.disbursed_at ?? entry.updated_at)),
         steps: stepsOf(p, entry, state, labels),
         date: dateTimeOf(p, entry.created_at),
         partner: partnerOf(entry, side),
