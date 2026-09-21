@@ -33,7 +33,8 @@ const CATEGORIES = [
 ] as const
 type Category = (typeof CATEGORIES)[number]
 
-const isCategory = (species: string): species is Category => CATEGORIES.includes(species as Category)
+/** Satu dari kategori wizard; selain itu nama yang diketik nelayan untuk "Lainnya". */
+export const isCategory = (species: string): species is Category => CATEGORIES.includes(species as Category)
 
 const CATEGORY_IMAGE = new Map<string, string>(
   CATEGORY_OPTIONS.flatMap((option): [string, string][] => ('image' in option ? [[option.value, option.image]] : []))

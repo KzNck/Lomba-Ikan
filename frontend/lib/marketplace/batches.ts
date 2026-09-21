@@ -14,6 +14,7 @@ import {
   formatRupiah,
   formatWeight,
   gradeCondition,
+  isCategory,
   storageLabel,
   timeAgo,
   timeLeft,
@@ -110,7 +111,8 @@ export function toBatch(
     href: `${MARKETPLACE_PATH}/${entry.id}`,
     image,
     name: categoryLabel(p, entry.species),
-    category: entry.species,
+    // A name typed for "Lainnya" ("Ikan Kakap") is filtered as "Lainnya"; its card still shows the name.
+    category: isCategory(entry.species) ? entry.species : 'lainnya',
     // "—" for a catch the AI has not graded yet; the badge falls back to the neutral tone.
     grade: entry.freshness_grade ?? '—',
     status: 'active',

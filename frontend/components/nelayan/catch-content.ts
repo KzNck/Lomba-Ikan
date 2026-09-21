@@ -20,6 +20,9 @@ export const CATEGORY_OPTIONS = [
 
 export type CategoryValue = (typeof CATEGORY_OPTIONS)[number]['value']
 
+// The name typed for "Lainnya": long enough for "Ikan Kakap Merah", short enough for a listing card's title.
+export const OTHER_NAME_MAX = 40
+
 // Breadcrumb on the dashboard behind the modal, for every step and the "Hasil Kesegaran" result.
 export function catchBreadcrumb(t: CatchT) {
   return {
@@ -47,6 +50,13 @@ export function categoryStep(t: CatchT, categoryName: Translator<'common.categor
     options: CATEGORY_OPTIONS.map((option) => ({ ...option, label: categoryName(option.value) })) satisfies CategoryOptionContent[],
     // Shown when "Lanjut" is pressed with nothing selected.
     error: t('category.error'),
+    // "Lainnya" asks what the catch is; the name becomes the listing's category (see submitCatch).
+    other: {
+      label: t('category.otherLabel'),
+      placeholder: t('category.otherPlaceholder'),
+      helper: t('category.otherHelper'),
+      error: t('category.otherError'),
+    },
     info: t('category.info'),
     cancel: { href: '/nelayan', label: t('category.cancel') },
     submitLabel: t('next'),

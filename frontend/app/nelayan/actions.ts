@@ -21,6 +21,7 @@ import { WEIGHT_LIMITS } from '@/components/nelayan/listing-content'
 import { catchTimestamp, toModelInputs, type ModelInputs } from '@/lib/catches/model-inputs'
 import { predictFreshness } from '@/lib/freshness/client'
 import { waNumber } from '@/lib/contact/whatsapp'
+import { OTHER_NAME_MAX } from '@/components/nelayan/catch-content'
 import { getKabupatenKota, getPelabuhan, PROVINSI } from '@/lib/wilayah'
 import { infoPribadi, validation, type AccountValues } from '@/components/nelayan/akun-content'
 import { saveAccountValues } from '@/lib/nelayan/account'
@@ -48,8 +49,13 @@ export async function submitCatch(formData: FormData): Promise<void> {
     // disimpan di row-nya, lalu dipakai lagi saat memanggil Freshness API.
     const inputs = toModelInputs({ category, time, ice, condition })
 
+    // "Lainnya" disimpan dengan nama yang diketik nelayan, supaya listing dan
+    // marketplace menampilkannya; model tetap menerima kategori "lainnya" (rucah).
+    const otherName = String(formData.get('lainnya') ?? '').replace(/\s+/g, ' ').trim().slice(0, OTHER_NAME_MAX)
+    const species = category === 'lainnya' && otherName ? otherName : category
+
     const entry = await createCatch({
-        species: category,
+        species,
         weight_kg: weight,
         // PPI dari profil nelayan adalah titik pengambilannya.
         catch_location: profile.ppi_location ?? 'Belum diatur',
