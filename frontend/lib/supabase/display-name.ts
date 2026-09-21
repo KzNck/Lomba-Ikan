@@ -8,8 +8,7 @@
 // (pembeli — sama seperti sebelum ada nama panggilan), lalu nama depan.
 // Nama panggilan disimpan di `user_metadata.nickname`; belum ada kolomnya.
 
-import { cache } from 'react'
-import { createClient } from './server'
+import { getClaims } from './auth'
 import type { Profile } from '@/types/database'
 
 type NameMetadata = {
@@ -30,16 +29,12 @@ export function displayNameOf(profile: Pick<Profile, 'full_name' | 'role'>, meta
     return firstName(profile.full_name) || profile.full_name
 }
 
-// Satu kali per request: layout dan halamannya sama-sama butuh nama ini.
-const getMetadata = cache(async (): Promise<unknown> => {
-    const supabase = await createClient()
-    const {
-        data: { user },
-    } = await supabase.auth.getUser()
-    return user?.user_metadata
-})
-
-/** Nama pendek untuk profil yang sedang login. */
+/**
+ * Nama pendek untuk profil yang sedang login. Metadata-nya dibaca dari token
+ * sesi (terverifikasi lokal, tanpa round trip); form Akun me-refresh sesi
+ * setelah menyimpan supaya token itu membawa nama panggilan yang baru.
+ */
 export async function displayNameFor(profile: Pick<Profile, 'full_name' | 'role'>): Promise<string> {
-    return displayNameOf(profile, await getMetadata())
+    const claims = await getClaims()
+    return displayNameOf(profile, claims?.user_metadata)
 }

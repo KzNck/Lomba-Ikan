@@ -116,8 +116,9 @@ function notifications(
 }
 
 export async function loadPembeliDashboard(): Promise<PembeliDashboardData> {
-    const profile = await requireProfile('pembeli')
-    const [name, batches, transactions] = await Promise.all([displayNameFor(profile), loadBatches(), getMyTransactions()])
+    // Loaded together; RLS scopes the data, and the role check redirects if it fails.
+    const [profile, batches, transactions] = await Promise.all([requireProfile('pembeli'), loadBatches(), getMyTransactions()])
+    const name = await displayNameFor(profile)
 
     return {
         greeting: name,

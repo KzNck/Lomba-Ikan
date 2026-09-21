@@ -37,8 +37,9 @@ export default async function ListingSayaPage({
   const { tab, detail, konfirmasi } = await searchParams
   const showClosed = tab === 'terjual'
 
-  const profile = await requireProfile('nelayan')
-  const [catches, transactions, name] = await Promise.all([getMyCatches(), getMyTransactions(), displayNameFor(profile)])
+  // Loaded together; RLS scopes the catches to this fisher, and the role check redirects if it fails.
+  const [profile, catches, transactions] = await Promise.all([requireProfile('nelayan'), getMyCatches(), getMyTransactions()])
+  const name = await displayNameFor(profile)
 
   const active = catches.filter((entry) => isOpen(entry.status)).map(toActiveListing)
   const closed = catches.filter((entry) => !isOpen(entry.status))

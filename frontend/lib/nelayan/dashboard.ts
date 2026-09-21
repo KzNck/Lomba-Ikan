@@ -13,8 +13,10 @@ import { displayNameFor } from '@/lib/supabase/display-name'
 import { greetingFor, initialsOf, recentNotifications, summaryStats } from './dashboard-data'
 
 export async function loadNelayanDashboard(): Promise<NelayanDashboardData> {
-    const profile = await requireProfile('nelayan')
-    const [catches, transactions, name] = await Promise.all([getMyCatches(), getMyTransactions(), displayNameFor(profile)])
+    // The profile and the data load together: RLS already scopes the catches and transactions to this user, so they
+    // needn't wait for the role check (which redirects if it fails).
+    const [profile, catches, transactions] = await Promise.all([requireProfile('nelayan'), getMyCatches(), getMyTransactions()])
+    const name = await displayNameFor(profile)
 
     return {
         greeting: greetingFor(name),

@@ -78,4 +78,9 @@ export async function saveAccountValues(values: AccountValues): Promise<void> {
     const metadata: AccountMetadata = { nickname: values.nickname, ppi_id: values.ppi, ppi_kab_kota: values.kabKota }
     const { error: metaError } = await supabase.auth.updateUser({ data: metadata })
     if (metaError) throw new Error(`Gagal simpan lokasi: ${metaError.message}`)
+
+    // updateUser tidak menerbitkan token baru; tanpa refresh, nama panggilan di chrome dashboard (dibaca dari
+    // token — lihat lib/supabase/display-name.ts) baru berubah saat token berikutnya diterbitkan.
+    const { error: refreshError } = await supabase.auth.refreshSession()
+    if (refreshError) throw new Error(`Gagal memperbarui sesi: ${refreshError.message}`)
 }

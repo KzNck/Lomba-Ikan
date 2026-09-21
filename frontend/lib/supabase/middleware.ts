@@ -41,11 +41,13 @@ export async function updateSession(request: NextRequest) {
         }
     )
 
-    // Menyegarkan token sesi jika sudah kedaluwarsa
-    // Pastikan tidak meletakkan logic lain antara createServerClient dan getUser()
-    const {
-        data: { user },
-    } = await supabase.auth.getUser()
+    // Menyegarkan token sesi jika sudah kedaluwarsa, lalu memverifikasi tanda
+    // tangannya. Project ini memakai signing key asimetris (ES256), jadi
+    // getClaims() memverifikasi secara lokal dengan public key yang di-cache —
+    // tanpa round trip ke Auth server seperti getUser() di setiap request.
+    // Pastikan tidak meletakkan logic lain antara createServerClient dan getClaims().
+    const { data } = await supabase.auth.getClaims()
+    const user = data?.claims
 
     const { pathname } = request.nextUrl
 

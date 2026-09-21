@@ -82,4 +82,9 @@ export async function saveAccountValues(values: AccountValues): Promise<void> {
     // Merge: field lain di metadata (mis. role dari registrasi) tidak ikut terhapus.
     const { error: metaError } = await supabase.auth.updateUser({ data: metadata })
     if (metaError) throw new Error(`Gagal simpan data usaha: ${metaError.message}`)
+
+    // updateUser tidak menerbitkan token baru; tanpa refresh, nama panggilan di chrome dashboard (dibaca dari
+    // token — lihat lib/supabase/display-name.ts) baru berubah saat token berikutnya diterbitkan.
+    const { error: refreshError } = await supabase.auth.refreshSession()
+    if (refreshError) throw new Error(`Gagal memperbarui sesi: ${refreshError.message}`)
 }

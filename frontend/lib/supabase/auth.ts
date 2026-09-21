@@ -9,6 +9,7 @@
 // atau saat login pertama. Dengan begitu registrasi tidak perlu menyimpan draft
 // di server sebelum user-nya benar-benar ada.
 
+import { cache } from 'react'
 import { redirect } from 'next/navigation'
 import type { AuthResponse, User } from '@supabase/supabase-js'
 import { createClient } from './server'
@@ -51,20 +52,34 @@ export async function getUser(): Promise<User | null> {
 }
 
 /**
- * Profil user yang sedang login. `null` kalau belum login, atau kalau row
- * `profiles`-nya belum sempat dibuat.
+ * Claims token sesi yang sedang login, sudah diverifikasi; `null` kalau belum
+ * login. Dengan signing key asimetris project ini, verifikasinya lokal — tanpa
+ * round trip ke Auth server — dan cache() membuatnya sekali per request.
+ *
+ * Token yang belum kedaluwarsa tetap lolos walau sesinya sudah dicabut di
+ * perangkat lain (maks. ~1 jam). Untuk membaca halaman itu cukup; operasi tulis
+ * yang sensitif memakai getUser(), yang bertanya ke Auth server.
  */
-export async function getProfile(): Promise<Profile | null> {
+export const getClaims = cache(async () => {
     const supabase = await createClient()
-    const {
-        data: { user },
-    } = await supabase.auth.getUser()
-    if (!user) return null
+    const { data } = await supabase.auth.getClaims()
+    return data?.claims ?? null
+})
 
-    const { data, error } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle()
+/**
+ * Profil user yang sedang login. `null` kalau belum login, atau kalau row
+ * `profiles`-nya belum sempat dibuat. Sekali per request: layout dan halaman
+ * yang sama-sama memanggilnya berbagi satu query.
+ */
+export const getProfile = cache(async (): Promise<Profile | null> => {
+    const claims = await getClaims()
+    if (!claims) return null
+
+    const supabase = await createClient()
+    const { data, error } = await supabase.from('profiles').select('*').eq('id', claims.sub).maybeSingle()
     if (error) throw new Error(`Gagal ambil profil: ${error.message}`)
     return data
-}
+})
 
 /**
  * Buat akun baru. Profil yang diisi di form dititipkan ke `user_metadata`.
