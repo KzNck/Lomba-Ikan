@@ -3,7 +3,7 @@
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { requireProfile } from '@/lib/supabase/auth'
-import { cancelListing as cancel, createCatch, publishCatch, saveFreshness, updateListing } from '@/lib/supabase/catches'
+import { cancelListing as cancel, createCatch, publishCatch, saveFreshness, setCatchPhoto, updateListing } from '@/lib/supabase/catches'
 import { EDIT_LISTING, LISTING_PATH } from '@/components/nelayan/listing-content'
 import { uploadCatchPhoto } from '@/lib/supabase/storage'
 import { catchTimestamp, toModelInputs } from '@/lib/catches/model-inputs'
@@ -52,8 +52,13 @@ export async function submitCatch(formData: FormData): Promise<void> {
     })
 
     if (photo instanceof Blob && photo.size > 0) {
-        await uploadCatchPhoto(profile.id, entry.id, photo)
-        const result = await predictFreshness({ catchId: entry.id, inputs, photo })
+        // The upload and the assessment both take the same photo and neither needs the other, so they run together.
+        // The uploaded photo's URL goes on the row: it's what the listing shows instead of the category illustration.
+        const [photoUrl, result] = await Promise.all([
+            uploadCatchPhoto(profile.id, entry.id, photo),
+            predictFreshness({ catchId: entry.id, inputs, photo }),
+        ])
+        if (photoUrl) await setCatchPhoto(entry.id, photoUrl)
 
         if (result) {
             await saveFreshness(entry.id, {

@@ -135,6 +135,13 @@ export async function cancelListing(catchId: string): Promise<void> {
     if (error) throw new Error(`Gagal batalkan listing: ${error.message}`)
 }
 
+/** Tempelkan URL foto yang sudah diupload ke row tangkapannya — foto ini yang tampil di listing. */
+export async function setCatchPhoto(catchId: string, photoUrl: string): Promise<void> {
+    const supabase = await createClient()
+    const { error } = await supabase.from('catches').update({ photo_url: photoUrl }).eq('id', catchId)
+    if (error) throw new Error(`Gagal simpan foto tangkapan: ${error.message}`)
+}
+
 /** Simpan hasil penilaian AI ke row tangkapan. */
 export async function saveFreshness(
     catchId: string,
