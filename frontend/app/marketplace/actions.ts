@@ -2,17 +2,27 @@
 
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
+import { getTranslations } from 'next-intl/server'
 import { requireProfile } from '@/lib/supabase/auth'
 import { getCatchById } from '@/lib/supabase/catches'
-import { claimCatch } from '@/lib/supabase/transactions'
+import { claimCatch, getTransactionContact } from '@/lib/supabase/transactions'
+import { displayNameFor } from '@/lib/supabase/display-name'
+import { categoryLabel, formatRupiah, formatWeight } from '@/lib/catches/present'
+import { getPresenter } from '@/lib/i18n/presenter'
+import { batchNumber } from '@/lib/marketplace/batches'
+import { whatsappHref } from '@/lib/contact/whatsapp'
 
 /**
- * Beli satu batch. `slug` dari form adalah id row `catches`.
+ * Beli satu batch: batch-nya dipesan untuk pembeli ini, lalu pembeli langsung
+ * diantar ke WhatsApp nelayannya untuk mengatur pembayaran dan serah terima.
+ * `slug` dari form adalah id row `catches`.
  *
- * Nilainya dihitung ulang di server dari row-nya, bukan diambil dari form —
- * harga yang dikirim client tidak boleh menentukan berapa dana escrow yang
- * ditahan. Penulisan transaksinya sendiri dikerjakan Edge Function
- * `process-escrow` dengan service role.
+ * Pesanannya tetap dicatat di aplikasi (Edge Function `process-escrow`): batch
+ * hilang dari marketplace sehingga tidak terjual dua kali, dan transaksinya
+ * muncul di riwayat kedua pihak sampai nelayan mengonfirmasi serah terima.
+ * Pembayaran terjadi langsung di antara mereka — aplikasi tidak menahan dana.
+ *
+ * Nilainya dihitung ulang di server dari row-nya, bukan diambil dari form.
  *
  * Kalau batch-nya sudah keburu diklaim pembeli lain, ini tidak melempar error:
  * Next.js menyembunyikan pesan error Server Action di production, jadi yang
@@ -20,7 +30,7 @@ import { claimCatch } from '@/lib/supabase/transactions'
  * marketplace, tempat batch itu sudah tidak ada lagi di daftar.
  */
 export async function buyBatch(formData: FormData): Promise<void> {
-    await requireProfile('pembeli')
+    const profile = await requireProfile('pembeli')
 
     const catchId = String(formData.get('slug') ?? '')
     const entry = catchId ? await getCatchById(catchId) : null
@@ -32,9 +42,33 @@ export async function buyBatch(formData: FormData): Promise<void> {
         redirect('/marketplace')
     }
 
-    await claimCatch(catchId, Number(entry.weight_kg) * Number(entry.price_per_kg ?? 0))
+    const transaction = await claimCatch(catchId, Number(entry.weight_kg) * Number(entry.price_per_kg ?? 0))
 
     revalidatePath('/marketplace')
-    revalidatePath('/pembeli')
-    redirect('/pembeli')
+    revalidatePath('/pembeli', 'layout')
+
+    // Nomor nelayan hanya terbuka untuk pembeli transaksi ini. Tanpa nomor (atau
+    // tanpa fungsi SQL-nya), pembeli mendarat di riwayat pembeliannya.
+    const contact = await getTransactionContact(transaction.id)
+    // Pesannya untuk nelayan, jadi selalu dalam bahasa Indonesia.
+    const [p, t, buyer] = await Promise.all([
+        getPresenter('id'),
+        getTranslations({ locale: 'id', namespace: 'dashboard.pembeli.marketplace' }),
+        displayNameFor(profile),
+    ])
+    const price = entry.price_per_kg === null ? t('batch.auctionPrice') : t('batch.perKg', { price: formatRupiah(p, entry.price_per_kg) })
+    const chat = whatsappHref(
+        contact?.phone,
+        t('whatsappMessage', {
+            fisher: contact?.name ?? '',
+            buyer,
+            batch: batchNumber(entry),
+            category: categoryLabel(p, entry.species),
+            weight: formatWeight(p, entry.weight_kg),
+            price,
+            ppi: entry.catch_location,
+        })
+    )
+
+    redirect(chat ?? `/pembeli/riwayat?transaksi=${transaction.id}`)
 }

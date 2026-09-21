@@ -84,7 +84,7 @@ function conditionOf(entry: Catch): Condition {
 }
 
 /** Nomor batch yang enak dibaca, dari tahun dan potongan awal UUID row. */
-function batchNumber(entry: Catch): string {
+export function batchNumber(entry: Pick<Catch, 'id' | 'created_at'>): string {
   return `BL-${new Date(entry.created_at).getFullYear()}-${entry.id.slice(0, 4).toUpperCase()}`
 }
 

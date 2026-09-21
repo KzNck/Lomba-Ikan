@@ -20,6 +20,7 @@ import { RIWAYAT_PATH, STATE_OF } from '@/components/nelayan/riwayat-content'
 import { WEIGHT_LIMITS } from '@/components/nelayan/listing-content'
 import { catchTimestamp, toModelInputs, type ModelInputs } from '@/lib/catches/model-inputs'
 import { predictFreshness } from '@/lib/freshness/client'
+import { waNumber } from '@/lib/contact/whatsapp'
 import { getKabupatenKota, getPelabuhan, PROVINSI } from '@/lib/wilayah'
 import { infoPribadi, validation, type AccountValues } from '@/components/nelayan/akun-content'
 import { saveAccountValues } from '@/lib/nelayan/account'
@@ -137,10 +138,14 @@ export async function regradeCatch(formData: FormData): Promise<void> {
 
 /** Terbitkan tangkapan yang sudah dinilai ke marketplace, dengan harga opsional dari form. */
 export async function publishListing(formData: FormData): Promise<void> {
-    await requireProfile('nelayan')
+    const profile = await requireProfile('nelayan')
 
     const id = String(formData.get('id') ?? '')
     if (!id) throw new Error('Tangkapan tidak ditemukan.')
+
+    // Pembeli diantar ke WhatsApp nelayan setelah membeli, jadi listing tanpa
+    // nomor tidak dipasang. Halaman hasil menjelaskannya dan menautkan ke Akun.
+    if (!waNumber(profile.phone)) redirect(`/nelayan/catat/hasil?id=${id}`)
 
     // "8.000" dari field harga → 8000. Kosong berarti mengikuti harga lelang.
     const raw = String(formData.get('harga') ?? '').replace(/[^\d]/g, '')
@@ -238,7 +243,9 @@ export async function saveAccount(previous: AccountFormState, formData: FormData
     const errors: AccountFormState['errors'] = {}
     if (!values.fullName) errors.fullName = VALIDATION.required(fields.fullName.label)
     if (values.nickname.length > NICKNAME_MAX) errors.nickname = VALIDATION.nickname(NICKNAME_MAX)
-    if (values.phone && !PHONE.test(values.phone.replace(/[\s-]/g, ''))) errors.phone = VALIDATION.phone
+    // Required: buyers are sent to this number on WhatsApp once they buy.
+    if (!values.phone) errors.phone = VALIDATION.required(fields.phone.label)
+    else if (!PHONE.test(values.phone.replace(/[\s-]/g, ''))) errors.phone = VALIDATION.phone
     if (!PROVINSI.some(({ kode }) => kode === values.provinsi)) errors.provinsi = VALIDATION.provinsi
     if (!getKabupatenKota(values.provinsi).some(({ kode }) => kode === values.kabKota)) {
         errors.kabKota = VALIDATION.kabKota

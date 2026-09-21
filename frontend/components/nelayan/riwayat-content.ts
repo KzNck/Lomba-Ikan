@@ -172,8 +172,8 @@ export function transactionDrawer(t: RiwayatT) {
       method: t('drawer.method'),
       status: t('drawer.paymentStatus'),
     },
-    // The schema has no payment-method column; disbursement goes to the fisher's bank account (profiles.bank_account).
-    paymentMethod: t('drawer.bankTransfer'),
+    // Buyers pay the fisher directly (cash or transfer), arranged over WhatsApp; the app holds no money.
+    paymentMethod: t('drawer.paidDirect'),
     paymentPaid: t('drawer.paid'),
     paymentPending: t('drawer.pending'),
     note: {

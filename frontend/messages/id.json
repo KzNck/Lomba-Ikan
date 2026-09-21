@@ -169,7 +169,7 @@
           "yourCatch": "tangkapan Anda",
           "sold": "Batch Anda ({name}) telah terjual dengan harga {price}.",
           "cancelled": "Transaksi untuk {name} dibatalkan.",
-          "claimed": "Pembeli mengklaim listing Anda ({name}). Dana escrow sedang diproses.",
+          "claimed": "Pembeli mengklaim listing Anda ({name}). Pesan WhatsApp-nya akan datang untuk mengatur pembayaran dan pengambilan.",
           "expiring": "Listing {name} akan berakhir dalam {time}.",
           "expiringSoon": "Segera berakhir"
         }
@@ -329,7 +329,9 @@
             "title": "Pakan Ternak",
             "description": "Diolah jadi campuran pakan unggas dan ikan budidaya."
           }
-        }
+        },
+        "phoneMissing": "Tambahkan nomor WhatsApp di Akun sebelum memasang listing, supaya pembeli bisa menghubungi Anda.",
+        "phoneMissingAction": "Buka Akun"
       },
       "listing": {
         "title": "Listing Saya",
@@ -461,13 +463,13 @@
         "total": "Total harga",
         "method": "Metode pembayaran",
         "paymentStatus": "Status pembayaran",
-        "bankTransfer": "Transfer bank",
         "paid": "Lunas",
-        "pending": "Menunggu pencairan",
+        "pending": "Dibayar saat serah terima",
         "noteCompleted": "Transaksi ini sudah selesai dan tidak bisa diubah. Kalau ada kendala, hubungi mitra lewat menu Bantuan.",
         "noteCancelled": "Transaksi ini dibatalkan dan tidak bisa diubah. Kalau ada kendala, hubungi mitra lewat menu Bantuan.",
         "inProgressSince": "Diklaim pada {at}",
-        "noteInProgress": "Transaksi ini masih berjalan. Statusnya selesai setelah serah terima di PPI."
+        "noteInProgress": "Transaksi ini masih berjalan. Setelah pembeli membayar dan mengambil batch di PPI, konfirmasi serah terimanya di sini.",
+        "paidDirect": "Langsung ke nelayan"
       },
       "pembeli": {
         "title": "Riwayat Pembelian",
@@ -489,26 +491,32 @@
           "done": "Selesai",
           "cancelled": "Dibatalkan"
         },
-        "pending": "Sedang diproses",
+        "pending": "Bayar langsung ke nelayan",
         "noteCompleted": "Pembelian ini sudah selesai dan tidak bisa diubah. Kalau ada kendala, hubungi kami lewat menu Bantuan.",
         "noteCancelled": "Pembelian ini dibatalkan dan tidak bisa diubah. Kalau ada kendala, hubungi kami lewat menu Bantuan.",
         "inProgressSince": "Dibeli pada {at}",
-        "noteInProgress": "Pembelian ini masih berjalan. Ambil batch di PPI untuk menyelesaikannya."
+        "noteInProgress": "Pembelian ini masih berjalan. Bayar nelayan dan ambil batch di PPI; nelayan lalu mengonfirmasi serah terimanya."
       },
       "handover": {
         "title": "Serah Terima",
-        "description": "Timbang tangkapan saat pembeli mengambilnya di PPI, lalu konfirmasi di sini. Nilai transaksi dihitung ulang dari berat akhir.",
+        "description": "Setelah pembeli membayar dan mengambil tangkapan di PPI, timbang lalu konfirmasi di sini. Nilai transaksi dihitung ulang dari berat akhir.",
         "weightLabel": "Berat akhir",
         "weightHelper": "Hasil timbang di PPI, dalam kg.",
         "weightError": "Masukkan berat akhir antara 0 dan 200 kg, contoh 9 atau 9,5.",
         "submit": "Konfirmasi serah terima",
         "confirmTitle": "Selesaikan transaksi ini?",
-        "confirmBody": "Berat akhir {weight} kg. Transaksi ditandai selesai dan dana dicairkan ke rekening Anda. Langkah ini tidak bisa dibatalkan.",
+        "confirmBody": "Berat akhir {weight} kg. Transaksi ditandai selesai dan lunas, jadi pastikan pembayaran dari pembeli sudah Anda terima. Langkah ini tidak bisa dibatalkan.",
         "back": "Kembali",
         "confirmYes": "Ya, selesaikan",
         "confirming": "Menyelesaikan…",
         "notActive": "Transaksi ini sudah tidak berjalan, jadi serah terimanya tidak bisa dikonfirmasi lagi.",
         "failed": "Serah terima belum terkonfirmasi. Periksa koneksi internet Anda, lalu coba lagi."
+      },
+      "contact": {
+        "chatFisher": "Chat nelayan di WhatsApp",
+        "chatBuyer": "Chat pembeli di WhatsApp",
+        "unavailable": "Nomor WhatsApp {name} belum tersedia.",
+        "message": "Halo {name}, saya {me} dari ByCatch Loop, soal batch {batch}."
       }
     },
     "akun": {
@@ -550,12 +558,11 @@
         "save": "Simpan"
       },
       "nelayan": {
-        "subtitle": "Kelola data diri, lokasi pendaratan, dan rekening pencairan Anda.",
+        "subtitle": "Kelola data diri, lokasi pendaratan, dan rekening bank Anda.",
         "infoSubtitle": "Data diri, lokasi pendaratan, dan rekening Anda. Kolom bertanda * wajib diisi.",
         "fullNamePlaceholder": "Contoh: Dulmatin",
         "nicknamePlaceholder": "Contoh: Pak Dul",
         "nicknameHelper": "Ditampilkan di dashboard. Kosongkan untuk memakai nama depan Anda.",
-        "phoneHelper": "Dipakai pembeli dan petugas PPI untuk menghubungi Anda.",
         "bankAccount": "Rekening bank",
         "bankAccountPlaceholder": "Contoh: BRI 1234 5678 9012 a.n. Dulmatin",
         "bankAccountHelper": "Tulis nama bank, nomor rekening, dan nama pemilik.",
@@ -565,9 +572,11 @@
         "ppiPlaceholder": "Pilih PPI",
         "ppiLocked": "Pilih kota/kabupaten terlebih dahulu.",
         "ppiEmpty": "Belum ada PPI terdaftar di kota/kabupaten ini. Kirim email ke info@bycatchloop.id untuk menambahkannya.",
-        "bankTitle": "Rekening Pencairan",
-        "bankSubtitle": "Opsional. Isi supaya hasil penjualan bisa langsung dicairkan ke rekening Anda.",
-        "choosePpi": "Pilih PPI tempat Anda mendaratkan tangkapan."
+        "bankTitle": "Rekening Bank",
+        "bankSubtitle": "Opsional. Bagikan ke pembeli yang ingin membayar lewat transfer.",
+        "choosePpi": "Pilih PPI tempat Anda mendaratkan tangkapan.",
+        "phoneLabel": "Nomor WhatsApp",
+        "phoneHelper": "Wajib. Pembeli menghubungi Anda lewat WhatsApp di nomor ini setelah membeli."
       },
       "pembeli": {
         "subtitle": "Kelola informasi dan preferensi akun Anda.",
@@ -611,8 +620,8 @@
         "fromLastMonth": "dari bulan lalu",
         "batch": "Batch",
         "status": {
-          "ESCROW_PENDING": "Menunggu Escrow",
-          "ESCROW_HELD": "Dana Escrow Ditahan",
+          "ESCROW_PENDING": "Menunggu Serah Terima",
+          "ESCROW_HELD": "Menunggu Serah Terima",
           "DELIVERY_SCHEDULED": "Pengiriman Dijadwalkan",
           "WEIGHING_DONE": "Penimbangan Selesai",
           "RECONCILED": "Rekonsiliasi Selesai",
@@ -675,10 +684,11 @@
           "method": "Metode tangkap",
           "batchNumber": "No. batch",
           "buy": "Beli sekarang · {total}",
-          "processing": "Memproses pembelian…",
+          "processing": "Memesan batch…",
           "soldOutTitle": "Maaf, batch ini sudah terjual",
           "soldOutBody": "Pembeli lain menyelesaikan pembelian lebih dulu. Masih ada batch {category} lain di PPI terdekat.",
-          "soldOutAction": "Lihat batch serupa"
+          "soldOutAction": "Lihat batch serupa",
+          "buyNote": "Batch dipesan untuk Anda, lalu WhatsApp nelayan terbuka untuk mengatur pembayaran dan pengambilan. Pembayaran langsung ke nelayan."
         },
         "map": {
           "label": "Peta PPI",
@@ -702,7 +712,8 @@
           "registeredFisher": "Nelayan terdaftar",
           "gradeLabel": "Grade {grade}",
           "gradeUnrated": "Grade belum dinilai"
-        }
+        },
+        "whatsappMessage": "Halo {fisher}, saya {buyer} dari ByCatch Loop. Saya baru membeli batch {batch}: {category}, {weight}, {price}, di {ppi}. Kapan dan di mana kita bisa serah terima?"
       }
     },
     "breadcrumbLabel": "Navigasi halaman"
@@ -923,7 +934,9 @@
         "namePlaceholder": "Contoh: Dulmatin",
         "missingPpiTitle": "PPI saya tidak ada di daftar",
         "missingPpiDescription": "Hubungi tim kami untuk menambahkan PPI Anda.",
-        "submit": "Daftar"
+        "submit": "Daftar",
+        "phoneLabel": "Nomor WhatsApp",
+        "phoneHelper": "Pembeli menghubungi Anda lewat WhatsApp di nomor ini setelah membeli."
       },
       "pembeliUsaha": {
         "title": "Informasi Usaha Anda",
@@ -993,7 +1006,8 @@
       "fullNameRequired": "Nama lengkap wajib diisi.",
       "ppiRequired": "Pilih Pangkalan Pendaratan Ikan (PPI) Anda.",
       "businessNameRequired": "Nama usaha wajib diisi.",
-      "businessTypeRequired": "Pilih minimal satu jenis usaha."
+      "businessTypeRequired": "Pilih minimal satu jenis usaha.",
+      "phoneRequired": "Masukkan nomor WhatsApp yang aktif, contoh +62 812 3456 7890."
     }
   }
 }

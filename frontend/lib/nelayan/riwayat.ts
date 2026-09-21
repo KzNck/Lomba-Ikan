@@ -25,6 +25,7 @@ import {
 } from '@/components/nelayan/riwayat-content'
 import { categoryLabel, formatRupiah, gradeLabel, storageLabel, type Presenter } from '@/lib/catches/present'
 import { getPresenter } from '@/lib/i18n/presenter'
+import { batchNumber } from '@/lib/marketplace/batches'
 import { getMyTransactions } from '@/lib/supabase/transactions'
 import { requireProfile } from '@/lib/supabase/auth'
 import type { Catch, FreshnessGrade, Transaction } from '@/types/database'
@@ -60,6 +61,8 @@ export type TransactionDetailContent = {
     hauledAt: string
     ice: string
     photoUrl: string | null
+    // "BL-2026-BABB", for the WhatsApp message; null when the catch row isn't readable.
+    batch: string | null
     pricePerKg: string
     total: string
     paid: boolean
@@ -171,6 +174,7 @@ function toDetail(
         hauledAt: catchRow ? dateTimeOf(p, catchRow.catch_time) : '—',
         ice: catchRow ? storageLabel(p, catchRow.storage_method) : '—',
         photoUrl: catchRow?.photo_url ?? null,
+        batch: catchRow ? batchNumber(catchRow) : null,
         // Harga satuan diturunkan dari nilai transaksi supaya cocok dengan totalnya,
         // termasuk setelah berat final berbeda dari estimasi.
         pricePerKg:

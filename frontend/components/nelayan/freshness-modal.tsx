@@ -1,4 +1,7 @@
+import Link from 'next/link'
 import { Icon } from '@/components/ui/icon'
+import { FOCUS_RING } from '@/components/nelayan/focus-ring'
+import { PRESS, SOLID_HOVER } from '@/components/ui/interaction'
 import { ScrollLock } from '@/components/ui/scroll-lock'
 import { ModalHeader } from '@/components/nelayan/modal-header'
 import { GradePanel, type FreshnessResult, type UngradedState } from '@/components/nelayan/grade-panel'
@@ -19,11 +22,23 @@ type FreshnessModalProps = {
   price: PriceFieldContent
   // Receives the form, including the optional price.
   action: (formData: FormData) => void | Promise<void>
+  // Set when the fisher has no WhatsApp number: publishing is refused, so the footer says why and links to Akun.
+  phoneMissing?: { message: string; action: { href: string; label: string } }
 }
 
 // The "Overlay" + "Modal Hasil Kesegaran" layers, shown once the catch photo has been graded. Like CatchModal, the
 // scrim is fixed to the viewport (the export pins it to the 1440×1100 frame) and scrolls if the modal outgrows it.
-export function FreshnessModal({ modal, catchId, result, ungraded, gradePanel, recommendations, price, action }: FreshnessModalProps) {
+export function FreshnessModal({
+  modal,
+  catchId,
+  result,
+  ungraded,
+  gradePanel,
+  recommendations,
+  price,
+  action,
+  phoneMissing,
+}: FreshnessModalProps) {
   return (
     <div className="box-border fixed inset-0 overflow-y-auto overscroll-contain flex flex-col gap-0 p-[72px_0px] justify-start items-center bg-[#0B3B5CA6] [z-index:2]">
       <ScrollLock />
@@ -60,12 +75,30 @@ export function FreshnessModal({ modal, catchId, result, ungraded, gradePanel, r
             <PriceField {...price} />
           </div>
         </div>
+        {phoneMissing && (
+          <p role="status" className="box-border w-full h-fit shrink-0 flex flex-row gap-[10px] p-[12px_14px] justify-start items-start bg-[#FFF4E0] rounded-[12px]">
+            <Icon name="circle-alert" fill="#8A5200" className="box-border w-[18px] shrink-0 h-[18px]" />
+            <span className="text-[14px]/[20px] box-border [flex:1_1_0] text-[#5C3700] font-inter font-medium text-left">{phoneMissing.message}</span>
+          </p>
+        )}
         <div className="box-border w-full h-fit shrink-0 flex flex-row gap-0 p-[24px_0px_0px_0px] justify-between items-center [border-width:1px_0px_0px_0px] [border-style:solid] [border-color:#E2E8F0]">
           <p className="box-border w-fit shrink-0 h-fit flex flex-row gap-[8px] justify-start items-center">
             <Icon name="info" fill="#5B6B7C" className="box-border w-[16px] shrink-0 h-[16px]" />
             <span className="text-[12px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left [white-space:nowrap]">{modal.disclaimer}</span>
           </p>
-          <SubmitButton label={modal.submitLabel} icon="send" tone="deep" inline />
+          {phoneMissing ? (
+            <Link
+              href={phoneMissing.action.href}
+              className={`box-border w-fit shrink-0 h-fit flex flex-row gap-[10px] p-[14px_24px] justify-center items-center bg-[#0F6CB8] rounded-[999px] ${SOLID_HOVER} ${PRESS} ${FOCUS_RING}`}
+            >
+              <Icon name="phone" fill="#FFFFFF" className="box-border w-[16px] shrink-0 h-[16px]" />
+              <span className="text-[16px]/[normal] box-border text-[#FFFFFF] font-poppins font-semibold text-left [white-space:nowrap]">
+                {phoneMissing.action.label}
+              </span>
+            </Link>
+          ) : (
+            <SubmitButton label={modal.submitLabel} icon="send" tone="deep" inline />
+          )}
         </div>
       </form>
     </div>

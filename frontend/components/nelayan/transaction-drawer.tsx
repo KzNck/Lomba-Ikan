@@ -1,10 +1,11 @@
 import Link from 'next/link'
 import { Icon } from '@/components/ui/icon'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
-import { PRESS } from '@/components/ui/interaction'
+import { PRESS, SOLID_HOVER } from '@/components/ui/interaction'
 import { TRANSACTION_STATES, type TransactionDrawerCopy } from '@/components/nelayan/riwayat-content'
 import { gradeCondition } from '@/lib/catches/present'
 import type { TransactionDetailContent } from '@/lib/nelayan/riwayat'
+import type { TransactionChat } from '@/lib/contact/transaction-chat'
 
 type TransactionDrawerProps = {
   detail: TransactionDetailContent
@@ -13,6 +14,8 @@ type TransactionDrawerProps = {
   copy: TransactionDrawerCopy
   // The fisher's "Serah Terima" form, while the transaction is still in progress. The pembeli history has none.
   handover?: React.ReactNode
+  // "Chat di WhatsApp" with the other party, while the transaction is still in progress.
+  chat?: TransactionChat
 }
 
 const TITLE_ID = 'transaction-drawer-title'
@@ -20,7 +23,7 @@ const TITLE_ID = 'transaction-drawer-title'
 // "Detail Transaksi Drawer": a 400px panel docked to the right of the table, below the header. Like the listing
 // drawer it is not modal — the table stays readable — so the open row keeps its blue marker as the visible link
 // between the two. The export fixes it at 400×1126px inside the 1440×1220 frame.
-export function TransactionDrawer({ detail, closeHref, copy, handover }: TransactionDrawerProps) {
+export function TransactionDrawer({ detail, closeHref, copy, handover, chat }: TransactionDrawerProps) {
   const state = TRANSACTION_STATES[detail.state]
   const banner = copy.banner[detail.state](detail.bannerAt)
 
@@ -52,6 +55,23 @@ export function TransactionDrawer({ detail, closeHref, copy, handover }: Transac
           <Icon name={state.icon} fill={state.fill} className="box-border w-[18px] shrink-0 h-[18px]" />
           <span className={`text-[13px]/[normal] box-border [flex:1_1_0] ${state.text} font-poppins font-semibold text-left`}>{banner}</span>
         </p>
+        {chat &&
+          (chat.href ? (
+            <a
+              href={chat.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`box-border w-full h-fit shrink-0 flex flex-row gap-[8px] p-[12px_16px] justify-center items-center bg-[#17704A] rounded-[999px] ${SOLID_HOVER} ${PRESS} ${FOCUS_RING}`}
+            >
+              <Icon name="message-circle" fill="#FFFFFF" className="box-border w-[16px] shrink-0 h-[16px]" />
+              <span className="text-[14px]/[normal] box-border text-[#FFFFFF] font-poppins font-semibold text-left [white-space:nowrap]">{chat.label}</span>
+            </a>
+          ) : (
+            <p className="box-border w-full h-fit shrink-0 flex flex-row gap-[8px] p-[10px_14px] justify-start items-start bg-[#F7F9FC] rounded-[12px]">
+              <Icon name="info" fill="#5B6B7C" className="box-border w-[16px] shrink-0 h-[16px] mt-[1px]" />
+              <span className="text-[12px]/[18px] box-border [flex:1_1_0] text-[#5B6B7C] font-inter font-normal text-left">{chat.unavailable}</span>
+            </p>
+          ))}
 
         <Panel title={copy.timelineTitle} gap="gap-0">
           <ol className="box-border w-full flex flex-col gap-0 justify-start items-start">

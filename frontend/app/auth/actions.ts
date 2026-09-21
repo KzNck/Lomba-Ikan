@@ -20,6 +20,7 @@ import {
     type PendingProfile,
 } from '@/lib/supabase/auth'
 import { getPelabuhanById } from '@/lib/wilayah'
+import { waNumber } from '@/lib/contact/whatsapp'
 import type { UserRole } from '@/types/database'
 
 export type AuthFormState = {
@@ -140,9 +141,12 @@ export async function registerNelayan(_previous: AuthFormState, formData: FormDa
     const email = text(formData, 'email')
     const fullName = text(formData, 'nama-lengkap')
     const ppiId = text(formData, 'ppi')
+    const phone = text(formData, 'telepon')
     const t = await getTranslations('auth.errors')
 
     if (!fullName) return { error: t('fullNameRequired'), email }
+    // Pembeli dikirim ke nomor ini lewat WhatsApp setelah membeli.
+    if (!waNumber(phone)) return { error: t('phoneRequired'), email }
     if (!ppiId) return { error: t('ppiRequired'), email }
 
     const invalid = checkCredentials(t, email, String(formData.get('password') ?? ''), String(formData.get('konfirmasi-password') ?? ''))
@@ -151,6 +155,7 @@ export async function registerNelayan(_previous: AuthFormState, formData: FormDa
     return completeSignUp(email, String(formData.get('password') ?? ''), {
         role: 'nelayan',
         full_name: fullName,
+        phone,
         // Disimpan sebagai nama, bukan kode, supaya listing bisa menampilkannya apa adanya.
         ppi_location: getPelabuhanById(ppiId)?.nama ?? ppiId,
     })

@@ -169,7 +169,7 @@
           "yourCatch": "your catch",
           "sold": "Your batch ({name}) sold for {price}.",
           "cancelled": "The transaction for {name} was cancelled.",
-          "claimed": "A buyer claimed your listing ({name}). The escrow payment is being processed.",
+          "claimed": "A buyer claimed your listing ({name}). Expect their WhatsApp message to arrange payment and pickup.",
           "expiring": "Your {name} listing ends in {time}.",
           "expiringSoon": "Ending soon"
         }
@@ -329,7 +329,9 @@
             "title": "Livestock Feed",
             "description": "Processed into feed mixes for poultry and farmed fish."
           }
-        }
+        },
+        "phoneMissing": "Add your WhatsApp number in Account before posting a listing, so buyers can contact you.",
+        "phoneMissingAction": "Open Account"
       },
       "listing": {
         "title": "My Listings",
@@ -461,13 +463,13 @@
         "total": "Total price",
         "method": "Payment method",
         "paymentStatus": "Payment status",
-        "bankTransfer": "Bank transfer",
         "paid": "Paid",
-        "pending": "Awaiting payout",
+        "pending": "Paid at handover",
         "noteCompleted": "This transaction is complete and can't be changed. If something's wrong, contact your partner from the Help menu.",
         "noteCancelled": "This transaction was cancelled and can't be changed. If something's wrong, contact your partner from the Help menu.",
         "inProgressSince": "Claimed on {at}",
-        "noteInProgress": "This transaction is still in progress. It's completed after the handover at the PPI."
+        "noteInProgress": "This transaction is still in progress. Once the buyer has paid and collected the batch at the PPI, confirm the handover here.",
+        "paidDirect": "Directly to the fisher"
       },
       "pembeli": {
         "title": "Purchase History",
@@ -489,26 +491,32 @@
           "done": "Completed",
           "cancelled": "Cancelled"
         },
-        "pending": "Being processed",
+        "pending": "Pay the fisher directly",
         "noteCompleted": "This purchase is complete and can't be changed. If something's wrong, contact us from the Help menu.",
         "noteCancelled": "This purchase was cancelled and can't be changed. If something's wrong, contact us from the Help menu.",
         "inProgressSince": "Bought on {at}",
-        "noteInProgress": "This purchase is still in progress. Collect the batch at the PPI to complete it."
+        "noteInProgress": "This purchase is still in progress. Pay the fisher and collect the batch at the PPI; the fisher then confirms the handover."
       },
       "handover": {
         "title": "Handover",
-        "description": "Weigh the catch when the buyer collects it at the PPI, then confirm here. The transaction total is recalculated from the final weight.",
+        "description": "Once the buyer has paid and collected the catch at the PPI, weigh it and confirm here. The transaction total is recalculated from the final weight.",
         "weightLabel": "Final weight",
         "weightHelper": "The weight measured at the PPI, in kg.",
         "weightError": "Enter a final weight between 0 and 200 kg, e.g. 9 or 9.5.",
         "submit": "Confirm handover",
         "confirmTitle": "Complete this transaction?",
-        "confirmBody": "Final weight {weight} kg. The transaction is marked complete and the payment is released to your account. This can't be undone.",
+        "confirmBody": "Final weight {weight} kg. The transaction is marked complete and paid, so make sure you've received the buyer's payment. This can't be undone.",
         "back": "Back",
         "confirmYes": "Yes, complete it",
         "confirming": "Completing…",
         "notActive": "This transaction is no longer in progress, so its handover can't be confirmed.",
         "failed": "The handover wasn't confirmed. Check your internet connection, then try again."
+      },
+      "contact": {
+        "chatFisher": "Chat the fisher on WhatsApp",
+        "chatBuyer": "Chat the buyer on WhatsApp",
+        "unavailable": "{name}'s WhatsApp number isn't available yet.",
+        "message": "Halo {name}, saya {me} dari ByCatch Loop, soal batch {batch}."
       }
     },
     "akun": {
@@ -550,12 +558,11 @@
         "save": "Save"
       },
       "nelayan": {
-        "subtitle": "Manage your details, landing site and payout account.",
+        "subtitle": "Manage your details, landing site and bank account.",
         "infoSubtitle": "Your details, landing site and bank account. Fields marked * are required.",
         "fullNamePlaceholder": "e.g. Dulmatin",
         "nicknamePlaceholder": "e.g. Pak Dul",
         "nicknameHelper": "Shown on your dashboard. Leave empty to use your first name.",
-        "phoneHelper": "Used by buyers and PPI staff to contact you.",
         "bankAccount": "Bank account",
         "bankAccountPlaceholder": "e.g. BRI 1234 5678 9012, Dulmatin",
         "bankAccountHelper": "Enter the bank name, account number and account holder.",
@@ -565,9 +572,11 @@
         "ppiPlaceholder": "Choose a PPI",
         "ppiLocked": "Choose a city/regency first.",
         "ppiEmpty": "No PPI is registered in this city/regency yet. Email info@bycatchloop.id to have it added.",
-        "bankTitle": "Payout Account",
-        "bankSubtitle": "Optional. Fill it in so sales can be paid straight into your account.",
-        "choosePpi": "Choose the PPI where you land your catch."
+        "bankTitle": "Bank Account",
+        "bankSubtitle": "Optional. Share it with buyers who want to pay by transfer.",
+        "choosePpi": "Choose the PPI where you land your catch.",
+        "phoneLabel": "WhatsApp number",
+        "phoneHelper": "Required. Buyers contact you on WhatsApp at this number after they buy."
       },
       "pembeli": {
         "subtitle": "Manage your account information and preferences.",
@@ -611,8 +620,8 @@
         "fromLastMonth": "since last month",
         "batch": "Batch",
         "status": {
-          "ESCROW_PENDING": "Awaiting Escrow",
-          "ESCROW_HELD": "Escrow Funds Held",
+          "ESCROW_PENDING": "Awaiting Handover",
+          "ESCROW_HELD": "Awaiting Handover",
           "DELIVERY_SCHEDULED": "Delivery Scheduled",
           "WEIGHING_DONE": "Weighing Complete",
           "RECONCILED": "Reconciliation Complete",
@@ -675,10 +684,11 @@
           "method": "Catch method",
           "batchNumber": "Batch no.",
           "buy": "Buy now · {total}",
-          "processing": "Processing purchase…",
+          "processing": "Reserving batch…",
           "soldOutTitle": "Sorry, this batch has sold",
           "soldOutBody": "Another buyer completed the purchase first. There are other {category} batches at nearby PPIs.",
-          "soldOutAction": "See similar batches"
+          "soldOutAction": "See similar batches",
+          "buyNote": "The batch is reserved for you, then the fisher's WhatsApp opens to arrange payment and pickup. You pay the fisher directly."
         },
         "map": {
           "label": "PPI map",
@@ -702,7 +712,8 @@
           "registeredFisher": "Registered fisher",
           "gradeLabel": "Grade {grade}",
           "gradeUnrated": "Not graded yet"
-        }
+        },
+        "whatsappMessage": "Halo {fisher}, saya {buyer} dari ByCatch Loop. Saya baru membeli batch {batch}: {category}, {weight}, {price}, di {ppi}. Kapan dan di mana kita bisa serah terima?"
       }
     },
     "breadcrumbLabel": "Breadcrumb"
@@ -923,7 +934,9 @@
         "namePlaceholder": "e.g. Dulmatin",
         "missingPpiTitle": "My PPI isn't listed",
         "missingPpiDescription": "Contact our team to add your PPI.",
-        "submit": "Sign Up"
+        "submit": "Sign Up",
+        "phoneLabel": "WhatsApp number",
+        "phoneHelper": "Buyers contact you on WhatsApp at this number after they buy."
       },
       "pembeliUsaha": {
         "title": "Your Business Information",
@@ -993,7 +1006,8 @@
       "fullNameRequired": "Full name is required.",
       "ppiRequired": "Choose your Fish Landing Port (PPI).",
       "businessNameRequired": "Business name is required.",
-      "businessTypeRequired": "Choose at least one business type."
+      "businessTypeRequired": "Choose at least one business type.",
+      "phoneRequired": "Enter an active WhatsApp number, e.g. +62 812 3456 7890."
     }
   }
 }

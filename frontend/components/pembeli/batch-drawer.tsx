@@ -142,9 +142,15 @@ export function BatchDrawer({ batch, closeHref, similarHref, buyAction }: BatchD
               </Link>
             </>
           ) : (
-            <form action={buyAction} className="box-border w-full h-fit shrink-0">
+            <form action={buyAction} className="box-border w-full h-fit shrink-0 flex flex-col gap-[10px] justify-start items-start">
               <input type="hidden" name="slug" value={batch.slug} />
               <BuyButton label={BATCH_DRAWER.buyLabel(batch.totalPrice)} processingLabel={BATCH_DRAWER.processingLabel} />
+              <p className="box-border w-full h-fit shrink-0 flex flex-row gap-[8px] justify-start items-start">
+                <Icon name="message-circle" fill="#5B6B7C" className="box-border w-[14px] shrink-0 h-[14px] mt-[2px]" />
+                <span className="text-[12px]/[18px] box-border [flex:1_1_0] text-[#5B6B7C] font-inter font-normal text-left">
+                  {BATCH_DRAWER.buyNote}
+                </span>
+              </p>
             </form>
           )}
         </footer>

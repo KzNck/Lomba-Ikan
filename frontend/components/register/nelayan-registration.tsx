@@ -27,6 +27,7 @@ export function NelayanRegistration() {
       <FormCard {...profile.card} action={action}>
         <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[24px] justify-start items-start">
           <FormField {...profile.nameField} />
+          <FormField {...profile.phoneField} />
           <FormField {...emailField(t)} defaultValue={state.email} />
           {passwordFields(t).map((field) => (
             <FormField key={field.id} {...field} />

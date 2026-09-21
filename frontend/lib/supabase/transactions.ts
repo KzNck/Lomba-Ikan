@@ -66,3 +66,23 @@ export async function confirmHandover(
     if (!data) throw new Error('Response kosong dari server')
     return data
 }
+
+/**
+ * Nama dan nomor telepon pihak lain dari satu transaksi (nelayan untuk pembeli,
+ * pembeli untuk nelayan), lewat fungsi SQL `get_transaction_contact` — profil
+ * orang lain tidak bisa dibaca langsung. Null kalau fungsinya belum dibuat di
+ * project ini (supabase/transaction-contact.sql) atau user bukan pihak transaksi.
+ */
+export async function getTransactionContact(
+    transactionId: string
+): Promise<{ name: string; phone: string | null } | null> {
+    const supabase = await createClient()
+    const { data, error } = await supabase.rpc('get_transaction_contact', { p_transaction_id: transactionId })
+
+    if (error) {
+        console.error(`Gagal ambil kontak transaksi (jalankan supabase/transaction-contact.sql?): ${error.message}`)
+        return null
+    }
+    const contact = data?.[0]
+    return contact ? { name: contact.full_name, phone: contact.phone } : null
+}

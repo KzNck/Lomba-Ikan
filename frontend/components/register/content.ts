@@ -120,6 +120,19 @@ export function nelayanProfile(t: RegisterT) {
       placeholder: t('nelayan.namePlaceholder'),
       required: true,
     } satisfies FormFieldConfig,
+    // Buyers are sent to this number on WhatsApp once they buy, so a fisher can't list without one.
+    phoneField: {
+      kind: 'text',
+      inputType: 'tel',
+      inputMode: 'tel',
+      autoComplete: 'tel',
+      id: 'telepon',
+      label: t('nelayan.phoneLabel'),
+      icon: 'phone',
+      placeholder: '+62 812 3456 7890',
+      helper: t('nelayan.phoneHelper'),
+      required: true,
+    } satisfies FormFieldConfig,
     // Options come from lib/wilayah; each list unlocks once the one above it is chosen.
     location: {
       provinsi: { id: 'provinsi', label: t('location.provinsiLabel'), icon: 'map-pin', placeholder: t('location.provinsiPlaceholder') },

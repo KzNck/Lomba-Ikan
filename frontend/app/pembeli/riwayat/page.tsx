@@ -15,6 +15,7 @@ import {
 } from '@/components/pembeli/riwayat-content'
 import { dateLabelFor, loadRiwayat, parseRiwayatView, riwayatHref } from '@/lib/nelayan/riwayat'
 import { getPresenter } from '@/lib/i18n/presenter'
+import { transactionChat } from '@/lib/contact/transaction-chat'
 import { requireProfile } from '@/lib/supabase/auth'
 import { displayNameFor } from '@/lib/supabase/display-name'
 
@@ -41,6 +42,7 @@ export default async function PembeliRiwayatPage({
   const name = await displayNameFor(profile)
 
   const detail = openId ? details.get(openId) : undefined
+  const chat = detail && (await transactionChat(detail, 'pembeli', name))
   const hrefWith = (change: Parameters<typeof riwayatHref>[2]) => riwayatHref(RIWAYAT_PATH, view, change)
   // Clicking the open row's chevron closes its drawer.
   const hrefFor = (id: string) => hrefWith(id === openId ? {} : { transaksi: id })
@@ -82,7 +84,7 @@ export default async function PembeliRiwayatPage({
             </div>
           )}
         </div>
-        {detail && <TransactionDrawer detail={detail} closeHref={hrefFor(detail.id)} copy={DRAWER_COPY} />}
+        {detail && <TransactionDrawer detail={detail} closeHref={hrefFor(detail.id)} copy={DRAWER_COPY} chat={chat} />}
       </div>
     </div>
   )

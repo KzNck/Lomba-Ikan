@@ -283,7 +283,11 @@ export type Database = {
             [_ in never]: never
         }
         Functions: {
-            [_ in never]: never
+            // supabase/transaction-contact.sql
+            get_transaction_contact: {
+                Args: { p_transaction_id: string }
+                Returns: { full_name: string; phone: string | null }[]
+            }
         }
         Enums: {
             user_role: UserRole

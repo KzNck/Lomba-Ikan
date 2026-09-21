@@ -13,6 +13,8 @@ import {
   usageRecommendations,
 } from '@/components/nelayan/freshness-content'
 import { getCatchById } from '@/lib/supabase/catches'
+import { requireProfile } from '@/lib/supabase/auth'
+import { waNumber } from '@/lib/contact/whatsapp'
 import { recommendationsFor } from '@/lib/catches/recommendations'
 import { gradeCondition } from '@/lib/catches/present'
 
@@ -28,7 +30,7 @@ export default async function HasilKesegaranPage({
   const { id, gagal } = await searchParams
   if (typeof id !== 'string') notFound()
 
-  const [dashboard, entry] = await Promise.all([loadNelayanDashboard(), getCatchById(id)])
+  const [dashboard, entry, profile] = await Promise.all([loadNelayanDashboard(), getCatchById(id), requireProfile('nelayan')])
   // RLS hides other fishers' catches, so a miss here is either a bad id or someone else's.
   if (!entry) notFound()
 
@@ -69,6 +71,12 @@ export default async function HasilKesegaranPage({
           options: recommendationsFor(t, entry),
         }}
         price={priceField(t, format)}
+        // publishListing refuses a fisher without a WhatsApp number; say why before they press it.
+        phoneMissing={
+          waNumber(profile.phone)
+            ? undefined
+            : { message: t('phoneMissing'), action: { href: '/nelayan/akun', label: t('phoneMissingAction') } }
+        }
         action={publishListing}
       />
     </>

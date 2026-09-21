@@ -87,10 +87,12 @@ export function infoPribadi(t: AkunT, register: Translator<'auth.register'>) {
         locked: true,
         helper: t('fields.emailHelper'),
       },
+      // Required: buyers are sent to this number on WhatsApp once they buy.
       phone: {
         id: 'phone',
-        label: t('fields.phone'),
+        label: t('nelayan.phoneLabel'),
         icon: 'phone',
+        required: true,
         placeholder: '+62 812 3456 7890',
         inputType: 'tel',
         inputMode: 'tel',

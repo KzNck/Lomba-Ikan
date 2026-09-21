@@ -126,6 +126,8 @@ export function marketplaceCopy(t: MarketplaceT, categoryName: Translator<'commo
       infoLabels: { fisherman: t('drawer.fisherman'), method: t('drawer.method'), batchNumber: t('drawer.batchNumber') },
       buyLabel: (total: string) => t('drawer.buy', { total }),
       processingLabel: t('drawer.processing'),
+      // Under the buy button: what happens after it, since it leaves the app for WhatsApp.
+      buyNote: t('drawer.buyNote'),
       // "Batch sudah terjual": shown instead of the buy button once someone else has bought it.
       soldOut: {
         title: t('drawer.soldOutTitle'),
