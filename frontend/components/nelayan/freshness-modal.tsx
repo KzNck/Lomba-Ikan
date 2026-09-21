@@ -1,4 +1,5 @@
 import { Icon } from '@/components/ui/icon'
+import { ScrollLock } from '@/components/ui/scroll-lock'
 import { ModalHeader } from '@/components/nelayan/modal-header'
 import { GradePanel, type FreshnessResult } from '@/components/nelayan/grade-panel'
 import { UsageOption, type UsageOptionContent } from '@/components/nelayan/usage-option'
@@ -22,7 +23,8 @@ type FreshnessModalProps = {
 // scrim is fixed to the viewport (the export pins it to the 1440×1100 frame) and scrolls if the modal outgrows it.
 export function FreshnessModal({ modal, catchId, result, gradePanel, recommendations, price, action }: FreshnessModalProps) {
   return (
-    <div className="box-border fixed inset-0 overflow-y-auto flex flex-col gap-0 p-[72px_0px_0px_0px] justify-start items-center bg-[#0B3B5CA6] [z-index:2]">
+    <div className="box-border fixed inset-0 overflow-y-auto overscroll-contain flex flex-col gap-0 p-[72px_0px] justify-start items-center bg-[#0B3B5CA6] [z-index:2]">
+      <ScrollLock />
       <form
         action={action}
         role="dialog"
@@ -42,10 +44,10 @@ export function FreshnessModal({ modal, catchId, result, gradePanel, recommendat
         />
         <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[20px] justify-start items-start">
           <GradePanel result={result} {...gradePanel} />
-          <div className="box-border [flex:1_1_0] h-fit flex flex-col gap-[14px] p-[24px] justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[20px]">
+          <div className="box-border [flex:1_1_0] min-w-0 h-fit flex flex-col gap-[14px] p-[24px] justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[20px]">
             <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[4px] p-[0px_0px_4px_0px] justify-start items-start">
               <h3 className="text-[18px]/[normal] box-border text-[#0B3B5C] font-poppins font-semibold text-left [white-space:nowrap]">{recommendations.title}</h3>
-              <p className="text-[14px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left [white-space:nowrap]">{recommendations.subtitle}</p>
+              <p className="text-[14px]/[20px] box-border text-[#5B6B7C] font-inter font-normal text-left">{recommendations.subtitle}</p>
             </div>
             {/* `contents` keeps each option a direct flex child, so the panel's 14px gap still sits between them. */}
             <ul className="contents">

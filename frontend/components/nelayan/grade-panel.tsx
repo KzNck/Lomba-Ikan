@@ -21,7 +21,7 @@ type GradePanelProps = {
 export function GradePanel({ result, gradeLabel, summaryTitle, metricLabels }: GradePanelProps) {
   return (
     <div className="box-border w-[430px] shrink-0 h-full flex flex-col gap-[24px] p-[28px_24px_24px_24px] justify-between items-start [background-image:linear-gradient(180deg,_#F3FAFF_0%,_#E5F3FF_100%)] bg-no-repeat bg-[length:100%_100%] rounded-[20px] overflow-hidden relative">
-      <div aria-hidden="true" className="box-border w-[430px] h-[140px] absolute left-0 top-[150px] [z-index:0]">
+      <div aria-hidden="true" className="box-border w-[430px] absolute left-0 top-[150px] bottom-0 [z-index:0]">
         <svg
           viewBox="0 0 430 140"
           preserveAspectRatio="none"
@@ -38,6 +38,9 @@ export function GradePanel({ result, gradeLabel, summaryTitle, metricLabels }: G
         >
           <path d="M0 100 C80 78 150 80 225 96 C300 112 370 104 430 88 L430 140 L0 140 Z" fill="#65C7F52E" />
         </svg>
+        {/* Carries the two waves' combined tint down from their flat bottom edge and fades it out, so a tall panel
+            doesn't end the waves in a hard line. */}
+        <div className="box-border w-full absolute left-0 top-[140px] bottom-0 [background-image:linear-gradient(180deg,_#65C7F547_0%,_#65C7F500_100%)]" />
       </div>
       <GradeRing grade={result.grade} gradeLabel={gradeLabel} condition={result.condition} freshness={result.freshness} />
       <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[14px] p-[18px] justify-start items-start bg-[#FFFFFFB3] rounded-[16px] relative [z-index:2]">
