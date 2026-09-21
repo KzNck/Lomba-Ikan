@@ -64,7 +64,6 @@ export function ListingDrawer({ listing, labels, cancelHref }: ListingDrawerProp
             </span>
           </div>
           <h3 className="text-[18px]/[23px] box-border w-full text-[#0B3B5C] font-poppins font-semibold text-left">{category}</h3>
-          <p className="text-[14px]/[21px] box-border w-full text-[#5B6B7C] font-inter font-normal text-left">{detail.description}</p>
         </div>
         <dl className="box-border w-full h-fit shrink-0 flex flex-row gap-[12px] p-[12px_14px] justify-start items-start bg-[#F7F9FC] rounded-[12px]">
           <DrawerMetric label={labels.metricLabels.weight} value={weight} />

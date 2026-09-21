@@ -186,7 +186,6 @@ export function toActiveListing(entry: Catch): ActiveListing {
     // Row id dipakai sebagai slug: stabil, dan drawer membukanya lewat ?detail=.
     slug: entry.id,
     detail: {
-      description: entry.freshness_notes ?? `Hasil tangkapan ${categoryLabel(entry.species).toLowerCase()}.`,
       timeLeft: timeLeft(entry.expires_at) ?? 'Habis',
       freshness: freshnessLabel(entry),
       usage: usageLabel(entry),

@@ -7,7 +7,6 @@ import type { ListingCardContent } from '@/components/nelayan/listing-card'
 export const LISTING_PATH = '/nelayan/listing'
 
 export type ListingDetailContent = {
-  description: string
   timeLeft: string
   freshness: string
   usage: string
