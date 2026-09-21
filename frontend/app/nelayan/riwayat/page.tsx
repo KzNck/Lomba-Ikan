@@ -5,6 +5,8 @@ import { EmptyState } from '@/components/nelayan/empty-state'
 import { RiwayatFilters } from '@/components/nelayan/riwayat-filters'
 import { TransactionTable } from '@/components/nelayan/transaction-table'
 import { TransactionDrawer } from '@/components/nelayan/transaction-drawer'
+import { HandoverForm } from '@/components/nelayan/handover-form'
+import { confirmHandover } from '@/app/nelayan/actions'
 import { getTranslations } from 'next-intl/server'
 import { dashboardCopy } from '@/components/nelayan/content'
 import { emptyState, riwayatPage, RIWAYAT_PATH, tableCopy, transactionDrawer } from '@/components/nelayan/riwayat-content'
@@ -88,7 +90,25 @@ export default async function RiwayatPage({
             </div>
           )}
         </div>
-        {detail && <TransactionDrawer detail={detail} closeHref={hrefFor(detail.id)} copy={drawerCopy} />}
+        {detail && (
+          <TransactionDrawer
+            detail={detail}
+            closeHref={hrefFor(detail.id)}
+            copy={drawerCopy}
+            handover={
+              detail.state === 'diproses' && (
+                // Keyed by transaction so opening another row starts a fresh form.
+                <HandoverForm
+                  key={detail.id}
+                  transactionId={detail.id}
+                  weightKg={detail.weightKg}
+                  returnHref={hrefWith({ transaksi: detail.id })}
+                  action={confirmHandover}
+                />
+              )
+            }
+          />
+        )}
       </div>
     </div>
   )

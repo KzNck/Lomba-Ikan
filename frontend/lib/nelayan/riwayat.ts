@@ -55,6 +55,8 @@ export type TransactionDetailContent = {
     grade: FreshnessGrade | null
     category: string
     volume: string
+    // The weight behind `volume`, which the handover form opens with.
+    weightKg: number
     hauledAt: string
     ice: string
     photoUrl: string | null
@@ -165,6 +167,7 @@ function toDetail(
         grade: catchRow?.freshness_grade ?? null,
         category: catchRow ? categoryLabel(p, catchRow.species) : '—',
         volume: weightText(weight),
+        weightKg: weight,
         hauledAt: catchRow ? dateTimeOf(p, catchRow.catch_time) : '—',
         ice: catchRow ? storageLabel(p, catchRow.storage_method) : '—',
         photoUrl: catchRow?.photo_url ?? null,

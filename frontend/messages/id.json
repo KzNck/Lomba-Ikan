@@ -494,6 +494,21 @@
         "noteCancelled": "Pembelian ini dibatalkan dan tidak bisa diubah. Kalau ada kendala, hubungi kami lewat menu Bantuan.",
         "inProgressSince": "Dibeli pada {at}",
         "noteInProgress": "Pembelian ini masih berjalan. Ambil batch di PPI untuk menyelesaikannya."
+      },
+      "handover": {
+        "title": "Serah Terima",
+        "description": "Timbang tangkapan saat pembeli mengambilnya di PPI, lalu konfirmasi di sini. Nilai transaksi dihitung ulang dari berat akhir.",
+        "weightLabel": "Berat akhir",
+        "weightHelper": "Hasil timbang di PPI, dalam kg.",
+        "weightError": "Masukkan berat akhir antara 0 dan 200 kg, contoh 9 atau 9,5.",
+        "submit": "Konfirmasi serah terima",
+        "confirmTitle": "Selesaikan transaksi ini?",
+        "confirmBody": "Berat akhir {weight} kg. Transaksi ditandai selesai dan dana dicairkan ke rekening Anda. Langkah ini tidak bisa dibatalkan.",
+        "back": "Kembali",
+        "confirmYes": "Ya, selesaikan",
+        "confirming": "Menyelesaikan…",
+        "notActive": "Transaksi ini sudah tidak berjalan, jadi serah terimanya tidak bisa dikonfirmasi lagi.",
+        "failed": "Serah terima belum terkonfirmasi. Periksa koneksi internet Anda, lalu coba lagi."
       }
     },
     "akun": {

@@ -15,6 +15,9 @@ import {
 import { editListing, LISTING_PATH } from '@/components/nelayan/listing-content'
 import { getTranslations } from 'next-intl/server'
 import { uploadCatchPhoto } from '@/lib/supabase/storage'
+import { confirmHandover as completeHandover, getTransactionById } from '@/lib/supabase/transactions'
+import { RIWAYAT_PATH, STATE_OF } from '@/components/nelayan/riwayat-content'
+import { WEIGHT_LIMITS } from '@/components/nelayan/listing-content'
 import { catchTimestamp, toModelInputs, type ModelInputs } from '@/lib/catches/model-inputs'
 import { predictFreshness } from '@/lib/freshness/client'
 import { getKabupatenKota, getPelabuhan, PROVINSI } from '@/lib/wilayah'
@@ -254,4 +257,52 @@ export async function saveAccount(previous: AccountFormState, formData: FormData
     // The sidebar and header print the name, so the whole area re-renders.
     revalidatePath('/nelayan', 'layout')
     return { status: 'saved', values, errors }
+}
+
+export type HandoverState = {
+    // What was submitted, so the form keeps it after an error.
+    weight: string
+    error?: string
+}
+
+/**
+ * "Konfirmasi serah terima" di drawer Riwayat Transaksi: berat akhir dari
+ * timbangan di PPI, lalu Edge Function `confirm-handover` menandai transaksi
+ * selesai, menghitung ulang nilainya, dan mencatat pencairan. Kode QR-nya
+ * diambil dari row transaksi — nelayan tidak perlu memindai apa pun.
+ */
+export async function confirmHandover(_previous: HandoverState, formData: FormData): Promise<HandoverState> {
+    const profile = await requireProfile('nelayan')
+    const t = await getTranslations('dashboard.riwayat.handover')
+
+    const id = String(formData.get('id') ?? '')
+    const weight = String(formData.get('berat') ?? '').trim()
+    // "9,5" dan "9.5" sama-sama sembilan setengah kilo.
+    const weightKg = Number(weight.replace(',', '.'))
+    if (!weight || !Number.isFinite(weightKg) || weightKg <= 0 || weightKg > WEIGHT_LIMITS.max) {
+        return { weight, error: t('weightError') }
+    }
+
+    // RLS hanya mengembalikan transaksi yang melibatkan user ini.
+    const transaction = id ? await getTransactionById(id) : null
+    if (
+        !transaction ||
+        transaction.nelayan_id !== profile.id ||
+        STATE_OF[transaction.status] !== 'diproses' ||
+        !transaction.qr_scan_code
+    ) {
+        return { weight, error: t('notActive') }
+    }
+
+    try {
+        await completeHandover(transaction.qr_scan_code, Math.round(weightKg * 100) / 100)
+    } catch (error) {
+        console.error('confirmHandover:', error)
+        return { weight, error: t('failed') }
+    }
+
+    revalidatePath('/nelayan', 'layout')
+    // Kembali ke tampilan yang sama, yang sekarang menunjukkan transaksi ini selesai.
+    const back = String(formData.get('kembali') ?? '')
+    redirect(back.startsWith(`${RIWAYAT_PATH}?`) || back === RIWAYAT_PATH ? back : `${RIWAYAT_PATH}?transaksi=${transaction.id}`)
 }

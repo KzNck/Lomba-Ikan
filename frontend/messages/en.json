@@ -494,6 +494,21 @@
         "noteCancelled": "This purchase was cancelled and can't be changed. If something's wrong, contact us from the Help menu.",
         "inProgressSince": "Bought on {at}",
         "noteInProgress": "This purchase is still in progress. Collect the batch at the PPI to complete it."
+      },
+      "handover": {
+        "title": "Handover",
+        "description": "Weigh the catch when the buyer collects it at the PPI, then confirm here. The transaction total is recalculated from the final weight.",
+        "weightLabel": "Final weight",
+        "weightHelper": "The weight measured at the PPI, in kg.",
+        "weightError": "Enter a final weight between 0 and 200 kg, e.g. 9 or 9.5.",
+        "submit": "Confirm handover",
+        "confirmTitle": "Complete this transaction?",
+        "confirmBody": "Final weight {weight} kg. The transaction is marked complete and the payment is released to your account. This can't be undone.",
+        "back": "Back",
+        "confirmYes": "Yes, complete it",
+        "confirming": "Completing…",
+        "notActive": "This transaction is no longer in progress, so its handover can't be confirmed.",
+        "failed": "The handover wasn't confirmed. Check your internet connection, then try again."
       }
     },
     "akun": {
