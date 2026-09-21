@@ -1,13 +1,12 @@
 'use client'
 
-import { useEffect, useId, useRef, useState } from 'react'
+import { useEffect } from 'react'
 import Link from 'next/link'
-import { useLocale, useTranslations } from 'next-intl'
+import { useTranslations } from 'next-intl'
 import { Icon } from '@/components/ui/icon'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
 import { usePopover } from '@/components/ui/use-popover'
 import { SignOutItem } from '@/components/dashboard/sign-out-item'
-import { LanguageOptions } from '@/components/ui/language-switcher'
 
 type AccountMenuProps = {
   // Whose account it is, read out after "Menu akun".
@@ -26,8 +25,8 @@ const PLACEMENT = {
   above: 'left-0 bottom-[calc(100%+8px)]',
 }
 
-// The account menu behind the header pill and the sidebar user card: "Akun" and "Bahasa", then "Keluar" under a
-// divider.
+// The account menu behind the header pill and the sidebar user card: "Akun", then "Keluar" under a divider. The
+// language is switched from the header instead (components/ui/language-switcher.tsx).
 // Escape closes it and returns focus to the trigger, a press outside closes it (see usePopover), and opening it
 // moves focus to the first item.
 export function AccountMenu({ name, accountHref, placement, triggerClassName, chevronFill, children }: AccountMenuProps) {
@@ -64,55 +63,8 @@ export function AccountMenu({ name, accountHref, placement, triggerClassName, ch
             {t('account')}
           </span>
         </Link>
-        {/* Remounted with the panel, so it always opens collapsed. */}
-        {open && <LanguageItem />}
         <div aria-hidden="true" className="box-border w-full h-[1px] shrink-0 bg-[#E2E8F0] m-[2px_0px]" />
         <SignOutItem />
-      </div>
-    </div>
-  )
-}
-
-// "Bahasa" with the active code on the right. It discloses the two languages right under it rather than opening a
-// second popover, so the menu stays one panel for the keyboard and for the sidebar's upward placement.
-function LanguageItem() {
-  const t = useTranslations('common.language')
-  const locale = useLocale()
-  const [expanded, setExpanded] = useState(false)
-  const rowRef = useRef<HTMLButtonElement>(null)
-  const optionsId = useId()
-
-  return (
-    <div className="box-border w-full h-fit flex flex-col gap-[2px]">
-      <button
-        ref={rowRef}
-        type="button"
-        aria-expanded={expanded}
-        aria-controls={optionsId}
-        onClick={() => setExpanded((value) => !value)}
-        className={`box-border w-full h-[40px] shrink-0 flex flex-row gap-[10px] p-[0px_12px] justify-start items-center rounded-[8px] cursor-pointer hover:bg-[#F7F9FC] transition-colors duration-150 ease-out ${FOCUS_RING}`}
-      >
-        <Icon name="globe" fill="#5B6B7C" className="box-border w-[16px] shrink-0 h-[16px]" />
-        <span className="text-[14px]/[normal] box-border [flex:1_1_0] text-[#0B3B5C] font-poppins font-medium text-left [white-space:nowrap]">
-          {t('label')}
-        </span>
-        <span className="text-[13px]/[normal] box-border text-[#5B6B7C] font-inter font-semibold text-left [white-space:nowrap]">
-          {t(`codes.${locale}`)}
-        </span>
-        <Icon
-          name="chevron-down"
-          fill="#5B6B7C"
-          className={`box-border w-[14px] shrink-0 h-[14px] transition-transform duration-200 ease-out ${expanded ? 'rotate-180' : ''}`}
-        />
-      </button>
-      <div id={optionsId} hidden={!expanded} className="box-border w-full h-fit">
-        <LanguageOptions
-          indent
-          onSwitched={() => {
-            setExpanded(false)
-            rowRef.current?.focus({ preventScroll: true })
-          }}
-        />
       </div>
     </div>
   )

@@ -25,14 +25,12 @@ function useLocaleSwitch(onSwitched?: () => void) {
 }
 
 type LanguageOptionsProps = {
-  // Where each option's left edge sits: flush in the navbar panel, indented under the account menu's "Bahasa" row.
-  indent?: boolean
   onSwitched?: () => void
 }
 
 // "Bahasa Indonesia" and "English", each named in its own language (and marked `lang` so it is read that way), with
 // a check on the active one, which carries `data-language-active` for the navbar switcher's focus-on-open.
-export function LanguageOptions({ indent = false, onSwitched }: LanguageOptionsProps) {
+function LanguageOptions({ onSwitched }: LanguageOptionsProps) {
   const t = useTranslations('common.language')
   const { locale, pending, choose } = useLocaleSwitch(onSwitched)
 
@@ -49,7 +47,7 @@ export function LanguageOptions({ indent = false, onSwitched }: LanguageOptionsP
             disabled={pending}
             data-language-active={active || undefined}
             onClick={() => choose(code)}
-            className={`box-border w-full h-[40px] shrink-0 flex flex-row gap-[10px] ${indent ? 'p-[0px_12px_0px_38px]' : 'p-[0px_12px]'} justify-start items-center rounded-[8px] cursor-pointer hover:bg-[#F7F9FC] disabled:cursor-wait disabled:opacity-70 transition-colors duration-150 ease-out ${FOCUS_RING}`}
+            className={`box-border w-full h-[40px] shrink-0 flex flex-row gap-[10px] p-[0px_12px] justify-start items-center rounded-[8px] cursor-pointer hover:bg-[#F7F9FC] disabled:cursor-wait disabled:opacity-70 transition-colors duration-150 ease-out ${FOCUS_RING}`}
           >
             <span
               className={`text-[14px]/[normal] box-border [flex:1_1_0] text-[#0B3B5C] font-poppins ${active ? 'font-semibold' : 'font-medium'} text-left [white-space:nowrap]`}
@@ -64,7 +62,7 @@ export function LanguageOptions({ indent = false, onSwitched }: LanguageOptionsP
   )
 }
 
-// The landing navbar's switcher, left of "Masuk": a globe with the active code ("ID"/"EN") that opens the two
+// The switcher in the landing navbar (left of "Masuk") and the dashboard headers (left of the bell): a globe with the active code ("ID"/"EN") that opens the two
 // options. Escape or a press outside closes it (usePopover); opening moves focus to the active option.
 export function LanguageSwitcher() {
   const t = useTranslations('common.language')
