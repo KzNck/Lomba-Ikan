@@ -10,11 +10,12 @@ const WORDMARK_TONES = {
   light: 'text-[#FFFFFF]',
 }
 
-// Ikan di mark-nya putih, jadi di latar terang (tone `dark`) mark-nya ditaruh di
-// tile #0B3B5C — sama seperti app icon. Di latar gelap mark-nya berdiri sendiri.
+// Ikan di mark aslinya putih dan ada glow gelap transparan di tengah — keduanya cuma
+// terbaca di latar gelap. Untuk latar terang (tone `dark`) dipakai versi navy: bagian
+// putihnya jadi #0B3B5C dan glow-nya dibuang.
 const MARK_TONES = {
-  dark: 'bg-[#0B3B5C] rounded-[10px] p-[5px]',
-  light: '',
+  dark: '/images/logo-mark-navy.png',
+  light: '/images/logo-mark.png',
 }
 
 type LogoProps = {
@@ -24,16 +25,14 @@ type LogoProps = {
 export function Logo({ tone }: LogoProps) {
   return (
     <div className="box-border w-fit shrink-0 h-fit flex flex-row gap-[10px] justify-start items-center">
-      <div className={`box-border w-[40px] shrink-0 h-[40px] flex justify-center items-center ${MARK_TONES[tone]}`}>
-        <Image
-          src="/images/logo-mark.png"
-          alt=""
-          aria-hidden="true"
-          width={40}
-          height={40}
-          className="box-border w-full h-full object-contain"
-        />
-      </div>
+      <Image
+        src={MARK_TONES[tone]}
+        alt=""
+        aria-hidden="true"
+        width={40}
+        height={40}
+        className="box-border w-[40px] shrink-0 h-[40px] object-contain"
+      />
       <div className={`text-[22px]/[normal] box-border ${WORDMARK_TONES[tone]} font-poppins font-bold text-left [white-space:nowrap]`}>
         ByCatch Loop
       </div>
