@@ -20,6 +20,7 @@ import { RIWAYAT_PATH, STATE_OF } from '@/components/nelayan/riwayat-content'
 import { WEIGHT_LIMITS } from '@/components/nelayan/listing-content'
 import { catchTimestamp, toModelInputs, type ModelInputs } from '@/lib/catches/model-inputs'
 import { predictFreshness } from '@/lib/freshness/client'
+import { gradeCatch } from '@/lib/freshness/grade'
 import { waNumber } from '@/lib/contact/whatsapp'
 import { OTHER_NAME_MAX } from '@/components/nelayan/catch-content'
 import { getKabupatenKota, getPelabuhan, PROVINSI } from '@/lib/wilayah'
@@ -71,13 +72,15 @@ export async function submitCatch(formData: FormData): Promise<void> {
     })
 
     if (photo instanceof Blob && photo.size > 0) {
-        // The upload and the assessment both take the same photo and neither needs the other, so they run together.
-        // The uploaded photo's URL goes on the row: it's what the listing shows instead of the category illustration.
-        const [photoUrl, result] = await Promise.all([
-            uploadCatchPhoto(profile.id, entry.id, photo),
-            predictFreshness({ catchId: entry.id, inputs, photo }),
-        ])
+        // The uploaded photo's URL goes on the row: it's what the listing shows instead of the category illustration,
+        // and what the grade-catch Edge Function grades from.
+        const photoUrl = await uploadCatchPhoto(profile.id, entry.id, photo)
         if (photoUrl) await setCatchPhoto(entry.id, photoUrl)
+
+        // grade-catch saves the grade itself. Without a stored photo (HEIC from Chrome isn't kept) or while the
+        // function isn't deployed, fall back to calling the Freshness API from here with the photo in hand.
+        const graded = photoUrl ? await gradeCatch(entry.id) : false
+        const result = graded ? null : await predictFreshness({ catchId: entry.id, inputs, photo })
 
         if (result) {
             await saveFreshness(entry.id, {
@@ -121,7 +124,9 @@ export async function regradeCatch(formData: FormData): Promise<void> {
         hours_post_haul: Math.max(1, Math.round((Date.now() - Date.parse(entry.catch_time)) / 3_600_000)),
     }
 
-    const response = await fetch(entry.photo_url).catch(() => null)
+    // grade-catch first (it saves the grade itself); the direct call is the fallback.
+    const graded = await gradeCatch(entry.id)
+    const response = graded ? null : await fetch(entry.photo_url).catch(() => null)
     const result = response?.ok
         ? await predictFreshness({ catchId: entry.id, inputs, photo: await response.blob() })
         : null
@@ -134,12 +139,14 @@ export async function regradeCatch(formData: FormData): Promise<void> {
             recommendation: result.recommendation,
             overrideApplied: result.overrideApplied,
         })
+    }
+    if (graded || result) {
         revalidatePath('/nelayan')
         revalidatePath('/nelayan/listing')
     }
 
     // `gagal` tells the result page this retry failed too, so it can say so rather than look unchanged.
-    redirect(result ? resultHref : `${resultHref}&gagal=1`)
+    redirect(graded || result ? resultHref : `${resultHref}&gagal=1`)
 }
 
 /** Terbitkan tangkapan yang sudah dinilai ke marketplace, dengan harga opsional dari form. */
