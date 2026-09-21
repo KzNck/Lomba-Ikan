@@ -249,6 +249,18 @@ CREATE POLICY "catches: pembeli view listed"
     )
   );
 
+-- catches: pembeli tetap bisa membaca tangkapan yang dibelinya setelah tidak
+-- LISTED lagi (riwayat pembelian). Untuk project yang sudah berjalan: supabase/catches-purchased.sql
+CREATE POLICY "catches: pembeli view purchased"
+  ON public.catches FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.transactions t
+      WHERE t.catch_id = catches.id
+        AND t.pembeli_id = auth.uid()
+    )
+  );
+
 -- transactions: kedua pihak bisa lihat transaksi mereka
 CREATE POLICY "transactions: parties access"
   ON public.transactions FOR ALL
