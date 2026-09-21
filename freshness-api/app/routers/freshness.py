@@ -1,7 +1,11 @@
 from fastapi import APIRouter, HTTPException, UploadFile, File, Form
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
+from pillow_heif import register_heif_opener
 import io
 import logging
+
+# Foto dari iPhone/Mac defaultnya HEIC, yang tidak bisa dibuka Pillow sendiri.
+register_heif_opener()
 
 from app.models.predictor import predictor
 from app.models.schemas import FreshnessResult
@@ -32,7 +36,11 @@ async def predict_freshness(
 
         # Baca file foto jadi PIL Image
         photo_bytes = await photo.read()
-        image = Image.open(io.BytesIO(photo_bytes))
+        try:
+            image = Image.open(io.BytesIO(photo_bytes))
+            image.load()
+        except UnidentifiedImageError:
+            raise HTTPException(status_code=422, detail="Format foto tidak dikenali. Gunakan JPG, PNG, WebP, atau HEIC.")
 
         form_data = {
             "status_ikan": status_ikan,
