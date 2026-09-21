@@ -13,6 +13,8 @@ type TransactionTableProps = {
   hrefFor: (id: string) => string
   // The row whose drawer is open, marked with the blue bar down its left edge.
   selectedId?: string
+  // The table's words; the pembeli history swaps a few (see components/pembeli/riwayat-content.ts).
+  copy?: typeof TABLE
 }
 
 // Column widths from the export's header row; the table keeps them so header and cells stay aligned.
@@ -36,13 +38,13 @@ const CELL = 'box-border p-[13px_0px] [border-width:0px_0px_1px_0px] [border-sty
 
 // "Tabel Transaksi". The export draws it with flex rows; a real table keeps the columns tied to their headers for
 // screen readers. Each row's chevron is the link, stretched across the row so anywhere in it opens the drawer.
-export function TransactionTable({ rows, order, toggleSortHref, hrefFor, selectedId }: TransactionTableProps) {
-  const sort = TABLE.sort[order]
+export function TransactionTable({ rows, order, toggleSortHref, hrefFor, selectedId, copy = TABLE }: TransactionTableProps) {
+  const sort = copy.sort[order]
   return (
     <div className="box-border w-full h-fit shrink-0 flex flex-col gap-0 justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[16px] overflow-hidden">
       <table className="box-border w-full table-fixed border-collapse">
         <caption className="sr-only">
-          {TABLE.label}. {sort.caption}.
+          {copy.label}. {sort.caption}.
         </caption>
         <thead>
           <tr className="box-border h-[46px] bg-[#F7F9FC] [border-width:0px_0px_1px_0px] [border-style:solid] [border-color:#E2E8F0]">
@@ -60,11 +62,11 @@ export function TransactionTable({ rows, order, toggleSortHref, hrefFor, selecte
                     aria-label={sort.action}
                     className={`box-border inline-flex flex-row gap-[4px] justify-start items-center align-middle rounded-[4px] hover:text-[#0B3B5C] ${FOCUS_RING}`}
                   >
-                    {TABLE.columns[key]}
+                    {copy.columns[key]}
                     <Icon name={sort.icon} fill="#0F6CB8" className="box-border w-[13px] shrink-0 h-[13px]" />
                   </Link>
                 ) : (
-                  <span className="box-border inline-flex flex-row gap-[4px] justify-start items-center align-middle">{TABLE.columns[key]}</span>
+                  <span className="box-border inline-flex flex-row gap-[4px] justify-start items-center align-middle">{copy.columns[key]}</span>
                 )}
               </th>
             ))}
@@ -72,7 +74,7 @@ export function TransactionTable({ rows, order, toggleSortHref, hrefFor, selecte
         </thead>
         <tbody>
           {rows.map((row) => (
-            <TransactionRow key={row.id} row={row} href={hrefFor(row.id)} selected={row.id === selectedId} />
+            <TransactionRow key={row.id} row={row} href={hrefFor(row.id)} selected={row.id === selectedId} detailLabel={copy.detailLabel} />
           ))}
         </tbody>
       </table>
@@ -80,7 +82,17 @@ export function TransactionTable({ rows, order, toggleSortHref, hrefFor, selecte
   )
 }
 
-function TransactionRow({ row, href, selected }: { row: TransactionRowContent; href: string; selected: boolean }) {
+function TransactionRow({
+  row,
+  href,
+  selected,
+  detailLabel,
+}: {
+  row: TransactionRowContent
+  href: string
+  selected: boolean
+  detailLabel: (partner: string) => string
+}) {
   const state = TRANSACTION_STATES[row.state]
   const grade = GRADE_BADGES[row.gradeLetter as keyof typeof GRADE_BADGES] ?? GRADE_BADGES['—']
 
@@ -123,7 +135,7 @@ function TransactionRow({ row, href, selected }: { row: TransactionRowContent; h
         <Link
           href={href}
           scroll={false}
-          aria-label={TABLE.detailLabel(row.partner.name)}
+          aria-label={detailLabel(row.partner.name)}
           aria-current={selected ? 'true' : undefined}
           className={`box-border inline-flex justify-end items-center rounded-[6px] before:absolute before:inset-0 before:content-[''] ${FOCUS_RING}`}
         >

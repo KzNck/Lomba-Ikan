@@ -9,6 +9,8 @@ import type { TransactionDetailContent } from '@/lib/nelayan/riwayat'
 type TransactionDrawerProps = {
   detail: TransactionDetailContent
   closeHref: string
+  // The drawer's words; the pembeli history swaps a few (see components/pembeli/riwayat-content.ts).
+  copy?: typeof TRANSACTION_DRAWER
 }
 
 const TITLE_ID = 'transaction-drawer-title'
@@ -16,9 +18,9 @@ const TITLE_ID = 'transaction-drawer-title'
 // "Detail Transaksi Drawer": a 400px panel docked to the right of the table, below the header. Like the listing
 // drawer it is not modal — the table stays readable — so the open row keeps its blue marker as the visible link
 // between the two. The export fixes it at 400×1126px inside the 1440×1220 frame.
-export function TransactionDrawer({ detail, closeHref }: TransactionDrawerProps) {
+export function TransactionDrawer({ detail, closeHref, copy = TRANSACTION_DRAWER }: TransactionDrawerProps) {
   const state = TRANSACTION_STATES[detail.state]
-  const banner = TRANSACTION_DRAWER.banner[detail.state](detail.bannerAt)
+  const banner = copy.banner[detail.state](detail.bannerAt)
 
   return (
     <aside
@@ -31,13 +33,13 @@ export function TransactionDrawer({ detail, closeHref }: TransactionDrawerProps)
             <Icon name="receipt-text" fill="#0F6CB8" className="box-border w-[18px] shrink-0 h-[18px]" />
           </span>
           <h2 id={TITLE_ID} className="text-[19px]/[normal] box-border text-[#0B3B5C] font-poppins font-semibold text-left [white-space:nowrap]">
-            {TRANSACTION_DRAWER.title}
+            {copy.title}
           </h2>
         </div>
         <Link
           href={closeHref}
           scroll={false}
-          aria-label={TRANSACTION_DRAWER.closeLabel}
+          aria-label={copy.closeLabel}
           className={`box-border w-[36px] shrink-0 h-[36px] flex flex-row gap-0 justify-center items-center bg-[#F7F9FC] hover:bg-[#E3F0F9] rounded-[999px] ${PRESS} ${FOCUS_RING}`}
         >
           <Icon name="x" fill="#0B3B5C" className="box-border w-[18px] shrink-0 h-[18px]" />
@@ -49,7 +51,7 @@ export function TransactionDrawer({ detail, closeHref }: TransactionDrawerProps)
           <span className={`text-[13px]/[normal] box-border [flex:1_1_0] ${state.text} font-poppins font-semibold text-left`}>{banner}</span>
         </p>
 
-        <Panel title={TRANSACTION_DRAWER.timelineTitle} gap="gap-0">
+        <Panel title={copy.timelineTitle} gap="gap-0">
           <ol className="box-border w-full flex flex-col gap-0 justify-start items-start">
             {detail.steps.map((step, index) => (
               <li key={step.label} className="box-border w-full h-fit shrink-0 flex flex-row gap-[12px] p-[6px_0px] justify-start items-start">
@@ -76,10 +78,10 @@ export function TransactionDrawer({ detail, closeHref }: TransactionDrawerProps)
           </ol>
         </Panel>
 
-        <Panel title={TRANSACTION_DRAWER.infoTitle}>
-          <Row label={TRANSACTION_DRAWER.infoLabels.id} value={detail.id} />
-          <Row label={TRANSACTION_DRAWER.infoLabels.date} value={detail.date} />
-          <Row label={TRANSACTION_DRAWER.infoLabels.partner}>
+        <Panel title={copy.infoTitle}>
+          <Row label={copy.infoLabels.id} value={detail.id} />
+          <Row label={copy.infoLabels.date} value={detail.date} />
+          <Row label={copy.infoLabels.partner}>
             <span className="box-border [flex:1_1_0] h-fit flex flex-row gap-[8px] justify-start items-center">
               <span className="box-border w-[28px] shrink-0 h-[28px] flex flex-row gap-0 justify-center items-center bg-[#F3FAFF] rounded-[999px]">
                 <Icon name={detail.partner.icon} fill="#0F6CB8" className="box-border w-[14px] shrink-0 h-[14px]" />
@@ -92,7 +94,7 @@ export function TransactionDrawer({ detail, closeHref }: TransactionDrawerProps)
               </span>
             </span>
           </Row>
-          <Row label={TRANSACTION_DRAWER.infoLabels.grade}>
+          <Row label={copy.infoLabels.grade}>
             <span
               className={`box-border w-fit shrink-0 h-fit flex flex-row gap-[6px] p-[4px_10px] justify-start items-center ${detail.grade && gradeCondition(detail.grade) === 'live' ? 'bg-[#E8F8F2]' : 'bg-[#F7F9FC] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px]'} rounded-[999px]`}
             >
@@ -110,13 +112,13 @@ export function TransactionDrawer({ detail, closeHref }: TransactionDrawerProps)
           </Row>
         </Panel>
 
-        <Panel title={TRANSACTION_DRAWER.catchTitle}>
-          <Row label={TRANSACTION_DRAWER.catchLabels.category} value={detail.category} />
-          <Row label={TRANSACTION_DRAWER.catchLabels.volume} value={detail.volume} />
-          <Row label={TRANSACTION_DRAWER.catchLabels.hauledAt} value={detail.hauledAt} />
-          <Row label={TRANSACTION_DRAWER.catchLabels.ice} value={detail.ice} />
+        <Panel title={copy.catchTitle}>
+          <Row label={copy.catchLabels.category} value={detail.category} />
+          <Row label={copy.catchLabels.volume} value={detail.volume} />
+          <Row label={copy.catchLabels.hauledAt} value={detail.hauledAt} />
+          <Row label={copy.catchLabels.ice} value={detail.ice} />
           {detail.photoUrl && (
-            <Row label={TRANSACTION_DRAWER.catchLabels.photo}>
+            <Row label={copy.catchLabels.photo}>
               <span className="box-border w-fit shrink-0 h-fit flex flex-row gap-[10px] justify-start items-center">
                 {/* The photo lives in Supabase storage, so it is a plain <img>: next/image would need that host allowed. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -131,18 +133,18 @@ export function TransactionDrawer({ detail, closeHref }: TransactionDrawerProps)
                   rel="noreferrer"
                   className={`text-[13px]/[normal] box-border text-[#0F6CB8] hover:underline font-poppins font-semibold text-left [white-space:nowrap] rounded-[4px] ${FOCUS_RING}`}
                 >
-                  {TRANSACTION_DRAWER.photoLink}
+                  {copy.photoLink}
                 </a>
               </span>
             </Row>
           )}
         </Panel>
 
-        <Panel title={TRANSACTION_DRAWER.paymentTitle}>
-          <Row label={TRANSACTION_DRAWER.paymentLabels.pricePerKg} value={detail.pricePerKg} />
-          <Row label={TRANSACTION_DRAWER.paymentLabels.total} value={detail.total} strong />
-          <Row label={TRANSACTION_DRAWER.paymentLabels.method} value={TRANSACTION_DRAWER.paymentMethod} />
-          <Row label={TRANSACTION_DRAWER.paymentLabels.status}>
+        <Panel title={copy.paymentTitle}>
+          <Row label={copy.paymentLabels.pricePerKg} value={detail.pricePerKg} />
+          <Row label={copy.paymentLabels.total} value={detail.total} strong />
+          <Row label={copy.paymentLabels.method} value={copy.paymentMethod} />
+          <Row label={copy.paymentLabels.status}>
             <span
               className={`box-border w-fit shrink-0 h-fit flex flex-row gap-[6px] p-[4px_10px] justify-start items-center ${detail.paid ? 'bg-[#E8F8F2]' : 'bg-[#F7F9FC] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px]'} rounded-[999px]`}
             >
@@ -154,7 +156,7 @@ export function TransactionDrawer({ detail, closeHref }: TransactionDrawerProps)
               <span
                 className={`text-[12px]/[normal] box-border ${detail.paid ? 'text-[#17704A]' : 'text-[#0B3B5C]'} font-poppins font-semibold text-left [white-space:nowrap]`}
               >
-                {detail.paid ? TRANSACTION_DRAWER.paymentPaid : TRANSACTION_DRAWER.paymentPending}
+                {detail.paid ? copy.paymentPaid : copy.paymentPending}
               </span>
             </span>
           </Row>
@@ -162,7 +164,7 @@ export function TransactionDrawer({ detail, closeHref }: TransactionDrawerProps)
 
         <p className="box-border w-full h-fit shrink-0 flex flex-row gap-[10px] p-[12px_14px] justify-start items-start bg-[#DCEEFB] rounded-[12px]">
           <Icon name="info" fill="#0F6CB8" className="box-border w-[16px] shrink-0 h-[16px]" />
-          <span className="text-[12px]/[18px] box-border [flex:1_1_0] text-[#0B3B5C] font-inter font-normal text-left">{TRANSACTION_DRAWER.note[detail.state]}</span>
+          <span className="text-[12px]/[18px] box-border [flex:1_1_0] text-[#0B3B5C] font-inter font-normal text-left">{copy.note[detail.state]}</span>
         </p>
       </div>
     </aside>

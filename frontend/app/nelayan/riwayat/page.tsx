@@ -6,32 +6,13 @@ import { RiwayatFilters } from '@/components/nelayan/riwayat-filters'
 import { TransactionTable } from '@/components/nelayan/transaction-table'
 import { TransactionDrawer } from '@/components/nelayan/transaction-drawer'
 import { DASHBOARD } from '@/components/nelayan/content'
-import {
-  EMPTY_STATE,
-  FILTERS,
-  RIWAYAT_PAGE,
-  RIWAYAT_PATH,
-  TRANSACTION_DRAWER,
-  type SortOrder,
-  type StatusFilter,
-} from '@/components/nelayan/riwayat-content'
-import { formatDay, loadRiwayat } from '@/lib/nelayan/riwayat'
+import { EMPTY_STATE, RIWAYAT_PAGE, RIWAYAT_PATH, TRANSACTION_DRAWER } from '@/components/nelayan/riwayat-content'
+import { dateLabelFor, loadRiwayat, parseRiwayatView, riwayatHref } from '@/lib/nelayan/riwayat'
 import { requireProfile } from '@/lib/supabase/auth'
 import { displayNameFor } from '@/lib/supabase/display-name'
 import { getMyCatches } from '@/lib/supabase/catches'
 import { getMyTransactions } from '@/lib/supabase/transactions'
 import { greetingFor, initialsOf, recentNotifications } from '@/lib/nelayan/dashboard-data'
-
-const STATUS_VALUES = FILTERS.status.options.map(({ value }) => value)
-
-// The closed date control: the chosen range when there is one, otherwise what the listed rows cover.
-function dateLabel(range: { from?: string; to?: string }, shown: { from: string; to: string } | null) {
-  const { between, since, until, empty } = FILTERS.dateRange
-  if (range.from && range.to) return between(formatDay(range.from), formatDay(range.to))
-  if (range.from) return since(formatDay(range.from))
-  if (range.to) return until(formatDay(range.to))
-  return shown ? between(shown.from, shown.to) : empty
-}
 
 // The "13 Riwayat Transaksi" frame: the history table beside the fisher's own dashboard chrome. The URL holds the
 // view — ?status= filters the rows, ?transaksi=<id> opens that row's drawer.
@@ -40,15 +21,8 @@ export default async function RiwayatPage({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
-  const params = await searchParams
-  const requested = typeof params.status === 'string' ? params.status : ''
-  const status = (STATUS_VALUES.includes(requested as StatusFilter) ? requested : 'semua') as StatusFilter
-  const openId = typeof params.transaksi === 'string' ? params.transaksi : undefined
-  // Only "YYYY-MM-DD" counts; anything else reads as no bound.
-  const dateParam = (value: string | string[] | undefined) =>
-    typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : undefined
-  const range = { from: dateParam(params.dari), to: dateParam(params.sampai) }
-  const order: SortOrder = params.urut === 'lama' ? 'lama' : 'baru'
+  const view = parseRiwayatView(await searchParams)
+  const { status, range, order, openId } = view
 
   const [profile, { rows, details, range: shownRange }, catches, transactions] = await Promise.all([
     requireProfile('nelayan'),
@@ -61,17 +35,7 @@ export default async function RiwayatPage({
   const name = await displayNameFor(profile)
   const detail = openId ? details.get(openId) : undefined
   // Every link keeps the rest of the view; only the part it changes differs.
-  const hrefWith = (change: { transaksi?: string; urut?: SortOrder }) => {
-    const search = new URLSearchParams()
-    if (status !== 'semua') search.set('status', status)
-    if (range.from) search.set('dari', range.from)
-    if (range.to) search.set('sampai', range.to)
-    const urut = change.urut ?? order
-    if (urut === 'lama') search.set('urut', urut)
-    if (change.transaksi) search.set('transaksi', change.transaksi)
-    const query = search.toString()
-    return query ? `${RIWAYAT_PATH}?${query}` : RIWAYAT_PATH
-  }
+  const hrefWith = (change: Parameters<typeof riwayatHref>[2]) => riwayatHref(RIWAYAT_PATH, view, change)
   // Clicking the open row's chevron closes its drawer.
   const hrefFor = (id: string) => hrefWith(id === openId ? {} : { transaksi: id })
 
@@ -94,7 +58,7 @@ export default async function RiwayatPage({
             <h2 className="text-[28px]/[32px] box-border text-[#0B3B5C] font-poppins font-bold text-left [white-space:nowrap]">{RIWAYAT_PAGE.title}</h2>
             <p className="text-[15px]/[normal] box-border w-full text-[#5B6B7C] font-inter font-normal text-left">{RIWAYAT_PAGE.subtitle}</p>
           </div>
-          <RiwayatFilters action={RIWAYAT_PATH} status={status} range={range} dateLabel={dateLabel(range, shownRange)} />
+          <RiwayatFilters action={RIWAYAT_PATH} status={status} range={range} dateLabel={dateLabelFor(range, shownRange)} />
           <p className="box-border w-full h-fit shrink-0 flex flex-row gap-[6px] justify-start items-center">
             <span className="text-[13px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left [white-space:nowrap]">
               {RIWAYAT_PAGE.resultCount(rows.length)}
