@@ -38,6 +38,10 @@ Deno.serve(async (req) => {
 
     const { qr_scan_code, final_weight_kg } = await req.json()
 
+    if (typeof final_weight_kg !== 'number' || !(final_weight_kg > 0)) {
+      return new Response(JSON.stringify({ message: 'Berat akhir tidak valid' }), { status: 400 })
+    }
+
     // Cari transaksi berdasarkan QR code
     const { data: transaction, error: txError } = await supabase
       .from('transactions')
@@ -49,8 +53,20 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ message: 'QR code tidak valid' }), { status: 404 })
     }
 
+    // Klien service role melewati RLS, jadi cek di sini: hanya nelayan atau pembeli
+    // transaksi ini yang boleh menyelesaikannya.
+    if (user.id !== transaction.nelayan_id && user.id !== transaction.pembeli_id) {
+      return new Response(JSON.stringify({ message: 'Forbidden' }), { status: 403 })
+    }
+
     if (transaction.status === 'COMPLETED') {
       return new Response(JSON.stringify({ message: 'Transaksi sudah selesai' }), {
+        status: 409,
+      })
+    }
+
+    if (transaction.status === 'CANCELLED') {
+      return new Response(JSON.stringify({ message: 'Transaksi sudah dibatalkan' }), {
         status: 409,
       })
     }
