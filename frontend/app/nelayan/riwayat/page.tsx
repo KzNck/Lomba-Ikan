@@ -103,7 +103,7 @@ export default async function RiwayatPage({
             cancel={
               detail.state === 'diproses' && (
                 <CancelReservationForm
-                  key={detail.id}
+                  key={`cancel-${detail.id}`}
                   transactionId={detail.id}
                   role="nelayan"
                   returnHref={hrefWith({ transaksi: detail.id })}
@@ -115,7 +115,7 @@ export default async function RiwayatPage({
               detail.state === 'diproses' && (
                 // Keyed by transaction so opening another row starts a fresh form.
                 <HandoverForm
-                  key={detail.id}
+                  key={`handover-${detail.id}`}
                   transactionId={detail.id}
                   weightKg={detail.weightKg}
                   returnHref={hrefWith({ transaksi: detail.id })}

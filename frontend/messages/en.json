@@ -725,7 +725,8 @@
           "caught": "Caught {ago}",
           "registeredFisher": "Registered fisher",
           "gradeLabel": "Grade {grade}",
-          "gradeUnrated": "Not graded yet"
+          "gradeUnrated": "Not graded yet",
+          "priceUnset": "Price not set"
         },
         "whatsappMessage": "Halo {fisher}, saya {buyer} dari ByCatch Loop. Saya baru membeli batch {batch}: {category}, {weight}, {price}, di {ppi}. Kapan dan di mana kita bisa serah terima?"
       }

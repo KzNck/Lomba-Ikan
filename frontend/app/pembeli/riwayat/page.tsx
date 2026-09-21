@@ -95,7 +95,7 @@ export default async function PembeliRiwayatPage({
             cancel={
               detail.state === 'diproses' && (
                 <CancelReservationForm
-                  key={detail.id}
+                  key={`cancel-${detail.id}`}
                   transactionId={detail.id}
                   role="pembeli"
                   returnHref={hrefWith({ transaksi: detail.id })}

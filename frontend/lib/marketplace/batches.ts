@@ -123,7 +123,8 @@ export function toBatch(
     location: entry.catch_location,
     weight: formatWeight(p, weightKg),
     distance: distanceKm === null ? '—' : `${distanceKm} km`,
-    price: t('perKg', { price: formatRupiah(p, entry.price_per_kg) }),
+    // No price yet (it follows the auction): say so, rather than "Belum diatur/kg".
+    price: entry.price_per_kg === null ? t('priceUnset') : t('perKg', { price: formatRupiah(p, entry.price_per_kg) }),
     totalPrice: total > 0 ? formatRupiah(p, total) : t('auctionPrice'),
     total: total > 0 ? t('total', { price: formatRupiah(p, total) }) : t('auctionPrice'),
     detail: {
