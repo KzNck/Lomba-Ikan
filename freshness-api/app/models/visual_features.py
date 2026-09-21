@@ -1,44 +1,44 @@
 """
-Ekstraksi fitur visual dari foto ikan — HARUS identik dengan extract_visual_features
-di notebook training (Cell 10), kalau tidak, hasil prediksi akan salah karena
-model dilatih dengan fitur dari fungsi persis ini.
+Ekstraksi fitur visual dari foto ikan — VERSI YOLOv8-cls.
+
+Menggantikan classical CV (RGB/HSV color moments + Laplacian texture) dengan
+YOLOv8n-cls (binary classifier fresh/non-fresh, transfer learning ImageNet).
+HARUS identik dengan extract_visual_features di notebook (Cell 12): panggil
+model.predict(source=image) lalu ambil p_fresh/p_nonfresh/top1_conf dari
+result.probs — kalau logic di sini menyimpang dari notebook, hasil prediksi
+model unified akan salah karena dilatih dengan fitur dari fungsi persis ini.
 """
 
 import numpy as np
 from PIL import Image
-from scipy import ndimage
+from ultralytics import YOLO
 
-FEATURE_NAMES = [
-    "rgb_r_mean", "rgb_g_mean", "rgb_b_mean", "rgb_r_std", "rgb_g_std", "rgb_b_std",
-    "hsv_h_mean", "hsv_s_mean", "hsv_v_mean", "hsv_s_std", "hsv_v_std",
-    "brightness_mean", "redness_ratio", "texture_laplacian_var", "contrast_std",
-]
+FEATURE_NAMES = ["yolo_p_fresh", "yolo_p_nonfresh", "yolo_top1_conf"]
 
 
-def extract_visual_features(image: Image.Image, size: int = 128) -> dict:
-    """Fitur visual classical (RGB/HSV color moments + tekstur Laplacian), dihitung
-    global atas seluruh citra — persis seperti notebook, bukan potongan posisi tetap."""
-    img = image.convert("RGB").resize((size, size))
-    arr = np.asarray(img).astype(np.float32) / 255.0  # (H, W, 3) RGB 0-1
+def extract_visual_features(image: Image.Image, yolo_model: YOLO) -> dict:
+    """Jalankan YOLOv8-cls terlatih di atas satu foto, kembalikan probabilitas
+    kelas (fresh/non-fresh) + confidence top-1 sebagai fitur visual.
 
-    r, g, b = arr[..., 0], arr[..., 1], arr[..., 2]
-    hsv = np.asarray(img.convert("HSV")).astype(np.float32) / 255.0
-    h_ch, s_ch, v_ch = hsv[..., 0], hsv[..., 1], hsv[..., 2]
-    gray = arr.mean(axis=2)
+    image: PIL.Image.Image -- ultralytics menerima ini langsung, tidak perlu
+    konversi manual (resize/normalize ditangani otomatis oleh Ultralytics,
+    identik dengan preprocessing saat training).
+    """
+    result = yolo_model.predict(source=image, verbose=False)[0]
+    probs = result.probs  # objek Probs: .data (tensor semua kelas), .top1, .top1conf
+    class_names = result.names  # mis. {0: 'fresh', 1: 'nonfresh'}, urutan mengikuti folder training
 
-    feats = {
-        "rgb_r_mean": float(r.mean()), "rgb_g_mean": float(g.mean()), "rgb_b_mean": float(b.mean()),
-        "rgb_r_std": float(r.std()), "rgb_g_std": float(g.std()), "rgb_b_std": float(b.std()),
-        "hsv_h_mean": float(h_ch.mean()), "hsv_s_mean": float(s_ch.mean()), "hsv_v_mean": float(v_ch.mean()),
-        "hsv_s_std": float(s_ch.std()), "hsv_v_std": float(v_ch.std()),
-        "brightness_mean": float(gray.mean()),
-        "redness_ratio": float(r.mean() / (g.mean() + b.mean() + 1e-6)),
-        "texture_laplacian_var": float(ndimage.laplace(gray).var()),
-        "contrast_std": float(gray.std()),
+    prob_by_name = {class_names[k]: float(probs.data[k]) for k in range(len(class_names))}
+    p_fresh = prob_by_name.get("fresh", 0.0)
+    p_nonfresh = prob_by_name.get("nonfresh", 0.0)
+
+    return {
+        "yolo_p_fresh": p_fresh,
+        "yolo_p_nonfresh": p_nonfresh,
+        "yolo_top1_conf": float(probs.top1conf),
     }
-    return feats
 
 
-def extract_visual_features_vector(image: Image.Image) -> np.ndarray:
-    feats = extract_visual_features(image)
+def extract_visual_features_vector(image: Image.Image, yolo_model: YOLO) -> np.ndarray:
+    feats = extract_visual_features(image, yolo_model)
     return np.array([feats[k] for k in FEATURE_NAMES], dtype=np.float32)

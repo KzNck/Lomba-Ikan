@@ -1,8 +1,12 @@
 """
-Freshness predictor — VERSI MODEL ASLI (RandomForest 6-kelas, fusion visual+tabular).
+Freshness predictor — VERSI YOLO-UNIFIED (RandomForest 6-kelas, fusion YOLOv8-cls+tabular).
 
-Load bycatch_unified_model.joblib + bycatch_preprocessor.joblib sekali saat startup,
-reuse tiap request. Ikuti persis alur evaluate_bycatch() di notebook (Cell 12).
+Load bycatch_unified_model.joblib + bycatch_preprocessor.joblib + bycatch_yolo_freshness.pt
+sekali saat startup, reuse tiap request. Ikuti persis alur evaluate_bycatch() di notebook
+IniiKAN_YOLO_unified.ipynb (Cell 12-13). Tahap fitur visual sudah diganti dari classical CV
+ke YOLOv8n-cls (lihat visual_features.py) -- bycatch_unified_model.joblib & preprocessor
+di sini WAJIB dari export notebook yang sama; model lama (classical-CV) TIDAK kompatibel
+karena beda jumlah fitur.
 """
 
 import os
@@ -10,11 +14,12 @@ import joblib
 import numpy as np
 import pandas as pd
 from PIL import Image
+from ultralytics import YOLO
 
 from app.models.visual_features import extract_visual_features_vector
 from app.models.guardrail import rule_based_sanity_check, HILIRISASI_MAP
 
-MODEL_VERSION = "bycatch-unified-rf-v1"
+MODEL_VERSION = "bycatch-unified-rf-yolo-v2"
 
 NUMERIC_COLS = ["hours_post_haul", "ice_to_fish_ratio", "ambient_temp_celsius"]
 CATEGORICAL_COLS = ["storage_method", "fish_category", "status_awal"]
@@ -22,18 +27,22 @@ CATEGORICAL_COLS = ["storage_method", "fish_category", "status_awal"]
 MODEL_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 MODEL_PATH = os.path.join(MODEL_DIR, "bycatch_unified_model.joblib")
 PREPROCESSOR_PATH = os.path.join(MODEL_DIR, "bycatch_preprocessor.joblib")
+YOLO_MODEL_PATH = os.path.join(MODEL_DIR, "bycatch_yolo_freshness.pt")
 
 
 class FreshnessPredictor:
     def __init__(self):
-        if not os.path.exists(MODEL_PATH) or not os.path.exists(PREPROCESSOR_PATH):
+        missing = [
+            p for p in (MODEL_PATH, PREPROCESSOR_PATH, YOLO_MODEL_PATH) if not os.path.exists(p)
+        ]
+        if missing:
             raise FileNotFoundError(
-                f"Model atau preprocessor tidak ditemukan. Pastikan "
-                f"bycatch_unified_model.joblib dan bycatch_preprocessor.joblib "
-                f"ada di {MODEL_DIR}"
+                f"File model tidak ditemukan: {missing}. Pastikan bycatch_unified_model.joblib, "
+                f"bycatch_preprocessor.joblib, dan bycatch_yolo_freshness.pt ada di {MODEL_DIR}"
             )
         self.model = joblib.load(MODEL_PATH)
         self.preprocessor = joblib.load(PREPROCESSOR_PATH)
+        self.yolo_model = YOLO(YOLO_MODEL_PATH)
 
     def predict(self, image: Image.Image, form_data: dict) -> dict:
         """
@@ -71,7 +80,7 @@ class FreshnessPredictor:
         if hasattr(tab_feats, "toarray"):
             tab_feats = tab_feats.toarray()
 
-        visual_feats = extract_visual_features_vector(image).reshape(1, -1)
+        visual_feats = extract_visual_features_vector(image, self.yolo_model).reshape(1, -1)
         X = np.hstack([tab_feats, visual_feats]).astype(np.float32)
 
         probs = self.model.predict_proba(X)[0]
