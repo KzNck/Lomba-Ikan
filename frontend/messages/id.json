@@ -194,7 +194,11 @@
           "description": "Pilih satu jenis yang paling banyak di tangkapan Anda.",
           "error": "Pilih satu kategori untuk melanjutkan.",
           "info": "Tangkapan terdiri dari beberapa jenis? Pilih Campuran. Anda bisa mengubah kategori sebelum listing dipasang.",
-          "cancel": "Batal"
+          "cancel": "Batal",
+          "otherLabel": "Jenis tangkapan",
+          "otherPlaceholder": "Contoh: Ikan Kakap, Kerang",
+          "otherHelper": "Tulis jenis yang paling banyak di tangkapan Anda. Nama ini tampil di listing.",
+          "otherError": "Tulis jenis tangkapan untuk melanjutkan."
         },
         "volume": {
           "title": "Berapa Banyak Tangkapan?",

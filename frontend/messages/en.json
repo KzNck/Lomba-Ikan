@@ -194,7 +194,11 @@
           "description": "Choose the type that makes up most of your catch.",
           "error": "Choose a category to continue.",
           "info": "Several kinds in the catch? Choose Mixed. You can change the category before the listing goes up.",
-          "cancel": "Cancel"
+          "cancel": "Cancel",
+          "otherLabel": "Catch type",
+          "otherPlaceholder": "e.g. Snapper, Clams",
+          "otherHelper": "Enter the type that makes up most of your catch. This name appears on the listing.",
+          "otherError": "Enter the catch type to continue."
         },
         "volume": {
           "title": "How Much Did You Catch?",

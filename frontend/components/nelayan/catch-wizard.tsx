@@ -23,6 +23,8 @@ import { catchTimestamp, toModelInputs } from '@/lib/catches/model-inputs'
 // What the user has entered so far. Each step writes its answer on "Lanjut", and steps 2+ also on "Kembali".
 type CatchAnswers = {
   category?: string
+  // What the fisher typed for "Lainnya"; it becomes the stored category name.
+  otherName?: string
   weight?: number
   time?: string
   condition?: string
@@ -62,7 +64,7 @@ export function CatchWizard() {
   // submitCatch redirects to the result. A failed request falls back to the same local queue, so
   // nothing entered at sea is lost.
   async function submit(entered: CatchAnswers) {
-    const { category: species, weight, time: hauledAt, condition: alive, ice: iceLevel, photo: taken } = entered
+    const { category: species, otherName, weight, time: hauledAt, condition: alive, ice: iceLevel, photo: taken } = entered
     if (!species || !weight || !hauledAt || !alive || !iceLevel || !taken) return
 
     const queueLocally = () => {
@@ -70,7 +72,8 @@ export function CatchWizard() {
       // catch can be graded from it once the device is back online.
       const inputs = toModelInputs({ category: species, time: hauledAt, ice: iceLevel, condition: alive })
       saveCatchLocally({
-        species,
+        // "Lainnya" is stored under the name the fisher typed, as submitCatch does.
+        species: species === 'lainnya' && otherName ? otherName : species,
         weight_kg: weight,
         catch_location: '',
         catch_time: catchTimestamp(hauledAt),
@@ -92,6 +95,7 @@ export function CatchWizard() {
     setStatus('analyzing')
     const form = new FormData()
     form.set('category', species)
+    if (otherName) form.set('lainnya', otherName)
     form.set('weight', String(weight))
     form.set('time', hauledAt)
     form.set('kondisi', alive)
@@ -114,8 +118,9 @@ export function CatchWizard() {
         <CategoryForm
           {...category}
           defaultValue={answers.category}
-          onNext={(value) => {
-            setAnswers((current) => ({ ...current, category: value }))
+          defaultOtherName={answers.otherName}
+          onNext={(value, otherName) => {
+            setAnswers((current) => ({ ...current, category: value, otherName }))
             setStep(1)
           }}
         />
