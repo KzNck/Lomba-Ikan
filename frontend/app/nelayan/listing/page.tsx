@@ -20,6 +20,7 @@ import { getMyCatches } from '@/lib/supabase/catches'
 import { getMyTransactions } from '@/lib/supabase/transactions'
 import { requireProfile } from '@/lib/supabase/auth'
 import { greetingFor, initialsOf, recentNotifications } from '@/lib/nelayan/dashboard-data'
+import { displayNameFor } from '@/lib/supabase/display-name'
 
 const detailHref = (slug: string) => `${LISTING_PATH}?detail=${slug}`
 
@@ -37,7 +38,7 @@ export default async function ListingSayaPage({
   const showClosed = tab === 'terjual'
 
   const profile = await requireProfile('nelayan')
-  const [catches, transactions] = await Promise.all([getMyCatches(), getMyTransactions()])
+  const [catches, transactions, name] = await Promise.all([getMyCatches(), getMyTransactions(), displayNameFor(profile)])
 
   const active = catches.filter((entry) => isOpen(entry.status)).map(toActiveListing)
   const closed = catches.filter((entry) => !isOpen(entry.status))
@@ -60,8 +61,8 @@ export default async function ListingSayaPage({
     <>
       <ListingShell
         header={{
-          greeting: greetingFor(profile.full_name),
-          user: { name: profile.full_name, initials: initialsOf(profile.full_name) },
+          greeting: greetingFor(name),
+          user: { name, initials: initialsOf(profile.full_name) },
           unreadCount: recentNotifications(catches, transactions).length,
         }}
         drawer={

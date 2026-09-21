@@ -1,6 +1,8 @@
-import { Icon } from '@/components/ui/icon'
+import { Icon, type IconName } from '@/components/ui/icon'
 
 type ProfileHeaderProps = {
+  // The avatar's placeholder icon until photo upload exists: a building for pembeli, a boat for nelayan.
+  icon?: IconName
   name: string
   roleLabel: string
   email: string
@@ -10,11 +12,11 @@ type ProfileHeaderProps = {
 
 // "Profile Header" at the top of the account form card. Photo upload isn't built yet, so "Ubah foto" is disabled
 // with its reason under it for screen readers (a tooltip on a disabled button can't be reached).
-export function ProfileHeader({ name, roleLabel, email, location, changePhoto }: ProfileHeaderProps) {
+export function ProfileHeader({ icon = 'building-2', name, roleLabel, email, location, changePhoto }: ProfileHeaderProps) {
   return (
     <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[20px] p-[0px_0px_24px_0px] justify-start items-center [border-width:0px_0px_1px_0px] [border-style:solid] [border-color:#E2E8F0]">
       <div className="box-border w-[80px] shrink-0 h-[80px] flex flex-row gap-0 justify-center items-center bg-[#DCEEFB] rounded-[999px]">
-        <Icon name="building-2" fill="#0F6CB8" className="box-border w-[36px] shrink-0 h-[36px]" />
+        <Icon name={icon} fill="#0F6CB8" className="box-border w-[36px] shrink-0 h-[36px]" />
       </div>
       <div className="box-border [flex:1_1_0] h-fit flex flex-col gap-[6px] justify-start items-start">
         <div className="box-border w-fit h-fit shrink-0 flex flex-row gap-[10px] justify-start items-center">

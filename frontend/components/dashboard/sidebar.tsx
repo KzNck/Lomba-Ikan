@@ -10,7 +10,8 @@ const ROLE_STYLES = {
   nelayan: {
     waves: true,
     navFont: 'font-inter',
-    userName: 'text-[14px]/[normal] box-border text-[#FFFFFF] font-inter font-semibold text-left [white-space:nowrap]',
+    // One line: a name longer than the card ends in an ellipsis, with the full name on hover.
+    userName: 'text-[14px]/[normal] box-border w-full text-[#FFFFFF] font-inter font-semibold text-left truncate',
     // Initials avatar, no menu chevron.
     menu: false,
   },
@@ -66,7 +67,9 @@ export function Sidebar({ role, nav, notifications, user, accountHref }: Sidebar
             )}
           </span>
           <span className="box-border [flex:1_1_0] min-w-0 h-fit flex flex-col gap-[2px] justify-start items-start">
-            <span className={style.userName}>{user.name}</span>
+            <span className={style.userName} title={user.name}>
+              {user.name}
+            </span>
             <span className="text-[13px]/[normal] box-border w-full text-[#D6E9F5] font-inter font-normal text-left">{user.role}</span>
           </span>
         </AccountMenu>

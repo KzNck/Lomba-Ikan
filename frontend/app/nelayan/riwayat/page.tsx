@@ -17,6 +17,7 @@ import {
 } from '@/components/nelayan/riwayat-content'
 import { formatDay, loadRiwayat } from '@/lib/nelayan/riwayat'
 import { requireProfile } from '@/lib/supabase/auth'
+import { displayNameFor } from '@/lib/supabase/display-name'
 import { getMyCatches } from '@/lib/supabase/catches'
 import { getMyTransactions } from '@/lib/supabase/transactions'
 import { greetingFor, initialsOf, recentNotifications } from '@/lib/nelayan/dashboard-data'
@@ -57,6 +58,7 @@ export default async function RiwayatPage({
   ])
 
   const notifications = recentNotifications(catches, transactions)
+  const name = await displayNameFor(profile)
   const detail = openId ? details.get(openId) : undefined
   // Every link keeps the rest of the view; only the part it changes differs.
   const hrefWith = (change: { transaksi?: string; urut?: SortOrder }) => {
@@ -76,10 +78,10 @@ export default async function RiwayatPage({
   return (
     <div className="box-border [flex:1_1_0] flex flex-col gap-0 justify-start items-start relative">
       <DashboardHeader
-        greeting={greetingFor(profile.full_name)}
+        greeting={greetingFor(name)}
         subtitle={DASHBOARD.subtitle}
         notifications={{ ...DASHBOARD.notifications, unreadCount: notifications.length }}
-        user={{ name: profile.full_name, initials: initialsOf(profile.full_name) }}
+        user={{ name, initials: initialsOf(profile.full_name) }}
       />
       <MainDecoration />
       <div className="box-border w-full [flex:1_1_0] flex flex-col gap-0 justify-start items-start relative">

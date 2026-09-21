@@ -9,15 +9,16 @@ import { toListingCard } from '@/lib/catches/present'
 import { getMyCatches } from '@/lib/supabase/catches'
 import { getMyTransactions } from '@/lib/supabase/transactions'
 import { requireProfile } from '@/lib/supabase/auth'
+import { displayNameFor } from '@/lib/supabase/display-name'
 import { greetingFor, initialsOf, recentNotifications, summaryStats } from './dashboard-data'
 
 export async function loadNelayanDashboard(): Promise<NelayanDashboardData> {
     const profile = await requireProfile('nelayan')
-    const [catches, transactions] = await Promise.all([getMyCatches(), getMyTransactions()])
+    const [catches, transactions, name] = await Promise.all([getMyCatches(), getMyTransactions(), displayNameFor(profile)])
 
     return {
-        greeting: greetingFor(profile.full_name),
-        user: { name: profile.full_name, initials: initialsOf(profile.full_name) },
+        greeting: greetingFor(name),
+        user: { name, initials: initialsOf(profile.full_name) },
         stats: summaryStats(catches, transactions),
         // Panel dashboard hanya menampilkan tiga listing teraktif.
         listings: catches

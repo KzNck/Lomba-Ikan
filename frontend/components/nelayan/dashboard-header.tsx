@@ -78,7 +78,7 @@ export function DashboardHeader({
                 </span>
               )}
             </span>
-            <span className="text-[14px]/[normal] box-border text-[#0B3B5C] font-inter font-semibold text-left [white-space:nowrap]">
+            <span title={user.name} className="text-[14px]/[normal] box-border max-w-[220px] text-[#0B3B5C] font-inter font-semibold text-left truncate">
               {user.name}
             </span>
           </AccountMenu>

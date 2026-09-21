@@ -9,6 +9,8 @@ export const AKUN_PATH = '/pembeli/akun'
 
 export type AccountValues = {
   contactName: string
+  // Shown in the dashboard chrome; empty means the business name. See lib/supabase/display-name.ts.
+  nickname: string
   businessName: string
   email: string
   phone: string
@@ -56,6 +58,14 @@ export const INFO_PRIBADI = {
   subtitle: 'Data dasar akun dan usaha Anda. Kolom bertanda * wajib diisi.',
   fields: {
     contactName: { id: 'contactName', label: 'Nama lengkap', icon: 'user', placeholder: 'Nama penanggung jawab', required: true, autoComplete: 'name' },
+    nickname: {
+      id: 'nickname',
+      label: 'Nama panggilan',
+      icon: 'message-circle',
+      placeholder: 'Contoh: Bu Sari',
+      autoComplete: 'nickname',
+      helper: 'Ditampilkan di dashboard. Kosongkan untuk memakai nama usaha.',
+    },
     businessName: { id: 'businessName', label: 'Nama usaha', icon: 'building-2', placeholder: 'Nama usaha atau perusahaan', required: true, autoComplete: 'organization' },
     email: {
       id: 'email',
@@ -96,6 +106,7 @@ export const VALIDATION = {
   required: (label: string) => `Isi ${label.toLocaleLowerCase('id')}.`,
   choose: (label: string) => `Pilih ${label.toLocaleLowerCase('id')}.`,
   phone: 'Masukkan nomor lengkap, contoh +62 812 3456 7890.',
+  nickname: (max: number) => `Gunakan paling banyak ${max} karakter.`,
   kodePos: 'Kode pos terdiri dari 5 angka.',
   jenisUsaha: 'Pilih minimal satu jenis usaha.',
 }

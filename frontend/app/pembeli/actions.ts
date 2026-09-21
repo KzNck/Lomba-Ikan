@@ -16,6 +16,9 @@ export type AccountFormState = {
 // Indonesian mobile or landline: +62/62/0, then 8–12 more digits. Spaces and dashes are ignored.
 const PHONE = /^(\+62|62|0)\d{8,12}$/
 
+// Long enough for "Bu Sri Wahyuni", short enough for the top bar pill and sidebar card.
+const NICKNAME_MAX = 24
+
 // Checks and saves the Info Pribadi form. The name and phone go to `profiles`; the business details have no
 // columns yet, so they go to the account's user_metadata — see lib/pembeli/account.ts.
 export async function saveAccount(previous: AccountFormState, formData: FormData): Promise<AccountFormState> {
@@ -24,6 +27,7 @@ export async function saveAccount(previous: AccountFormState, formData: FormData
   const text = (name: keyof AccountValues) => String(formData.get(name) ?? '').trim()
   const values: AccountValues = {
     contactName: text('contactName'),
+    nickname: text('nickname'),
     businessName: text('businessName'),
     // The email is locked: keep the account's, whatever was posted.
     email: previous.values.email,
@@ -41,6 +45,7 @@ export async function saveAccount(previous: AccountFormState, formData: FormData
   for (const name of ['contactName', 'businessName', 'phone', 'address'] as const) {
     if (!values[name]) errors[name] = VALIDATION.required(fields[name].label)
   }
+  if (values.nickname.length > NICKNAME_MAX) errors.nickname = VALIDATION.nickname(NICKNAME_MAX)
   if (values.phone && !PHONE.test(values.phone.replace(/[\s-]/g, ''))) errors.phone = VALIDATION.phone
   if (!PROVINSI.some(({ kode }) => kode === values.provinsi)) errors.provinsi = VALIDATION.choose(INFO_PRIBADI.provinsi.label)
   if (!getKabupatenKota(values.provinsi).some(({ kode }) => kode === values.kabKota)) {

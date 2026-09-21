@@ -7,6 +7,9 @@ import { cancelListing as cancel, createCatch, publishCatch, saveFreshness } fro
 import { uploadCatchPhoto } from '@/lib/supabase/storage'
 import { catchTimestamp, toModelInputs } from '@/lib/catches/model-inputs'
 import { predictFreshness } from '@/lib/freshness/client'
+import { getKabupatenKota, getPelabuhan, PROVINSI } from '@/lib/wilayah'
+import { INFO_PRIBADI, VALIDATION, type AccountValues } from '@/components/nelayan/akun-content'
+import { saveAccountValues } from '@/lib/nelayan/account'
 
 /**
  * Simpan tangkapan dari wizard "Tambah Tangkapan", lalu minta penilaian
@@ -91,4 +94,61 @@ export async function cancelListing(formData: FormData): Promise<void> {
 
     revalidatePath('/nelayan/listing')
     redirect('/nelayan/listing')
+}
+
+export type AccountFormState = {
+    status: 'idle' | 'saved' | 'error'
+    // What was submitted, so the form keeps showing it after React resets it.
+    values: AccountValues
+    errors: Partial<Record<keyof AccountValues, string>>
+    // Set when the checks passed but the save itself failed.
+    saveError?: string
+}
+
+// Indonesian mobile or landline: +62/62/0, then 8–12 more digits. Spaces and dashes are ignored.
+const PHONE = /^(\+62|62|0)\d{8,12}$/
+
+// Long enough for "Pak Dulmatin" or "Bu Sri Wahyuni", short enough for the header pill and sidebar card.
+const NICKNAME_MAX = 24
+
+/** Cek dan simpan form Info Pribadi di /nelayan/akun. Lihat lib/nelayan/account.ts untuk tempat tiap field disimpan. */
+export async function saveAccount(previous: AccountFormState, formData: FormData): Promise<AccountFormState> {
+    await requireProfile('nelayan')
+
+    const text = (name: keyof AccountValues) => String(formData.get(name) ?? '').trim()
+    const values: AccountValues = {
+        fullName: text('fullName'),
+        nickname: text('nickname'),
+        // The email is locked: keep the account's, whatever was posted.
+        email: previous.values.email,
+        phone: text('phone'),
+        provinsi: text('provinsi'),
+        kabKota: text('kabKota'),
+        ppi: text('ppi'),
+        bankAccount: text('bankAccount'),
+    }
+
+    const { fields } = INFO_PRIBADI
+    const errors: AccountFormState['errors'] = {}
+    if (!values.fullName) errors.fullName = VALIDATION.required(fields.fullName.label)
+    if (values.nickname.length > NICKNAME_MAX) errors.nickname = VALIDATION.nickname(NICKNAME_MAX)
+    if (values.phone && !PHONE.test(values.phone.replace(/[\s-]/g, ''))) errors.phone = VALIDATION.phone
+    if (!PROVINSI.some(({ kode }) => kode === values.provinsi)) errors.provinsi = VALIDATION.provinsi
+    if (!getKabupatenKota(values.provinsi).some(({ kode }) => kode === values.kabKota)) {
+        errors.kabKota = VALIDATION.kabKota
+    }
+    if (!getPelabuhan(values.kabKota).some(({ id }) => id === values.ppi)) errors.ppi = VALIDATION.ppi
+
+    if (Object.keys(errors).length > 0) return { status: 'error', values, errors }
+
+    try {
+        await saveAccountValues(values)
+    } catch (error) {
+        console.error('saveAccount (nelayan):', error)
+        return { status: 'error', values, errors: {}, saveError: VALIDATION.saveFailed }
+    }
+
+    // The sidebar and header print the name, so the whole area re-renders.
+    revalidatePath('/nelayan', 'layout')
+    return { status: 'saved', values, errors }
 }

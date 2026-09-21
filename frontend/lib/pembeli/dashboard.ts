@@ -11,8 +11,7 @@ import { categoryLabel, formatRupiah, timeAgo } from '@/lib/catches/present'
 import { loadBatches, type Batch } from '@/lib/marketplace/batches'
 import { getMyTransactions } from '@/lib/supabase/transactions'
 import { requireProfile } from '@/lib/supabase/auth'
-import { displayName } from './account'
-import { createClient } from '@/lib/supabase/server'
+import { displayNameFor } from '@/lib/supabase/display-name'
 import type { Catch, Transaction } from '@/types/database'
 
 export type PembeliDashboardData = {
@@ -118,14 +117,7 @@ function notifications(
 
 export async function loadPembeliDashboard(): Promise<PembeliDashboardData> {
     const profile = await requireProfile('pembeli')
-    const supabase = await createClient()
-    const [{ data: auth }, batches, transactions] = await Promise.all([
-        supabase.auth.getUser(),
-        loadBatches(),
-        getMyTransactions(),
-    ])
-
-    const name = displayName(profile, auth.user?.user_metadata)
+    const [name, batches, transactions] = await Promise.all([displayNameFor(profile), loadBatches(), getMyTransactions()])
 
     return {
         greeting: name,

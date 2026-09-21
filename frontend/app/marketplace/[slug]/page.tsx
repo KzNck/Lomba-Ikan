@@ -7,6 +7,7 @@ import { PEMBELI_ROLE_LABEL } from '@/components/pembeli/content'
 import { marketplaceHref, parseMarketplaceQuery } from '@/components/pembeli/marketplace-query'
 import { loadBatches } from '@/lib/marketplace/batches'
 import { requireProfile } from '@/lib/supabase/auth'
+import { displayNameFor } from '@/lib/supabase/display-name'
 
 // The "11 Detail Batch (Marketplace)" frame: a batch's drawer over the marketplace. The URL's query is the view
 // behind it (cards link here with it), so closing returns to exactly that view.
@@ -31,7 +32,7 @@ export default async function BatchDetailPage({
       <MarketplaceView
         all={batches}
         query={query}
-        user={{ name: profile.full_name, role: PEMBELI_ROLE_LABEL }}
+        user={{ name: await displayNameFor(profile), role: PEMBELI_ROLE_LABEL }}
       />
       <BatchDrawer
         batch={batch}

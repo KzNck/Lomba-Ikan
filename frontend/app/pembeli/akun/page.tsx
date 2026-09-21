@@ -9,6 +9,7 @@ import { saveAccount } from '@/app/pembeli/actions'
 import { signOut } from '@/app/auth/actions'
 import { getAccountValues } from '@/lib/pembeli/account'
 import { PROVINSI, getKabupatenKota } from '@/lib/wilayah'
+import { displayNameOf } from '@/lib/supabase/display-name'
 
 // "Kota Surabaya, Jawa Timur" → "Surabaya, Jawa Timur", as the profile header shows it.
 function locationLabel(provinsiKode: string, kabKotaKode: string) {
@@ -20,6 +21,10 @@ function locationLabel(provinsiKode: string, kabKotaKode: string) {
 // The "12 Akun (Pembeli)" frame: the account sections beside the Info Pribadi form.
 export default async function PembeliAkunPage() {
   const profile = await getAccountValues()
+  const name = displayNameOf(
+    { full_name: profile.contactName, role: 'pembeli' },
+    { nickname: profile.nickname, business_name: profile.businessName },
+  )
 
   return (
     <div className="box-border [flex:1_1_0] flex flex-col gap-[28px] p-[32px] justify-start items-start">
@@ -27,7 +32,7 @@ export default async function PembeliAkunPage() {
         greeting={AKUN_PAGE.title}
         subtitle={AKUN_PAGE.subtitle}
         notifications={PEMBELI_NOTIFICATIONS}
-        user={{ name: profile.businessName || profile.contactName }}
+        user={{ name }}
       />
       <UnsavedChangesProvider dialog={UNSAVED_DIALOG}>
         <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[20px] justify-start items-start">

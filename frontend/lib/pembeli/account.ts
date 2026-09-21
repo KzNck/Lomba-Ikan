@@ -14,6 +14,8 @@ import type { Profile } from '@/types/database'
 
 /** Bagian akun yang belum punya kolom di `profiles`. */
 type AccountMetadata = {
+    // Nama pendek untuk chrome dashboard — lihat lib/supabase/display-name.ts.
+    nickname?: string
     business_name?: string
     address?: string
     provinsi?: string
@@ -36,6 +38,7 @@ export async function getAccountValues(): Promise<AccountValues> {
 
     return {
         contactName: profile?.full_name ?? '',
+        nickname: meta.nickname ?? '',
         businessName: meta.business_name ?? '',
         // Email milik akun auth; diubah lewat alur verifikasi email, bukan form ini.
         email: user.email ?? '',
@@ -66,6 +69,7 @@ export async function saveAccountValues(values: AccountValues): Promise<void> {
     if (profileError) throw new Error(`Gagal simpan profil: ${profileError.message}`)
 
     const metadata: AccountMetadata = {
+        nickname: values.nickname,
         business_name: values.businessName,
         address: values.address,
         provinsi: values.provinsi,
@@ -78,10 +82,4 @@ export async function saveAccountValues(values: AccountValues): Promise<void> {
     // Merge: field lain di metadata (mis. role dari registrasi) tidak ikut terhapus.
     const { error: metaError } = await supabase.auth.updateUser({ data: metadata })
     if (metaError) throw new Error(`Gagal simpan data usaha: ${metaError.message}`)
-}
-
-/** Nama yang ditampilkan di sidebar dan top bar: nama usaha kalau ada, kalau tidak nama kontak. */
-export function displayName(profile: Profile, metadata: unknown): string {
-    const meta = (metadata ?? {}) as AccountMetadata
-    return meta.business_name || profile.full_name
 }
