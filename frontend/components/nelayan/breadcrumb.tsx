@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { Icon } from '@/components/ui/icon'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
 import type { NavItem } from '@/components/home/navbar'
@@ -10,8 +11,9 @@ export type BreadcrumbContent = {
 }
 
 export function Breadcrumb({ trail = [], current }: BreadcrumbContent) {
+  const t = useTranslations('dashboard')
   return (
-    <nav aria-label="Breadcrumb" className="box-border w-fit h-fit shrink-0 flex flex-row gap-[8px] justify-start items-center">
+    <nav aria-label={t('breadcrumbLabel')} className="box-border w-fit h-fit shrink-0 flex flex-row gap-[8px] justify-start items-center">
       <Icon name="house" fill="#0B3B5C" className="box-border w-[18px] shrink-0 h-[18px]" />
       {trail.map(({ href, label }) => (
         <Separated key={href}>

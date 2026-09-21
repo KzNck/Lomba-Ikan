@@ -4,7 +4,8 @@ import Form from 'next/form'
 import { Icon } from '@/components/ui/icon'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
 import { usePopover } from '@/components/ui/use-popover'
-import { FILTERS, type StatusFilter } from '@/components/nelayan/riwayat-content'
+import { useTranslations } from 'next-intl'
+import { filtersCopy, type StatusFilter } from '@/components/nelayan/riwayat-content'
 import { PRESS_WIDE, SOLID_HOVER } from '@/components/ui/interaction'
 import type { DateRange } from '@/lib/nelayan/riwayat'
 
@@ -25,6 +26,7 @@ const FOCUS_WITHIN = 'focus-within:[outline-color:#0F6CB8] focus-within:[box-sha
 // The export only draws the closed controls; the date panel follows the marketplace filter panels.
 export function RiwayatFilters({ action, dateLabel, range, status }: RiwayatFiltersProps) {
   const { open, setOpen, rootRef, buttonProps, panelProps } = usePopover()
+  const FILTERS = filtersCopy(useTranslations('dashboard.riwayat'))
   const { dateRange } = FILTERS
 
   return (

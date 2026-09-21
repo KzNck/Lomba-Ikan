@@ -1,19 +1,20 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { CatchModal } from '@/components/nelayan/catch-modal'
 import { CategoryForm } from '@/components/nelayan/category-form'
 import { VolumeForm } from '@/components/nelayan/volume-form'
 import { IconChoiceForm } from '@/components/nelayan/icon-choice-form'
 import { PhotoForm, type CatchPhoto } from '@/components/nelayan/photo-form'
-import type {
-  CATCH_MODAL,
-  CATEGORY_STEP,
-  VOLUME_STEP,
-  TIME_STEP,
-  CONDITION_STEP,
-  ICE_STEP,
-  PHOTO_STEP,
+import {
+  catchModal,
+  categoryStep,
+  conditionStep,
+  iceStep,
+  photoStep,
+  timeStep,
+  volumeStep,
 } from '@/components/nelayan/catch-content'
 import { submitCatch } from '@/app/nelayan/actions'
 import { saveCatchLocally } from '@/lib/offline/storage'
@@ -29,21 +30,21 @@ type CatchAnswers = {
   photo?: CatchPhoto
 }
 
-type CatchWizardProps = {
-  modal: typeof CATCH_MODAL
-  category: typeof CATEGORY_STEP
-  volume: typeof VOLUME_STEP
-  time: typeof TIME_STEP
-  condition: typeof CONDITION_STEP
-  ice: typeof ICE_STEP
-  photo: typeof PHOTO_STEP
-}
-
 // Heading of each step, focused when the step changes so keyboard and screen-reader users land on the new question.
 const STEP_HEADING_IDS = ['category-title', 'volume-title', 'waktu-title', 'kondisi-title', 'es-title', 'foto-title']
 
-// The "Tambah Tangkapan" modal as a client-side wizard: one route, the step body swapped in place.
-export function CatchWizard({ modal, category, volume, time, condition, ice, photo }: CatchWizardProps) {
+// The "Tambah Tangkapan" modal as a client-side wizard: one route, the step body swapped in place. It builds its own
+// copy: the photo step's captions are functions, which a server page can't pass down as props.
+export function CatchWizard() {
+  const t = useTranslations('dashboard.nelayan.catch')
+  const categoryName = useTranslations('common.category')
+  const modal = catchModal(t)
+  const category = categoryStep(t, categoryName)
+  const volume = volumeStep(t)
+  const time = timeStep(t)
+  const condition = conditionStep(t)
+  const ice = iceStep(t)
+  const photo = photoStep(t)
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState<CatchAnswers>({})
   const [status, setStatus] = useState<'analyzing' | 'saved-offline' | undefined>()

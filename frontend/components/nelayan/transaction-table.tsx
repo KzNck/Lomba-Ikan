@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Icon } from '@/components/ui/icon'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
-import { TABLE, TRANSACTION_STATES, type SortOrder } from '@/components/nelayan/riwayat-content'
+import { TRANSACTION_STATES, type SortOrder, type TableCopy } from '@/components/nelayan/riwayat-content'
 import type { TransactionRowContent } from '@/lib/nelayan/riwayat'
 
 type TransactionTableProps = {
@@ -14,7 +14,7 @@ type TransactionTableProps = {
   // The row whose drawer is open, marked with the blue bar down its left edge.
   selectedId?: string
   // The table's words; the pembeli history swaps a few (see components/pembeli/riwayat-content.ts).
-  copy?: typeof TABLE
+  copy: TableCopy
 }
 
 // Column widths from the export's header row; the table keeps them so header and cells stay aligned.
@@ -38,7 +38,7 @@ const CELL = 'box-border p-[13px_0px] [border-width:0px_0px_1px_0px] [border-sty
 
 // "Tabel Transaksi". The export draws it with flex rows; a real table keeps the columns tied to their headers for
 // screen readers. Each row's chevron is the link, stretched across the row so anywhere in it opens the drawer.
-export function TransactionTable({ rows, order, toggleSortHref, hrefFor, selectedId, copy = TABLE }: TransactionTableProps) {
+export function TransactionTable({ rows, order, toggleSortHref, hrefFor, selectedId, copy }: TransactionTableProps) {
   const sort = copy.sort[order]
   return (
     <div className="box-border w-full h-fit shrink-0 flex flex-col gap-0 justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[16px] overflow-hidden">
@@ -74,7 +74,7 @@ export function TransactionTable({ rows, order, toggleSortHref, hrefFor, selecte
         </thead>
         <tbody>
           {rows.map((row) => (
-            <TransactionRow key={row.id} row={row} href={hrefFor(row.id)} selected={row.id === selectedId} detailLabel={copy.detailLabel} />
+            <TransactionRow key={row.id} row={row} href={hrefFor(row.id)} selected={row.id === selectedId} detailLabel={copy.detailLabel} stateLabel={copy.states[row.state]} />
           ))}
         </tbody>
       </table>
@@ -87,11 +87,13 @@ function TransactionRow({
   href,
   selected,
   detailLabel,
+  stateLabel,
 }: {
   row: TransactionRowContent
   href: string
   selected: boolean
   detailLabel: (partner: string) => string
+  stateLabel: string
 }) {
   const state = TRANSACTION_STATES[row.state]
   const grade = GRADE_BADGES[row.gradeLetter as keyof typeof GRADE_BADGES] ?? GRADE_BADGES['—']
@@ -128,7 +130,7 @@ function TransactionRow({
       <td className={`${CELL} p-[13px_10px_13px_0px] align-middle`}>
         <span className={`box-border w-fit h-fit flex flex-row gap-[5px] p-[4px_9px] justify-start items-center ${state.chip} rounded-[999px]`}>
           <Icon name={state.icon} fill={state.fill} className="box-border w-[13px] shrink-0 h-[13px]" />
-          <span className={`text-[12px]/[normal] box-border ${state.text} font-poppins font-semibold text-left [white-space:nowrap]`}>{state.label}</span>
+          <span className={`text-[12px]/[normal] box-border ${state.text} font-poppins font-semibold text-left [white-space:nowrap]`}>{stateLabel}</span>
         </span>
       </td>
       <td className={`${CELL} p-[13px_16px_13px_0px] text-right align-middle`}>

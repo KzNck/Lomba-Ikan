@@ -6,7 +6,8 @@ import { FormField } from '@/components/register/form-field'
 import { AccountLocationFields } from '@/components/pembeli/account-location-fields'
 import { SaveButton } from '@/components/pembeli/save-button'
 import { useUnsavedChanges } from '@/components/pembeli/unsaved-changes'
-import { INFO_PRIBADI, type AccountValues } from '@/components/nelayan/akun-content'
+import { useTranslations } from 'next-intl'
+import { infoPribadi, type AccountValues } from '@/components/nelayan/akun-content'
 import type { AccountFormState } from '@/app/nelayan/actions'
 
 type AccountInfoFormProps = {
@@ -14,12 +15,12 @@ type AccountInfoFormProps = {
   action: (state: AccountFormState, formData: FormData) => Promise<AccountFormState>
 }
 
-const { fields, location, bank } = INFO_PRIBADI
-
 // The nelayan Info Pribadi form, built like the pembeli one (components/pembeli/account-info-form.tsx): errors come
 // back per field and focus moves to the first, edits are reported to the section guard, and "Perubahan disimpan."
 // shows after a save until the next edit. The fields are the fisher's: identity, landing site, payout account.
 export function AccountInfoForm({ initialValues, action }: AccountInfoFormProps) {
+  const INFO_PRIBADI = infoPribadi(useTranslations('dashboard.akun'), useTranslations('auth.register'))
+  const { fields, location, bank } = INFO_PRIBADI
   const [state, formAction] = useActionState(action, { status: 'idle', values: initialValues, errors: {} })
   // The save result current at the last edit. Edits are unsaved until a later result says "saved".
   const [editedAt, setEditedAt] = useState<AccountFormState | null>(null)

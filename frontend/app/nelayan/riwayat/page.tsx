@@ -5,9 +5,10 @@ import { EmptyState } from '@/components/nelayan/empty-state'
 import { RiwayatFilters } from '@/components/nelayan/riwayat-filters'
 import { TransactionTable } from '@/components/nelayan/transaction-table'
 import { TransactionDrawer } from '@/components/nelayan/transaction-drawer'
-import { DASHBOARD } from '@/components/nelayan/content'
-import { EMPTY_STATE, RIWAYAT_PAGE, RIWAYAT_PATH, TRANSACTION_DRAWER } from '@/components/nelayan/riwayat-content'
-import { dateLabelFor, loadRiwayat, parseRiwayatView, riwayatHref } from '@/lib/nelayan/riwayat'
+import { getTranslations } from 'next-intl/server'
+import { dashboardCopy } from '@/components/nelayan/content'
+import { emptyState, riwayatPage, RIWAYAT_PATH, tableCopy, transactionDrawer } from '@/components/nelayan/riwayat-content'
+import { dateLabelFor, loadRiwayat, nelayanSide, parseRiwayatView, riwayatHref } from '@/lib/nelayan/riwayat'
 import { getPresenter } from '@/lib/i18n/presenter'
 import { requireProfile } from '@/lib/supabase/auth'
 import { displayNameFor } from '@/lib/supabase/display-name'
@@ -24,16 +25,22 @@ export default async function RiwayatPage({
 }) {
   const view = parseRiwayatView(await searchParams)
   const { status, range, order, openId } = view
+  const t = await getTranslations('dashboard.riwayat')
+  const drawerCopy = transactionDrawer(t)
+  const RIWAYAT_PAGE = riwayatPage(t)
+  const EMPTY_STATE = emptyState(t)
 
   const [profile, { rows, details, range: shownRange }, catches, transactions, p] = await Promise.all([
     requireProfile('nelayan'),
-    loadRiwayat(status, range, order, TRANSACTION_DRAWER.steps),
+    loadRiwayat(status, range, order, drawerCopy.steps, nelayanSide(t)),
     getMyCatches(),
     getMyTransactions(),
     getPresenter(),
   ])
 
-  const notifications = recentNotifications(p, catches, transactions)
+  const home = await getTranslations('dashboard.nelayan.home')
+  const DASHBOARD = dashboardCopy(home)
+  const notifications = recentNotifications(p, home, catches, transactions)
   const name = await displayNameFor(profile)
   const detail = openId ? details.get(openId) : undefined
   // Every link keeps the rest of the view; only the part it changes differs.
@@ -44,7 +51,7 @@ export default async function RiwayatPage({
   return (
     <div className="box-border [flex:1_1_0] flex flex-col gap-0 justify-start items-start relative">
       <DashboardHeader
-        greeting={greetingFor(name)}
+        greeting={greetingFor(home, name)}
         subtitle={DASHBOARD.subtitle}
         notifications={{ ...DASHBOARD.notifications, unreadCount: notifications.length }}
         user={{ name, initials: initialsOf(profile.full_name) }}
@@ -60,7 +67,7 @@ export default async function RiwayatPage({
             <h2 className="text-[28px]/[32px] box-border text-[#0B3B5C] font-poppins font-bold text-left [white-space:nowrap]">{RIWAYAT_PAGE.title}</h2>
             <p className="text-[15px]/[normal] box-border w-full text-[#5B6B7C] font-inter font-normal text-left">{RIWAYAT_PAGE.subtitle}</p>
           </div>
-          <RiwayatFilters action={RIWAYAT_PATH} status={status} range={range} dateLabel={dateLabelFor(p, range, shownRange)} />
+          <RiwayatFilters action={RIWAYAT_PATH} status={status} range={range} dateLabel={dateLabelFor(p, t, range, shownRange)} />
           <p className="box-border w-full h-fit shrink-0 flex flex-row gap-[6px] justify-start items-center">
             <span className="text-[13px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left [white-space:nowrap]">
               {RIWAYAT_PAGE.resultCount(rows.length)}
@@ -73,6 +80,7 @@ export default async function RiwayatPage({
               toggleSortHref={hrefWith({ urut: order === 'baru' ? 'lama' : 'baru', transaksi: openId })}
               hrefFor={hrefFor}
               selectedId={detail?.id}
+              copy={tableCopy(t)}
             />
           ) : (
             <div className="box-border w-full h-fit shrink-0 flex flex-col gap-0 p-[20px] justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[16px]">
@@ -80,7 +88,7 @@ export default async function RiwayatPage({
             </div>
           )}
         </div>
-        {detail && <TransactionDrawer detail={detail} closeHref={hrefFor(detail.id)} />}
+        {detail && <TransactionDrawer detail={detail} closeHref={hrefFor(detail.id)} copy={drawerCopy} />}
       </div>
     </div>
   )

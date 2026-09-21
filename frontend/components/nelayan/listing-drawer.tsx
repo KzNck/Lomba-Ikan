@@ -3,12 +3,12 @@ import Link from 'next/link'
 import { Icon } from '@/components/ui/icon'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
 import { DetailRow, DetailValue } from '@/components/nelayan/detail-row'
-import { LISTING_PATH, mapHref, type ActiveListing, type LISTING_DRAWER } from '@/components/nelayan/listing-content'
+import { LISTING_PATH, mapHref, type ActiveListing, type ListingDrawerContent } from '@/components/nelayan/listing-content'
 import { OUTLINE_HOVER, PRESS, SOLID_HOVER } from '@/components/ui/interaction'
 
 type ListingDrawerProps = {
   listing: ActiveListing
-  labels: typeof LISTING_DRAWER
+  labels: ListingDrawerContent
   // Where "Batalkan listing" goes: the same drawer with the confirmation dialog over it.
   cancelHref: string
   // Where "Edit listing" goes: the same drawer in edit mode.

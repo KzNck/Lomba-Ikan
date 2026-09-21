@@ -7,12 +7,12 @@
 //   ?prioritas=  PPIs to list first (repeatable), or "semua" for none
 // A filter left out of the URL falls back to the buyer's saved preferences, so /marketplace opens with them.
 import {
-  CATEGORIES,
+  CATEGORY_VALUES,
   GRADES,
   MARKETPLACE_PATH,
   PPI_LOCATIONS,
   PREFERENCES,
-  SORT_OPTIONS,
+  SORT_VALUES,
   type Category,
   type Grade,
   type SortValue,
@@ -35,8 +35,7 @@ export type MarketplaceQuery = {
 
 // The URL value for "filter removed". Any value that isn't an option reads as removed; this is the one we write.
 const NONE = 'semua'
-const DEFAULT_SORT = SORT_OPTIONS[0].value
-const CATEGORY_VALUES: readonly string[] = CATEGORIES.map(({ value }) => value)
+const DEFAULT_SORT = SORT_VALUES[0]
 const PPI_NAMES = Object.keys(PPI_LOCATIONS)
 
 const first = (value: string | string[] | undefined) => (Array.isArray(value) ? value[0] : value)?.trim() ?? ''
@@ -50,7 +49,7 @@ function listParam<T extends string>(raw: string | string[] | undefined, valid: 
 }
 
 export function parseMarketplaceQuery(params: SearchParams): MarketplaceQuery {
-  const sort = SORT_OPTIONS.find((option) => option.value === first(params.urut))?.value ?? DEFAULT_SORT
+  const sort = SORT_VALUES.find((value) => value === first(params.urut)) ?? DEFAULT_SORT
   const ppi = first(params.ppi)
   const grade = first(params.grade)
   return {

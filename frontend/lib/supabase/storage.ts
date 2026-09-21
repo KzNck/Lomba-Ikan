@@ -2,6 +2,7 @@
 //
 // Upload foto tangkapan ke Supabase Storage.
 
+import { isWebImage } from '@/lib/photo/prepare-upload'
 import { createClient } from './server'
 
 /** Bucket tempat foto tangkapan disimpan. Buat sekali lewat dashboard Supabase (Storage > New bucket, public). */
@@ -16,6 +17,10 @@ export const CATCH_PHOTOS_BUCKET = 'catch-photos'
  * menggagalkan pencatatan.
  */
 export async function uploadCatchPhoto(userId: string, catchId: string, photo: Blob): Promise<string | null> {
+    // Foto yang tidak bisa diubah ke JPEG di browser (HEIC di Chrome) tetap dinilai, tapi tidak disimpan sebagai foto
+    // listing: kebanyakan browser tidak bisa menampilkannya, jadi listing memakai ilustrasi kategori.
+    if (!isWebImage(photo)) return null
+
     const supabase = await createClient()
     const path = `${userId}/${catchId}.jpg`
 

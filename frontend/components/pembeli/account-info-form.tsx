@@ -7,7 +7,8 @@ import { ChipGroup } from '@/components/register/chip-group'
 import { AccountLocationFields } from '@/components/pembeli/account-location-fields'
 import { SaveButton } from '@/components/pembeli/save-button'
 import { useUnsavedChanges } from '@/components/pembeli/unsaved-changes'
-import { INFO_PRIBADI, type AccountValues } from '@/components/pembeli/akun-content'
+import { useTranslations } from 'next-intl'
+import { infoPribadi, type AccountValues } from '@/components/pembeli/akun-content'
 import type { AccountFormState } from '@/app/pembeli/actions'
 
 type AccountInfoFormProps = {
@@ -15,12 +16,12 @@ type AccountInfoFormProps = {
   action: (state: AccountFormState, formData: FormData) => Promise<AccountFormState>
 }
 
-const { fields } = INFO_PRIBADI
-
 // The Info Pribadi section of "Form Card". Saving checks the fields on the server; errors come back per field (the
 // "Validasi gagal" state) and focus moves to the first one. The form keeps what was submitted, reports unsaved edits
 // to the section guard, and shows "Perubahan disimpan." after a save until the next edit.
 export function AccountInfoForm({ initialValues, action }: AccountInfoFormProps) {
+  const INFO_PRIBADI = infoPribadi(useTranslations('dashboard.akun'), useTranslations('auth.register'))
+  const { fields } = INFO_PRIBADI
   const [state, formAction] = useActionState(action, { status: 'idle', values: initialValues, errors: {} })
   // The save result current at the last edit. Edits are unsaved until a later result says "saved".
   const [editedAt, setEditedAt] = useState<AccountFormState | null>(null)

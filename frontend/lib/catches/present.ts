@@ -10,7 +10,7 @@ import type { createFormatter } from 'next-intl'
 import type { ImageContent } from '@/components/home/hero'
 import type { ListingCardContent } from '@/components/nelayan/listing-card'
 import type { ActiveListing } from '@/components/nelayan/listing-content'
-import { CATEGORY_STEP } from '@/components/nelayan/catch-content'
+import { CATEGORY_OPTIONS } from '@/components/nelayan/catch-content'
 import type { Translator } from '@/lib/i18n/translator'
 import type { Catch, FreshnessGrade, StorageMethod } from '@/types/database'
 
@@ -36,7 +36,7 @@ type Category = (typeof CATEGORIES)[number]
 const isCategory = (species: string): species is Category => CATEGORIES.includes(species as Category)
 
 const CATEGORY_IMAGE = new Map<string, string>(
-  CATEGORY_STEP.options.flatMap((option): [string, string][] => ('image' in option && option.image ? [[option.value, option.image]] : []))
+  CATEGORY_OPTIONS.flatMap((option): [string, string][] => ('image' in option ? [[option.value, option.image]] : []))
 )
 
 // Kategori "Lainnya" tidak punya foto sendiri; pakai foto campuran sebagai penampung.

@@ -6,6 +6,11 @@ import createNextIntlPlugin from "next-intl/plugin";
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 
 const nextConfig: NextConfig = {
+  // Catch photos go through a server action. The wizard shrinks them to a JPEG well under 1MB (lib/photo/prepare-upload.ts),
+  // but one the browser can't decode (HEIC in Chrome) is sent as is, so allow up to Vercel's 4.5MB request limit.
+  experimental: {
+    serverActions: { bodySizeLimit: "4mb" },
+  },
   images: {
     remotePatterns: supabaseUrl
       ? [

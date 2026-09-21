@@ -5,7 +5,9 @@
 
 import type { ImageContent } from '@/components/home/hero'
 import type { ProductCardContent } from '@/components/pembeli/product-card'
-import { CONDITIONS, MARKETPLACE_PATH, PPI_LOCATIONS } from '@/components/pembeli/marketplace-content'
+import { MARKETPLACE_PATH, PPI_LOCATIONS, type Condition } from '@/components/pembeli/marketplace-content'
+import type { FreshnessT } from '@/components/nelayan/freshness-content'
+import { getTranslations } from 'next-intl/server'
 import {
   catchImage,
   categoryLabel,
@@ -18,6 +20,7 @@ import {
   type Presenter,
 } from '@/lib/catches/present'
 import { getPresenter } from '@/lib/i18n/presenter'
+import type { Translator } from '@/lib/i18n/translator'
 import { recommendationsFor } from '@/lib/catches/recommendations'
 import { getListedCatches } from '@/lib/supabase/catches'
 import { getProfileNames } from '@/lib/supabase/profiles'
@@ -37,7 +40,7 @@ export type Batch = ProductCardContent & {
   listedAt: string
   location: string
   detail: {
-    condition: keyof typeof CONDITIONS
+    condition: Condition
     caught: string
     // Time left on the auction; sold batches have none.
     auctionLeft?: string
@@ -74,7 +77,7 @@ function distanceFrom(origin: string | null, location: string): number | null {
 }
 
 /** Kondisi yang ditampilkan drawer, dari grade dan cara penyimpanannya. */
-function conditionOf(entry: Catch): keyof typeof CONDITIONS {
+function conditionOf(entry: Catch): Condition {
     return gradeCondition(entry.freshness_grade) === 'live' && entry.storage_method !== 'ambient'
         ? 'hidup'
         : 'es'
@@ -85,7 +88,16 @@ function batchNumber(entry: Catch): string {
   return `BL-${new Date(entry.created_at).getFullYear()}-${entry.id.slice(0, 4).toUpperCase()}`
 }
 
-export function toBatch(p: Presenter, entry: Catch, seller: Profile | undefined, origin: string | null): Batch {
+// `t` is the marketplace's batch copy; `freshness` names the derived recommended uses.
+type BatchCopy = { t: Translator<'dashboard.pembeli.marketplace.batch'>; freshness: FreshnessT }
+
+export function toBatch(
+  p: Presenter,
+  { t, freshness }: BatchCopy,
+  entry: Catch,
+  seller: Profile | undefined,
+  origin: string | null
+): Batch {
   const weightKg = Number(entry.weight_kg)
   const pricePerKg = entry.price_per_kg === null ? 0 : Number(entry.price_per_kg)
   const total = weightKg * pricePerKg
@@ -102,8 +114,8 @@ export function toBatch(p: Presenter, entry: Catch, seller: Profile | undefined,
     // "—" for a catch the AI has not graded yet; the badge falls back to the neutral tone.
     grade: entry.freshness_grade ?? '—',
     status: 'active',
-    statusLabel: 'Aktif',
-    actionLabel: 'Beli sekarang',
+    statusLabel: t('active'),
+    actionLabel: t('buyNow'),
     weightKg,
     pricePerKg,
     distanceKm,
@@ -111,21 +123,21 @@ export function toBatch(p: Presenter, entry: Catch, seller: Profile | undefined,
     location: entry.catch_location,
     weight: formatWeight(p, weightKg),
     distance: distanceKm === null ? '—' : `${distanceKm} km`,
-    price: `${formatRupiah(p, entry.price_per_kg)}/kg`,
-    totalPrice: total > 0 ? formatRupiah(p, total) : 'Harga lelang',
-    total: total > 0 ? `Total ${formatRupiah(p, total)}` : 'Harga lelang',
+    price: t('perKg', { price: formatRupiah(p, entry.price_per_kg) }),
+    totalPrice: total > 0 ? formatRupiah(p, total) : t('auctionPrice'),
+    total: total > 0 ? t('total', { price: formatRupiah(p, total) }) : t('auctionPrice'),
     detail: {
       condition: conditionOf(entry),
-      caught: `Ditangkap ${timeAgo(p, entry.catch_time)}`,
+      caught: t('caught', { ago: timeAgo(p, entry.catch_time) }),
       auctionLeft: remaining ?? undefined,
       // The model's own recommendation when it graded this catch; the derived
       // list stands in for anything it has not looked at yet.
       usage:
         entry.hilirisasi_recommendation ??
-        recommendationsFor(entry)
+        recommendationsFor(freshness, entry)
           .map((option) => option.title)
           .join(', '),
-      fisherman: seller?.full_name ?? 'Nelayan terdaftar',
+      fisherman: seller?.full_name ?? t('registeredFisher'),
       // Metode tangkap belum ada kolomnya; yang tercatat baru cara penyimpanannya.
       method: storageLabel(p, entry.storage_method),
       batchNumber: batchNumber(entry),
@@ -143,6 +155,11 @@ export function batchTotal(batch: Batch): number {
 export async function loadBatches(): Promise<Batch[]> {
   const profile = await requireProfile('pembeli')
   const listed = await getListedCatches()
-  const [sellers, p] = await Promise.all([getProfileNames(listed.map((entry) => entry.nelayan_id)), getPresenter()])
-  return listed.map((entry) => toBatch(p, entry, sellers.get(entry.nelayan_id), profile.ppi_location))
+  const [sellers, p, t, freshness] = await Promise.all([
+    getProfileNames(listed.map((entry) => entry.nelayan_id)),
+    getPresenter(),
+    getTranslations('dashboard.pembeli.marketplace.batch'),
+    getTranslations('dashboard.nelayan.freshness'),
+  ])
+  return listed.map((entry) => toBatch(p, { t, freshness }, entry, sellers.get(entry.nelayan_id), profile.ppi_location))
 }

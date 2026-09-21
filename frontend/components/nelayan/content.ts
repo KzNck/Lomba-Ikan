@@ -1,8 +1,7 @@
 // All copy and imagery for the nelayan dashboard. Edit here to swap content without touching layout.
 // Figures, listings and notifications come from Supabase — see lib/nelayan/dashboard-data.ts.
 import type { SidebarNavItem } from '@/components/dashboard/sidebar-nav'
-
-export const NELAYAN_ROLE_LABEL = 'Nelayan'
+import type { Translator } from '@/lib/i18n/translator'
 
 // Labels are in messages/*.json under `nav`.
 export const NELAYAN_NAV: SidebarNavItem[] = [
@@ -13,44 +12,49 @@ export const NELAYAN_NAV: SidebarNavItem[] = [
   { href: '/nelayan/akun', labelKey: 'account', icon: 'user' },
 ]
 
-export const DASHBOARD = {
-  // The greeting is built per request from the profile name and the time of day.
-  subtitle: 'Semoga hari ini banyak tangkapan dan rezeki yang lancar.',
-  notifications: { href: '/nelayan/notifikasi', unreadCount: 3 },
-  breadcrumb: 'Dashboard',
-  summary: {
-    title: 'Ringkasan Hari Ini',
-    image: {
-      src: '/images/nelayan/boat.jpg',
-      alt: 'Kapal nelayan biru di laut lepas dengan burung camar di atasnya',
+// Text lives in messages/*.json under `dashboard.nelayan.home`.
+export const NOTIFICATIONS = { href: '/nelayan/notifikasi', unreadCount: 3 }
+
+export function dashboardCopy(t: Translator<'dashboard.nelayan.home'>) {
+  return {
+    // The greeting is built per request from the profile name and the time of day.
+    subtitle: t('subtitle'),
+    notifications: NOTIFICATIONS,
+    breadcrumb: t('breadcrumb'),
+    summary: {
+      title: t('summaryTitle'),
+      image: {
+        src: '/images/nelayan/boat.jpg',
+        alt: t('summaryImageAlt'),
+      },
     },
-  },
-  quickAction: {
-    href: '/nelayan/catat',
-    label: 'Tambah Tangkapan',
-    caption: 'Catat hasil tangkapan Anda hari ini',
-    offlineNote: 'Pencatatan bisa dilakukan meski tanpa sinyal. Data akan tersinkron saat online.',
-  },
-  listings: {
-    title: 'Listing Aktif Saya',
-    viewAll: { href: '/nelayan/listing', label: 'Lihat semua listing' },
-    detailLabel: 'Lihat detail',
-    metricLabels: { weight: 'Berat', pricePerKg: 'Harga per kg' },
-    // Shown when `items` is empty (the "Listing kosong" state).
-    empty: {
-      title: 'Belum ada listing aktif',
-      description: 'Catat tangkapan hari ini supaya pembeli di sekitar PPI bisa melihat dan menawarnya.',
-      action: { href: '/nelayan/catat', label: 'Tambah Tangkapan' },
+    quickAction: {
+      href: '/nelayan/catat',
+      label: t('quickAction.label'),
+      caption: t('quickAction.caption'),
+      offlineNote: t('quickAction.offlineNote'),
     },
-  },
-  notificationList: {
-    title: 'Notifikasi Terbaru',
-    viewAll: { href: '/nelayan/notifikasi', label: 'Lihat semua notifikasi' },
-    // Shown when `items` is empty (the "Notifikasi kosong" state).
-    empty: {
-      title: 'Belum ada notifikasi',
-      description: 'Kabar dari pembeli dan PPI akan muncul di sini.',
+    listings: {
+      title: t('listings.title'),
+      viewAll: { href: '/nelayan/listing', label: t('listings.viewAll') },
+      detailLabel: t('listings.detailLabel'),
+      metricLabels: { weight: t('listings.weight'), pricePerKg: t('listings.pricePerKg') },
+      // Shown when `items` is empty (the "Listing kosong" state).
+      empty: {
+        title: t('listings.emptyTitle'),
+        description: t('listings.emptyDescription'),
+        action: { href: '/nelayan/catat', label: t('listings.emptyAction') },
+      },
     },
-  },
-  tagline: 'Laut memberi, kita jaga bersama',
+    notificationList: {
+      title: t('notificationList.title'),
+      viewAll: { href: '/nelayan/notifikasi', label: t('notificationList.viewAll') },
+      // Shown when `items` is empty (the "Notifikasi kosong" state).
+      empty: {
+        title: t('notificationList.emptyTitle'),
+        description: t('notificationList.emptyDescription'),
+      },
+    },
+    tagline: t('tagline'),
+  }
 }

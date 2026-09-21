@@ -1,10 +1,11 @@
+import { getTranslations } from 'next-intl/server'
 import { TopBar } from '@/components/pembeli/top-bar'
 import { AccountSubnav } from '@/components/pembeli/account-subnav'
 import { ProfileHeader } from '@/components/pembeli/profile-header'
 import { AccountInfoForm } from '@/components/pembeli/account-info-form'
 import { UnsavedChangesProvider } from '@/components/pembeli/unsaved-changes'
 import { PEMBELI_NOTIFICATIONS } from '@/components/pembeli/content'
-import { AKUN_NAV, AKUN_PAGE, PROFILE_HEADER, UNSAVED_DIALOG } from '@/components/pembeli/akun-content'
+import { akunNav, akunPage, profileHeader, unsavedDialog } from '@/components/pembeli/akun-content'
 import { saveAccount } from '@/app/pembeli/actions'
 import { signOut } from '@/app/auth/actions'
 import { getAccountValues } from '@/lib/pembeli/account'
@@ -20,7 +21,9 @@ function locationLabel(provinsiKode: string, kabKotaKode: string) {
 
 // The "12 Akun (Pembeli)" frame: the account sections beside the Info Pribadi form.
 export default async function PembeliAkunPage() {
-  const profile = await getAccountValues()
+  const [profile, t, nav] = await Promise.all([getAccountValues(), getTranslations('dashboard.akun'), getTranslations('nav')])
+  const [AKUN_PAGE, AKUN_NAV, UNSAVED_DIALOG] = [akunPage(t), akunNav(t), unsavedDialog(t)]
+  const PROFILE_HEADER = profileHeader(t, nav('roles.pembeli'))
   const name = displayNameOf(
     { full_name: profile.contactName, role: 'pembeli' },
     { nickname: profile.nickname, business_name: profile.businessName },

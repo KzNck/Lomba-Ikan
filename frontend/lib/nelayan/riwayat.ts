@@ -14,7 +14,15 @@
 // supabase/catches-purchased.sql dijalankan; tanpa itu kategori, grade, dan
 // berat estimasinya tampil kosong.
 
-import { FILTERS, STATE_OF, TABLE, type SortOrder, type StatusFilter, type TransactionState } from '@/components/nelayan/riwayat-content'
+import {
+    filtersCopy,
+    STATE_OF,
+    STATUS_FILTERS,
+    type RiwayatT,
+    type SortOrder,
+    type StatusFilter,
+    type TransactionState,
+} from '@/components/nelayan/riwayat-content'
 import { categoryLabel, formatRupiah, gradeLabel, storageLabel, type Presenter } from '@/lib/catches/present'
 import { getPresenter } from '@/lib/i18n/presenter'
 import { getMyTransactions } from '@/lib/supabase/transactions'
@@ -69,7 +77,9 @@ export type RiwayatSide = {
 }
 
 /** Sisi nelayan, seperti halaman ini sebelum ada riwayat pembeli. */
-export const NELAYAN_SIDE: RiwayatSide = { role: 'nelayan', partner: { name: TABLE.unknownPartner, icon: 'building-2' } }
+export function nelayanSide(t: RiwayatT): RiwayatSide {
+    return { role: 'nelayan', partner: { name: t('table.unknownPartner'), icon: 'building-2' } }
+}
 
 /** Filter tanggal dari URL: batas bawah dan atas, masing-masing "YYYY-MM-DD" dan boleh kosong. */
 export type DateRange = { from?: string; to?: string }
@@ -196,7 +206,7 @@ export async function loadRiwayat(
     range: DateRange,
     order: SortOrder,
     stepLabels: Record<string, string>,
-    side: RiwayatSide = NELAYAN_SIDE
+    side: RiwayatSide
 ): Promise<RiwayatData> {
     const [profile, transactions, p] = await Promise.all([requireProfile(side.role), getMyTransactions(), getPresenter()])
 
@@ -227,7 +237,7 @@ export type RiwayatView = { status: StatusFilter; range: DateRange; order: SortO
 
 type SearchParams = { [key: string]: string | string[] | undefined }
 
-const STATUS_VALUES: readonly string[] = FILTERS.status.options.map(({ value }) => value)
+const STATUS_VALUES: readonly string[] = STATUS_FILTERS
 
 export function parseRiwayatView(params: SearchParams): RiwayatView {
     const requested = typeof params.status === 'string' ? params.status : ''
@@ -256,8 +266,13 @@ export function riwayatHref(path: string, view: RiwayatView, change: { transaksi
 }
 
 /** The closed date control: the chosen range when there is one, otherwise what the listed rows cover. */
-export function dateLabelFor(p: Presenter, range: DateRange, shown: { from: string; to: string } | null): string {
-    const { between, since, until, empty } = FILTERS.dateRange
+export function dateLabelFor(
+    p: Presenter,
+    t: RiwayatT,
+    range: DateRange,
+    shown: { from: string; to: string } | null
+): string {
+    const { between, since, until, empty } = filtersCopy(t).dateRange
     if (range.from && range.to) return between(formatDay(p, range.from), formatDay(p, range.to))
     if (range.from) return since(formatDay(p, range.from))
     if (range.to) return until(formatDay(p, range.to))

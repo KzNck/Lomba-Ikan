@@ -3,13 +3,22 @@
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { requireProfile } from '@/lib/supabase/auth'
-import { cancelListing as cancel, createCatch, publishCatch, saveFreshness, setCatchPhoto, updateListing } from '@/lib/supabase/catches'
-import { EDIT_LISTING, LISTING_PATH } from '@/components/nelayan/listing-content'
+import {
+    cancelListing as cancel,
+    createCatch,
+    getCatchById,
+    publishCatch,
+    saveFreshness,
+    setCatchPhoto,
+    updateListing,
+} from '@/lib/supabase/catches'
+import { editListing, LISTING_PATH } from '@/components/nelayan/listing-content'
+import { getTranslations } from 'next-intl/server'
 import { uploadCatchPhoto } from '@/lib/supabase/storage'
-import { catchTimestamp, toModelInputs } from '@/lib/catches/model-inputs'
+import { catchTimestamp, toModelInputs, type ModelInputs } from '@/lib/catches/model-inputs'
 import { predictFreshness } from '@/lib/freshness/client'
 import { getKabupatenKota, getPelabuhan, PROVINSI } from '@/lib/wilayah'
-import { INFO_PRIBADI, VALIDATION, type AccountValues } from '@/components/nelayan/akun-content'
+import { infoPribadi, validation, type AccountValues } from '@/components/nelayan/akun-content'
 import { saveAccountValues } from '@/lib/nelayan/account'
 
 /**
@@ -75,6 +84,54 @@ export async function submitCatch(formData: FormData): Promise<void> {
     redirect(`/nelayan/catat/hasil?id=${entry.id}`)
 }
 
+/**
+ * "Nilai ulang" di Hasil Kesegaran, untuk tangkapan yang belum bergrade karena
+ * Freshness API gagal saat dicatat. Foto yang tersimpan dikirim lagi dengan
+ * input model yang tersimpan di row-nya; jam sejak ditarik dihitung ulang dari
+ * `catch_time`, karena kesegarannya dinilai untuk saat ini.
+ */
+export async function regradeCatch(formData: FormData): Promise<void> {
+    await requireProfile('nelayan')
+
+    const id = String(formData.get('id') ?? '')
+    // RLS hanya mengembalikan tangkapan milik nelayan ini.
+    const entry = id ? await getCatchById(id) : null
+    if (!entry) throw new Error('Tangkapan tidak ditemukan.')
+
+    const resultHref = `/nelayan/catat/hasil?id=${entry.id}`
+    if (entry.freshness_grade || !entry.photo_url) redirect(resultHref)
+
+    const inputs: ModelInputs = {
+        // Row lama dari sebelum kolom-kolom ini ada: nilai yang sama dengan default wizard.
+        status_ikan: entry.status_ikan ?? 'MATI',
+        ice_to_fish_ratio: Number(entry.ice_to_fish_ratio ?? 0),
+        ambient_temp_celsius: Number(entry.ambient_temp_celsius ?? 30),
+        storage_method: entry.storage_method,
+        fish_category: entry.fish_category ?? 'rucah',
+        hours_post_haul: Math.max(1, Math.round((Date.now() - Date.parse(entry.catch_time)) / 3_600_000)),
+    }
+
+    const response = await fetch(entry.photo_url).catch(() => null)
+    const result = response?.ok
+        ? await predictFreshness({ catchId: entry.id, inputs, photo: await response.blob() })
+        : null
+
+    if (result) {
+        await saveFreshness(entry.id, {
+            grade: result.grade,
+            score: result.score,
+            notes: result.rationale,
+            recommendation: result.recommendation,
+            overrideApplied: result.overrideApplied,
+        })
+        revalidatePath('/nelayan')
+        revalidatePath('/nelayan/listing')
+    }
+
+    // `gagal` tells the result page this retry failed too, so it can say so rather than look unchanged.
+    redirect(result ? resultHref : `${resultHref}&gagal=1`)
+}
+
 /** Terbitkan tangkapan yang sudah dinilai ke marketplace, dengan harga opsional dari form. */
 export async function publishListing(formData: FormData): Promise<void> {
     await requireProfile('nelayan')
@@ -105,7 +162,7 @@ export async function saveListingEdit(_previous: ListingEditState, formData: For
 
     const id = String(formData.get('id') ?? '')
     const values = { berat: String(formData.get('berat') ?? '').trim(), harga: String(formData.get('harga') ?? '').trim() }
-    const { minWeight, maxWeight, errors: messages } = EDIT_LISTING
+    const { minWeight, maxWeight, errors: messages } = editListing(await getTranslations('dashboard.nelayan.listing'))
 
     // "5,5" and "5.5" both mean five and a half kilos.
     const weightKg = Number(values.berat.replace(',', '.'))
@@ -172,7 +229,9 @@ export async function saveAccount(previous: AccountFormState, formData: FormData
         bankAccount: text('bankAccount'),
     }
 
-    const { fields } = INFO_PRIBADI
+    const [t, register] = await Promise.all([getTranslations('dashboard.akun'), getTranslations('auth.register')])
+    const { fields } = infoPribadi(t, register)
+    const VALIDATION = validation(t)
     const errors: AccountFormState['errors'] = {}
     if (!values.fullName) errors.fullName = VALIDATION.required(fields.fullName.label)
     if (values.nickname.length > NICKNAME_MAX) errors.nickname = VALIDATION.nickname(NICKNAME_MAX)

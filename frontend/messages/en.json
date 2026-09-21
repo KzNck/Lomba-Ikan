@@ -41,14 +41,38 @@
       "ambient": "No ice"
     },
     "usage": {
-      "campuran": { "live": "Direct Consumption, Salted Fish", "dead": "Maggot Feed (BSF), Fish Silage" },
-      "teri": { "live": "Dried Anchovies, Direct Consumption", "dead": "Shrimp Paste, Livestock Feed" },
-      "udang": { "live": "Direct Consumption, Frozen Shrimp", "dead": "Shrimp Paste, Livestock Feed" },
-      "cumi-cumi-sotong": { "live": "Direct Consumption, Frozen Squid", "dead": "Fishing Bait, Fish Meal" },
-      "ikan-pelagis-kecil": { "live": "Direct Consumption, Boiled Salted Fish", "dead": "Salted Fish, Fish Meal" },
-      "ikan-demersal": { "live": "Direct Consumption, Smoked Fish", "dead": "Fish Silage, Organic Fertilizer" },
-      "rajungan": { "live": "Direct Consumption, Crab Meat", "dead": "Shell Meal, Livestock Feed" },
-      "fallback": { "live": "Direct Consumption", "dead": "Maggot Feed (BSF), Organic Fertilizer" }
+      "campuran": {
+        "live": "Direct Consumption, Salted Fish",
+        "dead": "Maggot Feed (BSF), Fish Silage"
+      },
+      "teri": {
+        "live": "Dried Anchovies, Direct Consumption",
+        "dead": "Shrimp Paste, Livestock Feed"
+      },
+      "udang": {
+        "live": "Direct Consumption, Frozen Shrimp",
+        "dead": "Shrimp Paste, Livestock Feed"
+      },
+      "cumi-cumi-sotong": {
+        "live": "Direct Consumption, Frozen Squid",
+        "dead": "Fishing Bait, Fish Meal"
+      },
+      "ikan-pelagis-kecil": {
+        "live": "Direct Consumption, Boiled Salted Fish",
+        "dead": "Salted Fish, Fish Meal"
+      },
+      "ikan-demersal": {
+        "live": "Direct Consumption, Smoked Fish",
+        "dead": "Fish Silage, Organic Fertilizer"
+      },
+      "rajungan": {
+        "live": "Direct Consumption, Crab Meat",
+        "dead": "Shell Meal, Livestock Feed"
+      },
+      "fallback": {
+        "live": "Direct Consumption",
+        "dead": "Maggot Feed (BSF), Organic Fertilizer"
+      }
     },
     "price": {
       "unset": "Not set"
@@ -100,7 +124,568 @@
         "cancel": "Cancel",
         "confirm": "Sign Out Anyway"
       }
-    }
+    },
+    "nelayan": {
+      "home": {
+        "subtitle": "Wishing you a good catch and a good day at sea.",
+        "breadcrumb": "Dashboard",
+        "greeting": "Good {part, select, morning {morning} midday {afternoon} afternoon {afternoon} other {evening}}, {name}",
+        "summaryTitle": "Today's Summary",
+        "summaryImageAlt": "A blue fishing boat on the open sea with seagulls above it",
+        "quickAction": {
+          "label": "Add Catch",
+          "caption": "Log today's catch",
+          "offlineNote": "You can log catches without signal. Data syncs once you're back online."
+        },
+        "listings": {
+          "title": "My Active Listings",
+          "viewAll": "See all listings",
+          "detailLabel": "See details",
+          "weight": "Weight",
+          "pricePerKg": "Price per kg",
+          "emptyTitle": "No active listings yet",
+          "emptyDescription": "Log today's catch so buyers around the PPI can see it and make offers.",
+          "emptyAction": "Add Catch"
+        },
+        "notificationList": {
+          "title": "Latest Notifications",
+          "viewAll": "See all notifications",
+          "emptyTitle": "No notifications yet",
+          "emptyDescription": "News from buyers and the PPI will show up here."
+        },
+        "tagline": "The sea provides, we look after it together",
+        "stats": {
+          "sold": "Total Sold",
+          "revenue": "Revenue",
+          "rescued": "Biomass Saved",
+          "rescuedNote": "from by-catch that used to be thrown away",
+          "firstToday": "first one today",
+          "noneToday": "none yet today",
+          "sameAsYesterday": "same as yesterday",
+          "upFromYesterday": "{percent}% up from yesterday",
+          "downFromYesterday": "{percent}% below yesterday"
+        },
+        "notifications": {
+          "yourCatch": "your catch",
+          "sold": "Your batch ({name}) sold for {price}.",
+          "cancelled": "The transaction for {name} was cancelled.",
+          "claimed": "A buyer claimed your listing ({name}). The escrow payment is being processed.",
+          "expiring": "Your {name} listing ends in {time}.",
+          "expiringSoon": "Ending soon"
+        }
+      },
+      "catch": {
+        "breadcrumbHome": "Dashboard",
+        "title": "Add Catch",
+        "subtitle": "Log today's catch in 6 quick steps.",
+        "close": "Close",
+        "steps": {
+          "category": "Category",
+          "volume": "Volume",
+          "time": "Time",
+          "condition": "Condition",
+          "ice": "Ice",
+          "photo": "Photo"
+        },
+        "back": "Back",
+        "next": "Next",
+        "category": {
+          "title": "Choose the Catch Category",
+          "description": "Choose the type that makes up most of your catch.",
+          "error": "Choose a category to continue.",
+          "info": "Several kinds in the catch? Choose Mixed. You can change the category before the listing goes up.",
+          "cancel": "Cancel"
+        },
+        "volume": {
+          "title": "How Much Did You Catch?",
+          "description": "Enter an estimate of the catch's weight in kilograms (kg).",
+          "decrease": "Decrease by 1 kg",
+          "increase": "Increase by 1 kg",
+          "error": "Enter a weight of at least 1 kg.",
+          "info": "An estimate is fine, it doesn't have to be exact."
+        },
+        "time": {
+          "title": "When Was This Catch Hauled?",
+          "description": "Choose when the net was hauled. This helps estimate freshness.",
+          "options": {
+            "pagi": "This morning",
+            "siang": "Around midday",
+            "sore": "This afternoon",
+            "kemarin-malam": "Last night"
+          },
+          "error": "Choose when the net was hauled to continue."
+        },
+        "condition": {
+          "title": "What Condition Is the Catch In?",
+          "description": "Choose its condition as you log it. This decides grade A (live) or B (dead).",
+          "hidup": "Still Alive",
+          "hidupDescription": "Still moving in the water",
+          "mati": "Dead",
+          "matiDescription": "No longer moving",
+          "error": "Choose the catch's condition to continue."
+        },
+        "ice": {
+          "title": "How Much Ice Is There?",
+          "description": "Choose what's closest to how the catch is kept right now.",
+          "banyak": "Plenty of Ice",
+          "banyakDescription": "The catch is covered in ice",
+          "sedikit": "Some Ice",
+          "sedikitDescription": "Only partly iced",
+          "tanpa": "No Ice",
+          "tanpaDescription": "No ice at all",
+          "error": "Choose the ice condition to continue."
+        },
+        "photo": {
+          "title": "Catch Photo",
+          "description": "Shoot from above so the whole catch is visible. The photo is used to estimate the grade.",
+          "methodLabel": "How to add a photo",
+          "webcam": "Use Webcam",
+          "upload": "Upload Photo",
+          "webcamOffTitle": "No photo yet",
+          "webcamOffDescription": "Turn on the webcam and point it at the catch from above, or choose Upload Photo.",
+          "webcamOffAction": "Turn on webcam",
+          "webcamDeniedTitle": "Can't access the webcam",
+          "webcamDeniedDescription": "Allow camera access in your browser settings, then try again. You can also choose Upload Photo.",
+          "webcamDeniedAction": "Try again",
+          "webcamLiveLabel": "Webcam view",
+          "webcamLiveCaption": "Point the webcam at the catch from above.",
+          "webcamLiveAction": "Take photo",
+          "uploadEmptyTitle": "No photo yet",
+          "uploadEmptyDescription": "Choose a photo of the catch taken from above.",
+          "uploadEmptyAction": "Choose photo",
+          "previewAlt": "Catch photo",
+          "takenAt": "Photo taken at {time}",
+          "uploadedAt": "Photo uploaded at {time}",
+          "retake": "Retake",
+          "replace": "Replace photo",
+          "error": "Take or upload a photo to continue.",
+          "savedOffline": "Photo saved on this device. It's analysed automatically once the device is back online.",
+          "analyzingTitle": "Analysing photo…",
+          "analyzingDescription": "Please wait a moment. Don't close this page.",
+          "submit": "Analyse photo"
+        }
+      },
+      "freshness": {
+        "title": "Freshness Result",
+        "subtitle": "Here's the freshness analysis of the photo you uploaded.",
+        "close": "Close",
+        "disclaimer": "An indicative AI estimate, not a food quality certification. Still check it by hand at the PPI.",
+        "submit": "Post listing",
+        "gradeLabel": "Grade",
+        "summaryTitle": "Result Summary",
+        "freshnessLabel": "Estimated freshness",
+        "temperatureLabel": "Estimated Temperature",
+        "condition": "{condition, select, live {Live} other {Dead}}, {score}%",
+        "usageTitle": "Recommended Uses",
+        "usageSubtitle": "This catch suits these downstream industries:",
+        "price": {
+          "label": "Selling Price",
+          "helper": "Optional. Leave empty to follow the auction price.",
+          "marketLabel": "Average market price"
+        },
+        "ungraded": {
+          "subtitle": "Your catch is saved, but its freshness assessment isn't available yet.",
+          "title": "Assessment didn't go through",
+          "body": "The AI couldn't grade this photo yet. Try grading it again, or post the listing without a grade.",
+          "noPhotoBody": "This photo can't be graded again. You can still post the listing without a grade.",
+          "retry": "Grade again",
+          "retrying": "Grading…",
+          "stillFailing": "Still didn't go through. Try again in a little while."
+        },
+        "uses": {
+          "maggot": {
+            "title": "Maggot Feed (BSF)",
+            "description": "High in protein, ideal feed for BSF larvae."
+          },
+          "silase": {
+            "title": "Fish Silage",
+            "description": "Ferments well into livestock feed."
+          },
+          "pupuk": {
+            "title": "Liquid Organic Fertilizer",
+            "description": "Rich in nutrients, good for liquid organic fertilizer."
+          },
+          "tepung": {
+            "title": "Fish Meal",
+            "description": "Raw material for livestock feed and aquaculture."
+          },
+          "terasi": {
+            "title": "Shrimp Paste",
+            "description": "Fermented into shrimp paste, the classic route for small shrimp."
+          },
+          "umpan": {
+            "title": "Fishing Bait",
+            "description": "Sold as bait to fishing boats around the PPI."
+          },
+          "konsumsi": {
+            "title": "Direct Consumption",
+            "description": "Still fit to sell fresh for the consumer market."
+          },
+          "asin": {
+            "title": "Salted Fish",
+            "description": "Salted and sun-dried, keeps for a long time."
+          },
+          "pakanTernak": {
+            "title": "Livestock Feed",
+            "description": "Processed into feed mixes for poultry and farmed fish."
+          }
+        }
+      },
+      "listing": {
+        "title": "My Listings",
+        "subtitle": "Manage every catch you've listed on the platform.",
+        "addAction": "Add Catch",
+        "weight": "Weight",
+        "pricePerKg": "Price per kg",
+        "active": {
+          "label": "Active",
+          "detailLabel": "See details",
+          "publishLabel": "Post listing",
+          "panelTitle": "My Active Listings",
+          "emptyTitle": "No active listings yet",
+          "emptyDescription": "Log today's catch so buyers around the PPI can see it and make offers.",
+          "emptyAction": "Add your first catch"
+        },
+        "closed": {
+          "label": "Sold/Collected",
+          "detailLabel": "See transaction",
+          "panelTitle": "Sold/Collected Listings",
+          "emptyTitle": "No sold listings yet",
+          "emptyDescription": "Listings that were sold or collected by a buyer will show up here."
+        },
+        "drawer": {
+          "title": "Listing Details",
+          "close": "Close listing details",
+          "timeLeft": "Time left",
+          "location": "Pickup location",
+          "map": "View map",
+          "freshness": "Estimated freshness",
+          "usage": "Recommended use",
+          "photos": "Photos",
+          "morePhotos": "more photos",
+          "edit": "Edit listing",
+          "cancel": "Cancel listing",
+          "note": "The listing stays active until it's sold or you cancel it."
+        },
+        "edit": {
+          "title": "Edit Listing",
+          "close": "Close listing editor",
+          "intro": "Change the weight or price. The category, grade and photos come from the freshness assessment, so they can't be changed.",
+          "weightHelper": "Estimated weight of the catch, 1–200 kg.",
+          "weightError": "Enter a weight between 1 and 200 kg, e.g. 5 or 5.5.",
+          "priceError": "Enter the price in numbers only, e.g. 8000.",
+          "notListed": "This listing is no longer active, so it can't be changed.",
+          "saveFailed": "Your changes weren't saved. Check your internet connection, then try saving again.",
+          "cancel": "Cancel",
+          "save": "Save changes",
+          "saving": "Saving…"
+        },
+        "cancelDialog": {
+          "title": "Cancel this listing?",
+          "body": "Buyers can no longer bid on {category} {weight}, and any offers already made are cancelled too.",
+          "back": "Back",
+          "confirm": "Cancel listing"
+        },
+        "loading": "Loading listings…"
+      }
+    },
+    "riwayat": {
+      "breadcrumb": "History",
+      "title": "Transaction History",
+      "subtitle": "Every transaction that was completed or cancelled.",
+      "resultCount": "{count, plural, one {# transaction} other {# transactions}} in this range",
+      "dateRange": {
+        "label": "Date range",
+        "empty": "All dates",
+        "legend": "Show transactions between",
+        "from": "From",
+        "to": "To",
+        "apply": "Apply",
+        "reset": "All dates",
+        "since": "Since {from}",
+        "until": "Until {to}",
+        "edit": "Change date range: {value}"
+      },
+      "status": {
+        "label": "Status",
+        "semua": "All",
+        "selesai": "Completed",
+        "dibatalkan": "Cancelled"
+      },
+      "table": {
+        "label": "Transaction history",
+        "date": "Date",
+        "partner": "Trading partner",
+        "grade": "Grade",
+        "weight": "Weight",
+        "total": "Total price",
+        "status": "Status",
+        "sortedNewest": "Sorted newest first",
+        "sortedOldest": "Sorted oldest first",
+        "sortOldest": "Sort oldest first",
+        "sortNewest": "Sort newest first",
+        "detail": "See details of the transaction with {partner}",
+        "unknownPartner": "Buyer"
+      },
+      "emptyTitle": "No completed transactions yet",
+      "emptyDescription": "Completed transactions will show up here.",
+      "drawer": {
+        "title": "Transaction Details",
+        "close": "Close transaction details",
+        "completedAt": "Completed on {at}",
+        "cancelledAt": "Cancelled on {at}",
+        "timelineTitle": "Transaction Timeline",
+        "steps": {
+          "listed": "Listed",
+          "sold": "Sold",
+          "handover": "Collected",
+          "done": "Completed",
+          "cancelled": "Cancelled"
+        },
+        "infoTitle": "Transaction Information",
+        "id": "Transaction ID",
+        "date": "Date",
+        "partner": "Trading partner",
+        "grade": "Grade",
+        "catchTitle": "Catch Details",
+        "category": "Category",
+        "volume": "Volume",
+        "hauledAt": "Hauled at",
+        "ice": "Ice condition",
+        "photo": "Photo",
+        "photoLink": "View photo",
+        "photoAlt": "Photo of {category} catch",
+        "paymentTitle": "Price & Payment",
+        "pricePerKg": "Price per kg",
+        "total": "Total price",
+        "method": "Payment method",
+        "paymentStatus": "Payment status",
+        "bankTransfer": "Bank transfer",
+        "paid": "Paid",
+        "pending": "Awaiting payout",
+        "noteCompleted": "This transaction is complete and can't be changed. If something's wrong, contact your partner from the Help menu.",
+        "noteCancelled": "This transaction was cancelled and can't be changed. If something's wrong, contact your partner from the Help menu."
+      },
+      "pembeli": {
+        "title": "Purchase History",
+        "subtitle": "Every purchase that was completed or cancelled.",
+        "resultCount": "{count, plural, one {# purchase} other {# purchases}} in this range",
+        "partnerName": "Fisher",
+        "tableLabel": "Purchase history",
+        "seller": "Seller",
+        "detail": "See details of the purchase from {partner}",
+        "emptyTitle": "No completed purchases yet",
+        "emptyDescription": "Purchases that were completed or cancelled will show up here.",
+        "emptyAction": "Find catches in the Marketplace",
+        "drawerTitle": "Purchase Details",
+        "drawerClose": "Close purchase details",
+        "steps": {
+          "listed": "Listed by fisher",
+          "sold": "Claimed by you",
+          "handover": "Collected",
+          "done": "Completed",
+          "cancelled": "Cancelled"
+        },
+        "pending": "Being processed",
+        "noteCompleted": "This purchase is complete and can't be changed. If something's wrong, contact us from the Help menu.",
+        "noteCancelled": "This purchase was cancelled and can't be changed. If something's wrong, contact us from the Help menu."
+      }
+    },
+    "akun": {
+      "title": "Account",
+      "navLabel": "Account sections",
+      "personalInfo": "Personal Info",
+      "preferences": "Preferences",
+      "notifications": "Notifications",
+      "signOut": "Sign out",
+      "changePhoto": "Change photo",
+      "changePhotoUnavailable": "Photo upload isn't available yet.",
+      "noPpi": "PPI not set",
+      "save": "Save changes",
+      "saving": "Saving…",
+      "saved": "Changes saved.",
+      "fields": {
+        "fullName": "Full name",
+        "nickname": "Nickname",
+        "email": "Email",
+        "emailHelper": "Your email is used to sign in. Contact an admin to change it.",
+        "phone": "Phone number",
+        "provinsi": "Province",
+        "provinsiPlaceholder": "Choose a province",
+        "kabKota": "City/regency",
+        "kabKotaPlaceholder": "Choose a city/regency",
+        "kabKotaLocked": "Choose a province first."
+      },
+      "validation": {
+        "required": "Enter your {label}.",
+        "choose": "Choose a {label}.",
+        "phone": "Enter the full number, e.g. +62 812 3456 7890.",
+        "nickname": "Use {max} characters or fewer.",
+        "saveFailed": "Your changes weren't saved. Check your internet connection, then try saving again."
+      },
+      "unsaved": {
+        "title": "Save your changes first?",
+        "body": "You changed your Personal Info but haven't saved it. If you leave now, those changes are lost.",
+        "discard": "Discard changes",
+        "save": "Save"
+      },
+      "nelayan": {
+        "subtitle": "Manage your details, landing site and payout account.",
+        "infoSubtitle": "Your details, landing site and bank account. Fields marked * are required.",
+        "fullNamePlaceholder": "e.g. Dulmatin",
+        "nicknamePlaceholder": "e.g. Pak Dul",
+        "nicknameHelper": "Shown on your dashboard. Leave empty to use your first name.",
+        "phoneHelper": "Used by buyers and PPI staff to contact you.",
+        "bankAccount": "Bank account",
+        "bankAccountPlaceholder": "e.g. BRI 1234 5678 9012, Dulmatin",
+        "bankAccountHelper": "Enter the bank name, account number and account holder.",
+        "locationTitle": "Landing Site",
+        "locationSubtitle": "The PPI where you land and sell your catch. Buyers see it on every listing.",
+        "ppi": "Fish landing port (PPI)",
+        "ppiPlaceholder": "Choose a PPI",
+        "ppiLocked": "Choose a city/regency first.",
+        "ppiEmpty": "No PPI is registered in this city/regency yet. Email info@bycatchloop.id to have it added.",
+        "bankTitle": "Payout Account",
+        "bankSubtitle": "Optional. Fill it in so sales can be paid straight into your account.",
+        "choosePpi": "Choose the PPI where you land your catch."
+      },
+      "pembeli": {
+        "subtitle": "Manage your account information and preferences.",
+        "infoSubtitle": "Your basic account and business details. Fields marked * are required.",
+        "contactNamePlaceholder": "Person in charge",
+        "nicknamePlaceholder": "e.g. Bu Sari",
+        "nicknameHelper": "Shown on your dashboard. Leave empty to use your business name.",
+        "businessName": "Business name",
+        "businessNamePlaceholder": "Business or company name",
+        "address": "Business address",
+        "addressPlaceholder": "Street name and number",
+        "kecamatan": "District",
+        "kecamatanPlaceholder": "District name",
+        "kodePos": "Postal code",
+        "businessType": "Business type",
+        "businessTypeHelper": "Choose one or more. Used to tailor recommendations and offers for you.",
+        "kodePosError": "Postal codes have 5 digits.",
+        "businessTypeError": "Choose at least one business type."
+      }
+    },
+    "pembeli": {
+      "home": {
+        "greeting": "Welcome, {name} 👋",
+        "subtitle": "Find quality seafood for your business needs.",
+        "recommendationsTitle": "Recommended for Your Preferences",
+        "recommendationsDescription": "The best catches we picked for your needs and location.",
+        "recommendationsViewAll": "See all in the Marketplace",
+        "recommendationsEmptyTitle": "No recommendations yet",
+        "recommendationsEmptyDescription": "Set your processing types and location radius so we can pick catches that suit you.",
+        "recommendationsEmptyAction": "Set preferences",
+        "notificationsTitle": "Latest Notifications",
+        "notificationsViewAll": "See all notifications",
+        "notificationsEmptyTitle": "No notifications yet",
+        "notificationsEmptyDescription": "News about offers, transactions and stock from the PPI will show up here.",
+        "activityTitle": "Activity Summary",
+        "viewDetail": "See details",
+        "activeOffers": "Active Offers",
+        "runningTransactions": "Ongoing Transactions",
+        "totalTransactions": "Total Transactions (30 days)",
+        "fromYesterday": "since yesterday",
+        "fromLastMonth": "since last month",
+        "batch": "Batch",
+        "status": {
+          "ESCROW_PENDING": "Awaiting Escrow",
+          "ESCROW_HELD": "Escrow Funds Held",
+          "DELIVERY_SCHEDULED": "Delivery Scheduled",
+          "WEIGHING_DONE": "Weighing Complete",
+          "RECONCILED": "Reconciliation Complete",
+          "COMPLETED": "Transaction Complete",
+          "CANCELLED": "Transaction Cancelled"
+        }
+      },
+      "marketplace": {
+        "title": "Marketplace",
+        "subtitle": "Find quality seafood straight from fishers.",
+        "searchLabel": "Search batches",
+        "searchPlaceholder": "Search by fish type, PPI or keyword",
+        "filtersLabel": "Filters",
+        "reset": "Reset filters",
+        "resultCount": "Showing {count, plural, one {# batch} other {# batches}}",
+        "resultCountAt": "Showing {count, plural, one {# batch} other {# batches}} at {ppi}",
+        "sort": {
+          "button": "Sort: {option}",
+          "terdekat": "Nearest",
+          "kesegaran": "Freshest",
+          "terbaru": "Newest"
+        },
+        "filters": {
+          "grade": "Grade",
+          "gradeNone": "All grades",
+          "gradeLegend": "Show grades",
+          "gradeOnlyA1": "A1 only",
+          "gradeUpTo": "A1–{grade}",
+          "categories": "Material type",
+          "categoriesNone": "All types",
+          "categoriesLegend": "Show material types",
+          "priority": "Priority PPIs",
+          "priorityNone": "None",
+          "priorityLegend": "Show first",
+          "apply": "Apply",
+          "edit": "Change {label} filter: {value}",
+          "remove": "Remove {label} filter"
+        },
+        "noResultsTitle": "No batches match your filters",
+        "noResultsBody": "No batches match your filters yet. Try loosening the filters or searching another PPI.",
+        "noResultsBodyQuery": "No “{query}” batches match your filters yet. Try loosening the filters or searching another PPI.",
+        "conditions": {
+          "es": "Chilled (ice)",
+          "hidup": "Live"
+        },
+        "drawer": {
+          "close": "Close batch details",
+          "gradeLabel": "Grade",
+          "photoPrev": "Previous photo",
+          "photoNext": "Next photo",
+          "weight": "Available weight",
+          "total": "Total price",
+          "conditionTitle": "Condition & Freshness",
+          "auctionLeft": "{time} left in the auction",
+          "locationTitle": "Location",
+          "distance": "{km} km from you",
+          "usageTitle": "Recommended Uses",
+          "infoTitle": "More Information",
+          "fisherman": "Fisher",
+          "method": "Catch method",
+          "batchNumber": "Batch no.",
+          "buy": "Buy now · {total}",
+          "processing": "Processing purchase…",
+          "soldOutTitle": "Sorry, this batch has sold",
+          "soldOutBody": "Another buyer completed the purchase first. There are other {category} batches at nearby PPIs.",
+          "soldOutAction": "See similar batches"
+        },
+        "map": {
+          "label": "PPI map",
+          "markerDetail": "{count, plural, one {# batch} other {# batches}} available",
+          "showAll": "{name}, {detail}. Show all PPIs",
+          "showAt": "{name}, {detail}. Show batches at {name}",
+          "zoomIn": "Zoom in",
+          "zoomOut": "Zoom out",
+          "locate": "Show my location",
+          "locating": "Finding your location…",
+          "locateError": "Your location couldn't be found. Allow location access in your browser, then try again.",
+          "loading": "Loading map…"
+        },
+        "batch": {
+          "active": "Active",
+          "buyNow": "Buy now",
+          "auctionPrice": "Auction price",
+          "total": "Total {price}",
+          "perKg": "{price}/kg",
+          "caught": "Caught {ago}",
+          "registeredFisher": "Registered fisher",
+          "gradeLabel": "Grade {grade}",
+          "gradeUnrated": "Not graded yet"
+        }
+      }
+    },
+    "breadcrumbLabel": "Breadcrumb"
   },
   "landing": {
     "nav": {

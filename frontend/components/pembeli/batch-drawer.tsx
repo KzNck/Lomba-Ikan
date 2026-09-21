@@ -6,13 +6,8 @@ import { PhotoCarousel } from '@/components/pembeli/photo-carousel'
 import { PpiMiniMap } from '@/components/pembeli/ppi-mini-map'
 import { BuyButton } from '@/components/pembeli/buy-button'
 import { DetailChip, DetailSection } from '@/components/pembeli/detail-section'
-import {
-  BATCH_DRAWER,
-  CATEGORIES,
-  CONDITIONS,
-  PPI_LOCATIONS,
-  PPI_MAP,
-} from '@/components/pembeli/marketplace-content'
+import { useTranslations } from 'next-intl'
+import { marketplaceCopy, PPI_LOCATIONS } from '@/components/pembeli/marketplace-content'
 import type { Batch } from '@/lib/marketplace/batches'
 import { PRESS, PRESS_WIDE, SOLID_HOVER } from '@/components/ui/interaction'
 
@@ -32,6 +27,10 @@ const TITLE_ID = 'batch-drawer-title'
 // (see ModalDialog), so the page behind is inert and focus starts on the close button. The export fixes it at the
 // 1440×1024 frame's height; here it takes the window's height, the body scrolls and the buy footer stays put.
 export function BatchDrawer({ batch, closeHref, similarHref, buyAction }: BatchDrawerProps) {
+  const { BATCH_DRAWER, CATEGORIES, CONDITIONS, PPI_MAP } = marketplaceCopy(
+    useTranslations('dashboard.pembeli.marketplace'),
+    useTranslations('common.category'),
+  )
   const { detail } = batch
   const condition = CONDITIONS[detail.condition]
   // A category the marketplace doesn't list falls back to the batch's own name.

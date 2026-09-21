@@ -1,12 +1,14 @@
+import { getTranslations } from 'next-intl/server'
 import { TopBar } from '@/components/pembeli/top-bar'
 import { RecommendationSection } from '@/components/pembeli/recommendation-section'
 import { NotificationPanel } from '@/components/pembeli/notification-panel'
 import { ActivityPanel } from '@/components/pembeli/activity-panel'
-import { DASHBOARD, PEMBELI_NOTIFICATIONS } from '@/components/pembeli/content'
+import { dashboardCopy, PEMBELI_NOTIFICATIONS } from '@/components/pembeli/content'
 import { loadPembeliDashboard } from '@/lib/pembeli/dashboard'
 
 export default async function PembeliDashboardPage() {
-  const data = await loadPembeliDashboard()
+  const [data, t] = await Promise.all([loadPembeliDashboard(), getTranslations('dashboard.pembeli.home')])
+  const DASHBOARD = dashboardCopy(t)
 
   return (
     <div className="box-border [flex:1_1_0] flex flex-col gap-[28px] p-[32px] justify-start items-start">

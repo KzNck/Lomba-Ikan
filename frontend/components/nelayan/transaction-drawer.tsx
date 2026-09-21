@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Icon } from '@/components/ui/icon'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
 import { PRESS } from '@/components/ui/interaction'
-import { TRANSACTION_DRAWER, TRANSACTION_STATES } from '@/components/nelayan/riwayat-content'
+import { TRANSACTION_STATES, type TransactionDrawerCopy } from '@/components/nelayan/riwayat-content'
 import { gradeCondition } from '@/lib/catches/present'
 import type { TransactionDetailContent } from '@/lib/nelayan/riwayat'
 
@@ -10,7 +10,7 @@ type TransactionDrawerProps = {
   detail: TransactionDetailContent
   closeHref: string
   // The drawer's words; the pembeli history swaps a few (see components/pembeli/riwayat-content.ts).
-  copy?: typeof TRANSACTION_DRAWER
+  copy: TransactionDrawerCopy
 }
 
 const TITLE_ID = 'transaction-drawer-title'
@@ -18,7 +18,7 @@ const TITLE_ID = 'transaction-drawer-title'
 // "Detail Transaksi Drawer": a 400px panel docked to the right of the table, below the header. Like the listing
 // drawer it is not modal — the table stays readable — so the open row keeps its blue marker as the visible link
 // between the two. The export fixes it at 400×1126px inside the 1440×1220 frame.
-export function TransactionDrawer({ detail, closeHref, copy = TRANSACTION_DRAWER }: TransactionDrawerProps) {
+export function TransactionDrawer({ detail, closeHref, copy }: TransactionDrawerProps) {
   const state = TRANSACTION_STATES[detail.state]
   const banner = copy.banner[detail.state](detail.bannerAt)
 
@@ -124,7 +124,7 @@ export function TransactionDrawer({ detail, closeHref, copy = TRANSACTION_DRAWER
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={detail.photoUrl}
-                  alt={`Foto tangkapan ${detail.category}`}
+                  alt={copy.photoAlt(detail.category)}
                   className="box-border w-[64px] shrink-0 h-[48px] object-cover [border:1px_solid_#0000001A] rounded-[8px]"
                 />
                 <a

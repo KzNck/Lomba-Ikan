@@ -8,7 +8,9 @@ import type { NotificationItemContent } from '@/components/pembeli/notification-
 import type { ActivityStatContent } from '@/components/pembeli/activity-stat'
 import { MARKETPLACE_PATH } from '@/components/pembeli/marketplace-content'
 import { categoryLabel, formatRupiah, timeAgo, type Presenter } from '@/lib/catches/present'
+import { getTranslations } from 'next-intl/server'
 import { getPresenter } from '@/lib/i18n/presenter'
+import type { Translator } from '@/lib/i18n/translator'
 import { loadBatches, type Batch } from '@/lib/marketplace/batches'
 import { getMyTransactions } from '@/lib/supabase/transactions'
 import { requireProfile } from '@/lib/supabase/auth'
@@ -25,12 +27,14 @@ export type PembeliDashboardData = {
 
 const NOTIFICATIONS_PATH = '/pembeli/notifikasi'
 
+type HomeT = Translator<'dashboard.pembeli.home'>
+
 /** Enam batch teratas: yang terdekat dulu, lalu yang paling segar. */
-function topRecommendations(batches: Batch[]): ProductCardContent[] {
+function topRecommendations(t: HomeT, batches: Batch[]): ProductCardContent[] {
     return [...batches]
         .sort((a, b) => (a.distanceKm ?? Infinity) - (b.distanceKm ?? Infinity))
         .slice(0, 6)
-        .map((batch) => ({ ...batch, actionLabel: 'Lihat detail' }))
+        .map((batch) => ({ ...batch, actionLabel: t('viewDetail') }))
 }
 
 /** Perubahan dibanding periode sebelumnya, ditulis "+3" / "-2" / "0". */
@@ -41,7 +45,7 @@ function delta(now: number, before: number): string {
 
 const DAY = 24 * 60 * 60 * 1000
 
-function activityStats(transactions: (Transaction & { catches: Catch | null })[]): ActivityStatContent[] {
+function activityStats(t: HomeT, transactions: (Transaction & { catches: Catch | null })[]): ActivityStatContent[] {
     const now = Date.now()
     const since = (from: number, to: number) =>
         transactions.filter((tx) => {
@@ -64,24 +68,24 @@ function activityStats(transactions: (Transaction & { catches: Catch | null })[]
     return [
         {
             icon: 'tag',
-            label: 'Penawaran Aktif',
+            label: t('activeOffers'),
             value: String(pending.length),
             delta: delta(pending.length, pendingYesterday.length),
-            caption: 'dari kemarin',
+            caption: t('fromYesterday'),
         },
         {
             icon: 'file-text',
-            label: 'Transaksi Berjalan',
+            label: t('runningTransactions'),
             value: String(running.length),
             delta: delta(running.length, runningYesterday.length),
-            caption: 'dari kemarin',
+            caption: t('fromYesterday'),
         },
         {
             icon: 'history',
-            label: 'Total Transaksi (30 hari)',
+            label: t('totalTransactions'),
             value: String(lastMonth.length),
             delta: delta(lastMonth.length, monthBefore.length),
-            caption: 'dari bulan lalu',
+            caption: t('fromLastMonth'),
         },
     ]
 }
@@ -90,27 +94,27 @@ function activityStats(transactions: (Transaction & { catches: Catch | null })[]
  * Belum ada tabel notifikasi, jadi daftarnya disusun dari transaksi pembeli
  * sendiri — status terakhir tiap transaksi, terbaru di atas.
  */
-const STATUS_NOTE: Record<Transaction['status'], { icon: NotificationItemContent['icon']; title: string }> = {
-    ESCROW_PENDING: { icon: 'tag', title: 'Menunggu Escrow' },
-    ESCROW_HELD: { icon: 'file-text', title: 'Dana Escrow Ditahan' },
-    DELIVERY_SCHEDULED: { icon: 'truck', title: 'Pengiriman Dijadwalkan' },
-    WEIGHING_DONE: { icon: 'file-text', title: 'Penimbangan Selesai' },
-    RECONCILED: { icon: 'file-text', title: 'Rekonsiliasi Selesai' },
-    COMPLETED: { icon: 'truck', title: 'Transaksi Selesai' },
-    CANCELLED: { icon: 'info', title: 'Transaksi Dibatalkan' },
+const STATUS_ICON: Record<Transaction['status'], NotificationItemContent['icon']> = {
+    ESCROW_PENDING: 'tag',
+    ESCROW_HELD: 'file-text',
+    DELIVERY_SCHEDULED: 'truck',
+    WEIGHING_DONE: 'file-text',
+    RECONCILED: 'file-text',
+    COMPLETED: 'truck',
+    CANCELLED: 'info',
 }
 
 function notifications(
     p: Presenter,
+    t: HomeT,
     transactions: (Transaction & { catches: Catch | null })[]
 ): NotificationItemContent[] {
     return transactions.slice(0, 4).map((tx) => {
-        const note = STATUS_NOTE[tx.status]
-        const name = tx.catches ? categoryLabel(p, tx.catches.species) : 'Batch'
+        const name = tx.catches ? categoryLabel(p, tx.catches.species) : t('batch')
         return {
             href: NOTIFICATIONS_PATH,
-            icon: note.icon,
-            title: note.title,
+            icon: STATUS_ICON[tx.status],
+            title: t(`status.${tx.status}`),
             description: `${name} · ${formatRupiah(p, Number(tx.final_total ?? tx.estimated_total))}`,
             time: timeAgo(p, tx.updated_at),
         }
@@ -125,14 +129,18 @@ export async function loadPembeliDashboard(): Promise<PembeliDashboardData> {
         getMyTransactions(),
         getPresenter(),
     ])
-    const name = await displayNameFor(profile)
+    const [name, t, nav] = await Promise.all([
+        displayNameFor(profile),
+        getTranslations('dashboard.pembeli.home'),
+        getTranslations('nav'),
+    ])
 
     return {
         greeting: name,
-        user: { name, role: 'Pembeli' },
-        recommendations: topRecommendations(batches),
-        notifications: notifications(p, transactions),
-        activity: activityStats(transactions),
+        user: { name, role: nav('roles.pembeli') },
+        recommendations: topRecommendations(t, batches),
+        notifications: notifications(p, t, transactions),
+        activity: activityStats(t, transactions),
     }
 }
 

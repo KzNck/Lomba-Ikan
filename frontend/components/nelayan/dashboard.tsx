@@ -8,7 +8,8 @@ import { MainDecoration } from '@/components/nelayan/main-decoration'
 import type { ListingCardContent } from '@/components/nelayan/listing-card'
 import type { NotificationContent } from '@/components/nelayan/notification-item'
 import type { SummaryStatContent } from '@/components/nelayan/summary-stat'
-import { DASHBOARD } from '@/components/nelayan/content'
+import { useTranslations } from 'next-intl'
+import { dashboardCopy } from '@/components/nelayan/content'
 
 export type NelayanDashboardData = {
   greeting: string
@@ -21,11 +22,12 @@ export type NelayanDashboardData = {
 // The dashboard's main column. The "Tambah Tangkapan" pages render it behind their modal with a longer breadcrumb.
 export function NelayanDashboard({
   data,
-  breadcrumb = { current: DASHBOARD.breadcrumb },
+  breadcrumb,
 }: {
   data: NelayanDashboardData
   breadcrumb?: BreadcrumbContent
 }) {
+  const DASHBOARD = dashboardCopy(useTranslations('dashboard.nelayan.home'))
   return (
     <div className="box-border [flex:1_1_0] flex flex-col gap-0 justify-start items-start relative">
       <DashboardHeader
@@ -36,7 +38,7 @@ export function NelayanDashboard({
       />
       <MainDecoration tagline={DASHBOARD.tagline} />
       <div className="box-border w-full [flex:1_1_0] flex flex-col gap-[20px] p-[20px_32px_32px_32px] justify-start items-start relative [z-index:2]">
-        <Breadcrumb {...breadcrumb} />
+        <Breadcrumb {...(breadcrumb ?? { current: DASHBOARD.breadcrumb })} />
         <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[24px] justify-start items-start">
           <SummaryCard {...DASHBOARD.summary} stats={data.stats} />
           <QuickActionCard {...DASHBOARD.quickAction} />

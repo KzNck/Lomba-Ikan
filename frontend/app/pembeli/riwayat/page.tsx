@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server'
 import { TopBar } from '@/components/pembeli/top-bar'
 import { EmptyState } from '@/components/nelayan/empty-state'
 import { RiwayatFilters } from '@/components/nelayan/riwayat-filters'
@@ -5,12 +6,12 @@ import { TransactionTable } from '@/components/nelayan/transaction-table'
 import { TransactionDrawer } from '@/components/nelayan/transaction-drawer'
 import { PEMBELI_NOTIFICATIONS } from '@/components/pembeli/content'
 import {
-  DRAWER_COPY,
-  EMPTY_STATE,
-  PEMBELI_SIDE,
-  RIWAYAT_PAGE,
+  drawerCopy,
+  emptyState,
+  pembeliSide,
+  riwayatPage,
   RIWAYAT_PATH,
-  TABLE_COPY,
+  tableCopyPembeli,
 } from '@/components/pembeli/riwayat-content'
 import { dateLabelFor, loadRiwayat, parseRiwayatView, riwayatHref } from '@/lib/nelayan/riwayat'
 import { getPresenter } from '@/lib/i18n/presenter'
@@ -27,10 +28,14 @@ export default async function PembeliRiwayatPage({
 }) {
   const view = parseRiwayatView(await searchParams)
   const { status, range, order, openId } = view
+  const t = await getTranslations('dashboard.riwayat')
+  const DRAWER_COPY = drawerCopy(t)
+  const RIWAYAT_PAGE = riwayatPage(t)
+  const EMPTY_STATE = emptyState(t)
 
   const [profile, { rows, details, range: shownRange }, p] = await Promise.all([
     requireProfile('pembeli'),
-    loadRiwayat(status, range, order, DRAWER_COPY.steps, PEMBELI_SIDE),
+    loadRiwayat(status, range, order, DRAWER_COPY.steps, pembeliSide(t)),
     getPresenter(),
   ])
   const name = await displayNameFor(profile)
@@ -50,7 +55,7 @@ export default async function PembeliRiwayatPage({
         <div
           className={`box-border w-full [flex:1_1_0] flex flex-col gap-[20px] ${detail ? 'p-[28px_424px_32px_32px]' : 'p-[28px_32px_32px_32px]'} justify-start items-start`}
         >
-          <RiwayatFilters action={RIWAYAT_PATH} status={status} range={range} dateLabel={dateLabelFor(p, range, shownRange)} />
+          <RiwayatFilters action={RIWAYAT_PATH} status={status} range={range} dateLabel={dateLabelFor(p, t, range, shownRange)} />
           <p className="box-border w-full h-fit shrink-0 flex flex-row gap-[6px] justify-start items-center">
             <span className="text-[13px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left [white-space:nowrap]">
               {RIWAYAT_PAGE.resultCount(rows.length)}
@@ -63,7 +68,7 @@ export default async function PembeliRiwayatPage({
               toggleSortHref={hrefWith({ urut: order === 'baru' ? 'lama' : 'baru', transaksi: openId })}
               hrefFor={hrefFor}
               selectedId={detail?.id}
-              copy={TABLE_COPY}
+              copy={tableCopyPembeli(t)}
             />
           ) : (
             <div className="box-border w-full h-fit shrink-0 flex flex-col gap-0 p-[20px] justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[16px]">

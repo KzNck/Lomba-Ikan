@@ -3,7 +3,7 @@ import { parseMarketplaceQuery } from '@/components/pembeli/marketplace-query'
 import { loadBatches } from '@/lib/marketplace/batches'
 import { requireProfile } from '@/lib/supabase/auth'
 import { displayNameFor } from '@/lib/supabase/display-name'
-import { PEMBELI_ROLE_LABEL } from '@/components/pembeli/content'
+import { getTranslations } from 'next-intl/server'
 
 export default async function MarketplacePage({
   searchParams,
@@ -20,7 +20,7 @@ export default async function MarketplacePage({
     <MarketplaceView
       all={batches}
       query={parseMarketplaceQuery(params)}
-      user={{ name: await displayNameFor(profile), role: PEMBELI_ROLE_LABEL }}
+      user={{ name: await displayNameFor(profile), role: (await getTranslations('nav'))('roles.pembeli') }}
     />
   )
 }

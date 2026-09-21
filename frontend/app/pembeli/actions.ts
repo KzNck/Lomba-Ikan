@@ -1,8 +1,9 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
+import { getTranslations } from 'next-intl/server'
 import { getKabupatenKota, PROVINSI } from '@/lib/wilayah'
-import { INFO_PRIBADI, VALIDATION, type AccountValues } from '@/components/pembeli/akun-content'
+import { infoPribadi, JENIS_USAHA_FIELD, validation, type AccountValues } from '@/components/pembeli/akun-content'
 import { saveAccountValues } from '@/lib/pembeli/account'
 import { requireProfile } from '@/lib/supabase/auth'
 
@@ -37,10 +38,13 @@ export async function saveAccount(previous: AccountFormState, formData: FormData
     kabKota: text('kabKota'),
     kecamatan: text('kecamatan'),
     kodePos: text('kodePos'),
-    jenisUsaha: formData.getAll(INFO_PRIBADI.jenisUsaha.id).map(String),
+    jenisUsaha: formData.getAll(JENIS_USAHA_FIELD).map(String),
   }
 
+  const [t, register] = await Promise.all([getTranslations('dashboard.akun'), getTranslations('auth.register')])
+  const INFO_PRIBADI = infoPribadi(t, register)
   const { fields } = INFO_PRIBADI
+  const VALIDATION = validation(t)
   const errors: AccountFormState['errors'] = {}
   for (const name of ['contactName', 'businessName', 'phone', 'address'] as const) {
     if (!values[name]) errors[name] = VALIDATION.required(fields[name].label)

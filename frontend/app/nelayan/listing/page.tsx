@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server'
 import { ListingShell } from '@/components/nelayan/listing-shell'
 import { ListingTabs } from '@/components/nelayan/listing-tabs'
 import { ListingCard } from '@/components/nelayan/listing-card'
@@ -8,13 +9,14 @@ import { ListingEditForm } from '@/components/nelayan/listing-edit-form'
 import { CancelListingDialog } from '@/components/nelayan/cancel-listing-dialog'
 import { cancelListing, saveListingEdit } from '@/app/nelayan/actions'
 import {
-  ACTIVE_TAB,
-  CANCEL_DIALOG,
-  CLOSED_TAB,
-  LISTING_DRAWER,
-  EDIT_LISTING,
-  LISTING_PAGE,
+  activeTab,
+  cancelDialog,
+  closedTab,
+  editListing,
+  listingDrawer,
+  listingPage,
   LISTING_PATH,
+  publishHref,
   type EmptyTabContent,
 } from '@/components/nelayan/listing-content'
 import { toActiveListing, toListingCard } from '@/lib/catches/present'
@@ -48,6 +50,9 @@ export default async function ListingSayaPage({
     getPresenter(),
   ])
   const name = await displayNameFor(profile)
+  const [home, t] = await Promise.all([getTranslations('dashboard.nelayan.home'), getTranslations('dashboard.nelayan.listing')])
+  const [LISTING_PAGE, ACTIVE_TAB, CLOSED_TAB] = [listingPage(t), activeTab(t), closedTab(t)]
+  const [LISTING_DRAWER, EDIT_LISTING, CANCEL_DIALOG] = [listingDrawer(t), editListing(t), cancelDialog(t)]
 
   const active = catches.filter((entry) => isOpen(entry.status)).map((entry) => toActiveListing(p, entry))
   const closed = catches.filter((entry) => !isOpen(entry.status))
@@ -62,7 +67,7 @@ export default async function ListingSayaPage({
     ? closed.map((entry) => ({ ...toListingCard(p, entry, '/nelayan/riwayat'), key: entry.id }))
     : active.map((item) =>
         item.status === 'draft'
-          ? { ...item, key: item.slug, href: ACTIVE_TAB.publishHref(item.slug), cta: ACTIVE_TAB.publishLabel }
+          ? { ...item, key: item.slug, href: publishHref(item.slug), cta: ACTIVE_TAB.publishLabel }
           : { ...item, key: item.slug, href: detailHref(item.slug) },
       )
   // Typed as the shared shape so the optional `action` reads the same on both tabs.
@@ -74,9 +79,9 @@ export default async function ListingSayaPage({
     <>
       <ListingShell
         header={{
-          greeting: greetingFor(name),
+          greeting: greetingFor(home, name),
           user: { name, initials: initialsOf(profile.full_name) },
-          unreadCount: recentNotifications(p, catches, transactions).length,
+          unreadCount: recentNotifications(p, home, catches, transactions).length,
         }}
         drawer={
           selected && (

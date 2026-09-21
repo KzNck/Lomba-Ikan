@@ -41,14 +41,38 @@
       "ambient": "Tanpa es"
     },
     "usage": {
-      "campuran": { "live": "Konsumsi Langsung, Ikan Asin", "dead": "Pakan Maggot (BSF), Silase Ikan" },
-      "teri": { "live": "Teri Nasi Kering, Konsumsi Langsung", "dead": "Terasi, Pakan Ternak" },
-      "udang": { "live": "Konsumsi Langsung, Udang Beku", "dead": "Terasi, Pakan Ternak" },
-      "cumi-cumi-sotong": { "live": "Konsumsi Langsung, Cumi Beku", "dead": "Umpan Pancing, Tepung Ikan" },
-      "ikan-pelagis-kecil": { "live": "Konsumsi Langsung, Pindang", "dead": "Ikan Asin, Tepung Ikan" },
-      "ikan-demersal": { "live": "Konsumsi Langsung, Ikan Asap", "dead": "Silase Ikan, Pupuk Organik" },
-      "rajungan": { "live": "Konsumsi Langsung, Daging Rajungan", "dead": "Tepung Cangkang, Pakan Ternak" },
-      "fallback": { "live": "Konsumsi Langsung", "dead": "Pakan Maggot (BSF), Pupuk Organik" }
+      "campuran": {
+        "live": "Konsumsi Langsung, Ikan Asin",
+        "dead": "Pakan Maggot (BSF), Silase Ikan"
+      },
+      "teri": {
+        "live": "Teri Nasi Kering, Konsumsi Langsung",
+        "dead": "Terasi, Pakan Ternak"
+      },
+      "udang": {
+        "live": "Konsumsi Langsung, Udang Beku",
+        "dead": "Terasi, Pakan Ternak"
+      },
+      "cumi-cumi-sotong": {
+        "live": "Konsumsi Langsung, Cumi Beku",
+        "dead": "Umpan Pancing, Tepung Ikan"
+      },
+      "ikan-pelagis-kecil": {
+        "live": "Konsumsi Langsung, Pindang",
+        "dead": "Ikan Asin, Tepung Ikan"
+      },
+      "ikan-demersal": {
+        "live": "Konsumsi Langsung, Ikan Asap",
+        "dead": "Silase Ikan, Pupuk Organik"
+      },
+      "rajungan": {
+        "live": "Konsumsi Langsung, Daging Rajungan",
+        "dead": "Tepung Cangkang, Pakan Ternak"
+      },
+      "fallback": {
+        "live": "Konsumsi Langsung",
+        "dead": "Pakan Maggot (BSF), Pupuk Organik"
+      }
     },
     "price": {
       "unset": "Belum diatur"
@@ -100,7 +124,568 @@
         "cancel": "Batal",
         "confirm": "Tetap Keluar"
       }
-    }
+    },
+    "nelayan": {
+      "home": {
+        "subtitle": "Semoga hari ini banyak tangkapan dan rezeki yang lancar.",
+        "breadcrumb": "Dashboard",
+        "greeting": "Selamat {part, select, morning {pagi} midday {siang} afternoon {sore} other {malam}}, {name}",
+        "summaryTitle": "Ringkasan Hari Ini",
+        "summaryImageAlt": "Kapal nelayan biru di laut lepas dengan burung camar di atasnya",
+        "quickAction": {
+          "label": "Tambah Tangkapan",
+          "caption": "Catat hasil tangkapan Anda hari ini",
+          "offlineNote": "Pencatatan bisa dilakukan meski tanpa sinyal. Data akan tersinkron saat online."
+        },
+        "listings": {
+          "title": "Listing Aktif Saya",
+          "viewAll": "Lihat semua listing",
+          "detailLabel": "Lihat detail",
+          "weight": "Berat",
+          "pricePerKg": "Harga per kg",
+          "emptyTitle": "Belum ada listing aktif",
+          "emptyDescription": "Catat tangkapan hari ini supaya pembeli di sekitar PPI bisa melihat dan menawarnya.",
+          "emptyAction": "Tambah Tangkapan"
+        },
+        "notificationList": {
+          "title": "Notifikasi Terbaru",
+          "viewAll": "Lihat semua notifikasi",
+          "emptyTitle": "Belum ada notifikasi",
+          "emptyDescription": "Kabar dari pembeli dan PPI akan muncul di sini."
+        },
+        "tagline": "Laut memberi, kita jaga bersama",
+        "stats": {
+          "sold": "Total Terjual",
+          "revenue": "Pendapatan",
+          "rescued": "Biomassa Terselamatkan",
+          "rescuedNote": "dari by-catch yang sebelumnya terbuang",
+          "firstToday": "pertama hari ini",
+          "noneToday": "belum ada hari ini",
+          "sameAsYesterday": "sama dengan kemarin",
+          "upFromYesterday": "{percent}% dari kemarin",
+          "downFromYesterday": "{percent}% di bawah kemarin"
+        },
+        "notifications": {
+          "yourCatch": "tangkapan Anda",
+          "sold": "Batch Anda ({name}) telah terjual dengan harga {price}.",
+          "cancelled": "Transaksi untuk {name} dibatalkan.",
+          "claimed": "Pembeli mengklaim listing Anda ({name}). Dana escrow sedang diproses.",
+          "expiring": "Listing {name} akan berakhir dalam {time}.",
+          "expiringSoon": "Segera berakhir"
+        }
+      },
+      "catch": {
+        "breadcrumbHome": "Dashboard",
+        "title": "Tambah Tangkapan",
+        "subtitle": "Catat hasil tangkapan hari ini dalam 6 langkah singkat.",
+        "close": "Tutup",
+        "steps": {
+          "category": "Kategori",
+          "volume": "Volume",
+          "time": "Waktu",
+          "condition": "Kondisi",
+          "ice": "Es",
+          "photo": "Foto"
+        },
+        "back": "Kembali",
+        "next": "Lanjut",
+        "category": {
+          "title": "Pilih Kategori Tangkapan",
+          "description": "Pilih satu jenis yang paling banyak di tangkapan Anda.",
+          "error": "Pilih satu kategori untuk melanjutkan.",
+          "info": "Tangkapan terdiri dari beberapa jenis? Pilih Campuran. Anda bisa mengubah kategori sebelum listing dipasang.",
+          "cancel": "Batal"
+        },
+        "volume": {
+          "title": "Berapa Banyak Tangkapan?",
+          "description": "Masukkan perkiraan berat tangkapan dalam kilogram (kg).",
+          "decrease": "Kurangi 1 kg",
+          "increase": "Tambah 1 kg",
+          "error": "Masukkan berat minimal 1 kg.",
+          "info": "Perkiraan saja, tidak perlu tepat."
+        },
+        "time": {
+          "title": "Kapan Tangkapan Ini Ditarik?",
+          "description": "Pilih waktu jaring ditarik. Ini membantu memperkirakan kesegaran.",
+          "options": {
+            "pagi": "Pagi ini",
+            "siang": "Siang ini",
+            "sore": "Sore ini",
+            "kemarin-malam": "Kemarin malam"
+          },
+          "error": "Pilih waktu jaring ditarik untuk melanjutkan."
+        },
+        "condition": {
+          "title": "Bagaimana Kondisi Tangkapan?",
+          "description": "Pilih kondisi saat tangkapan dicatat. Ini menentukan grade A (hidup) atau B (mati).",
+          "hidup": "Masih Hidup",
+          "hidupDescription": "Masih bergerak di air",
+          "mati": "Sudah Mati",
+          "matiDescription": "Tidak bergerak lagi",
+          "error": "Pilih kondisi tangkapan untuk melanjutkan."
+        },
+        "ice": {
+          "title": "Bagaimana Kondisi Esnya?",
+          "description": "Pilih yang paling mendekati kondisi tangkapan saat ini.",
+          "banyak": "Banyak Es",
+          "banyakDescription": "Tangkapan tertutup es",
+          "sedikit": "Sedikit Es",
+          "sedikitDescription": "Es hanya sebagian",
+          "tanpa": "Tanpa Es",
+          "tanpaDescription": "Tidak memakai es",
+          "error": "Pilih kondisi es untuk melanjutkan."
+        },
+        "photo": {
+          "title": "Foto Tangkapan",
+          "description": "Foto dari atas agar seluruh tangkapan terlihat. Foto dipakai untuk memperkirakan grade.",
+          "methodLabel": "Cara menambahkan foto",
+          "webcam": "Ambil dari Webcam",
+          "upload": "Unggah Foto",
+          "webcamOffTitle": "Belum ada foto",
+          "webcamOffDescription": "Nyalakan webcam lalu arahkan ke tangkapan dari atas, atau pilih Unggah Foto.",
+          "webcamOffAction": "Nyalakan webcam",
+          "webcamDeniedTitle": "Webcam tidak bisa diakses",
+          "webcamDeniedDescription": "Izinkan akses kamera di pengaturan browser, lalu coba lagi. Anda juga bisa memilih Unggah Foto.",
+          "webcamDeniedAction": "Coba lagi",
+          "webcamLiveLabel": "Tampilan webcam",
+          "webcamLiveCaption": "Arahkan webcam ke tangkapan dari atas.",
+          "webcamLiveAction": "Ambil foto",
+          "uploadEmptyTitle": "Belum ada foto",
+          "uploadEmptyDescription": "Pilih foto tangkapan yang diambil dari atas.",
+          "uploadEmptyAction": "Pilih foto",
+          "previewAlt": "Foto tangkapan",
+          "takenAt": "Foto diambil pukul {time}",
+          "uploadedAt": "Foto diunggah pukul {time}",
+          "retake": "Ambil ulang",
+          "replace": "Ganti foto",
+          "error": "Ambil atau unggah foto untuk melanjutkan.",
+          "savedOffline": "Foto tersimpan di perangkat. Analisis berjalan otomatis saat perangkat kembali online.",
+          "analyzingTitle": "Menganalisis foto…",
+          "analyzingDescription": "Mohon tunggu sebentar. Jangan tutup halaman ini.",
+          "submit": "Analisis foto"
+        }
+      },
+      "freshness": {
+        "title": "Hasil Kesegaran",
+        "subtitle": "Berikut hasil analisis kesegaran dari foto yang Anda unggah.",
+        "close": "Tutup",
+        "disclaimer": "Estimasi indikatif dari AI, bukan sertifikasi mutu pangan. Tetap cek manual di PPI.",
+        "submit": "Pasang ke listing",
+        "gradeLabel": "Grade",
+        "summaryTitle": "Ringkasan Hasil",
+        "freshnessLabel": "Estimasi kesegaran",
+        "temperatureLabel": "Suhu Estimasi",
+        "condition": "{condition, select, live {Hidup} other {Mati}}, {score}%",
+        "usageTitle": "Rekomendasi Penggunaan",
+        "usageSubtitle": "Komoditas ini cocok untuk industri hilir berikut:",
+        "price": {
+          "label": "Harga Jual",
+          "helper": "Opsional. Kosongkan untuk mengikuti harga lelang.",
+          "marketLabel": "Harga pasar rata-rata"
+        },
+        "ungraded": {
+          "subtitle": "Tangkapan Anda sudah tersimpan, tapi penilaian kesegarannya belum tersedia.",
+          "title": "Penilaian belum berhasil",
+          "body": "AI belum bisa menilai foto ini. Coba nilai ulang, atau pasang ke listing tanpa grade.",
+          "noPhotoBody": "Foto ini tidak bisa dinilai ulang. Anda tetap bisa memasangnya ke listing tanpa grade.",
+          "retry": "Nilai ulang",
+          "retrying": "Menilai…",
+          "stillFailing": "Masih belum berhasil. Coba lagi beberapa saat lagi."
+        },
+        "uses": {
+          "maggot": {
+            "title": "Pakan Maggot (BSF)",
+            "description": "Kandungan protein tinggi, ideal untuk pakan larva BSF."
+          },
+          "silase": {
+            "title": "Silase Ikan",
+            "description": "Dapat difermentasi dengan baik untuk pakan ternak."
+          },
+          "pupuk": {
+            "title": "Pupuk Organik Cair",
+            "description": "Kaya unsur hara, cocok untuk pupuk cair organik."
+          },
+          "tepung": {
+            "title": "Tepung Ikan",
+            "description": "Bahan baku pakan ternak dan budidaya perikanan."
+          },
+          "terasi": {
+            "title": "Terasi",
+            "description": "Difermentasi jadi terasi, jalur klasik untuk udang kecil."
+          },
+          "umpan": {
+            "title": "Umpan Pancing",
+            "description": "Dijual sebagai umpan untuk kapal pancing di sekitar PPI."
+          },
+          "konsumsi": {
+            "title": "Konsumsi Langsung",
+            "description": "Masih layak dijual segar untuk pasar konsumsi."
+          },
+          "asin": {
+            "title": "Ikan Asin",
+            "description": "Diawetkan dengan garam dan dijemur, tahan disimpan lama."
+          },
+          "pakanTernak": {
+            "title": "Pakan Ternak",
+            "description": "Diolah jadi campuran pakan unggas dan ikan budidaya."
+          }
+        }
+      },
+      "listing": {
+        "title": "Listing Saya",
+        "subtitle": "Kelola semua hasil tangkapan yang Anda daftarkan di platform.",
+        "addAction": "Tambah Tangkapan",
+        "weight": "Berat",
+        "pricePerKg": "Harga per kg",
+        "active": {
+          "label": "Aktif",
+          "detailLabel": "Lihat detail",
+          "publishLabel": "Pasang ke listing",
+          "panelTitle": "Listing Aktif Saya",
+          "emptyTitle": "Belum ada listing aktif",
+          "emptyDescription": "Catat tangkapan hari ini supaya pembeli di sekitar PPI bisa melihat dan menawarnya.",
+          "emptyAction": "Tambah tangkapan pertama"
+        },
+        "closed": {
+          "label": "Terjual/Diambil",
+          "detailLabel": "Lihat transaksi",
+          "panelTitle": "Listing Terjual/Diambil",
+          "emptyTitle": "Belum ada listing terjual",
+          "emptyDescription": "Listing yang sudah terjual atau diambil pembeli akan muncul di sini."
+        },
+        "drawer": {
+          "title": "Detail Listing",
+          "close": "Tutup detail listing",
+          "timeLeft": "Sisa waktu",
+          "location": "Lokasi pengambilan",
+          "map": "Lihat peta",
+          "freshness": "Estimasi kesegaran",
+          "usage": "Rekomendasi penggunaan",
+          "photos": "Foto",
+          "morePhotos": "foto lainnya",
+          "edit": "Edit listing",
+          "cancel": "Batalkan listing",
+          "note": "Listing tetap aktif sampai terjual atau Anda batalkan."
+        },
+        "edit": {
+          "title": "Edit Listing",
+          "close": "Tutup edit listing",
+          "intro": "Ubah berat atau harga. Kategori, grade, dan foto berasal dari penilaian kesegaran, jadi tidak bisa diubah.",
+          "weightHelper": "Perkiraan berat tangkapan, 1–200 kg.",
+          "weightError": "Masukkan berat antara 1 dan 200 kg, contoh 5 atau 5,5.",
+          "priceError": "Masukkan harga dalam angka saja, contoh 8000.",
+          "notListed": "Listing ini sudah tidak aktif, jadi tidak bisa diubah lagi.",
+          "saveFailed": "Perubahan belum tersimpan. Periksa koneksi internet Anda, lalu coba simpan lagi.",
+          "cancel": "Batal",
+          "save": "Simpan perubahan",
+          "saving": "Menyimpan…"
+        },
+        "cancelDialog": {
+          "title": "Batalkan listing ini?",
+          "body": "Pembeli tidak bisa lagi menawar {category} {weight}, dan tawaran yang sudah masuk ikut dibatalkan.",
+          "back": "Kembali",
+          "confirm": "Batalkan listing"
+        },
+        "loading": "Memuat listing…"
+      }
+    },
+    "riwayat": {
+      "breadcrumb": "Riwayat",
+      "title": "Riwayat Transaksi",
+      "subtitle": "Semua transaksi yang sudah selesai atau dibatalkan.",
+      "resultCount": "{count} transaksi dalam rentang ini",
+      "dateRange": {
+        "label": "Rentang tanggal",
+        "empty": "Semua tanggal",
+        "legend": "Tampilkan transaksi antara",
+        "from": "Dari",
+        "to": "Sampai",
+        "apply": "Terapkan",
+        "reset": "Semua tanggal",
+        "since": "Sejak {from}",
+        "until": "Sampai {to}",
+        "edit": "Ubah rentang tanggal: {value}"
+      },
+      "status": {
+        "label": "Status",
+        "semua": "Semua",
+        "selesai": "Selesai",
+        "dibatalkan": "Dibatalkan"
+      },
+      "table": {
+        "label": "Riwayat transaksi",
+        "date": "Tanggal",
+        "partner": "Mitra transaksi",
+        "grade": "Grade",
+        "weight": "Berat",
+        "total": "Harga total",
+        "status": "Status",
+        "sortedNewest": "Diurutkan dari yang terbaru",
+        "sortedOldest": "Diurutkan dari yang terlama",
+        "sortOldest": "Urutkan dari yang terlama",
+        "sortNewest": "Urutkan dari yang terbaru",
+        "detail": "Lihat detail transaksi dengan {partner}",
+        "unknownPartner": "Pembeli"
+      },
+      "emptyTitle": "Belum ada transaksi selesai",
+      "emptyDescription": "Transaksi yang sudah selesai akan muncul di sini.",
+      "drawer": {
+        "title": "Detail Transaksi",
+        "close": "Tutup detail transaksi",
+        "completedAt": "Selesai pada {at}",
+        "cancelledAt": "Dibatalkan pada {at}",
+        "timelineTitle": "Perjalanan Transaksi",
+        "steps": {
+          "listed": "Dipasang",
+          "sold": "Terjual",
+          "handover": "Diambil",
+          "done": "Selesai",
+          "cancelled": "Dibatalkan"
+        },
+        "infoTitle": "Informasi Transaksi",
+        "id": "ID transaksi",
+        "date": "Tanggal",
+        "partner": "Mitra transaksi",
+        "grade": "Grade",
+        "catchTitle": "Detail Tangkapan",
+        "category": "Kategori",
+        "volume": "Volume",
+        "hauledAt": "Waktu ditarik",
+        "ice": "Kondisi es",
+        "photo": "Foto",
+        "photoLink": "Lihat foto",
+        "photoAlt": "Foto tangkapan {category}",
+        "paymentTitle": "Harga & Pembayaran",
+        "pricePerKg": "Harga per kg",
+        "total": "Total harga",
+        "method": "Metode pembayaran",
+        "paymentStatus": "Status pembayaran",
+        "bankTransfer": "Transfer bank",
+        "paid": "Lunas",
+        "pending": "Menunggu pencairan",
+        "noteCompleted": "Transaksi ini sudah selesai dan tidak bisa diubah. Kalau ada kendala, hubungi mitra lewat menu Bantuan.",
+        "noteCancelled": "Transaksi ini dibatalkan dan tidak bisa diubah. Kalau ada kendala, hubungi mitra lewat menu Bantuan."
+      },
+      "pembeli": {
+        "title": "Riwayat Pembelian",
+        "subtitle": "Semua pembelian yang sudah selesai atau dibatalkan.",
+        "resultCount": "{count} pembelian dalam rentang ini",
+        "partnerName": "Nelayan",
+        "tableLabel": "Riwayat pembelian",
+        "seller": "Penjual",
+        "detail": "Lihat detail pembelian dari {partner}",
+        "emptyTitle": "Belum ada pembelian selesai",
+        "emptyDescription": "Pembelian yang sudah selesai atau dibatalkan akan muncul di sini.",
+        "emptyAction": "Cari tangkapan di Marketplace",
+        "drawerTitle": "Detail Pembelian",
+        "drawerClose": "Tutup detail pembelian",
+        "steps": {
+          "listed": "Dipasang nelayan",
+          "sold": "Anda klaim",
+          "handover": "Diambil",
+          "done": "Selesai",
+          "cancelled": "Dibatalkan"
+        },
+        "pending": "Sedang diproses",
+        "noteCompleted": "Pembelian ini sudah selesai dan tidak bisa diubah. Kalau ada kendala, hubungi kami lewat menu Bantuan.",
+        "noteCancelled": "Pembelian ini dibatalkan dan tidak bisa diubah. Kalau ada kendala, hubungi kami lewat menu Bantuan."
+      }
+    },
+    "akun": {
+      "title": "Akun",
+      "navLabel": "Bagian akun",
+      "personalInfo": "Info Pribadi",
+      "preferences": "Preferensi",
+      "notifications": "Notifikasi",
+      "signOut": "Keluar",
+      "changePhoto": "Ubah foto",
+      "changePhotoUnavailable": "Unggah foto belum tersedia.",
+      "noPpi": "PPI belum diatur",
+      "save": "Simpan perubahan",
+      "saving": "Menyimpan…",
+      "saved": "Perubahan disimpan.",
+      "fields": {
+        "fullName": "Nama lengkap",
+        "nickname": "Nama panggilan",
+        "email": "Email",
+        "emailHelper": "Email dipakai untuk masuk. Hubungi admin untuk menggantinya.",
+        "phone": "Nomor telepon",
+        "provinsi": "Provinsi",
+        "provinsiPlaceholder": "Pilih provinsi",
+        "kabKota": "Kota/kabupaten",
+        "kabKotaPlaceholder": "Pilih kota/kabupaten",
+        "kabKotaLocked": "Pilih provinsi terlebih dahulu."
+      },
+      "validation": {
+        "required": "Isi {label}.",
+        "choose": "Pilih {label}.",
+        "phone": "Masukkan nomor lengkap, contoh +62 812 3456 7890.",
+        "nickname": "Gunakan paling banyak {max} karakter.",
+        "saveFailed": "Perubahan belum tersimpan. Periksa koneksi internet Anda, lalu coba simpan lagi."
+      },
+      "unsaved": {
+        "title": "Simpan perubahan dulu?",
+        "body": "Anda mengubah Info Pribadi tapi belum menyimpannya. Kalau pindah sekarang, perubahan itu hilang.",
+        "discard": "Buang perubahan",
+        "save": "Simpan"
+      },
+      "nelayan": {
+        "subtitle": "Kelola data diri, lokasi pendaratan, dan rekening pencairan Anda.",
+        "infoSubtitle": "Data diri, lokasi pendaratan, dan rekening Anda. Kolom bertanda * wajib diisi.",
+        "fullNamePlaceholder": "Contoh: Dulmatin",
+        "nicknamePlaceholder": "Contoh: Pak Dul",
+        "nicknameHelper": "Ditampilkan di dashboard. Kosongkan untuk memakai nama depan Anda.",
+        "phoneHelper": "Dipakai pembeli dan petugas PPI untuk menghubungi Anda.",
+        "bankAccount": "Rekening bank",
+        "bankAccountPlaceholder": "Contoh: BRI 1234 5678 9012 a.n. Dulmatin",
+        "bankAccountHelper": "Tulis nama bank, nomor rekening, dan nama pemilik.",
+        "locationTitle": "Lokasi Pendaratan",
+        "locationSubtitle": "PPI tempat Anda mendaratkan dan menjual hasil tangkapan. Pembeli melihatnya di setiap listing.",
+        "ppi": "Pangkalan pendaratan ikan (PPI)",
+        "ppiPlaceholder": "Pilih PPI",
+        "ppiLocked": "Pilih kota/kabupaten terlebih dahulu.",
+        "ppiEmpty": "Belum ada PPI terdaftar di kota/kabupaten ini. Kirim email ke info@bycatchloop.id untuk menambahkannya.",
+        "bankTitle": "Rekening Pencairan",
+        "bankSubtitle": "Opsional. Isi supaya hasil penjualan bisa langsung dicairkan ke rekening Anda.",
+        "choosePpi": "Pilih PPI tempat Anda mendaratkan tangkapan."
+      },
+      "pembeli": {
+        "subtitle": "Kelola informasi dan preferensi akun Anda.",
+        "infoSubtitle": "Data dasar akun dan usaha Anda. Kolom bertanda * wajib diisi.",
+        "contactNamePlaceholder": "Nama penanggung jawab",
+        "nicknamePlaceholder": "Contoh: Bu Sari",
+        "nicknameHelper": "Ditampilkan di dashboard. Kosongkan untuk memakai nama usaha.",
+        "businessName": "Nama usaha",
+        "businessNamePlaceholder": "Nama usaha atau perusahaan",
+        "address": "Alamat usaha",
+        "addressPlaceholder": "Nama jalan dan nomor",
+        "kecamatan": "Kecamatan",
+        "kecamatanPlaceholder": "Nama kecamatan",
+        "kodePos": "Kode pos",
+        "businessType": "Klasifikasi jenis usaha",
+        "businessTypeHelper": "Pilih satu atau lebih. Dipakai untuk menyesuaikan rekomendasi dan penawaran untuk Anda.",
+        "kodePosError": "Kode pos terdiri dari 5 angka.",
+        "businessTypeError": "Pilih minimal satu jenis usaha."
+      }
+    },
+    "pembeli": {
+      "home": {
+        "greeting": "Selamat datang, {name} 👋",
+        "subtitle": "Temukan hasil laut berkualitas untuk kebutuhan bisnis Anda.",
+        "recommendationsTitle": "Rekomendasi Sesuai Preferensi Anda",
+        "recommendationsDescription": "Kami pilihkan hasil laut terbaik berdasarkan kebutuhan dan lokasi Anda.",
+        "recommendationsViewAll": "Lihat semua di Marketplace",
+        "recommendationsEmptyTitle": "Belum ada rekomendasi",
+        "recommendationsEmptyDescription": "Atur jenis olahan dan radius lokasi supaya kami bisa memilihkan hasil laut yang cocok untuk Anda.",
+        "recommendationsEmptyAction": "Atur preferensi",
+        "notificationsTitle": "Notifikasi Terbaru",
+        "notificationsViewAll": "Lihat semua notifikasi",
+        "notificationsEmptyTitle": "Belum ada notifikasi",
+        "notificationsEmptyDescription": "Kabar penawaran, transaksi, dan stok dari PPI akan muncul di sini.",
+        "activityTitle": "Ringkasan Aktivitas",
+        "viewDetail": "Lihat detail",
+        "activeOffers": "Penawaran Aktif",
+        "runningTransactions": "Transaksi Berjalan",
+        "totalTransactions": "Total Transaksi (30 hari)",
+        "fromYesterday": "dari kemarin",
+        "fromLastMonth": "dari bulan lalu",
+        "batch": "Batch",
+        "status": {
+          "ESCROW_PENDING": "Menunggu Escrow",
+          "ESCROW_HELD": "Dana Escrow Ditahan",
+          "DELIVERY_SCHEDULED": "Pengiriman Dijadwalkan",
+          "WEIGHING_DONE": "Penimbangan Selesai",
+          "RECONCILED": "Rekonsiliasi Selesai",
+          "COMPLETED": "Transaksi Selesai",
+          "CANCELLED": "Transaksi Dibatalkan"
+        }
+      },
+      "marketplace": {
+        "title": "Marketplace",
+        "subtitle": "Temukan hasil laut berkualitas langsung dari nelayan.",
+        "searchLabel": "Cari batch",
+        "searchPlaceholder": "Cari jenis ikan, PPI, atau kata kunci",
+        "filtersLabel": "Filter",
+        "reset": "Reset filter",
+        "resultCount": "Menampilkan {count} batch",
+        "resultCountAt": "Menampilkan {count} batch di {ppi}",
+        "sort": {
+          "button": "Urutkan: {option}",
+          "terdekat": "Terdekat",
+          "kesegaran": "Kesegaran tertinggi",
+          "terbaru": "Terbaru"
+        },
+        "filters": {
+          "grade": "Grade",
+          "gradeNone": "Semua grade",
+          "gradeLegend": "Tampilkan grade",
+          "gradeOnlyA1": "A1 saja",
+          "gradeUpTo": "A1–{grade}",
+          "categories": "Jenis bahan",
+          "categoriesNone": "Semua jenis",
+          "categoriesLegend": "Tampilkan jenis bahan",
+          "priority": "PPI prioritas",
+          "priorityNone": "Tidak ada",
+          "priorityLegend": "Tampilkan lebih dulu",
+          "apply": "Terapkan",
+          "edit": "Ubah filter {label}: {value}",
+          "remove": "Hapus filter {label}"
+        },
+        "noResultsTitle": "Tidak ada batch sesuai filter",
+        "noResultsBody": "Belum ada batch yang cocok dengan filter Anda. Coba longgarkan filter atau cari di PPI lain.",
+        "noResultsBodyQuery": "Belum ada batch “{query}” yang cocok dengan filter Anda. Coba longgarkan filter atau cari di PPI lain.",
+        "conditions": {
+          "es": "Dingin (es)",
+          "hidup": "Hidup"
+        },
+        "drawer": {
+          "close": "Tutup detail batch",
+          "gradeLabel": "Grade",
+          "photoPrev": "Foto sebelumnya",
+          "photoNext": "Foto berikutnya",
+          "weight": "Berat tersedia",
+          "total": "Harga total",
+          "conditionTitle": "Kondisi & Kesegaran",
+          "auctionLeft": "Sisa waktu lelang {time}",
+          "locationTitle": "Lokasi",
+          "distance": "{km} km dari lokasi Anda",
+          "usageTitle": "Rekomendasi Penggunaan",
+          "infoTitle": "Informasi Tambahan",
+          "fisherman": "Nelayan",
+          "method": "Metode tangkap",
+          "batchNumber": "No. batch",
+          "buy": "Beli sekarang · {total}",
+          "processing": "Memproses pembelian…",
+          "soldOutTitle": "Maaf, batch ini sudah terjual",
+          "soldOutBody": "Pembeli lain menyelesaikan pembelian lebih dulu. Masih ada batch {category} lain di PPI terdekat.",
+          "soldOutAction": "Lihat batch serupa"
+        },
+        "map": {
+          "label": "Peta PPI",
+          "markerDetail": "{count} batch tersedia",
+          "showAll": "{name}, {detail}. Tampilkan semua PPI",
+          "showAt": "{name}, {detail}. Tampilkan batch di {name}",
+          "zoomIn": "Perbesar peta",
+          "zoomOut": "Perkecil peta",
+          "locate": "Tampilkan lokasi saya",
+          "locating": "Mencari lokasi Anda…",
+          "locateError": "Lokasi Anda tidak bisa ditemukan. Izinkan akses lokasi di browser, lalu coba lagi.",
+          "loading": "Memuat peta…"
+        },
+        "batch": {
+          "active": "Aktif",
+          "buyNow": "Beli sekarang",
+          "auctionPrice": "Harga lelang",
+          "total": "Total {price}",
+          "perKg": "{price}/kg",
+          "caught": "Ditangkap {ago}",
+          "registeredFisher": "Nelayan terdaftar",
+          "gradeLabel": "Grade {grade}",
+          "gradeUnrated": "Grade belum dinilai"
+        }
+      }
+    },
+    "breadcrumbLabel": "Navigasi halaman"
   },
   "landing": {
     "nav": {

@@ -6,18 +6,22 @@
 import type { NotificationContent } from '@/components/nelayan/notification-item'
 import type { SummaryStatContent } from '@/components/nelayan/summary-stat'
 import { categoryLabel, formatRupiah, timeAgo, timeLeft, type Presenter } from '@/lib/catches/present'
+import type { Translator } from '@/lib/i18n/translator'
 import type { Catch, Transaction } from '@/types/database'
 
+/** Pesan `dashboard.nelayan.home` bahasa aktif. */
+export type HomeT = Translator<'dashboard.nelayan.home'>
+
 /** Selisih hari ini vs kemarin, misalnya "20% dari kemarin". */
-function trendNote(today: number, yesterday: number): Pick<SummaryStatContent, 'note' | 'trend'> {
+function trendNote(t: HomeT, today: number, yesterday: number): Pick<SummaryStatContent, 'note' | 'trend'> {
     if (yesterday === 0) {
-        return { note: today > 0 ? 'pertama hari ini' : 'belum ada hari ini' }
+        return { note: today > 0 ? t('stats.firstToday') : t('stats.noneToday') }
     }
     const change = Math.round(((today - yesterday) / yesterday) * 100)
-    if (change === 0) return { note: 'sama dengan kemarin' }
+    if (change === 0) return { note: t('stats.sameAsYesterday') }
     return change > 0
-        ? { note: `${change}% dari kemarin`, trend: 'up' }
-        : { note: `${Math.abs(change)}% di bawah kemarin` }
+        ? { note: t('stats.upFromYesterday', { percent: change }), trend: 'up' }
+        : { note: t('stats.downFromYesterday', { percent: Math.abs(change) }) }
 }
 
 const startOfDay = (date: Date) => {
@@ -35,6 +39,7 @@ function on(day: Date, iso: string): boolean {
 
 export function summaryStats(
     p: Presenter,
+    t: HomeT,
     catches: Catch[],
     transactions: Transaction[],
     now: Date = new Date()
@@ -66,21 +71,21 @@ export function summaryStats(
             icon: 'fish',
             value: p.format.number(Math.round(soldToday)),
             unit: 'kg',
-            label: 'Total Terjual',
-            ...trendNote(soldToday, weightOn(yesterday)),
+            label: t('stats.sold'),
+            ...trendNote(t, soldToday, weightOn(yesterday)),
         },
         {
             icon: 'coins',
             value: formatRupiah(p, revenueToday),
-            label: 'Pendapatan',
-            ...trendNote(revenueToday, revenueOn(yesterday)),
+            label: t('stats.revenue'),
+            ...trendNote(t, revenueToday, revenueOn(yesterday)),
         },
         {
             icon: 'recycle',
             value: p.format.number(Math.round(rescued)),
             unit: 'kg',
-            label: 'Biomassa Terselamatkan',
-            note: 'dari by-catch yang sebelumnya terbuang',
+            label: t('stats.rescued'),
+            note: t('stats.rescuedNote'),
         },
     ]
 }
@@ -92,6 +97,7 @@ export function summaryStats(
  */
 export function recentNotifications(
     p: Presenter,
+    t: HomeT,
     catches: Catch[],
     transactions: Transaction[],
     now: Date = new Date()
@@ -102,7 +108,7 @@ export function recentNotifications(
 
     for (const tx of transactions) {
         const entry = byId.get(tx.catch_id)
-        const name = entry ? categoryLabel(p, entry.species) : 'tangkapan Anda'
+        const name = entry ? categoryLabel(p, entry.species) : t('notifications.yourCatch')
         const at = new Date(tx.updated_at).getTime()
 
         if (tx.status === 'COMPLETED') {
@@ -111,10 +117,10 @@ export function recentNotifications(
                 {
                     tone: 'success',
                     icon: 'shopping-cart',
-                    message: `Batch Anda (${name}) telah terjual dengan harga ${formatRupiah(
-                        p,
-                        Number(tx.final_total ?? tx.estimated_total)
-                    )}.`,
+                    message: t('notifications.sold', {
+                        name,
+                        price: formatRupiah(p, Number(tx.final_total ?? tx.estimated_total)),
+                    }),
                     time: timeAgo(p, tx.updated_at, now),
                 },
             ])
@@ -124,7 +130,7 @@ export function recentNotifications(
                 {
                     tone: 'warning',
                     icon: 'circle-alert',
-                    message: `Transaksi untuk ${name} dibatalkan.`,
+                    message: t('notifications.cancelled', { name }),
                     time: timeAgo(p, tx.updated_at, now),
                 },
             ])
@@ -134,7 +140,7 @@ export function recentNotifications(
                 {
                     tone: 'info',
                     icon: 'check',
-                    message: `Pembeli mengklaim listing Anda (${name}). Dana escrow sedang diproses.`,
+                    message: t('notifications.claimed', { name }),
                     time: timeAgo(p, tx.updated_at, now),
                 },
             ])
@@ -152,8 +158,11 @@ export function recentNotifications(
             {
                 tone: 'warning',
                 icon: 'badge-check',
-                message: `Listing ${categoryLabel(p, entry.species)} akan berakhir dalam ${timeLeft(p, entry.expires_at, now)}.`,
-                time: 'Segera berakhir',
+                message: t('notifications.expiring', {
+                    name: categoryLabel(p, entry.species),
+                    time: timeLeft(p, entry.expires_at, now) ?? '',
+                }),
+                time: t('notifications.expiringSoon'),
             },
         ])
     }
@@ -164,11 +173,16 @@ export function recentNotifications(
         .map(([, item]) => item)
 }
 
-/** "Selamat pagi" / "siang" / "sore" / "malam" menurut jam setempat. */
-export function greetingFor(name: string, now: Date = new Date()): string {
-    const hour = now.getHours()
-    const part = hour < 11 ? 'pagi' : hour < 15 ? 'siang' : hour < 19 ? 'sore' : 'malam'
-    return `Selamat ${part}, ${name}`
+/**
+ * "Selamat pagi" / "siang" / "sore" / "malam" menurut jam WIB — server Vercel
+ * berjalan di UTC, jadi jam lokal servernya tidak bisa dipakai.
+ */
+export function greetingFor(t: HomeT, name: string, now: Date = new Date()): string {
+    const hour = Number(
+        new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hourCycle: 'h23', timeZone: 'Asia/Jakarta' }).format(now)
+    )
+    const part = hour < 11 ? 'morning' : hour < 15 ? 'midday' : hour < 19 ? 'afternoon' : 'evening'
+    return t('greeting', { part, name })
 }
 
 /** "Pak Dul" → "PD", untuk avatar di sidebar. */

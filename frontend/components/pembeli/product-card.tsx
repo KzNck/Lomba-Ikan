@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Icon, type IconName } from '@/components/ui/icon'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
 import type { ImageContent } from '@/components/home/hero'
+import { useTranslations } from 'next-intl'
 import { ARROW_NUDGE_RIGHT, CARD_LIFT, PRESS_WIDE } from '@/components/ui/interaction'
 
 export type ProductCardContent = {
@@ -39,8 +40,10 @@ const GRADE_STYLES = {
 const gradeStyle = (grade: string) => GRADE_STYLES[grade[0] as keyof typeof GRADE_STYLES] ?? GRADE_STYLES.B
 
 // The badge prints the grade alone, so the accessible name has to supply the rest.
-export const gradeName = (grade: string) =>
-  /^[AB]\d$/.test(grade) ? `Grade ${grade}` : 'Grade belum dinilai'
+function useGradeName() {
+  const t = useTranslations('dashboard.pembeli.marketplace.batch')
+  return (grade: string) => (/^[AB]\d$/.test(grade) ? t('gradeLabel', { grade }) : t('gradeUnrated'))
+}
 
 const STATUS_STYLES = {
   active: { badge: 'bg-[#E8F8F2]', text: 'text-[#17704A]' },
@@ -72,6 +75,7 @@ export function ProductCard({
   variant = 'recommendation',
   eager = false,
 }: ProductCardProps) {
+  const gradeName = useGradeName()
   const gradeTone = gradeStyle(grade)
   const statusStyle = STATUS_STYLES[status]
   const style = VARIANTS[variant]

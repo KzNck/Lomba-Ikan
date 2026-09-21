@@ -1,10 +1,11 @@
 // All copy for the pembeli account page (/pembeli/akun). Edit here to swap content without touching layout.
+// Text lives in messages/*.json under `dashboard.akun` (shared with the nelayan account page) and `dashboard.akun.pembeli`.
 // The account itself is read from Supabase — see lib/pembeli/account.ts.
 import type { IconName } from '@/components/ui/icon'
 import type { FormFieldConfig } from '@/components/register/form-field'
 import { pembeliUsaha } from '@/components/register/content'
-import { registerCopyId } from '@/lib/i18n/indonesian'
-import { PEMBELI_ROLE_LABEL } from '@/components/pembeli/content'
+import type { AkunT } from '@/components/nelayan/akun-content'
+import type { Translator } from '@/lib/i18n/translator'
 
 export const AKUN_PATH = '/pembeli/akun'
 
@@ -24,29 +25,35 @@ export type AccountValues = {
   jenisUsaha: string[]
 }
 
-export const AKUN_PAGE = {
-  title: 'Akun',
-  subtitle: 'Kelola informasi dan preferensi akun Anda.',
+export function akunPage(t: AkunT) {
+  return {
+    title: t('title'),
+    subtitle: t('pembeli.subtitle'),
+  }
 }
 
 export type AccountNavItem = { href: string; label: string; icon: IconName }
 
 // "Sub Navigation". Only Info Pribadi is designed so far; the other two sections are still to come.
-export const AKUN_NAV = {
-  label: 'Bagian akun',
-  items: [
-    { href: AKUN_PATH, label: 'Info Pribadi', icon: 'user' },
-    { href: `${AKUN_PATH}/preferensi`, label: 'Preferensi', icon: 'sliders-horizontal' },
-    { href: `${AKUN_PATH}/notifikasi`, label: 'Notifikasi', icon: 'bell' },
-  ] satisfies AccountNavItem[],
-  signOutLabel: 'Keluar',
+export function akunNav(t: AkunT) {
+  return {
+    label: t('navLabel'),
+    items: [
+      { href: AKUN_PATH, label: t('personalInfo'), icon: 'user' },
+      { href: `${AKUN_PATH}/preferensi`, label: t('preferences'), icon: 'sliders-horizontal' },
+      { href: `${AKUN_PATH}/notifikasi`, label: t('notifications'), icon: 'bell' },
+    ] satisfies AccountNavItem[],
+    signOutLabel: t('signOut'),
+  }
 }
 
-export const PROFILE_HEADER = {
-  roleLabel: PEMBELI_ROLE_LABEL,
-  changePhotoLabel: 'Ubah foto',
-  // Photo upload isn't built yet, so the button is shown disabled with this reason.
-  changePhotoUnavailable: 'Unggah foto belum tersedia.',
+export function profileHeader(t: AkunT, roleLabel: string) {
+  return {
+    roleLabel,
+    changePhotoLabel: t('changePhoto'),
+    // Photo upload isn't built yet, so the button is shown disabled with this reason.
+    changePhotoUnavailable: t('changePhotoUnavailable'),
+  }
 }
 
 type TextField = Pick<FormFieldConfig, 'id' | 'label' | 'icon' | 'placeholder' | 'required'> &
@@ -54,68 +61,108 @@ type TextField = Pick<FormFieldConfig, 'id' | 'label' | 'icon' | 'placeholder' |
 
 type SelectField = Pick<FormFieldConfig, 'id' | 'label' | 'icon' | 'placeholder'>
 
-export const INFO_PRIBADI = {
-  title: 'Info Pribadi',
-  subtitle: 'Data dasar akun dan usaha Anda. Kolom bertanda * wajib diisi.',
-  fields: {
-    contactName: { id: 'contactName', label: 'Nama lengkap', icon: 'user', placeholder: 'Nama penanggung jawab', required: true, autoComplete: 'name' },
-    nickname: {
-      id: 'nickname',
-      label: 'Nama panggilan',
-      icon: 'message-circle',
-      placeholder: 'Contoh: Bu Sari',
-      autoComplete: 'nickname',
-      helper: 'Ditampilkan di dashboard. Kosongkan untuk memakai nama usaha.',
+// `register` is the registration form's copy, whose business-type chips this form reuses.
+export function infoPribadi(t: AkunT, register: Translator<'auth.register'>) {
+  return {
+    title: t('personalInfo'),
+    subtitle: t('pembeli.infoSubtitle'),
+    fields: {
+      contactName: {
+        id: 'contactName',
+        label: t('fields.fullName'),
+        icon: 'user',
+        placeholder: t('pembeli.contactNamePlaceholder'),
+        required: true,
+        autoComplete: 'name',
+      },
+      nickname: {
+        id: 'nickname',
+        label: t('fields.nickname'),
+        icon: 'message-circle',
+        placeholder: t('pembeli.nicknamePlaceholder'),
+        autoComplete: 'nickname',
+        helper: t('pembeli.nicknameHelper'),
+      },
+      businessName: {
+        id: 'businessName',
+        label: t('pembeli.businessName'),
+        icon: 'building-2',
+        placeholder: t('pembeli.businessNamePlaceholder'),
+        required: true,
+        autoComplete: 'organization',
+      },
+      email: {
+        id: 'email',
+        label: t('fields.email'),
+        icon: 'mail',
+        placeholder: '',
+        required: true,
+        inputType: 'email',
+        locked: true,
+        helper: t('fields.emailHelper'),
+      },
+      phone: {
+        id: 'phone',
+        label: t('fields.phone'),
+        icon: 'phone',
+        placeholder: '+62 812 3456 7890',
+        required: true,
+        inputType: 'tel',
+        inputMode: 'tel',
+        autoComplete: 'tel',
+      },
+      address: {
+        id: 'address',
+        label: t('pembeli.address'),
+        icon: 'map-pin',
+        placeholder: t('pembeli.addressPlaceholder'),
+        required: true,
+        autoComplete: 'street-address',
+      },
+      // Free text for now: there's no kecamatan list in lib/wilayah to drive a dropdown like the design's.
+      kecamatan: { id: 'kecamatan', label: t('pembeli.kecamatan'), icon: 'signpost', placeholder: t('pembeli.kecamatanPlaceholder') },
+      kodePos: {
+        id: 'kodePos',
+        label: t('pembeli.kodePos'),
+        icon: 'mailbox',
+        placeholder: '60185',
+        inputMode: 'numeric',
+        autoComplete: 'postal-code',
+      },
+    } satisfies Record<string, TextField>,
+    provinsi: { id: 'provinsi', label: t('fields.provinsi'), icon: 'map', placeholder: t('fields.provinsiPlaceholder') } satisfies SelectField,
+    kabKota: {
+      id: 'kabKota',
+      label: t('fields.kabKota'),
+      icon: 'building',
+      placeholder: t('fields.kabKotaPlaceholder'),
+      lockedHelper: t('fields.kabKotaLocked'),
+    } satisfies SelectField & { lockedHelper: string },
+    jenisUsaha: {
+      ...pembeliUsaha(register).jenisUsaha,
+      label: t('pembeli.businessType'),
+      helper: t('pembeli.businessTypeHelper'),
     },
-    businessName: { id: 'businessName', label: 'Nama usaha', icon: 'building-2', placeholder: 'Nama usaha atau perusahaan', required: true, autoComplete: 'organization' },
-    email: {
-      id: 'email',
-      label: 'Email',
-      icon: 'mail',
-      placeholder: '',
-      required: true,
-      inputType: 'email',
-      locked: true,
-      helper: 'Email dipakai untuk masuk. Hubungi admin untuk menggantinya.',
-    },
-    phone: { id: 'phone', label: 'Nomor telepon', icon: 'phone', placeholder: '+62 812 3456 7890', required: true, inputType: 'tel', inputMode: 'tel', autoComplete: 'tel' },
-    address: { id: 'address', label: 'Alamat usaha', icon: 'map-pin', placeholder: 'Nama jalan dan nomor', required: true, autoComplete: 'street-address' },
-    // Free text for now: there's no kecamatan list in lib/wilayah to drive a dropdown like the design's.
-    kecamatan: { id: 'kecamatan', label: 'Kecamatan', icon: 'signpost', placeholder: 'Nama kecamatan' },
-    kodePos: { id: 'kodePos', label: 'Kode pos', icon: 'mailbox', placeholder: '60185', inputMode: 'numeric', autoComplete: 'postal-code' },
-  } satisfies Record<string, TextField>,
-  provinsi: { id: 'provinsi', label: 'Provinsi', icon: 'map', placeholder: 'Pilih provinsi' } satisfies SelectField,
-  kabKota: {
-    id: 'kabKota',
-    label: 'Kota/kabupaten',
-    icon: 'building',
-    placeholder: 'Pilih kota/kabupaten',
-    lockedHelper: 'Pilih provinsi terlebih dahulu.',
-  } satisfies SelectField & { lockedHelper: string },
-  jenisUsaha: {
-    ...pembeliUsaha(registerCopyId).jenisUsaha,
-    label: 'Klasifikasi jenis usaha',
-    helper: 'Pilih satu atau lebih. Dipakai untuk menyesuaikan rekomendasi dan penawaran untuk Anda.',
-  },
-  saveLabel: 'Simpan perubahan',
-  savingLabel: 'Menyimpan…',
-  savedMessage: 'Perubahan disimpan.',
+    saveLabel: t('save'),
+    savingLabel: t('saving'),
+    savedMessage: t('saved'),
+  }
 }
 
+// The field id of the business-type chips, which the action reads without the rest of the copy.
+export const JENIS_USAHA_FIELD = 'jenis-usaha'
+
 // Messages from the "Validasi gagal" state, checked on save.
-export const VALIDATION = {
-  required: (label: string) => `Isi ${label.toLocaleLowerCase('id')}.`,
-  choose: (label: string) => `Pilih ${label.toLocaleLowerCase('id')}.`,
-  phone: 'Masukkan nomor lengkap, contoh +62 812 3456 7890.',
-  nickname: (max: number) => `Gunakan paling banyak ${max} karakter.`,
-  kodePos: 'Kode pos terdiri dari 5 angka.',
-  jenisUsaha: 'Pilih minimal satu jenis usaha.',
+export function validation(t: AkunT) {
+  return {
+    required: (label: string) => t('validation.required', { label: label.toLocaleLowerCase() }),
+    choose: (label: string) => t('validation.choose', { label: label.toLocaleLowerCase() }),
+    phone: t('validation.phone'),
+    nickname: (max: number) => t('validation.nickname', { max }),
+    kodePos: t('pembeli.kodePosError'),
+    jenisUsaha: t('pembeli.businessTypeError'),
+  }
 }
 
 // "Pindah bagian dengan perubahan belum disimpan".
-export const UNSAVED_DIALOG = {
-  title: 'Simpan perubahan dulu?',
-  body: 'Anda mengubah Info Pribadi tapi belum menyimpannya. Kalau pindah sekarang, perubahan itu hilang.',
-  discardLabel: 'Buang perubahan',
-  saveLabel: 'Simpan',
-}
+export { unsavedDialog } from '@/components/nelayan/akun-content'

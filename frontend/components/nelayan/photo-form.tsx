@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useState } from 'react'
+import { useFormatter } from 'next-intl'
 import Image from 'next/image'
 import { Icon } from '@/components/ui/icon'
 import { useWebcam } from '@/hooks/use-webcam'
@@ -11,7 +12,8 @@ import { PhotoMethodToggle, type PhotoMethod } from '@/components/nelayan/photo-
 import { PhotoPlaceholder } from '@/components/nelayan/photo-placeholder'
 import { PhotoFrame, PhotoMeta } from '@/components/nelayan/photo-frame'
 import { PhotoAnalyzing } from '@/components/nelayan/photo-analyzing'
-import type { PHOTO_STEP } from '@/components/nelayan/catch-content'
+import type { PhotoStepContent } from '@/components/nelayan/catch-content'
+import { prepareUpload } from '@/lib/photo/prepare-upload'
 import { STEP_BODY } from '@/components/nelayan/catch-modal'
 
 export type CatchPhoto = {
@@ -22,7 +24,7 @@ export type CatchPhoto = {
   source: PhotoMethod
 }
 
-type PhotoFormProps = typeof PHOTO_STEP & {
+type PhotoFormProps = PhotoStepContent & {
   // The photo from an earlier visit to this step.
   defaultPhoto?: CatchPhoto
   // Set by whoever submits the catch: "Menganalisis foto (online)" while the photo is graded, or the offline
@@ -36,14 +38,11 @@ type PhotoFormProps = typeof PHOTO_STEP & {
 const HEADING_ID = 'foto-title'
 const ERROR_ID = 'foto-error'
 
-function formatTime(date: Date) {
-  return date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
-}
-
 // Step 5 of the modal: "Step 5 Foto" plus the modal footer. The photo comes from the webcam or a file; the
 // photo area shows whichever of the empty, blocked, live and preview states applies.
 export function PhotoForm(props: PhotoFormProps) {
   const { title, description, methods, preview, error, backLabel, submitLabel, defaultPhoto, status, onBack, onNext } = props
+  const format = useFormatter()
   const [method, setMethod] = useState<PhotoMethod>(defaultPhoto?.source ?? 'webcam')
   const [photo, setPhoto] = useState(defaultPhoto)
   const [showError, setShowError] = useState(false)
@@ -75,11 +74,14 @@ export function PhotoForm(props: PhotoFormProps) {
     webcam.stop()
   }
 
-  function handleFile(event: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFile(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.currentTarget.files?.[0]
     // Clear the input so choosing the same file again still fires a change.
     event.currentTarget.value = ''
-    if (file) replacePhoto({ blob: file, url: URL.createObjectURL(file), takenAt: new Date(), source: 'upload' })
+    if (!file) return
+    // Shrunk and re-encoded as JPEG here, so the preview shows exactly what is sent (see lib/photo/prepare-upload.ts).
+    const blob = await prepareUpload(file)
+    replacePhoto({ blob, url: URL.createObjectURL(blob), takenAt: new Date(), source: 'upload' })
   }
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -133,7 +135,7 @@ export function PhotoForm(props: PhotoFormProps) {
           <Image src={photo.url} alt={preview.alt} fill unoptimized sizes="656px" className="object-contain object-center" />
           <PhotoMeta
             icon="image"
-            caption={`${photo.source === 'webcam' ? preview.takenCaption : preview.uploadedCaption} ${formatTime(photo.takenAt)}`}
+            caption={(photo.source === 'webcam' ? preview.takenCaption : preview.uploadedCaption)(format.dateTime(photo.takenAt, 'time'))}
             action={
               method === 'webcam'
                 ? { variant: 'outline', icon: 'rotate-ccw', label: preview.retake, onClick: startWebcam, disabled: webcam.status === 'starting' }

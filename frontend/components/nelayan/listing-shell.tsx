@@ -2,8 +2,9 @@ import { DashboardHeader } from '@/components/nelayan/dashboard-header'
 import { Breadcrumb } from '@/components/nelayan/breadcrumb'
 import { MainDecoration } from '@/components/nelayan/main-decoration'
 import { ListingPageHead } from '@/components/nelayan/listing-page-head'
-import { DASHBOARD } from '@/components/nelayan/content'
-import { LISTING_PAGE } from '@/components/nelayan/listing-content'
+import { useTranslations } from 'next-intl'
+import { dashboardCopy } from '@/components/nelayan/content'
+import { listingPage } from '@/components/nelayan/listing-content'
 
 export type ListingHeader = {
   greeting: string
@@ -23,6 +24,8 @@ type ListingShellProps = {
 // The "09 Listing Saya" main column: header, waves, breadcrumb and page title around the tabs and grid.
 // Shared by the page and its loading state.
 export function ListingShell({ header, children, drawer }: ListingShellProps) {
+  const DASHBOARD = dashboardCopy(useTranslations('dashboard.nelayan.home'))
+  const LISTING_PAGE = listingPage(useTranslations('dashboard.nelayan.listing'))
   return (
     <div className="box-border [flex:1_1_0] flex flex-col gap-0 justify-start items-start relative">
       {header ? (

@@ -6,17 +6,13 @@ import { ProductCard } from '@/components/pembeli/product-card'
 import { NoResults } from '@/components/pembeli/no-results'
 import { PpiMap } from '@/components/pembeli/ppi-map'
 import { PEMBELI_NOTIFICATIONS } from '@/components/pembeli/content'
+import { useTranslations } from 'next-intl'
 import {
-  CATEGORIES,
-  FILTERS,
   GRADES,
-  MARKETPLACE,
   MARKETPLACE_PATH,
-  NO_RESULTS,
+  marketplaceCopy,
   PPI_LOCATIONS,
-  PPI_MAP,
-  SORT_MENU,
-  SORT_OPTIONS,
+  type MarketplaceCopy,
 } from '@/components/pembeli/marketplace-content'
 import {
   availableByPpi,
@@ -31,7 +27,10 @@ import type { FilterChipProps } from '@/components/pembeli/filter-chip'
 import type { Batch } from '@/lib/marketplace/batches'
 
 // The three filter chips for the current view: value, editor options and the URL their "x" goes to.
-function filterChips(query: MarketplaceQuery): (FilterChipProps & { key: string })[] {
+function filterChips(
+  query: MarketplaceQuery,
+  { FILTERS, CATEGORIES }: MarketplaceCopy,
+): (FilterChipProps & { key: string })[] {
   const chip = (
     key: string,
     copy: { icon: FilterChipProps['icon']; label: string; none: string; legend: string },
@@ -96,6 +95,8 @@ export function MarketplaceView({
   query: MarketplaceQuery
   user: { name: string; role: string }
 }) {
+  const copy = marketplaceCopy(useTranslations('dashboard.pembeli.marketplace'), useTranslations('common.category'))
+  const { MARKETPLACE, NO_RESULTS, PPI_MAP, SORT_MENU, SORT_OPTIONS } = copy
   const batches = selectBatches(all, query)
   // Cards open their drawer over this same view, so closing it comes back here.
   const search = marketplaceParams(query).toString()
@@ -134,7 +135,7 @@ export function MarketplaceView({
         <h1 className="text-[28px]/[32px] box-border text-[#0B3B5C] font-poppins font-bold text-left [white-space:nowrap]">{MARKETPLACE.title}</h1>
         <p className="text-[15px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left [white-space:nowrap]">{MARKETPLACE.subtitle}</p>
       </div>
-      <FilterBar label={MARKETPLACE.filtersLabel} filters={filterChips(query)} reset={reset} />
+      <FilterBar label={MARKETPLACE.filtersLabel} filters={filterChips(query, copy)} reset={reset} />
       {/* Stretched (the export has items-start) so the map runs the column's full height. */}
       <div className="box-border w-full [flex:1_1_0] flex flex-row gap-[20px] justify-start items-stretch">
         <section className="box-border [flex:1_1_0] min-w-0 h-fit flex flex-col gap-[14px] justify-start items-start">

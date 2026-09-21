@@ -1,8 +1,7 @@
 // All copy for the pembeli dashboard. Edit here to swap content without touching layout.
 // Recommendations, notifications and figures come from Supabase — see lib/pembeli/dashboard.ts.
 import type { SidebarNavItem } from '@/components/dashboard/sidebar-nav'
-
-export const PEMBELI_ROLE_LABEL = 'Pembeli'
+import type { Translator } from '@/lib/i18n/translator'
 
 // Labels are in messages/*.json under `nav`.
 export const PEMBELI_NAV: SidebarNavItem[] = [
@@ -15,31 +14,34 @@ export const PEMBELI_NAV: SidebarNavItem[] = [
 // `unreadCount` is replaced per request with the number of notifications actually shown.
 export const PEMBELI_NOTIFICATIONS = { href: '/pembeli/notifikasi', unreadCount: 0 }
 
-export const DASHBOARD = {
-  // "Selamat datang, <nama usaha> 👋", built per request from the account.
-  greeting: (name: string) => `Selamat datang, ${name} 👋`,
-  subtitle: 'Temukan hasil laut berkualitas untuk kebutuhan bisnis Anda.',
-  recommendations: {
-    title: 'Rekomendasi Sesuai Preferensi Anda',
-    description: 'Kami pilihkan hasil laut terbaik berdasarkan kebutuhan dan lokasi Anda.',
-    viewAll: { href: '/marketplace', label: 'Lihat semua di Marketplace' },
-    // Shown when `items` is empty (the "Rekomendasi kosong" state).
-    empty: {
-      title: 'Belum ada rekomendasi',
-      description: 'Atur jenis olahan dan radius lokasi supaya kami bisa memilihkan hasil laut yang cocok untuk Anda.',
-      action: { href: '/pembeli/akun', label: 'Atur preferensi' },
+// Text lives in messages/*.json under `dashboard.pembeli.home`.
+export function dashboardCopy(t: Translator<'dashboard.pembeli.home'>) {
+  return {
+    // "Selamat datang, <nama usaha> 👋", built per request from the account.
+    greeting: (name: string) => t('greeting', { name }),
+    subtitle: t('subtitle'),
+    recommendations: {
+      title: t('recommendationsTitle'),
+      description: t('recommendationsDescription'),
+      viewAll: { href: '/marketplace', label: t('recommendationsViewAll') },
+      // Shown when `items` is empty (the "Rekomendasi kosong" state).
+      empty: {
+        title: t('recommendationsEmptyTitle'),
+        description: t('recommendationsEmptyDescription'),
+        action: { href: '/pembeli/akun', label: t('recommendationsEmptyAction') },
+      },
     },
-  },
-  notificationList: {
-    title: 'Notifikasi Terbaru',
-    viewAll: { href: '/pembeli/notifikasi', label: 'Lihat semua notifikasi' },
-    // Shown when `items` is empty (the "Notifikasi kosong" state).
-    empty: {
-      title: 'Belum ada notifikasi',
-      description: 'Kabar penawaran, transaksi, dan stok dari PPI akan muncul di sini.',
+    notificationList: {
+      title: t('notificationsTitle'),
+      viewAll: { href: '/pembeli/notifikasi', label: t('notificationsViewAll') },
+      // Shown when `items` is empty (the "Notifikasi kosong" state).
+      empty: {
+        title: t('notificationsEmptyTitle'),
+        description: t('notificationsEmptyDescription'),
+      },
     },
-  },
-  activity: {
-    title: 'Ringkasan Aktivitas',
-  },
+    activity: {
+      title: t('activityTitle'),
+    },
+  }
 }

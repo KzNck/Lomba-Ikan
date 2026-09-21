@@ -1,27 +1,29 @@
 import { Icon } from '@/components/ui/icon'
 import { ScrollLock } from '@/components/ui/scroll-lock'
 import { ModalHeader } from '@/components/nelayan/modal-header'
-import { GradePanel, type FreshnessResult } from '@/components/nelayan/grade-panel'
+import { GradePanel, type FreshnessResult, type UngradedState } from '@/components/nelayan/grade-panel'
 import { UsageOption, type UsageOptionContent } from '@/components/nelayan/usage-option'
 import { PriceField } from '@/components/nelayan/price-field'
 import { SubmitButton } from '@/components/register/submit-button'
-import type { FRESHNESS_MODAL, GRADE_PANEL, PRICE_FIELD } from '@/components/nelayan/freshness-content'
+import type { FreshnessModalContent, GradePanelContent, PriceFieldContent } from '@/components/nelayan/freshness-content'
 
 type FreshnessModalProps = {
-  modal: typeof FRESHNESS_MODAL
+  modal: FreshnessModalContent
   // The catch being published, submitted with the form as `id`.
   catchId: string
   result: FreshnessResult
-  gradePanel: typeof GRADE_PANEL
+  // Set when the catch has no grade yet (see GradePanel).
+  ungraded?: UngradedState
+  gradePanel: GradePanelContent
   recommendations: { title: string; subtitle: string; options: UsageOptionContent[] }
-  price: typeof PRICE_FIELD
+  price: PriceFieldContent
   // Receives the form, including the optional price.
   action: (formData: FormData) => void | Promise<void>
 }
 
 // The "Overlay" + "Modal Hasil Kesegaran" layers, shown once the catch photo has been graded. Like CatchModal, the
 // scrim is fixed to the viewport (the export pins it to the 1440×1100 frame) and scrolls if the modal outgrows it.
-export function FreshnessModal({ modal, catchId, result, gradePanel, recommendations, price, action }: FreshnessModalProps) {
+export function FreshnessModal({ modal, catchId, result, ungraded, gradePanel, recommendations, price, action }: FreshnessModalProps) {
   return (
     <div className="box-border fixed inset-0 overflow-y-auto overscroll-contain flex flex-col gap-0 p-[72px_0px] justify-start items-center bg-[#0B3B5CA6] [z-index:2]">
       <ScrollLock />
@@ -37,13 +39,13 @@ export function FreshnessModal({ modal, catchId, result, gradePanel, recommendat
           icon="scan-eye"
           title={modal.title}
           titleId="freshness-modal-title"
-          subtitle={modal.subtitle}
+          subtitle={ungraded ? ungraded.copy.subtitle : modal.subtitle}
           closeHref={modal.closeHref}
           closeLabel={modal.closeLabel}
           align="center"
         />
         <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[20px] justify-start items-start">
-          <GradePanel result={result} {...gradePanel} />
+          <GradePanel result={result} ungraded={ungraded} {...gradePanel} />
           <div className="box-border [flex:1_1_0] min-w-0 h-fit flex flex-col gap-[14px] p-[24px] justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[20px]">
             <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[4px] p-[0px_0px_4px_0px] justify-start items-start">
               <h3 className="text-[18px]/[normal] box-border text-[#0B3B5C] font-poppins font-semibold text-left [white-space:nowrap]">{recommendations.title}</h3>

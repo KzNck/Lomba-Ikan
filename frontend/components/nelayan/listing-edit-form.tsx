@@ -4,11 +4,12 @@ import { useActionState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useFormStatus } from 'react-dom'
+import { useFormatter, useTranslations } from 'next-intl'
 import { Icon } from '@/components/ui/icon'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
 import { PriceField } from '@/components/nelayan/price-field'
-import { PRICE_FIELD } from '@/components/nelayan/freshness-content'
-import { EDIT_LISTING, type ActiveListing } from '@/components/nelayan/listing-content'
+import { priceField } from '@/components/nelayan/freshness-content'
+import { editListing, type ActiveListing } from '@/components/nelayan/listing-content'
 import { OUTLINE_HOVER, PRESS, SOLID_HOVER } from '@/components/ui/interaction'
 import type { ListingEditState } from '@/app/nelayan/actions'
 
@@ -19,15 +20,17 @@ type ListingEditFormProps = {
   cancelHref: string
 }
 
-// "8000" → "8.000", as the result modal's price field shows it.
-const priceText = (value: number | null) => (value === null ? '' : Math.round(value).toLocaleString('id-ID'))
-// 5 → "5", 5.5 → "5,5".
-const weightText = (kg: number) => kg.toLocaleString('id-ID', { maximumFractionDigits: 2 })
-
 // The drawer's edit mode: the catch it belongs to, then its weight and price, with Batal / Simpan pinned at the
 // bottom like the detail view's actions. Saving returns to the detail view; errors come back per field and focus the
 // first one.
 export function ListingEditForm({ listing, action, cancelHref }: ListingEditFormProps) {
+  const format = useFormatter()
+  const EDIT_LISTING = editListing(useTranslations('dashboard.nelayan.listing'))
+  const PRICE_FIELD = priceField(useTranslations('dashboard.nelayan.freshness'), format)
+  // "8000" → "8.000" (id) / "8,000" (en), as the result modal's price field shows it. The action strips the grouping.
+  const priceText = (value: number | null) => (value === null ? '' : format.number(Math.round(value)))
+  // 5 → "5", 5.5 → "5,5" (id) / "5.5" (en); the action reads either separator.
+  const weightText = (kg: number) => format.number(kg, { maximumFractionDigits: 2, useGrouping: false })
   const [state, formAction] = useActionState(action, {
     values: { berat: weightText(listing.detail.weightKg), harga: priceText(listing.detail.pricePerKg) },
     errors: {},
@@ -124,6 +127,7 @@ export function ListingEditForm({ listing, action, cancelHref }: ListingEditForm
 }
 
 function SaveButton() {
+  const EDIT_LISTING = editListing(useTranslations('dashboard.nelayan.listing'))
   const { pending } = useFormStatus()
   return (
     <button

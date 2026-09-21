@@ -3,7 +3,7 @@ import { MarketplaceView } from '@/components/pembeli/marketplace-view'
 import { BatchDrawer } from '@/components/pembeli/batch-drawer'
 import { buyBatch } from '@/app/marketplace/actions'
 import { PREFERENCES } from '@/components/pembeli/marketplace-content'
-import { PEMBELI_ROLE_LABEL } from '@/components/pembeli/content'
+import { getTranslations } from 'next-intl/server'
 import { marketplaceHref, parseMarketplaceQuery } from '@/components/pembeli/marketplace-query'
 import { loadBatches } from '@/lib/marketplace/batches'
 import { requireProfile } from '@/lib/supabase/auth'
@@ -32,7 +32,7 @@ export default async function BatchDetailPage({
       <MarketplaceView
         all={batches}
         query={query}
-        user={{ name: await displayNameFor(profile), role: PEMBELI_ROLE_LABEL }}
+        user={{ name: await displayNameFor(profile), role: (await getTranslations('nav'))('roles.pembeli') }}
       />
       <BatchDrawer
         batch={batch}

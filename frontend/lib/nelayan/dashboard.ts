@@ -6,6 +6,7 @@
 import type { NelayanDashboardData } from '@/components/nelayan/dashboard'
 import { LISTING_PATH } from '@/components/nelayan/listing-content'
 import { toListingCard } from '@/lib/catches/present'
+import { getTranslations } from 'next-intl/server'
 import { getPresenter } from '@/lib/i18n/presenter'
 import { getMyCatches } from '@/lib/supabase/catches'
 import { getMyTransactions } from '@/lib/supabase/transactions'
@@ -22,17 +23,18 @@ export async function loadNelayanDashboard(): Promise<NelayanDashboardData> {
         getMyTransactions(),
         getPresenter(),
     ])
+    const home = await getTranslations('dashboard.nelayan.home')
     const name = await displayNameFor(profile)
 
     return {
-        greeting: greetingFor(name),
+        greeting: greetingFor(home, name),
         user: { name, initials: initialsOf(profile.full_name) },
-        stats: summaryStats(p, catches, transactions),
+        stats: summaryStats(p, home, catches, transactions),
         // Panel dashboard hanya menampilkan tiga listing teraktif.
         listings: catches
             .filter((entry) => entry.status === 'LISTED')
             .slice(0, 3)
             .map((entry) => toListingCard(p, entry, `${LISTING_PATH}?detail=${entry.id}`)),
-        notifications: recentNotifications(p, catches, transactions),
+        notifications: recentNotifications(p, home, catches, transactions),
     }
 }
