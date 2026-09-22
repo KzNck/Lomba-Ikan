@@ -32,10 +32,11 @@ type ListingCardProps = ListingCardContent & {
   selected?: boolean
 }
 
-// `sizes` is the widest the card gets: a third of the dashboard panel, or of the grid with the drawer closed.
+// `sizes` is the widest the card gets: a third of the dashboard panel, or of the grid with the drawer closed. Below lg
+// the card is a full column wide, so the photo is taller (180px) and asks for a matching image.
 const PHOTO_SIZES = {
-  tall: { height: 'h-[132px]', sizes: '235px' },
-  short: { height: 'h-[112px]', sizes: '380px' },
+  tall: { height: 'h-[180px] lg:h-[132px]', sizes: '(min-width: 1024px) 235px, 343px' },
+  short: { height: 'h-[180px] lg:h-[112px]', sizes: '(min-width: 1024px) 380px, 343px' },
 }
 
 // Status drives the chip and the footer; condition drives the grade badge. `sold` is a card that just sold in the
