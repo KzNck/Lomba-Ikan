@@ -1,14 +1,8 @@
-'use client'
-
-import { useEffect, useRef, useState } from 'react'
-import { usePathname } from 'next/navigation'
-import { useTranslations } from 'next-intl'
 import { Logo } from '@/components/ui/logo'
-import { Icon } from '@/components/ui/icon'
 import { AccountMenu } from '@/components/dashboard/account-menu'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
-import { PRESS } from '@/components/ui/interaction'
 import { SidebarNav, type SidebarNavItem, type SidebarNotifications } from '@/components/dashboard/sidebar-nav'
+import { BottomTabBar } from '@/components/dashboard/bottom-tab-bar'
 
 // Where the two role frames differ. The pembeli export's "Sea Decoration" waves have empty paths (they render
 // nothing), so only the nelayan sidebar draws them.
@@ -26,59 +20,20 @@ type SidebarProps = {
   accountHref: string
 }
 
-const MENU_ID = 'sidebar-menu'
-
 // The dashboard sidebar shared by both roles. Sticky and viewport-tall, so it stays in place while the main column
-// scrolls. The sea decoration is pinned to the bottom (the export's top-[700px] in a 1100px frame). Below lg it is a
-// bar across the top instead: the logo and a menu button, which opens the nav and the account card beneath it. At lg
-// the row and the panel are `display: contents`, so their children lay out in the column as before.
+// scrolls. The sea decoration is pinned to the bottom (the export's top-[700px] in a 1100px frame). Below lg it gives
+// way to a bottom tab bar; the page headers there carry the account menu and notifications.
 export function Sidebar({ role, nav, notifications, user, accountHref }: SidebarProps) {
   const style = ROLE_STYLES[role]
-  const t = useTranslations('nav.menu')
-  const pathname = usePathname()
-  // Remembers the page the menu was opened on, so moving to another page closes it.
-  const [openOn, setOpenOn] = useState<string | null>(null)
-  const open = openOn === pathname
-  const buttonRef = useRef<HTMLButtonElement>(null)
-
-  useEffect(() => {
-    if (!open) return
-    // Focus goes back to the button, since the link it was on disappears with the panel.
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape') return
-      setOpenOn(null)
-      buttonRef.current?.focus()
-    }
-    window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
-  }, [open])
 
   return (
-    <aside className="box-border w-full lg:w-[260px] shrink-0 sticky top-0 max-h-dvh lg:max-h-none lg:h-dvh lg:self-start z-40 lg:z-auto flex flex-col gap-0 lg:gap-[32px] p-[16px] lg:p-[24px_16px] justify-start items-start [background-image:linear-gradient(180deg,_#0B3B5C_0%,_#0F5C82_100%)] bg-no-repeat bg-[length:100%_100%] overflow-y-auto lg:overflow-hidden relative">
-      {style.waves && <SeaDecoration />}
-      <div className="box-border w-full h-fit shrink-0 flex flex-row justify-between items-center lg:contents">
-        <div className="box-border w-fit h-fit shrink-0 flex flex-row gap-0 p-[4px_0px] lg:p-[4px_12px] justify-start items-start relative [z-index:1]">
+    <>
+      <BottomTabBar items={nav} />
+      <aside className="box-border w-[260px] shrink-0 sticky top-0 h-dvh self-start hidden lg:flex flex-col gap-[32px] p-[24px_16px] justify-start items-start [background-image:linear-gradient(180deg,_#0B3B5C_0%,_#0F5C82_100%)] bg-no-repeat bg-[length:100%_100%] overflow-hidden relative">
+        {style.waves && <SeaDecoration />}
+        <div className="box-border w-fit h-fit shrink-0 flex flex-row gap-0 p-[4px_12px] justify-start items-start relative [z-index:1]">
           <Logo tone="light" />
         </div>
-        <button
-          ref={buttonRef}
-          type="button"
-          aria-expanded={open}
-          aria-controls={MENU_ID}
-          aria-label={open ? t('close') : t('open')}
-          onClick={() => setOpenOn(open ? null : pathname)}
-          className={`lg:hidden box-border w-[44px] shrink-0 h-[44px] flex justify-center items-center rounded-[12px] cursor-pointer hover:bg-[#FFFFFF14] relative [z-index:1] ${PRESS} ${FOCUS_RING}`}
-        >
-          {open ? (
-            <Icon name="x" fill="#FFFFFF" className="box-border w-[24px] h-[24px]" />
-          ) : (
-            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" className="w-[24px] h-[24px]">
-              <path d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          )}
-        </button>
-      </div>
-      <div id={MENU_ID} className={`${open ? 'flex' : 'hidden'} lg:contents box-border w-full flex-col gap-[16px] pt-[16px]`}>
         <SidebarNav items={nav} notifications={notifications} />
         {/* The card opens the account menu: on a narrow screen it is the only way to reach "Keluar". The nelayan
             frame draws no chevron, but the card is a control now, so it gets one in both roles. */}
@@ -104,14 +59,14 @@ export function Sidebar({ role, nav, notifications, user, accountHref }: Sidebar
             </span>
           </AccountMenu>
         </div>
-      </div>
-    </aside>
+      </aside>
+    </>
   )
 }
 
 function SeaDecoration() {
   return (
-    <div aria-hidden="true" className="hidden lg:block box-border w-[420px] h-[260px] absolute left-[-80px] bottom-[140px] [z-index:0]">
+    <div aria-hidden="true" className="box-border w-[420px] h-[260px] absolute left-[-80px] bottom-[140px] [z-index:0]">
       <svg
         viewBox="0 0 1440 160"
         preserveAspectRatio="none"

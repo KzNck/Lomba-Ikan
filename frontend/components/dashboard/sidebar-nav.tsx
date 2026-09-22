@@ -29,7 +29,7 @@ type SidebarNavProps = {
 
 // The item whose href is the longest match for the current path, so pages below an item keep it highlighted
 // (the "Tambah Tangkapan" modal's /nelayan/catat/hasil) without the section's own dashboard (/nelayan) lighting up.
-function activeHref(items: SidebarNavItem[], pathname: string) {
+export function activeHref(items: SidebarNavItem[], pathname: string) {
   return items
     .map(({ href }) => href)
     .filter((href) => pathname === href || pathname.startsWith(`${href}/`))

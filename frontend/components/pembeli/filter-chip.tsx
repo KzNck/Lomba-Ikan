@@ -62,10 +62,10 @@ export function FilterChip({ icon, label, value, active, editLabel, remove, edit
   }, [open, rootRef])
 
   return (
-    <li className="box-border w-fit shrink-0 h-fit">
-      <div ref={rootRef} className="box-border w-fit h-fit relative">
+    <li className="box-border w-full lg:w-fit shrink-0 h-fit min-w-0">
+      <div ref={rootRef} className="box-border w-full lg:w-fit h-fit relative">
         <div
-          className={`box-border w-fit shrink-0 h-fit flex flex-row gap-[10px] p-[8px_8px_8px_12px] justify-start items-center ${state.chip} rounded-[12px] transition-colors duration-200 ease-out ${remove ? '' : 'pr-[12px]'}`}
+          className={`box-border w-full lg:w-fit shrink-0 h-fit flex flex-row gap-[10px] p-[8px_8px_8px_12px] justify-between lg:justify-start items-center ${state.chip} rounded-[12px] transition-colors duration-200 ease-out ${remove ? '' : 'pr-[12px]'}`}
         >
           <button
             {...buttonProps}
@@ -95,8 +95,8 @@ export function FilterChip({ icon, label, value, active, editLabel, remove, edit
           action={editor.action}
           scroll={false}
           onSubmit={() => setOpen(false)}
-          // Below lg the editor docks to the bottom of the screen, so a chip near the right edge can't push it off screen.
-          className="box-border w-auto lg:w-[260px] h-fit fixed lg:absolute left-[16px] right-[16px] bottom-[16px] lg:left-0 lg:right-auto lg:bottom-auto lg:top-[calc(100%+8px)] max-h-[calc(100dvh-32px)] overflow-y-auto lg:max-h-none lg:overflow-visible [box-shadow:0px_8px_24px_0px_#0B3B5C1F] flex flex-col gap-[6px] p-[6px] justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[12px] [z-index:20] motion-safe:animate-fade-in"
+          // Below lg the editor docks just above the bottom tab bar, so a chip near the right edge can't push it off screen.
+          className="box-border w-auto lg:w-[260px] h-fit fixed lg:absolute left-[16px] right-[16px] bottom-[calc(80px_+_env(safe-area-inset-bottom))] lg:left-0 lg:right-auto lg:bottom-auto lg:top-[calc(100%+8px)] max-h-[calc(100dvh-112px)] overflow-y-auto lg:max-h-none lg:overflow-visible [box-shadow:0px_8px_24px_0px_#0B3B5C1F] flex flex-col gap-[6px] p-[6px] justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[12px] [z-index:20] motion-safe:animate-fade-in"
         >
           {editor.hidden.map(([name, value], index) => (
             <input key={`${name}-${index}`} type="hidden" name={name} value={value} />

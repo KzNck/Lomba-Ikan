@@ -23,10 +23,11 @@ export function SortMenu({ label, options }: SortMenuProps) {
   const { open, setOpen, rootRef, buttonProps, panelProps } = usePopover()
 
   return (
-    <div ref={rootRef} className="box-border order-2 lg:order-none w-fit shrink-0 h-fit relative">
+    <div ref={rootRef} className="box-border order-2 lg:order-none w-full lg:w-fit shrink-0 h-fit relative">
       <button
         {...buttonProps}
-        className={`box-border w-fit shrink-0 h-[48px] flex flex-row gap-[8px] p-[0px_14px] justify-start items-center bg-[#FFFFFF] [outline:1px_solid_#7F8FA4] [outline-offset:-0.5px] rounded-[12px] cursor-pointer transition-colors duration-200 ease-out ${OUTLINE_HOVER} ${FOCUS_RING}`}
+        // Full width below lg, with the chevron at the far end, under the full-width search box.
+        className={`box-border w-full lg:w-fit shrink-0 h-[48px] flex flex-row gap-[8px] p-[0px_14px] justify-start items-center [&>svg:last-child]:ms-auto lg:[&>svg:last-child]:ms-0 bg-[#FFFFFF] [outline:1px_solid_#7F8FA4] [outline-offset:-0.5px] rounded-[12px] cursor-pointer transition-colors duration-200 ease-out ${OUTLINE_HOVER} ${FOCUS_RING}`}
       >
         <Icon name="arrow-up-down" fill="#0B3B5C" className="box-border w-[18px] shrink-0 h-[18px]" />
         <span className="text-[14px]/[normal] box-border text-[#0B3B5C] font-poppins font-semibold text-left [white-space:nowrap]">{label}</span>

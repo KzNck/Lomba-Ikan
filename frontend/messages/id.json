@@ -107,6 +107,7 @@
     "marketplace": "Marketplace",
     "notifications": "Notifikasi",
     "unread": "{label}, {count} belum dibaca",
+    "tabsLabel": "Navigasi dasbor",
     "menu": {
       "open": "Buka menu",
       "close": "Tutup menu"

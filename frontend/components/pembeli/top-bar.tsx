@@ -35,12 +35,13 @@ export function TopBarActions({ notifications, user }: TopBarActionsProps) {
   const t = useTranslations('nav')
   return (
     <>
-      {/* The same switcher as the landing navbar. */}
-      <LanguageSwitcher />
+      {/* The same switcher as the landing navbar. Below lg the bell's auto margin pushes it and the account to the
+          right edge, leaving the switcher on the left. */}
+      <LanguageSwitcher startBelowLg />
       <Link
         href={notifications.href}
         aria-label={t('unread', { label: t('notifications'), count: notifications.unreadCount })}
-        className={`box-border w-[44px] shrink-0 h-[44px] lg:w-[40px] lg:h-[40px] rounded-[999px] relative ${OUTLINE_HOVER} ${PRESS} ${FOCUS_RING}`}
+        className={`box-border ms-auto lg:ms-0 w-[44px] shrink-0 h-[44px] lg:w-[40px] lg:h-[40px] rounded-[999px] relative ${OUTLINE_HOVER} ${PRESS} ${FOCUS_RING}`}
       >
         <Icon name="bell" fill="#0B3B5C" className="box-border w-[22px] h-[22px] absolute left-[11px] top-[11px] lg:left-[9px] lg:top-[9px] [z-index:0]" />
         {notifications.unreadCount > 0 && (

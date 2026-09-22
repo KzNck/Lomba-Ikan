@@ -20,7 +20,7 @@ export function ListingPageHead({ title, subtitle, action }: ListingPageHeadProp
       </div>
       <Link
         href={action.href}
-        className={`box-border w-fit shrink-0 h-fit [box-shadow:0px_8px_20px_0px_#0F6CB840] flex flex-row gap-[12px] p-[14px_24px_14px_22px] justify-center items-center [background-image:linear-gradient(90deg,_#0F6CB8_0%,_#0F5C82_100%)] bg-no-repeat bg-[length:100%_100%] rounded-[999px] ${SOLID_HOVER} ${PRESS} ${FOCUS_RING}`}
+        className={`box-border w-full sm:w-fit shrink-0 h-fit [box-shadow:0px_8px_20px_0px_#0F6CB840] flex flex-row gap-[12px] p-[14px_24px_14px_22px] justify-center items-center [background-image:linear-gradient(90deg,_#0F6CB8_0%,_#0F5C82_100%)] bg-no-repeat bg-[length:100%_100%] rounded-[999px] ${SOLID_HOVER} ${PRESS} ${FOCUS_RING}`}
       >
         <span className="text-[16px]/[normal] box-border text-[#FFFFFF] font-poppins font-semibold text-left [white-space:nowrap]">{action.label}</span>
         <Icon name="plus" fill="#FFFFFF" className="box-border w-[18px] shrink-0 h-[18px]" />

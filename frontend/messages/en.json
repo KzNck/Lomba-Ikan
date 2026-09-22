@@ -107,6 +107,7 @@
     "marketplace": "Marketplace",
     "notifications": "Notifications",
     "unread": "{label}, {count} unread",
+    "tabsLabel": "Dashboard navigation",
     "menu": {
       "open": "Open menu",
       "close": "Close menu"

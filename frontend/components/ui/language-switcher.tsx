@@ -64,7 +64,9 @@ function LanguageOptions({ onSwitched }: LanguageOptionsProps) {
 
 // The switcher in the landing navbar (left of "Masuk") and the dashboard headers (left of the bell): a globe with the active code ("ID"/"EN") that opens the two
 // options. Escape or a press outside closes it (usePopover); opening moves focus to the active option.
-export function LanguageSwitcher() {
+// `startBelowLg`: where the switcher sits at the left edge below lg (the dashboard headers), its options open from
+// its left edge there so they stay on screen, and its padding hangs into the margin; from lg nothing changes.
+export function LanguageSwitcher({ startBelowLg = false }: { startBelowLg?: boolean }) {
   const t = useTranslations('common.language')
   const locale = useLocale()
   const { open, setOpen, rootRef, buttonRef, buttonProps, panelProps } = usePopover()
@@ -74,8 +76,9 @@ export function LanguageSwitcher() {
     rootRef.current?.querySelector<HTMLButtonElement>('[data-language-active]')?.focus({ preventScroll: true })
   }, [open, rootRef])
 
+  // At the left edge its 12px inner padding is pulled into the margin, so the globe lines up with the page edge.
   return (
-    <div ref={rootRef} className="box-border w-fit shrink-0 h-fit relative">
+    <div ref={rootRef} className={`box-border w-fit shrink-0 h-fit relative ${startBelowLg ? '-ms-[12px] lg:ms-0' : ''}`}>
       <button
         {...buttonProps}
         aria-label={t('triggerLabel', { language: t(`names.${locale}`) })}
@@ -93,7 +96,7 @@ export function LanguageSwitcher() {
       </button>
       <div
         {...panelProps}
-        className="box-border w-[200px] h-fit absolute right-0 top-[calc(100%+8px)] [box-shadow:0px_8px_24px_0px_#0B3B5C1F] p-[6px] bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[12px] [z-index:30] motion-safe:animate-fade-in"
+        className={`box-border w-[200px] h-fit absolute ${startBelowLg ? 'left-0 right-auto lg:left-auto lg:right-0' : 'right-0'} top-[calc(100%+8px)] [box-shadow:0px_8px_24px_0px_#0B3B5C1F] p-[6px] bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[12px] [z-index:30] motion-safe:animate-fade-in`}
       >
         <LanguageOptions
           onSwitched={() => {

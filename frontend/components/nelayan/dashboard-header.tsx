@@ -48,13 +48,14 @@ export function DashboardHeader({
           {subtitle}
         </p>
       </div>
-      <div className="box-border w-fit shrink-0 h-fit flex flex-row gap-[12px] lg:gap-[20px] justify-start items-center">
+      {/* Below lg the row spans the header: the switcher on the left edge, the bell and account on the right. */}
+      <div className="box-border w-full lg:w-fit shrink-0 h-fit flex flex-row gap-[12px] lg:gap-[20px] justify-start items-center">
         {/* The same switcher as the landing navbar. */}
-        <LanguageSwitcher />
+        <LanguageSwitcher startBelowLg />
         <Link
           href={notifications.href}
           aria-label={t('unread', { label: t('notifications'), count: notifications.unreadCount })}
-          className={`box-border w-[44px] shrink-0 h-[44px] lg:w-[40px] lg:h-[40px] rounded-[999px] relative ${OUTLINE_HOVER} ${PRESS} ${FOCUS_RING}`}
+          className={`box-border ms-auto lg:ms-0 w-[44px] shrink-0 h-[44px] lg:w-[40px] lg:h-[40px] rounded-[999px] relative ${OUTLINE_HOVER} ${PRESS} ${FOCUS_RING}`}
         >
           <Icon name="bell" fill="#0B3B5C" className="box-border w-[22px] h-[22px] absolute left-[11px] top-[11px] lg:left-[9px] lg:top-[9px] [z-index:0]" />
           {notifications.unreadCount > 0 && (

@@ -10,10 +10,11 @@ type FilterBarProps = {
   reset: { href: string; label: string }
 }
 
-// "Filters": the three filter chips, then "Reset filter", which goes back to the buyer's saved preferences.
+// "Filters": the three filter chips, then "Reset filter", which goes back to the buyer's saved preferences. Below lg they
+// fill a two-column grid, each cell the same width.
 export function FilterBar({ label, filters, reset }: FilterBarProps) {
   return (
-    <div role="group" aria-label={label} className="box-border w-full h-fit shrink-0 flex flex-row flex-wrap lg:flex-nowrap gap-[12px] justify-start items-center">
+    <div role="group" aria-label={label} className="box-border w-full h-fit shrink-0 grid grid-cols-2 lg:flex lg:flex-row lg:flex-nowrap gap-[12px] justify-start items-stretch lg:items-center">
       {/* `contents` keeps each chip a direct flex child, so the bar's 12px gap still sits between them. */}
       <ul className="contents">
         {/* Keyed by value too: the editors' ticks are uncontrolled, so a new filter value remounts them fresh. */}
@@ -31,7 +32,7 @@ export function ResetFilterLink({ href, label }: { href: string; label: string }
     <Link
       href={href}
       scroll={false}
-      className={`box-border w-fit shrink-0 h-[44px] lg:h-[40px] flex flex-row gap-[6px] p-[0px_14px] justify-start items-center bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[999px] ${OUTLINE_HOVER} ${PRESS} ${FOCUS_RING}`}
+      className={`box-border w-full lg:w-fit shrink-0 h-auto min-h-[44px] lg:h-[40px] lg:min-h-auto flex flex-row gap-[6px] p-[0px_14px] justify-center lg:justify-start items-center bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[999px] ${OUTLINE_HOVER} ${PRESS} ${FOCUS_RING}`}
     >
       <Icon name="rotate-ccw" fill="#0F6CB8" className="box-border w-[16px] shrink-0 h-[16px]" />
       <span className="text-[14px]/[normal] box-border text-[#0F6CB8] font-poppins font-semibold text-left [white-space:nowrap]">{label}</span>
