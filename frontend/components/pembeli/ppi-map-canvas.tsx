@@ -142,6 +142,8 @@ export function PpiMapCanvas({ markers, labels, tiles }: PpiMapCanvasProps) {
             icon={markerIcon(marker)}
             zIndexOffset={marker.selected ? 1000 : 0}
             eventHandlers={{
+              // Markers aren't <Link>s, so nothing prefetches their view; warm it on hover, as a link would.
+              mouseover: () => router.prefetch(marker.href),
               click: () => router.push(marker.href, { scroll: false }),
               // Leaflet makes markers focusable buttons but only clicks them with a mouse; Enter and Space do it here.
               keydown: ({ originalEvent }: L.LeafletKeyboardEvent) => {
