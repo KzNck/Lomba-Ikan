@@ -4,7 +4,6 @@ import { NelayanDashboard } from '@/components/nelayan/dashboard'
 import { loadNelayanDashboard } from '@/lib/nelayan/dashboard'
 import { FreshnessModal } from '@/components/nelayan/freshness-modal'
 import { publishListing, regradeCatch } from '@/app/nelayan/actions'
-import { catchBreadcrumb } from '@/components/nelayan/catch-content'
 import {
   freshnessModal,
   gradePanel,
@@ -34,9 +33,8 @@ export default async function HasilKesegaranPage({
   // RLS hides other fishers' catches, so a miss here is either a bad id or someone else's.
   if (!entry) notFound()
 
-  const [t, catchT, common, format] = await Promise.all([
+  const [t, common, format] = await Promise.all([
     getTranslations('dashboard.nelayan.freshness'),
-    getTranslations('dashboard.nelayan.catch'),
     getTranslations('common.grade'),
     getFormatter(),
   ])
@@ -46,7 +44,7 @@ export default async function HasilKesegaranPage({
 
   return (
     <>
-      <NelayanDashboard data={dashboard} breadcrumb={catchBreadcrumb(catchT)} />
+      <NelayanDashboard data={dashboard} />
       <FreshnessModal
         modal={freshnessModal(t)}
         catchId={entry.id}

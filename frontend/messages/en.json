@@ -134,7 +134,6 @@
     "nelayan": {
       "home": {
         "subtitle": "Wishing you a good catch and a good day at sea.",
-        "breadcrumb": "Dashboard",
         "greeting": "Good {part, select, morning {morning} midday {afternoon} afternoon {afternoon} other {evening}}, {name}",
         "summaryTitle": "Today's Summary",
         "summaryImageAlt": "A blue fishing boat on the open sea with seagulls above it",
@@ -180,7 +179,6 @@
         }
       },
       "catch": {
-        "breadcrumbHome": "Dashboard",
         "title": "Add Catch",
         "subtitle": "Log today's catch in 6 quick steps.",
         "close": "Close",
@@ -449,7 +447,6 @@
       }
     },
     "riwayat": {
-      "breadcrumb": "History",
       "title": "Transaction History",
       "subtitle": "All your transactions, from those in progress to those completed or cancelled.",
       "resultCount": "{count, plural, one {# transaction} other {# transactions}} in this range",
@@ -787,8 +784,7 @@
         },
         "whatsappMessage": "Halo {fisher}, saya {buyer} dari ByCatch Loop. Saya baru membeli batch {batch}: {category}, {weight}, {price}, di {ppi}. Kapan dan di mana kita bisa serah terima?"
       }
-    },
-    "breadcrumbLabel": "Breadcrumb"
+    }
   },
   "landing": {
     "nav": {

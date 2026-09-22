@@ -25,7 +25,6 @@ export type AkunT = Translator<'dashboard.akun'>
 
 export function akunPage(t: AkunT) {
   return {
-    breadcrumb: t('title'),
     title: t('title'),
     subtitle: t('nelayan.subtitle'),
   }

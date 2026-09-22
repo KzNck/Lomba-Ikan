@@ -20,7 +20,6 @@ export function dashboardCopy(t: Translator<'dashboard.nelayan.home'>) {
     // The greeting is built per request from the profile name and the time of day.
     subtitle: t('subtitle'),
     notifications: NOTIFICATIONS,
-    breadcrumb: t('breadcrumb'),
     summary: {
       title: t('summaryTitle'),
       image: {

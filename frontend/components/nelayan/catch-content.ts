@@ -23,13 +23,6 @@ export type CategoryValue = (typeof CATEGORY_OPTIONS)[number]['value']
 // The name typed for "Lainnya": long enough for "Ikan Kakap Merah", short enough for a listing card's title.
 export const OTHER_NAME_MAX = 40
 
-// Breadcrumb on the dashboard behind the modal, for every step and the "Hasil Kesegaran" result.
-export function catchBreadcrumb(t: CatchT) {
-  return {
-    trail: [{ href: '/nelayan', label: t('breadcrumbHome') }],
-    current: t('title'),
-  }
-}
 
 export function catchModal(t: CatchT) {
   return {

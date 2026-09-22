@@ -134,7 +134,6 @@
     "nelayan": {
       "home": {
         "subtitle": "Semoga hari ini banyak tangkapan dan rezeki yang lancar.",
-        "breadcrumb": "Dashboard",
         "greeting": "Selamat {part, select, morning {pagi} midday {siang} afternoon {sore} other {malam}}, {name}",
         "summaryTitle": "Ringkasan Hari Ini",
         "summaryImageAlt": "Kapal nelayan biru di laut lepas dengan burung camar di atasnya",
@@ -180,7 +179,6 @@
         }
       },
       "catch": {
-        "breadcrumbHome": "Dashboard",
         "title": "Tambah Tangkapan",
         "subtitle": "Catat hasil tangkapan hari ini dalam 6 langkah singkat.",
         "close": "Tutup",
@@ -449,7 +447,6 @@
       }
     },
     "riwayat": {
-      "breadcrumb": "Riwayat",
       "title": "Riwayat Transaksi",
       "subtitle": "Semua transaksi Anda, dari yang masih diproses sampai yang selesai atau dibatalkan.",
       "resultCount": "{count} transaksi dalam rentang ini",
@@ -787,8 +784,7 @@
         },
         "whatsappMessage": "Halo {fisher}, saya {buyer} dari ByCatch Loop. Saya baru membeli batch {batch}: {category}, {weight}, {price}, di {ppi}. Kapan dan di mana kita bisa serah terima?"
       }
-    },
-    "breadcrumbLabel": "Navigasi halaman"
+    }
   },
   "landing": {
     "nav": {

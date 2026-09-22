@@ -1,5 +1,4 @@
 import { DashboardHeader } from '@/components/nelayan/dashboard-header'
-import { Breadcrumb, type BreadcrumbContent } from '@/components/nelayan/breadcrumb'
 import { SummaryCard } from '@/components/nelayan/summary-card'
 import { QuickActionCard } from '@/components/nelayan/quick-action-card'
 import { ListingSection } from '@/components/nelayan/listing-section'
@@ -19,14 +18,8 @@ export type NelayanDashboardData = {
   notifications: NotificationContent[]
 }
 
-// The dashboard's main column. The "Tambah Tangkapan" pages render it behind their modal with a longer breadcrumb.
-export function NelayanDashboard({
-  data,
-  breadcrumb,
-}: {
-  data: NelayanDashboardData
-  breadcrumb?: BreadcrumbContent
-}) {
+// The dashboard's main column. The "Tambah Tangkapan" pages render it behind their modal.
+export function NelayanDashboard({ data }: { data: NelayanDashboardData }) {
   const DASHBOARD = dashboardCopy(useTranslations('dashboard.nelayan.home'))
   return (
     <div className="box-border [flex:1_1_0] flex flex-col gap-0 justify-start items-start relative">
@@ -38,7 +31,6 @@ export function NelayanDashboard({
       />
       <MainDecoration />
       <div className="box-border w-full [flex:1_1_0] flex flex-col gap-[20px] p-[16px_16px_120px_16px] sm:p-[20px_24px_120px_24px] lg:p-[20px_32px_120px_32px] justify-start items-start relative [z-index:2]">
-        <Breadcrumb {...(breadcrumb ?? { current: DASHBOARD.breadcrumb })} />
         <div className="box-border w-full h-fit shrink-0 flex flex-col lg:flex-row gap-[20px] lg:gap-[24px] justify-start items-stretch lg:items-start">
           <SummaryCard {...DASHBOARD.summary} stats={data.stats} />
           <QuickActionCard {...DASHBOARD.quickAction} />

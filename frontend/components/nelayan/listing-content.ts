@@ -36,7 +36,6 @@ type ListingT = Translator<'dashboard.nelayan.listing'>
 
 export function listingPage(t: ListingT) {
   return {
-    breadcrumb: t('title'),
     title: t('title'),
     subtitle: t('subtitle'),
     addAction: { href: '/nelayan/catat', label: t('addAction') },

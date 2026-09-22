@@ -11,7 +11,6 @@ export const RIWAYAT_PATH = '/nelayan/riwayat'
 
 export function riwayatPage(t: RiwayatT) {
   return {
-    breadcrumb: t('breadcrumb'),
     title: t('title'),
     subtitle: t('subtitle'),
     // "8 transaksi dalam rentang ini"
