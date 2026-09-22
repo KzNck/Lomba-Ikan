@@ -21,12 +21,14 @@ export function Hero({ id, eyebrow, headline, subheadline, image, primaryCta, se
   return (
     <section id={id} className="box-border w-full h-fit lg:h-[640px] shrink-0 scroll-mt-[80px] flex flex-col lg:block bg-[#F3FAFF] overflow-hidden relative">
       {/* From lg, positions are offsets from the centre of the 1440px grid; the photo and waves bleed to the viewport
-          edges. Below lg the copy sits on top and the photo runs full width under it, with the waves over its foot. */}
-      <div className="box-border order-2 lg:order-none w-full lg:w-auto h-[320px] sm:h-[420px] lg:h-[640px] relative lg:absolute lg:left-[calc(50%_-_160px)] lg:right-0 lg:top-0 [z-index:0] motion-safe:animate-fade-in">
-        <Image src={image.src} alt={image.alt} fill preload sizes="(min-width: 1024px) calc(50vw + 160px), 100vw" className="object-cover object-center" />
+          edges. Below lg the photo fills the whole hero behind the copy, faded from the top so the text stays readable,
+          and shows clearly below the buttons. */}
+      <div className="box-border absolute inset-0 lg:inset-auto lg:left-[calc(50%_-_160px)] lg:right-0 lg:top-0 h-full lg:h-[640px] [z-index:0] motion-safe:animate-fade-in">
+        <Image src={image.src} alt={image.alt} fill preload sizes="(min-width: 1024px) calc(50vw + 160px), 100vw" className="object-cover object-[70%_center] lg:object-center" />
       </div>
+      <div className="lg:hidden box-border absolute inset-0 [background-image:linear-gradient(180deg,_#F3FAFFF7_0%,_#F3FAFFF2_55%,_#F3FAFFB3_72%,_#F3FAFF00_90%)] [z-index:1]" />
       <div className="hidden lg:block box-border w-[400px] h-[640px] absolute left-[calc(50%_-_180px)] top-0 [background-image:linear-gradient(90deg,_#F3FAFFFF_0%,_#F3FAFFFF_32%,_#F3FAFFB3_55%,_#F3FAFF00_100%)] bg-no-repeat bg-[length:100%_100%] [z-index:1]" />
-      <div className="box-border order-1 lg:order-none w-full lg:w-[600px] h-fit relative lg:absolute lg:left-[calc(50%_-_600px)] lg:top-[72px] flex flex-col gap-[16px] lg:gap-[20px] px-[16px] sm:px-[24px] pt-[40px] pb-[32px] sm:pt-[56px] sm:pb-[40px] lg:p-0 justify-start items-start [z-index:2]">
+      <div className="box-border w-full lg:w-[600px] h-fit relative lg:absolute lg:left-[calc(50%_-_600px)] lg:top-[72px] flex flex-col gap-[16px] lg:gap-[20px] px-[16px] sm:px-[24px] pt-[40px] pb-[200px] sm:pt-[56px] sm:pb-[240px] lg:p-0 justify-start items-start [z-index:2]">
         <p className="text-[13px]/[normal] box-border text-[#0F6CB8] font-poppins font-semibold tracking-[1.6px] text-left sm:[white-space:nowrap] motion-safe:animate-fade-up">
           {eyebrow}
         </p>
