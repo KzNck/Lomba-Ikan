@@ -10,8 +10,10 @@ Lapis 3: safety override kondisi ekstrem (>12 jam, tanpa es, suhu>=30C)
 import numpy as np
 from app.models.kinetics import organoleptic_score_to_9scale
 
+# Teks A1 menyimpang dari notebook: "Konsumsi lokal segar" dihapus karena grade ini estimasi indikatif, bukan
+# sertifikasi mutu pangan, dan produk tidak menyarankan jalur konsumsi (fisherman-design/designv2.md §0.6).
 HILIRISASI_MAP = {
-    "A1": "Konsumsi lokal segar / pelepasan kembali (fish masih vital, kualitas prima).",
+    "A1": "Pelepasan kembali / silase segar (ikan masih vital, kualitas prima).",
     "A2": "Bahan pakan basah / silase segar (vitalitas menurun, tidak layak konsumsi langsung).",
     "A3": "Silase segar darurat / pakan basah kualitas rendah (vitalitas sangat rendah, hampir mati).",
     "B1": "Silase ikan / bahan baku tepung ikan mikro (dekomposisi minimal, mutu masih baik).",
