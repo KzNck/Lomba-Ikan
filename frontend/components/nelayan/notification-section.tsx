@@ -27,7 +27,7 @@ export function NotificationSection({ title, viewAll, items, empty }: Notificati
           {/* `contents` keeps each row a direct flex child, so the card's 6px gap still sits between rows. */}
           <ul className="contents">
             {items.map((item, index) => (
-              <NotificationItem key={item.message} {...item} divider={index < items.length - 1} />
+              <NotificationItem key={item.id} {...item} divider={index < items.length - 1} />
             ))}
           </ul>
           <ViewAllLink {...viewAll} className="mt-[8px]" />

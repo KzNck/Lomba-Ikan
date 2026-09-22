@@ -4,6 +4,8 @@ import { FOCUS_RING } from '@/components/nelayan/focus-ring'
 import { OUTLINE_HOVER } from '@/components/ui/interaction'
 
 export type NotificationItemContent = {
+  // Unique per row (the transaction's id): titles and times repeat, e.g. two "Transaksi Selesai" an hour apart.
+  id: string
   href: string
   icon: IconName
   title: string

@@ -115,6 +115,7 @@ export function recentNotifications(
             items.push([
                 at,
                 {
+                    id: tx.id,
                     tone: 'success',
                     icon: 'shopping-cart',
                     message: t('notifications.sold', {
@@ -128,6 +129,7 @@ export function recentNotifications(
             items.push([
                 at,
                 {
+                    id: tx.id,
                     tone: 'warning',
                     icon: 'circle-alert',
                     message: t('notifications.cancelled', { name }),
@@ -138,6 +140,7 @@ export function recentNotifications(
             items.push([
                 at,
                 {
+                    id: tx.id,
                     tone: 'info',
                     icon: 'check',
                     message: t('notifications.claimed', { name }),
@@ -156,6 +159,7 @@ export function recentNotifications(
         items.push([
             now.getTime(),
             {
+                id: `expiring-${entry.id}`,
                 tone: 'warning',
                 icon: 'badge-check',
                 message: t('notifications.expiring', {

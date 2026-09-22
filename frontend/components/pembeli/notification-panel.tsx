@@ -21,7 +21,7 @@ export function NotificationPanel({ title, viewAll, items, empty }: Notification
           {/* `contents` keeps each row a direct flex child, so the card's 6px gap still sits between rows. */}
           <ul className="contents">
             {items.map((item, index) => (
-              <NotificationItem key={`${item.title}-${item.time}`} {...item} divider={index < items.length - 1} />
+              <NotificationItem key={item.id} {...item} divider={index < items.length - 1} />
             ))}
           </ul>
           <div className="box-border w-full h-fit shrink-0 flex flex-row gap-0 p-[8px_0px_4px_0px] justify-start items-start">

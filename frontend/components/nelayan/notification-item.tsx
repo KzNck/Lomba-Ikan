@@ -1,6 +1,8 @@
 import { Icon, type IconName } from '@/components/ui/icon'
 
 export type NotificationContent = {
+  // Unique per row: messages repeat, e.g. two sales of the same fish at the same price.
+  id: string
   tone: keyof typeof TONE_STYLES
   icon: IconName
   message: string

@@ -112,6 +112,7 @@ function notifications(
     return transactions.slice(0, 4).map((tx) => {
         const name = tx.catches ? categoryLabel(p, tx.catches.species) : t('batch')
         return {
+            id: tx.id,
             href: NOTIFICATIONS_PATH,
             icon: STATUS_ICON[tx.status],
             title: t(`status.${tx.status}`),
