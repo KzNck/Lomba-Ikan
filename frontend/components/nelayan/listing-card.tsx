@@ -35,7 +35,7 @@ type ListingCardProps = ListingCardContent & {
 // `sizes` is the widest the card gets: a third of the dashboard panel, or of the grid with the drawer closed. Below lg
 // the card is a full column wide, so the photo is taller (180px) and asks for a matching image.
 const PHOTO_SIZES = {
-  tall: { height: 'h-[180px] lg:h-[132px]', sizes: '(min-width: 1024px) 235px, 343px' },
+  tall: { height: 'h-[180px] lg:h-[132px]', sizes: '(min-width: 1024px) 360px, 343px' },
   short: { height: 'h-[180px] lg:h-[112px]', sizes: '(min-width: 1024px) 380px, 343px' },
 }
 
