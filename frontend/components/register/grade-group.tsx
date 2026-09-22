@@ -42,7 +42,7 @@ export function GradeGroup({ tone, icon, title, options, name, defaultValues = [
           {title}
         </span>
       </div>
-      <div className="box-border w-fit h-fit shrink-0 flex flex-row gap-[10px] justify-start items-start">
+      <div className="box-border w-fit max-w-full h-fit shrink-0 flex flex-row flex-wrap lg:flex-nowrap gap-[10px] justify-start items-start">
         {options.map((option) => (
           <Chip key={option.value} name={name} {...option} defaultChecked={defaultValues.includes(option.value)} />
         ))}

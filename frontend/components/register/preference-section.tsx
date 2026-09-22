@@ -26,7 +26,7 @@ export function PreferenceSection({ icon, label, helper, children }: PreferenceS
       <div className="box-border w-[44px] shrink-0 h-[44px] flex flex-row gap-0 justify-center items-center bg-[#DCEEFB] rounded-[999px]">
         <Icon name={icon} fill="#0F6CB8" className="box-border w-[22px] shrink-0 h-[22px]" />
       </div>
-      <div className="box-border [flex:1_1_0] h-fit flex flex-col gap-[16px] justify-start items-start">
+      <div className="box-border [flex:1_1_0] min-w-0 lg:min-w-auto h-fit flex flex-col gap-[16px] justify-start items-start">
         <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[4px] justify-start items-start">
           <span
             id={labelId}

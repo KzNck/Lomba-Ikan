@@ -15,11 +15,11 @@ export function TermsNotice({ intro, terms, connector, privacy }: TermsNoticeCon
       <div className="box-border w-[40px] shrink-0 h-[40px] flex flex-row gap-0 justify-center items-center bg-[#DCEEFB] rounded-[999px]">
         <Icon name="shield-check" fill="#0F6CB8" className="box-border w-[20px] shrink-0 h-[20px]" />
       </div>
-      <p className="box-border [flex:1_1_0] h-fit flex flex-col gap-[2px] justify-start items-start">
-        <span className="text-[13px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left [white-space:nowrap]">
+      <p className="box-border [flex:1_1_0] min-w-0 lg:min-w-auto h-fit flex flex-col gap-[2px] justify-start items-start">
+        <span className="text-[13px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left lg:[white-space:nowrap]">
           {intro}
         </span>
-        <span className="box-border w-fit h-fit shrink-0 flex flex-row gap-[4px] justify-start items-start">
+        <span className="box-border w-fit max-w-full h-fit shrink-0 flex flex-row flex-wrap lg:flex-nowrap gap-x-[4px] lg:gap-[4px] justify-start items-start">
           <span className="text-[13px]/[normal] box-border text-[#0F6CB8] font-inter font-semibold text-left [white-space:nowrap]">
             {terms}
           </span>

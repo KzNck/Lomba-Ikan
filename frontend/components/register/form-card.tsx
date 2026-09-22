@@ -7,10 +7,10 @@ export type FormCardHeader = {
   subtitle: string
 }
 
-// md is the Nelayan frame's card, lg the Pembeli frame's.
+// md is the Nelayan frame's card, lg the Pembeli frame's. Below lg (md for the narrower card) they take the width.
 const CARD_WIDTHS = {
-  md: 'w-[640px]',
-  lg: 'w-[760px]',
+  md: 'w-full md:w-[640px]',
+  lg: 'w-full lg:w-[760px]',
 }
 
 type FormCardProps = FormCardHeader & {
@@ -34,21 +34,21 @@ export function FormCard({ icon, title, subtitle, size = 'md', hidden, action, o
       action={action}
       onSubmit={onSubmit}
       onChange={onChange}
-      className={`box-border ${CARD_WIDTHS[size]} h-fit shrink-0 [box-shadow:0px_0px_0px_1px_#0000000F,_0px_1px_2px_-1px_#0000000F,_0px_2px_4px_0px_#0000000A] flex flex-col gap-[32px] p-[40px] justify-start items-start bg-[#FFFFFF] rounded-[24px] motion-safe:animate-fade-up`}
+      className={`box-border ${CARD_WIDTHS[size]} h-fit shrink-0 [box-shadow:0px_0px_0px_1px_#0000000F,_0px_1px_2px_-1px_#0000000F,_0px_2px_4px_0px_#0000000A] flex flex-col gap-[24px] lg:gap-[32px] p-[20px] sm:p-[32px] lg:p-[40px] justify-start items-start bg-[#FFFFFF] rounded-[24px] motion-safe:animate-fade-up`}
       style={{ animationDelay: '300ms' }}
     >
-      <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[20px] justify-start items-center">
-        <div className="box-border w-[64px] shrink-0 h-[64px] flex flex-row gap-0 justify-center items-center bg-[#DCEEFB] rounded-[999px]">
-          <Icon name={icon} fill="#0F6CB8" className="box-border w-[30px] shrink-0 h-[30px]" />
+      <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[14px] sm:gap-[20px] justify-start items-center">
+        <div className="box-border w-[48px] shrink-0 h-[48px] sm:w-[64px] sm:h-[64px] flex flex-row gap-0 justify-center items-center bg-[#DCEEFB] rounded-[999px]">
+          <Icon name={icon} fill="#0F6CB8" className="box-border w-[24px] h-[24px] sm:w-[30px] sm:h-[30px] shrink-0" />
         </div>
-        <div className="box-border [flex:1_1_0] h-fit flex flex-col gap-[4px] justify-start items-start">
+        <div className="box-border [flex:1_1_0] min-w-0 lg:min-w-auto h-fit flex flex-col gap-[4px] justify-start items-start">
           <h2
             id={titleId}
-            className="text-[22px]/[normal] box-border text-[#0B3B5C] font-poppins font-semibold text-left [white-space:nowrap]"
+            className="text-[19px]/[24px] sm:text-[22px]/[normal] box-border text-[#0B3B5C] font-poppins font-semibold text-left lg:[white-space:nowrap]"
           >
             {title}
           </h2>
-          <p className="text-[14px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left [white-space:nowrap]">
+          <p className="text-[14px]/[20px] lg:text-[14px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left lg:[white-space:nowrap]">
             {subtitle}
           </p>
         </div>

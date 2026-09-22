@@ -9,7 +9,7 @@ export default function ChooseRolePage() {
   return (
     <RegisterLayout kind="role" currentStep={0} heading={content.heading}>
       <div
-        className="box-border w-fit h-[426px] short:h-[340px] shrink-0 flex flex-row gap-[32px] justify-start items-start motion-safe:animate-fade-up"
+        className="box-border w-full lg:w-fit h-fit lg:h-[426px] lg:short:h-[340px] shrink-0 flex flex-col sm:flex-row gap-[16px] sm:gap-[20px] lg:gap-[32px] justify-start items-stretch lg:items-start motion-safe:animate-fade-up"
         style={{ animationDelay: '300ms' }}
       >
         {content.roles.map((role) => (

@@ -22,7 +22,7 @@ type ChipGroupProps = ChipGroupContent & {
 
 // Registration's group, or the account page's: Poppins label, wrapping helper, tighter gaps.
 const LOOKS = {
-  register: { group: 'gap-[16px]', label: 'font-inter', helper: '[white-space:nowrap]', chips: 'gap-[12px]' },
+  register: { group: 'gap-[16px]', label: 'font-inter', helper: 'lg:[white-space:nowrap]', chips: 'gap-[12px]' },
   settings: { group: 'gap-[12px]', label: 'font-poppins', helper: 'w-full', chips: 'gap-[10px]' },
 }
 
@@ -69,7 +69,7 @@ export function ChipGroup({ id, label, helper, required, options, error, default
             <Icon name="circle-alert" fill="#C23B35" className="box-border w-[16px] shrink-0 h-[16px]" />
             <p
               id={errorId}
-              className="text-[14px]/[normal] box-border text-[#C23B35] font-inter font-medium text-left [white-space:nowrap]"
+              className="text-[14px]/[normal] box-border text-[#C23B35] font-inter font-medium text-left lg:[white-space:nowrap]"
             >
               {error}
             </p>

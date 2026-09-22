@@ -70,13 +70,13 @@ export function PembeliRegistration() {
           if (target.name === jenisUsaha.id && target.checked) setJenisUsahaError(false)
         }}
       >
-        <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[24px] justify-start items-start">
+        <div className="box-border w-full h-fit shrink-0 flex flex-col sm:flex-row gap-[20px] sm:gap-[24px] justify-start items-stretch sm:items-start">
           {usaha.nameFields.map((field) => (
             <FormField key={field.id} {...field} grow />
           ))}
         </div>
         <FormField {...usaha.emailField} defaultValue={state.email} />
-        <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[24px] justify-start items-start">
+        <div className="box-border w-full h-fit shrink-0 flex flex-col sm:flex-row gap-[20px] sm:gap-[24px] justify-start items-stretch sm:items-start">
           {usaha.passwordFields.map((field) => (
             <FormField key={field.id} {...field} grow />
           ))}
@@ -100,12 +100,12 @@ export function PembeliRegistration() {
           </div>
         </PreferenceSection>
         <PreferenceSection {...grade.section}>
-          <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[16px] justify-start items-start">
+          <div className="box-border w-full h-fit shrink-0 flex flex-col sm:flex-row gap-[16px] justify-start items-stretch sm:items-start">
             {grade.groups.map((group) => (
               <GradeGroup key={group.title} name={grade.name} {...group} />
             ))}
           </div>
-          <p className="text-[13px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left [white-space:nowrap]">
+          <p className="text-[13px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left lg:[white-space:nowrap]">
             {grade.disclaimer}
           </p>
         </PreferenceSection>
@@ -118,7 +118,7 @@ export function PembeliRegistration() {
           type="submit"
           name="lewati"
           value="1"
-          className="box-border w-fit h-fit shrink-0 flex flex-row gap-0 p-[4px_0px] justify-start items-start cursor-pointer"
+          className="box-border w-fit h-fit min-h-[44px] lg:min-h-auto shrink-0 flex flex-row gap-0 p-[4px_0px] justify-start items-center lg:items-start cursor-pointer"
         >
           <span className="text-[14px]/[normal] box-border text-[#0F6CB8] font-inter font-semibold text-left [white-space:nowrap] underline decoration-transparent underline-offset-4 transition-[text-decoration-color] duration-200 ease-out hover:decoration-current">
             {preferensi.skipLabel}

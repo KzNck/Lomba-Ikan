@@ -41,13 +41,13 @@ export function Stepper({ steps, currentStep }: StepperProps) {
               >
                 {/* The connector turns blue once the step it leads into has been reached. */}
                 <div
-                  className={`box-border w-[96px] shrink-0 h-[2px] ${index <= currentStep ? 'bg-[#0F6CB8]' : 'bg-[#C5DDF0]'}`}
+                  className={`box-border w-[20px] md:w-[96px] shrink-0 h-[2px] ${index <= currentStep ? 'bg-[#0F6CB8]' : 'bg-[#C5DDF0]'}`}
                 />
               </div>
             )}
             <div
               aria-current={status === 'active' ? 'step' : undefined}
-              className="box-border w-[140px] shrink-0 h-fit flex flex-col gap-[10px] justify-start items-center"
+              className="box-border w-[96px] md:w-[140px] shrink-0 h-fit flex flex-col gap-[10px] justify-start items-center"
             >
               <div
                 aria-hidden="true"
@@ -61,7 +61,7 @@ export function Stepper({ steps, currentStep }: StepperProps) {
                   </span>
                 )}
               </div>
-              <span className={`text-[14px]/[normal] box-border ${state.label} font-inter text-left [white-space:nowrap]`}>
+              <span className={`text-[13px]/[17px] md:text-[14px]/[normal] box-border ${state.label} font-inter text-center md:text-left md:[white-space:nowrap]`}>
                 {label}
               </span>
             </div>

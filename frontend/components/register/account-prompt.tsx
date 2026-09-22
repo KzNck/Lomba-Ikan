@@ -18,13 +18,13 @@ type AccountPromptProps = {
 // "Sudah punya akun? Masuk di sini →" and its mirror on the login page.
 export function AccountPrompt({ question, link, layout = 'hug' }: AccountPromptProps) {
   return (
-    <div className={`box-border ${PROMPT_LAYOUTS[layout]} h-fit shrink-0 flex flex-row gap-[8px] items-center`}>
+    <div className={`box-border ${PROMPT_LAYOUTS[layout]} max-w-full h-fit shrink-0 flex flex-row flex-wrap lg:flex-nowrap gap-x-[8px] lg:gap-[8px] items-center`}>
       <p className="text-[15px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left [white-space:nowrap]">
         {question}
       </p>
       <Link
         href={link.href}
-        className="group box-border w-fit shrink-0 h-fit flex flex-row gap-[6px] p-[10px_4px] justify-start items-center"
+        className="group box-border w-fit shrink-0 h-fit min-h-[44px] lg:min-h-auto flex flex-row gap-[6px] p-[10px_4px] justify-start items-center"
       >
         <span className="text-[15px]/[normal] box-border text-[#0F6CB8] font-inter font-semibold text-left [white-space:nowrap]">
           {link.label}
