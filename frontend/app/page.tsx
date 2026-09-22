@@ -15,7 +15,7 @@ export default function HomePage() {
   return (
     <div className="bg-[#FFFFFF]">
       {/* Full-width frame; content stays on the export's 1440px grid (min width), centred by px-frame. overflow-clip (not hidden) keeps the navbar sticky. */}
-      <div className="box-border w-full min-w-[1440px] h-fit flex flex-col gap-0 justify-start items-start bg-[#FFFFFF] overflow-clip">
+      <div className="box-border w-full lg:min-w-[1440px] h-fit flex flex-col gap-0 justify-start items-start bg-[#FFFFFF] overflow-clip">
         <Navbar
           items={navItems(t)}
           activeHref={`#${SECTION_IDS.home}`}

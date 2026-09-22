@@ -107,6 +107,10 @@
     "marketplace": "Marketplace",
     "notifications": "Notifications",
     "unread": "{label}, {count} unread",
+    "menu": {
+      "open": "Open menu",
+      "close": "Close menu"
+    },
     "roles": {
       "nelayan": "Fisher",
       "pembeli": "Buyer"

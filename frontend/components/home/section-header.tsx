@@ -13,7 +13,7 @@ export function SectionHeader({ eyebrow, title, subtitle, subtitleClassName = ''
       <p className="text-[13px]/[normal] box-border text-[#0F6CB8] font-poppins font-semibold tracking-[1.6px] text-left [white-space:nowrap]">
         {eyebrow}
       </p>
-      <h2 className="text-[40px]/[normal] box-border text-[#0B3B5C] font-poppins font-extrabold text-left [white-space:nowrap]">
+      <h2 className="text-[28px]/[36px] sm:text-[34px]/[42px] lg:text-[40px]/[normal] box-border text-[#0B3B5C] font-poppins font-extrabold text-left text-balance lg:[text-wrap-style:auto] lg:[white-space:nowrap]">
         {title}
       </h2>
       {subtitle && (

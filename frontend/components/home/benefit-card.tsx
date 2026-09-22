@@ -23,12 +23,13 @@ export function BenefitCard({ icon, accent, title, subtitle, image, points }: Be
   const colors = ACCENTS[accent]
 
   return (
-    <div data-reveal className={`box-border [flex:1_1_0] h-[320px] [box-shadow:0px_0px_0px_1px_#0000000F,_0px_1px_2px_-1px_#0000000F,_0px_2px_4px_0px_#0000000A] bg-[#FFFFFF] rounded-[24px] overflow-hidden relative ${CARD_LIFT}`}>
-      <div className="box-border w-[307px] h-[322px] absolute left-[282px] top-[-1px] [z-index:0]">
-        <Image src={image.src} alt={image.alt} fill sizes="307px" className="object-cover object-center" />
+    <div data-reveal className={`box-border w-full lg:w-auto lg:[flex:1_1_0] h-fit lg:h-[320px] flex flex-col lg:block [box-shadow:0px_0px_0px_1px_#0000000F,_0px_1px_2px_-1px_#0000000F,_0px_2px_4px_0px_#0000000A] bg-[#FFFFFF] rounded-[24px] overflow-hidden relative ${CARD_LIFT}`}>
+      {/* Below lg the photo is a band across the top of the card and the copy flows under it. */}
+      <div className="box-border order-first lg:order-none w-full lg:w-[307px] h-[180px] sm:h-[220px] lg:h-[322px] relative lg:absolute lg:left-[282px] lg:top-[-1px] [z-index:0]">
+        <Image src={image.src} alt={image.alt} fill sizes="(min-width: 1024px) 307px, 720px" className="object-cover object-center" />
       </div>
-      <div className="box-border w-[321px] h-[322px] absolute left-[268px] top-[-1px] [background-image:linear-gradient(90deg,_#FFFFFFFF_0%,_#FFFFFFFF_22%,_#FFFFFF00_62%,_#FFFFFF00_100%)] bg-no-repeat bg-[length:100%_100%] [z-index:1]" />
-      <div className="box-border w-[320px] h-fit absolute left-[32px] top-[32px] flex flex-col gap-[28px] justify-start items-start [z-index:2]">
+      <div className="hidden lg:block box-border w-[321px] h-[322px] absolute left-[268px] top-[-1px] [background-image:linear-gradient(90deg,_#FFFFFFFF_0%,_#FFFFFFFF_22%,_#FFFFFF00_62%,_#FFFFFF00_100%)] bg-no-repeat bg-[length:100%_100%] [z-index:1]" />
+      <div className="box-border w-full lg:w-[320px] h-fit relative lg:absolute lg:left-[32px] lg:top-[32px] flex flex-col gap-[24px] lg:gap-[28px] p-[24px] lg:p-0 justify-start items-start [z-index:2]">
         <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[16px] justify-start items-center">
           <div
             className={`box-border w-[56px] shrink-0 h-[56px] flex flex-row gap-0 justify-center items-center ${colors.solid} rounded-[999px]`}

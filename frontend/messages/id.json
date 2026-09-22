@@ -107,6 +107,10 @@
     "marketplace": "Marketplace",
     "notifications": "Notifikasi",
     "unread": "{label}, {count} belum dibaca",
+    "menu": {
+      "open": "Buka menu",
+      "close": "Tutup menu"
+    },
     "roles": {
       "nelayan": "Nelayan",
       "pembeli": "Pembeli"

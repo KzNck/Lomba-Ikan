@@ -19,30 +19,31 @@ type HeroProps = {
 
 export function Hero({ id, eyebrow, headline, subheadline, image, primaryCta, secondaryCta }: HeroProps) {
   return (
-    <section id={id} className="box-border w-full h-[640px] shrink-0 scroll-mt-[80px] bg-[#F3FAFF] overflow-hidden relative">
-      {/* Positions are offsets from the centre of the 1440px grid; the photo and waves bleed to the viewport edges. */}
-      <div className="box-border h-[640px] absolute left-[calc(50%_-_160px)] right-0 top-0 [z-index:0] motion-safe:animate-fade-in">
-        <Image src={image.src} alt={image.alt} fill preload sizes="calc(50vw + 160px)" className="object-cover object-center" />
+    <section id={id} className="box-border w-full h-fit lg:h-[640px] shrink-0 scroll-mt-[80px] flex flex-col lg:block bg-[#F3FAFF] overflow-hidden relative">
+      {/* From lg, positions are offsets from the centre of the 1440px grid; the photo and waves bleed to the viewport
+          edges. Below lg the copy sits on top and the photo runs full width under it, with the waves over its foot. */}
+      <div className="box-border order-2 lg:order-none w-full lg:w-auto h-[320px] sm:h-[420px] lg:h-[640px] relative lg:absolute lg:left-[calc(50%_-_160px)] lg:right-0 lg:top-0 [z-index:0] motion-safe:animate-fade-in">
+        <Image src={image.src} alt={image.alt} fill preload sizes="(min-width: 1024px) calc(50vw + 160px), 100vw" className="object-cover object-center" />
       </div>
-      <div className="box-border w-[400px] h-[640px] absolute left-[calc(50%_-_180px)] top-0 [background-image:linear-gradient(90deg,_#F3FAFFFF_0%,_#F3FAFFFF_32%,_#F3FAFFB3_55%,_#F3FAFF00_100%)] bg-no-repeat bg-[length:100%_100%] [z-index:1]" />
-      <div className="box-border w-[600px] h-fit absolute left-[calc(50%_-_600px)] top-[72px] flex flex-col gap-[20px] justify-start items-start [z-index:2]">
-        <p className="text-[13px]/[normal] box-border text-[#0F6CB8] font-poppins font-semibold tracking-[1.6px] text-left [white-space:nowrap] motion-safe:animate-fade-up">
+      <div className="hidden lg:block box-border w-[400px] h-[640px] absolute left-[calc(50%_-_180px)] top-0 [background-image:linear-gradient(90deg,_#F3FAFFFF_0%,_#F3FAFFFF_32%,_#F3FAFFB3_55%,_#F3FAFF00_100%)] bg-no-repeat bg-[length:100%_100%] [z-index:1]" />
+      <div className="box-border order-1 lg:order-none w-full lg:w-[600px] h-fit relative lg:absolute lg:left-[calc(50%_-_600px)] lg:top-[72px] flex flex-col gap-[16px] lg:gap-[20px] px-[16px] sm:px-[24px] pt-[40px] pb-[32px] sm:pt-[56px] sm:pb-[40px] lg:p-0 justify-start items-start [z-index:2]">
+        <p className="text-[13px]/[normal] box-border text-[#0F6CB8] font-poppins font-semibold tracking-[1.6px] text-left sm:[white-space:nowrap] motion-safe:animate-fade-up">
           {eyebrow}
         </p>
         <h1
-          className="text-[56px]/[63px] box-border w-full text-[#0B3B5C] font-poppins font-extrabold text-left motion-safe:animate-fade-up"
+          className="text-[36px]/[42px] sm:text-[48px]/[55px] lg:text-[56px]/[63px] box-border w-full text-[#0B3B5C] font-poppins font-extrabold text-left text-balance lg:[text-wrap-style:auto] motion-safe:animate-fade-up"
           style={{ animationDelay: '100ms' }}
         >
           {headline}
         </h1>
         <p
-          className="text-[18px]/[29px] box-border w-[540px] text-[#5B6B7C] font-inter font-normal text-left motion-safe:animate-fade-up"
+          className="text-[16px]/[26px] sm:text-[18px]/[29px] box-border w-full max-w-[540px] lg:w-[540px] text-[#5B6B7C] font-inter font-normal text-left motion-safe:animate-fade-up"
           style={{ animationDelay: '200ms' }}
         >
           {subheadline}
         </p>
         <div
-          className="box-border w-fit h-fit shrink-0 flex flex-row gap-[16px] p-[16px_0px_0px_0px] justify-start items-center motion-safe:animate-fade-up"
+          className="box-border w-full sm:w-fit h-fit shrink-0 flex flex-col sm:flex-row gap-[12px] sm:gap-[16px] p-[8px_0px_0px_0px] sm:p-[16px_0px_0px_0px] justify-start items-stretch sm:items-center [&>a]:w-full sm:[&>a]:w-fit motion-safe:animate-fade-up"
           style={{ animationDelay: '300ms' }}
         >
           <PillLink
@@ -59,7 +60,7 @@ export function Hero({ id, eyebrow, headline, subheadline, image, primaryCta, se
         viewBox="0 0 1440 120"
         preserveAspectRatio="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="box-border w-full h-[120px] absolute left-0 top-[520px] overflow-visible [z-index:3] motion-safe:animate-wave-drift"
+        className="box-border w-full h-[120px] absolute left-0 bottom-0 lg:bottom-auto lg:top-[520px] overflow-visible [z-index:3] motion-safe:animate-wave-drift"
         aria-hidden="true"
       >
         <defs>
@@ -79,7 +80,7 @@ export function Hero({ id, eyebrow, headline, subheadline, image, primaryCta, se
         viewBox="0 0 1440 92"
         preserveAspectRatio="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="box-border w-full h-[92px] absolute left-0 top-[548px] overflow-visible [z-index:4] motion-safe:animate-wave-drift"
+        className="box-border w-full h-[92px] absolute left-0 bottom-0 lg:bottom-auto lg:top-[548px] overflow-visible [z-index:4] motion-safe:animate-wave-drift"
         style={{ animationDelay: '-3.5s' }}
         aria-hidden="true"
       >
@@ -99,7 +100,7 @@ export function Hero({ id, eyebrow, headline, subheadline, image, primaryCta, se
         viewBox="0 0 1440 68"
         preserveAspectRatio="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="box-border w-full h-[68px] absolute left-0 top-[572px] overflow-visible [z-index:5]"
+        className="box-border w-full h-[68px] absolute left-0 bottom-0 lg:bottom-auto lg:top-[572px] overflow-visible [z-index:5]"
         aria-hidden="true"
       >
         <path d="M0 46 C 320 74 640 22 940 36 C 1180 46 1320 22 1440 10 L1440 68 L0 68 Z" fill="#F7F9FC" />

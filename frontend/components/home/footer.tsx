@@ -57,26 +57,27 @@ export function Footer({
         </svg>
       </div>
       <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[36px] pt-[24px] pb-[32px] px-frame justify-start items-start bg-[#0F5C82]">
-        <div data-reveal className="box-border w-full h-fit shrink-0 flex flex-row gap-[48px] justify-start items-start">
-          <div className="box-border [flex:1_1_0] h-fit flex flex-col gap-[16px] justify-start items-start">
+        {/* One column on phones, the brand over three columns on tablets; from lg one row. */}
+        <div data-reveal className="box-border w-full h-fit shrink-0 grid grid-cols-1 sm:grid-cols-3 gap-[32px] lg:flex lg:flex-row lg:gap-[48px] justify-start items-start">
+          <div className="box-border sm:col-span-3 [flex:1_1_0] h-fit flex flex-col gap-[16px] justify-start items-start">
             <Logo tone="light" />
-            <p className="text-[14px]/[22px] box-border w-[320px] text-[#D6E9F5] font-inter font-normal text-left">
+            <p className="text-[14px]/[22px] box-border w-full max-w-[320px] lg:w-[320px] text-[#D6E9F5] font-inter font-normal text-left">
               {tagline}
             </p>
           </div>
-          <nav className="box-border w-[200px] shrink-0 h-fit flex flex-col gap-[12px] justify-start items-start">
+          <nav className="box-border w-full lg:w-[200px] shrink-0 h-fit flex flex-col gap-[4px] lg:gap-[12px] justify-start items-start">
             <FooterHeading>{quickLinksHeading}</FooterHeading>
             {quickLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-[14px]/[normal] box-border text-[#D6E9F5] hover:text-[#FFFFFF] transition-colors duration-200 ease-out font-inter font-normal text-left [white-space:nowrap]"
+                className="min-h-[44px] min-w-[44px] flex items-center lg:min-h-auto lg:min-w-auto lg:block text-[14px]/[normal] box-border text-[#D6E9F5] hover:text-[#FFFFFF] transition-colors duration-200 ease-out font-inter font-normal text-left [white-space:nowrap]"
               >
                 {link.label}
               </Link>
             ))}
           </nav>
-          <div className="box-border w-[260px] shrink-0 h-fit flex flex-col gap-[12px] justify-start items-start">
+          <div className="box-border w-full lg:w-[260px] shrink-0 h-fit flex flex-col gap-[12px] justify-start items-start">
             <FooterHeading>{contactHeading}</FooterHeading>
             {contacts.map((contact) => (
               <div
@@ -90,7 +91,7 @@ export function Footer({
               </div>
             ))}
           </div>
-          <div className="box-border w-[160px] shrink-0 h-fit flex flex-col gap-[14px] justify-start items-start">
+          <div className="box-border w-full lg:w-[160px] shrink-0 h-fit flex flex-col gap-[14px] justify-start items-start">
             <FooterHeading>{socialHeading}</FooterHeading>
             <div className="box-border w-fit h-fit shrink-0 flex flex-row gap-[12px] justify-start items-start">
               {socials.map((social) => (
@@ -107,11 +108,11 @@ export function Footer({
           </div>
         </div>
         <div className="box-border w-full h-[1px] shrink-0 bg-[#FFFFFF26]" />
-        <div className="box-border w-full h-fit shrink-0 flex flex-row gap-0 justify-between items-center">
-          <p className="text-[13px]/[normal] box-border text-[#B9D6E8] font-inter font-normal text-left [white-space:nowrap]">
+        <div className="box-border w-full h-fit shrink-0 flex flex-col sm:flex-row gap-[12px] sm:gap-[24px] lg:gap-0 justify-between items-start sm:items-center">
+          <p className="text-[13px]/[normal] box-border text-[#B9D6E8] font-inter font-normal text-left sm:[white-space:nowrap]">
             {copyright}
           </p>
-          <div className="box-border w-fit shrink-0 h-fit flex flex-row gap-[32px] justify-start items-start">
+          <div className="box-border w-fit shrink-0 h-fit flex flex-row flex-wrap lg:flex-nowrap gap-x-[24px] gap-y-[8px] lg:gap-[32px] justify-start items-start">
             {legalItems.map((item, index) => (
               <span
                 key={index}

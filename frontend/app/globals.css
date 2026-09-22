@@ -20,9 +20,18 @@
 }
 
 /* Pen.dev frames are 1440px wide with a 1200px content column. Backgrounds run full width; this padding
-   keeps content in that centred column (exactly 120px at 1440px, wider gutters beyond). */
+   keeps content in that centred column (exactly 120px at 1440px, wider gutters beyond). Phones and tablets,
+   which the frames don't cover, get plain 16px and 24px gutters. */
 @utility px-frame {
-  padding-inline: max(120px, calc((100% - 1200px) / 2));
+  padding-inline: 16px;
+
+  @media (width >= 40rem) {
+    padding-inline: 24px;
+  }
+
+  @media (width >= 64rem) {
+    padding-inline: max(120px, calc((100% - 1200px) / 2));
+  }
 }
 
 /* Motion tokens. Apply with `motion-safe:` so reduced-motion users get the static page. */

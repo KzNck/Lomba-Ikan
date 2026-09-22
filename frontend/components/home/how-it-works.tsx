@@ -15,19 +15,20 @@ export function HowItWorks({ id, eyebrow, title, subtitle, steps }: HowItWorksPr
   return (
     <section
       id={id}
-      className="box-border w-full h-fit shrink-0 scroll-mt-[80px] flex flex-col gap-[40px] pt-[56px] pb-[72px] px-frame justify-start items-start bg-[#F7F9FC]"
+      className="box-border w-full h-fit shrink-0 scroll-mt-[80px] flex flex-col gap-[28px] sm:gap-[32px] lg:gap-[40px] pt-[48px] pb-[56px] lg:pt-[56px] lg:pb-[72px] px-frame justify-start items-start bg-[#F7F9FC]"
     >
       <SectionHeader
         eyebrow={eyebrow}
         title={title}
         subtitle={subtitle}
-        subtitleClassName="text-[17px]/[27px] w-[620px]"
+        subtitleClassName="text-[16px]/[26px] sm:text-[17px]/[27px] w-full max-w-[620px] lg:w-[620px]"
       />
-      <div className="box-border w-full h-[256px] shrink-0 flex flex-row gap-[10px] justify-start items-center">
+      {/* One column on phones, two on tablets; from lg the row of five with arrows between. */}
+      <div className="box-border w-full h-fit lg:h-[256px] shrink-0 grid grid-cols-1 sm:grid-cols-2 gap-[16px] lg:flex lg:flex-row lg:gap-[10px] justify-start items-stretch lg:items-center">
         {steps.map((step, index) => (
           <Fragment key={step.icon}>
             {index > 0 && (
-              <span data-reveal className="box-border w-[20px] shrink-0 h-[20px] flex">
+              <span data-reveal className="hidden lg:flex box-border w-[20px] shrink-0 h-[20px]">
                 <Icon name="arrow-right" fill="#94A3B8" className="box-border w-[20px] shrink-0 h-[20px]" />
               </span>
             )}
