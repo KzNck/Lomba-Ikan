@@ -49,9 +49,13 @@ export function akunNav(t: AkunT) {
 export function profileHeader(t: AkunT, roleLabel: string) {
   return {
     roleLabel,
-    changePhotoLabel: t('changePhoto'),
-    // Photo upload isn't built yet, so the button is shown disabled with this reason.
-    changePhotoUnavailable: t('changePhotoUnavailable'),
+    changePhoto: {
+      label: t('changePhoto'),
+      pending: t('changePhotoPending'),
+      saved: t('changePhotoSaved'),
+      invalid: t('changePhotoInvalid'),
+      failed: t('changePhotoFailed'),
+    },
   }
 }
 

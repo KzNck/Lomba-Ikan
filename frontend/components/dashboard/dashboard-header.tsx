@@ -1,12 +1,11 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 import { Icon } from '@/components/ui/icon'
 import { AccountMenu } from '@/components/dashboard/account-menu'
 import { LanguageSwitcher } from '@/components/ui/language-switcher'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
-import type { ImageContent } from '@/components/home/hero'
 import { OUTLINE_HOVER, PRESS } from '@/components/ui/interaction'
+import { UserAvatar } from '@/components/dashboard/user-avatar'
 
 type DashboardHeaderProps = {
   // The time-of-day greeting on the Dashboard; the page's own title everywhere else.
@@ -15,8 +14,8 @@ type DashboardHeaderProps = {
   // The waving hand, which belongs to the Dashboard's greeting only.
   wave?: boolean
   notifications: { href: string; unreadCount: number }
-  // Profiles carry no photo, so the avatar falls back to initials like the sidebar's.
-  user: { name: string; initials: string; avatar?: ImageContent }
+  // The avatar shows the profile photo when there is one (UserAvatar reads it from the session), else the initials.
+  user: { name: string; initials: string }
   // Where the account menu's "Akun" item goes.
   accountHref?: string
 }
@@ -83,13 +82,14 @@ export function DashboardHeader({
             triggerClassName={`box-border w-fit shrink-0 h-fit flex flex-row gap-[12px] p-[4px] m-[-4px] justify-start items-center rounded-[999px] cursor-pointer hover:bg-[#F3FAFF] transition-colors duration-200 ease-out ${FOCUS_RING}`}
           >
             <span className="box-border w-[40px] shrink-0 h-[40px] [border:1px_solid_#0000001A] rounded-[999px] overflow-hidden relative flex flex-row gap-0 justify-center items-center bg-[#DCEEFB]">
-              {user.avatar ? (
-                <Image src={user.avatar.src} alt={user.avatar.alt} fill sizes="40px" className="object-cover object-center" />
-              ) : (
-                <span aria-hidden="true" className="text-[14px]/[normal] box-border text-[#0F6CB8] font-poppins font-semibold text-left [white-space:nowrap]">
-                  {user.initials}
-                </span>
-              )}
+              <UserAvatar
+                sizes="40px"
+                fallback={
+                  <span aria-hidden="true" className="text-[14px]/[normal] box-border text-[#0F6CB8] font-poppins font-semibold text-left [white-space:nowrap]">
+                    {user.initials}
+                  </span>
+                }
+              />
             </span>
             <span title={user.name} className="hidden sm:block text-[14px]/[normal] box-border max-w-[220px] text-[#0B3B5C] font-inter font-semibold text-left truncate">
               {user.name}

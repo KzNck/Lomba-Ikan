@@ -64,7 +64,7 @@ export default async function NelayanAkunPage() {
                 roleLabel={PROFILE_HEADER.roleLabel}
                 email={profile.email}
                 location={ppiLabel(profile.ppi, PROFILE_HEADER.noPpi)}
-                changePhoto={{ label: PROFILE_HEADER.changePhotoLabel, unavailable: PROFILE_HEADER.changePhotoUnavailable }}
+                changePhoto={PROFILE_HEADER.changePhoto}
               />
               <AccountInfoForm initialValues={profile} action={saveAccount} />
             </section>

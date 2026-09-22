@@ -1,5 +1,6 @@
 import { Logo } from '@/components/ui/logo'
 import { AccountMenu } from '@/components/dashboard/account-menu'
+import { UserAvatar } from '@/components/dashboard/user-avatar'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
 import { SidebarNav, type SidebarNavItem, type SidebarNotifications } from '@/components/dashboard/sidebar-nav'
 import { BottomTabBar } from '@/components/dashboard/bottom-tab-bar'
@@ -45,10 +46,15 @@ export function Sidebar({ role, nav, notifications, user, accountHref }: Sidebar
             chevronFill="#D6E9F5"
             triggerClassName={`box-border w-full h-fit flex flex-row gap-[12px] p-[12px] justify-start items-center bg-[#FFFFFF14] hover:bg-[#FFFFFF24] [border:1px_solid_#FFFFFF1F] rounded-[12px] cursor-pointer transition-colors duration-200 ease-out ${FOCUS_RING}`}
           >
-            <span className="box-border w-[40px] shrink-0 h-[40px] flex flex-row gap-0 justify-center items-center bg-[#168BE5] rounded-[999px]">
-              <span aria-hidden="true" className="text-[14px]/[normal] box-border text-[#FFFFFF] font-poppins font-semibold text-left [white-space:nowrap]">
-                {user.initials}
-              </span>
+            <span className="box-border w-[40px] shrink-0 h-[40px] flex flex-row gap-0 justify-center items-center bg-[#168BE5] rounded-[999px] overflow-hidden relative">
+              <UserAvatar
+                sizes="40px"
+                fallback={
+                  <span aria-hidden="true" className="text-[14px]/[normal] box-border text-[#FFFFFF] font-poppins font-semibold text-left [white-space:nowrap]">
+                    {user.initials}
+                  </span>
+                }
+              />
             </span>
             <span className="box-border [flex:1_1_0] min-w-0 h-fit flex flex-col gap-[2px] justify-start items-start">
               {/* One line: a name longer than the card ends in an ellipsis, with the full name on hover. */}
