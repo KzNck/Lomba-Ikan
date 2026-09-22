@@ -48,7 +48,7 @@ export function hero(t: LandingT) {
       alt: t('hero.imageAlt'),
     },
     primaryCta: { href: '/auth/register/nelayan', label: t('hero.primaryCta') },
-    secondaryCta: { href: '/auth/register?role=pembeli', label: t('hero.secondaryCta') },
+    secondaryCta: { href: '/auth/register/pembeli', label: t('hero.secondaryCta') },
   }
 }
 
