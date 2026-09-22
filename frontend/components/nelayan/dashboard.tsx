@@ -1,4 +1,4 @@
-import { DashboardHeader } from '@/components/nelayan/dashboard-header'
+import { DashboardHeader } from '@/components/dashboard/dashboard-header'
 import { SummaryCard } from '@/components/nelayan/summary-card'
 import { QuickActionCard } from '@/components/nelayan/quick-action-card'
 import { ListingSection } from '@/components/nelayan/listing-section'

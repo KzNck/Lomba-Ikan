@@ -1,4 +1,4 @@
-import { DashboardHeader } from '@/components/nelayan/dashboard-header'
+import { DashboardHeader } from '@/components/dashboard/dashboard-header'
 import { MainDecoration } from '@/components/nelayan/main-decoration'
 import { AccountInfoForm } from '@/components/nelayan/account-info-form'
 import { AccountSubnav } from '@/components/pembeli/account-subnav'

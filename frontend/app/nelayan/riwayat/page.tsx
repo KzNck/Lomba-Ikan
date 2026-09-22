@@ -1,4 +1,4 @@
-import { DashboardHeader } from '@/components/nelayan/dashboard-header'
+import { DashboardHeader } from '@/components/dashboard/dashboard-header'
 import { MainDecoration } from '@/components/nelayan/main-decoration'
 import { EmptyState } from '@/components/nelayan/empty-state'
 import { RiwayatFilters } from '@/components/nelayan/riwayat-filters'

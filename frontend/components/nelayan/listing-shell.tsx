@@ -1,4 +1,4 @@
-import { DashboardHeader } from '@/components/nelayan/dashboard-header'
+import { DashboardHeader } from '@/components/dashboard/dashboard-header'
 import { MainDecoration } from '@/components/nelayan/main-decoration'
 import { useTranslations } from 'next-intl'
 import { dashboardCopy } from '@/components/nelayan/content'

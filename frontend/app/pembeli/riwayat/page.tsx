@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server'
-import { TopBar } from '@/components/pembeli/top-bar'
+import { DashboardHeader } from '@/components/dashboard/dashboard-header'
+import { initialsOf } from '@/lib/nelayan/dashboard-data'
 import { EmptyState } from '@/components/nelayan/empty-state'
 import { RiwayatFilters } from '@/components/nelayan/riwayat-filters'
 import { TransactionTable } from '@/components/nelayan/transaction-table'
@@ -51,9 +52,13 @@ export default async function PembeliRiwayatPage({
 
   return (
     <div className="box-border [flex:1_1_0] flex flex-col gap-0 justify-start items-start relative">
-      <div className="box-border w-full h-fit shrink-0 p-[16px_16px_0px_16px] sm:p-[24px_24px_0px_24px] lg:p-[32px_32px_0px_32px]">
-        <TopBar greeting={RIWAYAT_PAGE.title} subtitle={RIWAYAT_PAGE.subtitle} notifications={PEMBELI_NOTIFICATIONS} user={{ name }} />
-      </div>
+      <DashboardHeader
+        title={RIWAYAT_PAGE.title}
+        subtitle={RIWAYAT_PAGE.subtitle}
+        notifications={PEMBELI_NOTIFICATIONS}
+        user={{ name, initials: initialsOf(name) }}
+        accountHref="/pembeli/akun"
+      />
       {/* From lg the drawer docks to the right of this area, under the top bar, and the content makes room for it
           (400px + 24px). Below lg it covers the screen (phones) or slides over the right edge (tablets). */}
       <div className="box-border w-full [flex:1_1_0] flex flex-col gap-0 justify-start items-start relative">

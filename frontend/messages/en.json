@@ -666,7 +666,7 @@
     },
     "pembeli": {
       "home": {
-        "greeting": "Welcome, {name} 👋",
+        "greeting": "Welcome, {name}",
         "subtitle": "Find quality seafood for your business needs.",
         "recommendationsTitle": "Recommended for Your Preferences",
         "recommendationsDescription": "The best catches we picked for your needs and location.",

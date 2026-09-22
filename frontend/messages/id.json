@@ -666,7 +666,7 @@
     },
     "pembeli": {
       "home": {
-        "greeting": "Selamat datang, {name} 👋",
+        "greeting": "Selamat datang, {name}",
         "subtitle": "Temukan hasil laut berkualitas untuk kebutuhan bisnis Anda.",
         "recommendationsTitle": "Rekomendasi Sesuai Preferensi Anda",
         "recommendationsDescription": "Kami pilihkan hasil laut terbaik berdasarkan kebutuhan dan lokasi Anda.",
