@@ -55,7 +55,8 @@ const ERROR_BORDERS = {
 }
 
 const VALUE_CLASSES =
-  'text-[15px]/[normal] box-border [flex:1_1_0] min-w-0 self-stretch bg-transparent outline-none font-inter font-normal text-left'
+  // 16px below lg so iOS Safari doesn't zoom the page when a field takes focus.
+  'text-[16px]/[normal] lg:text-[15px]/[normal] box-border [flex:1_1_0] min-w-0 self-stretch bg-transparent outline-none font-inter font-normal text-left'
 
 export function FormField({
   kind,

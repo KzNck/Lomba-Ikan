@@ -18,7 +18,7 @@ type ChipProps = {
 export function Chip({ name, value, label, defaultChecked }: ChipProps) {
   return (
     <label
-      className={`group box-border w-fit shrink-0 h-fit flex flex-row gap-[8px] p-[10px_16px_10px_12px] justify-start items-center ${CHIP_STATES} rounded-[999px] cursor-pointer transition-colors duration-200 ease-out`}
+      className={`group box-border w-fit shrink-0 h-fit min-h-[44px] lg:min-h-auto flex flex-row gap-[8px] p-[10px_16px_10px_12px] justify-start items-center ${CHIP_STATES} rounded-[999px] cursor-pointer transition-colors duration-200 ease-out`}
     >
       <input type="checkbox" name={name} value={value} defaultChecked={defaultChecked} className="sr-only" />
       <Icon

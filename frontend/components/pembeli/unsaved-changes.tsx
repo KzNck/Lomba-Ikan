@@ -88,18 +88,18 @@ export function UnsavedChangesProvider({ dialog, children }: { dialog: DialogCop
         onClose={() => {
           if (!savingThenLeaving) setPendingHref(null)
         }}
-        className="m-auto max-w-none max-h-none p-0 border-0 bg-transparent overflow-visible backdrop:bg-[#0B3B5CA6] w-[420px] rounded-[24px] [box-shadow:0px_16px_48px_0px_#0B3B5C33] motion-safe:animate-fade-up"
+        className="m-auto max-w-none max-h-none p-0 border-0 bg-transparent overflow-visible backdrop:bg-[#0B3B5CA6] w-[calc(100%-32px)] sm:w-[420px] rounded-[24px] [box-shadow:0px_16px_48px_0px_#0B3B5C33] motion-safe:animate-fade-up"
       >
-        <div className="box-border w-full h-fit flex flex-col gap-[20px] p-[28px] justify-start items-start bg-[#FFFFFF] rounded-[24px]">
+        <div className="box-border w-full h-fit flex flex-col gap-[20px] p-[20px] sm:p-[28px] justify-start items-start bg-[#FFFFFF] rounded-[24px]">
           <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[6px] justify-start items-start">
-            <h2 id="unsaved-title" className="text-[20px]/[normal] box-border text-[#0B3B5C] font-poppins font-semibold text-left [white-space:nowrap]">
+            <h2 id="unsaved-title" className="text-[20px]/[normal] box-border text-[#0B3B5C] font-poppins font-semibold text-left sm:[white-space:nowrap]">
               {dialog.title}
             </h2>
             <p id="unsaved-body" className="text-[14px]/[21px] box-border w-full text-[#5B6B7C] font-inter font-normal text-left">
               {dialog.body}
             </p>
           </div>
-          <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[12px] justify-end items-start">
+          <div className="box-border w-full h-fit shrink-0 flex flex-row flex-wrap sm:flex-nowrap gap-[12px] justify-end items-start">
             <button
               type="button"
               onClick={() => pendingHref && leave(pendingHref)}

@@ -19,7 +19,7 @@ export function PpiMiniMap(props: PpiMiniMapProps) {
   return (
     <div
       aria-hidden="true"
-      className="box-border w-[140px] shrink-0 h-[88px] [border:1px_solid_#E2E8F0] rounded-[10px] overflow-hidden relative isolate bg-[#DCEEFB]"
+      className="box-border w-[104px] sm:w-[140px] shrink-0 h-[88px] [border:1px_solid_#E2E8F0] rounded-[10px] overflow-hidden relative isolate bg-[#DCEEFB]"
     >
       <PpiMiniMapCanvas {...props} />
     </div>

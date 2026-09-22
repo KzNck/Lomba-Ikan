@@ -125,26 +125,27 @@ export function MarketplaceView({
     })
 
   return (
-    <div className="box-border [flex:1_1_0] flex flex-col gap-[20px] p-[24px_32px_32px_32px] justify-start items-start">
-      <header className="box-border w-full h-fit shrink-0 flex flex-row gap-[20px] justify-start items-center">
+    <div className="box-border [flex:1_1_0] flex flex-col gap-[16px] lg:gap-[20px] p-[16px] sm:p-[24px] lg:p-[24px_32px_32px_32px] justify-start items-start">
+      {/* Below lg the account controls come first, then search, then sort, each wrapping onto its own line. */}
+      <header className="box-border w-full h-fit shrink-0 flex flex-row flex-wrap lg:flex-nowrap gap-[12px] lg:gap-[20px] justify-start items-center">
         <MarketplaceSearch action={MARKETPLACE_PATH} query={query.q} hidden={hiddenFields(query, 'q')} {...MARKETPLACE.search} />
         <SortMenu label={sortLabel} options={sortOptions} />
         <TopBarActions notifications={PEMBELI_NOTIFICATIONS} user={user} />
       </header>
       <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[4px] justify-start items-start">
-        <h1 className="text-[28px]/[32px] box-border text-[#0B3B5C] font-poppins font-bold text-left [white-space:nowrap]">{MARKETPLACE.title}</h1>
-        <p className="text-[15px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left [white-space:nowrap]">{MARKETPLACE.subtitle}</p>
+        <h1 className="text-[24px]/[30px] lg:text-[28px]/[32px] box-border text-[#0B3B5C] font-poppins font-bold text-left lg:[white-space:nowrap]">{MARKETPLACE.title}</h1>
+        <p className="text-[15px]/[22px] lg:text-[15px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left lg:[white-space:nowrap]">{MARKETPLACE.subtitle}</p>
       </div>
       <FilterBar label={MARKETPLACE.filtersLabel} filters={filterChips(query, copy)} reset={reset} />
       {/* Stretched (the export has items-start) so the map runs the column's full height. */}
-      <div className="box-border w-full [flex:1_1_0] flex flex-row gap-[20px] justify-start items-stretch">
+      <div className="box-border w-full [flex:1_1_0] flex flex-col lg:flex-row gap-[20px] justify-start items-stretch">
         <section className="box-border [flex:1_1_0] min-w-0 h-fit flex flex-col gap-[14px] justify-start items-start">
-          <h2 className="text-[15px]/[normal] box-border text-[#0B3B5C] font-poppins font-semibold text-left [white-space:nowrap]">
+          <h2 className="text-[15px]/[normal] box-border text-[#0B3B5C] font-poppins font-semibold text-left lg:[white-space:nowrap]">
             {MARKETPLACE.resultCount(batches.length, query.ppi)}
           </h2>
           {batches.length > 0 ? (
             // The export lays the cards out in rows of three; a grid keeps a short last row at the same card width.
-            <ul className="box-border w-full h-fit shrink-0 grid grid-cols-3 gap-[14px] justify-start items-start">
+            <ul className="box-border w-full h-fit shrink-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[14px] justify-start items-start">
               {batches.map((batch, index) => (
                 <li key={batch.href} className="box-border min-w-0 flex">
                   <ProductCard

@@ -14,7 +14,7 @@ export function ArrowLink({ href, label, size }: NavItem & { size: keyof typeof 
   return (
     <Link
       href={href}
-      className={`group box-border w-fit shrink-0 h-fit flex flex-row ${SIZES[size].gap} justify-start items-center rounded-[4px] ${FOCUS_RING}`}
+      className={`group box-border w-fit shrink-0 h-fit min-h-[44px] lg:min-h-auto flex flex-row ${SIZES[size].gap} justify-start items-center rounded-[4px] ${FOCUS_RING}`}
     >
       <span className="text-[13px]/[normal] box-border text-[#0F6CB8] font-poppins font-semibold text-left [white-space:nowrap]">{label}</span>
       <Icon name="arrow-right" fill="#0F6CB8" className={`box-border ${SIZES[size].icon} shrink-0 ${ARROW_NUDGE_RIGHT}`} />

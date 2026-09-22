@@ -214,7 +214,7 @@ function MapButton({ label, icon, onClick, disabled, className }: MapButtonProps
       title={label}
       onClick={onClick}
       disabled={disabled}
-      className={`box-border w-[40px] h-[40px] shrink-0 flex flex-row gap-0 justify-center items-center bg-[#FFFFFF] hover:bg-[#F3FAFF] cursor-pointer disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-[#FFFFFF] ${className} ${FOCUS_RING}`}
+      className={`box-border w-[44px] h-[44px] lg:w-[40px] lg:h-[40px] shrink-0 flex flex-row gap-0 justify-center items-center bg-[#FFFFFF] hover:bg-[#F3FAFF] cursor-pointer disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-[#FFFFFF] ${className} ${FOCUS_RING}`}
     >
       <Icon name={icon} fill="#0B3B5C" className="box-border w-[18px] shrink-0 h-[18px]" />
     </button>

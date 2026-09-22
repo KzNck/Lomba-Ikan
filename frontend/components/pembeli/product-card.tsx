@@ -53,7 +53,7 @@ const STATUS_STYLES = {
 // The dashboard's fixed 230px recommendation tile, or the marketplace's grid card: a third of the row, 8px gaps and
 // a cart on the action.
 const VARIANTS = {
-  recommendation: { card: 'w-[230px] shrink-0 gap-[10px]', actionIcon: 'arrow-right', sizes: '206px' },
+  recommendation: { card: 'w-full lg:w-[230px] shrink-0 gap-[10px]', actionIcon: 'arrow-right', sizes: '(min-width: 1024px) 206px, 343px' },
   marketplace: { card: '[flex:1_1_0] min-w-0 gap-[8px]', actionIcon: 'shopping-cart', sizes: '240px' },
 } as const
 
@@ -121,7 +121,7 @@ export function ProductCard({
         <button
           type="button"
           disabled
-          className="box-border w-full h-[36px] shrink-0 flex flex-row gap-[6px] justify-center items-center bg-[#F7F9FC] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[999px] cursor-not-allowed"
+          className="box-border w-full h-[44px] lg:h-[36px] shrink-0 flex flex-row gap-[6px] justify-center items-center bg-[#F7F9FC] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[999px] cursor-not-allowed"
         >
           <span className="text-[13px]/[normal] box-border text-[#5B6B7C] font-poppins font-semibold text-left [white-space:nowrap]">{actionLabel}</span>
           <Icon name="ban" fill="#5B6B7C" className="box-border w-[14px] shrink-0 h-[14px]" />
@@ -130,7 +130,7 @@ export function ProductCard({
         <Link
           href={href}
           aria-label={`${actionLabel} ${name}`}
-          className={`group box-border w-full h-[36px] shrink-0 flex flex-row gap-[6px] justify-center items-center bg-[#F3FAFF] [outline:1px_solid_#DCEEFB] [outline-offset:-0.5px] rounded-[999px] ${PRESS_WIDE} ${FOCUS_RING}`}
+          className={`group box-border w-full h-[44px] lg:h-[36px] shrink-0 flex flex-row gap-[6px] justify-center items-center bg-[#F3FAFF] [outline:1px_solid_#DCEEFB] [outline-offset:-0.5px] rounded-[999px] ${PRESS_WIDE} ${FOCUS_RING}`}
         >
           <span className="text-[13px]/[normal] box-border text-[#0F6CB8] font-poppins font-semibold text-left [white-space:nowrap]">{actionLabel}</span>
           <Icon

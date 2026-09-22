@@ -47,7 +47,7 @@ function LanguageOptions({ onSwitched }: LanguageOptionsProps) {
             disabled={pending}
             data-language-active={active || undefined}
             onClick={() => choose(code)}
-            className={`box-border w-full h-[40px] shrink-0 flex flex-row gap-[10px] p-[0px_12px] justify-start items-center rounded-[8px] cursor-pointer hover:bg-[#F7F9FC] disabled:cursor-wait disabled:opacity-70 transition-colors duration-150 ease-out ${FOCUS_RING}`}
+            className={`box-border w-full h-[44px] lg:h-[40px] shrink-0 flex flex-row gap-[10px] p-[0px_12px] justify-start items-center rounded-[8px] cursor-pointer hover:bg-[#F7F9FC] disabled:cursor-wait disabled:opacity-70 transition-colors duration-150 ease-out ${FOCUS_RING}`}
           >
             <span
               className={`text-[14px]/[normal] box-border [flex:1_1_0] text-[#0B3B5C] font-poppins ${active ? 'font-semibold' : 'font-medium'} text-left [white-space:nowrap]`}

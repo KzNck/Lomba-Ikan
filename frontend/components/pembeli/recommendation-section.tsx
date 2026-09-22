@@ -18,25 +18,26 @@ const BOAT_PATH = 'M61.44001 48.25724c5.64-3.66 9.71999-9.06 12.23998-17.28001l-
 // grid for any number of cards. With no items it shows the "Rekomendasi kosong" state under the same banner.
 export function RecommendationSection({ title, description, viewAll, items, empty }: RecommendationSectionProps) {
   return (
-    <section className="box-border w-[754px] shrink-0 h-fit flex flex-col gap-0 justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[20px] overflow-hidden">
-      <div className="box-border w-full h-[150px] shrink-0 [background-image:linear-gradient(180deg,_#DCEEFB_0%,_#F3FAFF_70%,_#FFFFFF_100%)] bg-no-repeat bg-[length:100%_100%] relative">
+    <section className="box-border w-full lg:w-[754px] shrink-0 h-fit flex flex-col gap-0 justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[20px] overflow-hidden">
+      <div className="box-border w-full h-fit lg:h-[150px] shrink-0 [background-image:linear-gradient(180deg,_#DCEEFB_0%,_#F3FAFF_70%,_#FFFFFF_100%)] bg-no-repeat bg-[length:100%_100%] relative">
         <BannerDecoration />
-        <div className="box-border w-[710px] h-fit absolute left-[22px] top-[22px] flex flex-row gap-[14px] justify-start items-start [z-index:1]">
+        <div className="box-border w-full lg:w-[710px] h-fit relative lg:absolute lg:left-[22px] lg:top-[22px] flex flex-row gap-[14px] p-[18px] lg:p-0 justify-start items-start [z-index:1]">
           <div className="box-border w-[40px] shrink-0 h-[40px] flex flex-row gap-0 justify-center items-center bg-[#FFFFFF] rounded-[999px]">
             <Icon name="sparkles" fill="#0F6CB8" className="box-border w-[22px] shrink-0 h-[22px]" />
           </div>
           <div className="box-border [flex:1_1_0] h-fit flex flex-col gap-[6px] justify-start items-start">
-            <div className="box-border w-full h-fit shrink-0 flex flex-row gap-0 justify-between items-center">
-              <h2 className="text-[19px]/[normal] box-border text-[#0F5C82] font-poppins font-semibold text-left [white-space:nowrap]">{title}</h2>
+            <div className="box-border w-full h-fit shrink-0 flex flex-row flex-wrap lg:flex-nowrap gap-x-[12px] lg:gap-0 justify-between items-center">
+              <h2 className="text-[19px]/[normal] box-border text-[#0F5C82] font-poppins font-semibold text-left lg:[white-space:nowrap]">{title}</h2>
               <ArrowLink {...viewAll} size="md" />
             </div>
-            <p className="text-[14px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left [white-space:nowrap]">{description}</p>
+            <p className="text-[14px]/[20px] lg:text-[14px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left lg:[white-space:nowrap]">{description}</p>
           </div>
         </div>
       </div>
       <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[14px] p-[0px_18px_18px_18px] justify-start items-start">
+        {/* One card per row on phones, two on tablets; from lg the fixed 230px tiles wrap as before. */}
         {items.length > 0 ? (
-          <div className="box-border w-full h-fit shrink-0 flex flex-row flex-wrap gap-[14px] justify-start items-start">
+          <div className="box-border w-full h-fit shrink-0 grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-row lg:flex-wrap gap-[14px] justify-start items-start">
             {items.map((item) => (
               <ProductCard key={item.href} {...item} />
             ))}
@@ -52,7 +53,7 @@ export function RecommendationSection({ title, description, viewAll, items, empt
 // Waves and a faded boat in the banner's bottom-right corner.
 function BannerDecoration() {
   return (
-    <div aria-hidden="true" className="box-border w-[374px] h-[110px] absolute left-[380px] top-[40px] [z-index:0]">
+    <div aria-hidden="true" className="hidden lg:block box-border w-[374px] h-[110px] absolute left-[380px] top-[40px] [z-index:0]">
       <svg
         viewBox="0 0 374 110"
         preserveAspectRatio="none"

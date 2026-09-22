@@ -24,7 +24,8 @@ type BatchDrawerProps = {
 const TITLE_ID = 'batch-drawer-title'
 
 // "Detail Drawer": a 480px panel docked right over the marketplace, on the "Scrim". It's a native modal <dialog>
-// (see ModalDialog), so the page behind is inert and focus starts on the close button. The export fixes it at the
+// (see ModalDialog), so the page behind is inert and focus starts on the close button. On phones it fills the width;
+// from sm it is the 480px panel, so the layout inside goes back to the design at sm and only tap targets wait for lg. The export fixes it at the
 // 1440×1024 frame's height; here it takes the window's height, the body scrolls and the buy footer stays put.
 export function BatchDrawer({ batch, closeHref, similarHref, buyAction }: BatchDrawerProps) {
   const { BATCH_DRAWER, CATEGORIES, CONDITIONS, PPI_MAP } = marketplaceCopy(
@@ -43,10 +44,10 @@ export function BatchDrawer({ batch, closeHref, similarHref, buyAction }: BatchD
       closeHref={closeHref}
       labelledBy={TITLE_ID}
       dismissOnBackdrop
-      className="m-0 ms-auto w-[480px] h-dvh max-h-dvh [box-shadow:-24px_0px_48px_0px_#0B3B5C40] motion-safe:animate-fade-in"
+      className="m-0 ms-auto w-full sm:w-[480px] h-dvh max-h-dvh [box-shadow:-24px_0px_48px_0px_#0B3B5C40] motion-safe:animate-fade-in"
     >
       <div className="box-border w-full h-full flex flex-col gap-0 justify-start items-start bg-[#FFFFFF] overflow-hidden">
-        <header className="box-border w-full h-fit shrink-0 flex flex-row gap-[16px] p-[24px_24px_16px_24px] justify-start items-start">
+        <header className="box-border w-full h-fit shrink-0 flex flex-row gap-[16px] p-[16px_16px_12px_16px] sm:p-[24px_24px_16px_24px] justify-start items-start">
           <div className="box-border [flex:1_1_0] h-fit flex flex-col gap-[8px] justify-start items-start">
             <DetailChip icon="fish" label={category} size="sm" />
             <h2 id={TITLE_ID} className="text-[24px]/[29px] box-border w-full text-[#0B3B5C] font-poppins font-bold text-left">
@@ -68,12 +69,12 @@ export function BatchDrawer({ batch, closeHref, similarHref, buyAction }: BatchD
             href={closeHref}
             scroll={false}
             aria-label={BATCH_DRAWER.closeLabel}
-            className={`box-border w-[40px] shrink-0 h-[40px] flex flex-row gap-0 justify-center items-center bg-[#F7F9FC] hover:bg-[#E3F0F9] rounded-[999px] ${PRESS} ${FOCUS_RING}`}
+            className={`box-border w-[44px] shrink-0 h-[44px] lg:w-[40px] lg:h-[40px] flex flex-row gap-0 justify-center items-center bg-[#F7F9FC] hover:bg-[#E3F0F9] rounded-[999px] ${PRESS} ${FOCUS_RING}`}
           >
             <Icon name="x" fill="#0B3B5C" className="box-border w-[20px] shrink-0 h-[20px]" />
           </Link>
         </header>
-        <div className="box-border w-full [flex:1_1_0] min-h-0 flex flex-col gap-[14px] p-[0px_24px_16px_24px] justify-start items-start overflow-y-auto overscroll-contain">
+        <div className="box-border w-full [flex:1_1_0] min-h-0 flex flex-col gap-[14px] p-[0px_16px_16px_16px] sm:p-[0px_24px_16px_24px] justify-start items-start overflow-y-auto overscroll-contain">
           <PhotoCarousel
             label={batch.name}
             photos={detail.photos}
@@ -81,7 +82,7 @@ export function BatchDrawer({ batch, closeHref, similarHref, buyAction }: BatchD
             nextLabel={BATCH_DRAWER.photoNextLabel}
             counterLabels={detail.photos.map((_, index) => BATCH_DRAWER.photoCounter(index + 1, detail.photos.length))}
           />
-          <dl className="box-border w-full h-fit shrink-0 flex flex-row gap-0 p-[4px_0px] justify-start items-start">
+          <dl className="box-border w-full h-fit shrink-0 flex flex-col sm:flex-row gap-[12px] sm:gap-0 p-[4px_0px] justify-start items-stretch sm:items-start">
             <KeyFigure icon="package" label={BATCH_DRAWER.weightLabel} value={batch.weight} />
             <KeyFigure icon="wallet" label={BATCH_DRAWER.totalLabel} value={batch.totalPrice} sub={batch.price} divided />
           </dl>
@@ -97,10 +98,10 @@ export function BatchDrawer({ batch, closeHref, similarHref, buyAction }: BatchD
             title={BATCH_DRAWER.locationTitle}
             aside={location && <PpiMiniMap lat={location.lat} lng={location.lng} tiles={PPI_MAP.tiles} />}
           >
-            <p className="text-[14px]/[normal] box-border text-[#0F5C82] font-poppins font-semibold text-left [white-space:nowrap]">{batch.location}</p>
+            <p className="text-[14px]/[normal] box-border text-[#0F5C82] font-poppins font-semibold text-left sm:[white-space:nowrap]">{batch.location}</p>
             {/* Only shown once both PPIs have coordinates — see distanceFrom in lib/marketplace/batches.ts. */}
             {batch.distanceKm !== null && (
-              <p className="text-[13px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left [white-space:nowrap]">
+              <p className="text-[13px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left sm:[white-space:nowrap]">
                 {BATCH_DRAWER.distance(batch.distanceKm)}
               </p>
             )}
@@ -116,7 +117,7 @@ export function BatchDrawer({ batch, closeHref, similarHref, buyAction }: BatchD
             </dl>
           </DetailSection>
         </div>
-        <footer className="box-border w-full h-fit shrink-0 flex flex-col gap-[12px] p-[16px_24px_24px_24px] justify-start items-start bg-[#FFFFFF] [border-width:1px_0px_0px_0px] [border-style:solid] [border-color:#E2E8F0]">
+        <footer className="box-border w-full h-fit shrink-0 flex flex-col gap-[12px] p-[16px] sm:p-[16px_24px_24px_24px] justify-start items-start bg-[#FFFFFF] [border-width:1px_0px_0px_0px] [border-style:solid] [border-color:#E2E8F0]">
           {sold ? (
             <>
               <div role="alert" className="box-border w-full h-fit shrink-0 flex flex-row gap-[12px] p-[16px] justify-start items-start bg-[#FFF4E0] rounded-[14px]">
@@ -171,7 +172,7 @@ type KeyFigureProps = {
 function KeyFigure({ icon, label, value, sub, divided }: KeyFigureProps) {
   return (
     <div
-      className={`box-border [flex:1_1_0] h-fit flex flex-row gap-[12px] justify-start items-start ${divided ? 'p-[0px_0px_0px_16px] [border-width:0px_0px_0px_1px] [border-style:solid] [border-color:#E2E8F0]' : ''}`}
+      className={`box-border [flex:1_1_0] h-fit flex flex-row gap-[12px] justify-start items-start ${divided ? 'p-[12px_0px_0px_0px] sm:p-[0px_0px_0px_16px] [border-width:1px_0px_0px_0px] sm:[border-width:0px_0px_0px_1px] [border-style:solid] [border-color:#E2E8F0]' : ''}`}
     >
       <div className="box-border w-[40px] shrink-0 h-[40px] flex flex-row gap-0 justify-center items-center bg-[#F3FAFF] rounded-[999px]">
         <Icon name={icon} fill="#0F6CB8" className="box-border w-[20px] shrink-0 h-[20px]" />
@@ -188,7 +189,7 @@ function KeyFigure({ icon, label, value, sub, divided }: KeyFigureProps) {
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[12px] justify-start items-start">
-      <dt className="text-[13px]/[normal] box-border w-[130px] shrink-0 text-[#5B6B7C] font-inter font-normal text-left">{label}</dt>
+      <dt className="text-[13px]/[normal] box-border w-[104px] sm:w-[130px] shrink-0 text-[#5B6B7C] font-inter font-normal text-left">{label}</dt>
       <dd className="text-[13px]/[normal] box-border [flex:1_1_0] text-[#0B3B5C] font-inter font-medium text-left">{value}</dd>
     </div>
   )

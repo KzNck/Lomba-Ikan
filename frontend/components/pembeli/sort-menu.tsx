@@ -23,7 +23,7 @@ export function SortMenu({ label, options }: SortMenuProps) {
   const { open, setOpen, rootRef, buttonProps, panelProps } = usePopover()
 
   return (
-    <div ref={rootRef} className="box-border w-fit shrink-0 h-fit relative">
+    <div ref={rootRef} className="box-border order-2 lg:order-none w-fit shrink-0 h-fit relative">
       <button
         {...buttonProps}
         className={`box-border w-fit shrink-0 h-[48px] flex flex-row gap-[8px] p-[0px_14px] justify-start items-center bg-[#FFFFFF] [outline:1px_solid_#7F8FA4] [outline-offset:-0.5px] rounded-[12px] cursor-pointer transition-colors duration-200 ease-out ${OUTLINE_HOVER} ${FOCUS_RING}`}
@@ -47,7 +47,7 @@ export function SortMenu({ label, options }: SortMenuProps) {
               scroll={false}
               aria-current={selected ? 'true' : undefined}
               onClick={() => setOpen(false)}
-              className={`box-border w-full h-[40px] shrink-0 flex flex-row gap-[8px] p-[0px_12px] justify-between items-center ${selected ? 'bg-[#F3FAFF]' : 'bg-[#00000000] hover:bg-[#F7F9FC]'} rounded-[8px] ${FOCUS_RING}`}
+              className={`box-border w-full h-[44px] lg:h-[40px] shrink-0 flex flex-row gap-[8px] p-[0px_12px] justify-between items-center ${selected ? 'bg-[#F3FAFF]' : 'bg-[#00000000] hover:bg-[#F7F9FC]'} rounded-[8px] ${FOCUS_RING}`}
             >
               <span
                 className={`text-[14px]/[normal] box-border ${selected ? 'text-[#0F6CB8] font-semibold' : 'text-[#0B3B5C] font-medium'} font-poppins text-left [white-space:nowrap]`}

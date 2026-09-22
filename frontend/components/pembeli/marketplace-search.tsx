@@ -19,7 +19,7 @@ export function MarketplaceSearch({ action, label, placeholder, query, hidden }:
       action={action}
       scroll={false}
       role="search"
-      className="box-border [flex:1_1_0] h-[48px] flex flex-row gap-[10px] p-[0px_16px] justify-start items-center bg-[#FFFFFF] [outline:1px_solid_#7F8FA4] [outline-offset:-0.5px] rounded-[12px] focus-within:[outline-color:#0F6CB8] focus-within:[box-shadow:0px_0px_0px_3px_#FFFFFF,_0px_0px_0px_5px_#0F6CB8]"
+      className="box-border order-1 basis-full lg:order-none lg:basis-0 [flex:1_1_0] h-[48px] flex flex-row gap-[10px] p-[0px_16px] justify-start items-center bg-[#FFFFFF] [outline:1px_solid_#7F8FA4] [outline-offset:-0.5px] rounded-[12px] focus-within:[outline-color:#0F6CB8] focus-within:[box-shadow:0px_0px_0px_3px_#FFFFFF,_0px_0px_0px_5px_#0F6CB8]"
     >
       {hidden.map(([name, value], index) => (
         <input key={`${name}-${index}`} type="hidden" name={name} value={value} />
@@ -37,7 +37,7 @@ export function MarketplaceSearch({ action, label, placeholder, query, hidden }:
         defaultValue={query}
         placeholder={placeholder}
         autoComplete="off"
-        className="text-[15px]/[normal] box-border [flex:1_1_0] min-w-0 bg-transparent text-[#0B3B5C] placeholder:text-[#5B6B7C] font-inter font-normal text-left outline-hidden"
+        className="text-[16px]/[normal] lg:text-[15px]/[normal] box-border [flex:1_1_0] min-w-0 self-stretch lg:self-auto bg-transparent text-[#0B3B5C] placeholder:text-[#5B6B7C] font-inter font-normal text-left outline-hidden"
       />
     </Form>
   )

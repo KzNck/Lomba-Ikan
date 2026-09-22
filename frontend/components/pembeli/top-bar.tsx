@@ -19,9 +19,9 @@ type TopBarProps = TopBarActionsProps & {
 
 export function TopBar({ greeting, subtitle, notifications, user }: TopBarProps) {
   return (
-    <header className="box-border w-full h-fit shrink-0 flex flex-row gap-[20px] justify-start items-center">
-      <div className="box-border [flex:1_1_0] h-fit flex flex-col gap-[6px] justify-start items-start">
-        <h1 className="text-[26px]/[33px] box-border w-full text-[#0B3B5C] font-poppins font-bold text-left">{greeting}</h1>
+    <header className="box-border w-full h-fit shrink-0 flex flex-row flex-wrap gap-x-[12px] gap-y-[16px] lg:flex-nowrap lg:gap-[20px] justify-start items-center">
+      <div className="box-border [flex:1_1_100%] lg:[flex:1_1_0] h-fit flex flex-col gap-[6px] justify-start items-start">
+        <h1 className="text-[22px]/[28px] sm:text-[26px]/[33px] box-border w-full text-[#0B3B5C] font-poppins font-bold text-left">{greeting}</h1>
         <p className="text-[15px]/[normal] box-border w-full text-[#5B6B7C] font-inter font-normal text-left">{subtitle}</p>
       </div>
       <TopBarActions notifications={notifications} user={user} />
@@ -40,11 +40,11 @@ export function TopBarActions({ notifications, user }: TopBarActionsProps) {
       <Link
         href={notifications.href}
         aria-label={t('unread', { label: t('notifications'), count: notifications.unreadCount })}
-        className={`box-border w-[40px] shrink-0 h-[40px] rounded-[999px] relative ${OUTLINE_HOVER} ${PRESS} ${FOCUS_RING}`}
+        className={`box-border w-[44px] shrink-0 h-[44px] lg:w-[40px] lg:h-[40px] rounded-[999px] relative ${OUTLINE_HOVER} ${PRESS} ${FOCUS_RING}`}
       >
-        <Icon name="bell" fill="#0B3B5C" className="box-border w-[22px] h-[22px] absolute left-[9px] top-[9px] [z-index:0]" />
+        <Icon name="bell" fill="#0B3B5C" className="box-border w-[22px] h-[22px] absolute left-[11px] top-[11px] lg:left-[9px] lg:top-[9px] [z-index:0]" />
         {notifications.unreadCount > 0 && (
-          <span className="box-border w-[18px] h-[18px] absolute left-[22px] top-[2px] flex flex-row gap-0 justify-center items-center bg-[#C23B35] [outline:2px_solid_#FFFFFF] [outline-offset:-1px] rounded-[999px] [z-index:1]">
+          <span className="box-border w-[18px] h-[18px] absolute left-[24px] top-[4px] lg:left-[22px] lg:top-[2px] flex flex-row gap-0 justify-center items-center bg-[#C23B35] [outline:2px_solid_#FFFFFF] [outline-offset:-1px] rounded-[999px] [z-index:1]">
             <span className="text-[11px]/[normal] box-border text-[#FFFFFF] font-inter font-bold text-left [white-space:nowrap]">
               {notifications.unreadCount}
             </span>
@@ -66,7 +66,7 @@ export function TopBarActions({ notifications, user }: TopBarActionsProps) {
               {initialsOf(user.name)}
             </span>
           </span>
-          <span title={user.name} className="text-[14px]/[normal] box-border max-w-[220px] text-[#0B3B5C] font-inter font-semibold text-left truncate">
+          <span title={user.name} className="hidden sm:block text-[14px]/[normal] box-border max-w-[220px] text-[#0B3B5C] font-inter font-semibold text-left truncate">
             {user.name}
           </span>
         </AccountMenu>

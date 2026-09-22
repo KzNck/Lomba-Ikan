@@ -51,7 +51,7 @@ function CarouselButton({ label, icon, onClick }: { label: string; icon: 'chevro
       type="button"
       aria-label={label}
       onClick={onClick}
-      className={`box-border w-[36px] shrink-0 h-[36px] flex flex-row gap-0 justify-center items-center bg-[#0B3B5CB3] hover:bg-[#0B3B5C] rounded-[999px] cursor-pointer transition-colors duration-150 ease-out ${FOCUS_RING}`}
+      className={`box-border w-[44px] shrink-0 h-[44px] lg:w-[36px] lg:h-[36px] flex flex-row gap-0 justify-center items-center bg-[#0B3B5CB3] hover:bg-[#0B3B5C] rounded-[999px] cursor-pointer transition-colors duration-150 ease-out ${FOCUS_RING}`}
     >
       <Icon name={icon} fill="#FFFFFF" className="box-border w-[18px] shrink-0 h-[18px]" />
     </button>

@@ -31,7 +31,7 @@ export function AccountSubnav({ label, items, signOutLabel, signOut }: AccountSu
   return (
     <nav
       aria-label={label}
-      className="box-border w-[240px] shrink-0 h-fit flex flex-col gap-[4px] p-[12px] justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[20px]"
+      className="box-border w-full lg:w-[240px] shrink-0 h-fit flex flex-col gap-[4px] p-[12px] justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[20px]"
     >
       <ul className="contents">
         {items.map(({ href, label, icon }) => {

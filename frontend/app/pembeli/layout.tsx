@@ -15,7 +15,7 @@ export default async function PembeliLayout({ children }: { children: React.Reac
   const t = await getTranslations('nav')
 
   return (
-    <div className="box-border w-full min-w-[1440px] min-h-dvh flex flex-row gap-0 justify-start items-stretch bg-[#F7F9FC] overflow-clip">
+    <div className="box-border w-full lg:min-w-[1440px] min-h-dvh flex flex-col lg:flex-row gap-0 justify-start items-stretch bg-[#F7F9FC] overflow-clip">
       <Sidebar
         role="pembeli"
         nav={PEMBELI_NAV}

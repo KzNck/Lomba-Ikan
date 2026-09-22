@@ -41,7 +41,7 @@ export function AccountLocationFields({
 
   return (
     <>
-      <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[20px] justify-start items-start">
+      <div className="box-border w-full h-fit shrink-0 flex flex-col sm:flex-row gap-[18px] sm:gap-[20px] justify-start items-stretch sm:items-start">
         <FormField
           kind="select"
           {...provinsi}

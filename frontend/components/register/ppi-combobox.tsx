@@ -115,7 +115,7 @@ export function PpiCombobox({
             onClick={() => setOpen(true)}
             onBlur={() => setOpen(false)}
             onKeyDown={onKeyDown}
-            className="text-[15px]/[normal] box-border [flex:1_1_0] min-w-0 self-stretch bg-transparent outline-none text-[#0B3B5C] placeholder:text-[#5B6B7C] font-inter font-normal text-left"
+            className="text-[16px]/[normal] lg:text-[15px]/[normal] box-border [flex:1_1_0] min-w-0 self-stretch bg-transparent outline-none text-[#0B3B5C] placeholder:text-[#5B6B7C] font-inter font-normal text-left"
           />
           <Icon
             name={open ? 'chevron-up' : 'chevron-down'}

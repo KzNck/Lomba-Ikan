@@ -12,7 +12,7 @@ type NoResultsProps = {
 // The "Tidak ada hasil" state. The export previews it at 480px wide; here it spans the results column.
 export function NoResults({ title, body, reset }: NoResultsProps) {
   return (
-    <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[12px] p-[36px_32px] justify-start items-center bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[20px]">
+    <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[12px] p-[28px_20px] sm:p-[36px_32px] justify-start items-center bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[20px]">
       <div className="box-border w-[56px] h-[56px] shrink-0 flex flex-row gap-0 justify-center items-center bg-[#DCEEFB] rounded-[999px]">
         <Icon name="search-x" fill="#0F6CB8" className="box-border w-[26px] shrink-0 h-[26px]" />
       </div>

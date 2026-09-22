@@ -22,12 +22,12 @@ export default async function PembeliPreferensiPage() {
   )
 
   return (
-    <div className="box-border [flex:1_1_0] flex flex-col gap-[28px] p-[32px] justify-start items-start">
+    <div className="box-border [flex:1_1_0] flex flex-col gap-[20px] lg:gap-[28px] p-[16px] sm:p-[24px] lg:p-[32px] justify-start items-start">
       <TopBar greeting={AKUN_PAGE.title} subtitle={AKUN_PAGE.subtitle} notifications={PEMBELI_NOTIFICATIONS} user={{ name }} />
       <UnsavedChangesProvider dialog={UNSAVED_DIALOG}>
-        <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[20px] justify-start items-start">
+        <div className="box-border w-full h-fit shrink-0 flex flex-col lg:flex-row gap-[20px] justify-start items-stretch lg:items-start">
           <AccountSubnav {...AKUN_NAV} signOut={signOut} />
-          <section className="box-border [flex:1_1_0] min-w-0 h-fit flex flex-col gap-[24px] p-[28px] justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[20px]">
+          <section className="box-border [flex:1_1_0] min-w-0 h-fit flex flex-col gap-[24px] p-[20px] sm:p-[28px] justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[20px]">
             <PreferencesForm initialValues={preferences} action={savePreferences} />
           </section>
         </div>

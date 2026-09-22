@@ -51,13 +51,14 @@ export default async function PembeliRiwayatPage({
 
   return (
     <div className="box-border [flex:1_1_0] flex flex-col gap-0 justify-start items-start relative">
-      <div className="box-border w-full h-fit shrink-0 p-[32px_32px_0px_32px]">
+      <div className="box-border w-full h-fit shrink-0 p-[16px_16px_0px_16px] sm:p-[24px_24px_0px_24px] lg:p-[32px_32px_0px_32px]">
         <TopBar greeting={RIWAYAT_PAGE.title} subtitle={RIWAYAT_PAGE.subtitle} notifications={PEMBELI_NOTIFICATIONS} user={{ name }} />
       </div>
-      {/* The drawer docks to the right of this area, under the top bar; the content makes room for it (400px + 24px). */}
+      {/* From lg the drawer docks to the right of this area, under the top bar, and the content makes room for it
+          (400px + 24px). Below lg it covers the screen (phones) or slides over the right edge (tablets). */}
       <div className="box-border w-full [flex:1_1_0] flex flex-col gap-0 justify-start items-start relative">
         <div
-          className={`box-border w-full [flex:1_1_0] flex flex-col gap-[20px] ${detail ? 'p-[28px_424px_32px_32px]' : 'p-[28px_32px_32px_32px]'} justify-start items-start`}
+          className={`box-border w-full [flex:1_1_0] flex flex-col gap-[20px] p-[20px_16px_24px_16px] sm:p-[24px] ${detail ? 'lg:p-[28px_424px_32px_32px]' : 'lg:p-[28px_32px_32px_32px]'} justify-start items-start`}
         >
           <RiwayatFilters action={RIWAYAT_PATH} status={status} range={range} dateLabel={dateLabelFor(p, t, range, shownRange)} />
           <p className="box-border w-full h-fit shrink-0 flex flex-row gap-[6px] justify-start items-center">

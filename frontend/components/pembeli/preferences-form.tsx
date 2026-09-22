@@ -53,7 +53,7 @@ export function PreferencesForm({ initialValues, action }: PreferencesFormProps)
   return (
     <form ref={formRef} action={formAction} onChange={markEdited} className="contents">
       <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[4px] justify-start items-start">
-        <h2 className="text-[18px]/[normal] box-border text-[#0B3B5C] font-poppins font-semibold text-left [white-space:nowrap]">
+        <h2 className="text-[18px]/[normal] box-border text-[#0B3B5C] font-poppins font-semibold text-left lg:[white-space:nowrap]">
           {PREFERENSI.heading.title}
         </h2>
         <p className="text-[14px]/[21px] box-border w-full text-[#5B6B7C] font-inter font-normal text-left">{akun('pembeli.preferencesSubtitle')}</p>
@@ -67,7 +67,7 @@ export function PreferencesForm({ initialValues, action }: PreferencesFormProps)
           </div>
         </PreferenceSection>
         <PreferenceSection {...grade.section}>
-          <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[16px] justify-start items-start">
+          <div className="box-border w-full h-fit shrink-0 flex flex-col sm:flex-row gap-[16px] justify-start items-stretch sm:items-start">
             {grade.groups.map((group) => (
               <GradeGroup key={group.title} name={grade.name} {...group} defaultValues={values.grade} />
             ))}
@@ -78,7 +78,7 @@ export function PreferencesForm({ initialValues, action }: PreferencesFormProps)
           <PpiCombobox {...ppi.combobox} defaultIds={values.ppiPrioritas} onSelectionChange={markEdited} />
         </PreferenceSection>
       </div>
-      <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[16px] p-[20px_0px_0px_0px] justify-end items-center [border-width:1px_0px_0px_0px] [border-style:solid] [border-color:#E2E8F0]">
+      <div className="box-border w-full h-fit shrink-0 flex flex-row flex-wrap lg:flex-nowrap gap-[16px] p-[20px_0px_0px_0px] justify-end items-center [border-width:1px_0px_0px_0px] [border-style:solid] [border-color:#E2E8F0]">
         {/* A stable live region, so the result is announced when it appears. */}
         <div role="status" className="box-border [flex:1_1_0] h-fit flex flex-row justify-start items-center">
           {state.status === 'saved' && !dirty && (
