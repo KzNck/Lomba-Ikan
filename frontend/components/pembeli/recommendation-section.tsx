@@ -26,7 +26,8 @@ export function RecommendationSection({ title, description, viewAll, items, empt
             <Icon name="sparkles" fill="#0F6CB8" className="box-border w-[22px] shrink-0 h-[22px]" />
           </div>
           <div className="box-border [flex:1_1_0] h-fit flex flex-col gap-[6px] justify-start items-start">
-            <div className="box-border w-full h-fit shrink-0 flex flex-row flex-wrap lg:flex-nowrap gap-x-[12px] lg:gap-0 justify-between items-center">
+            {/* Below lg the row dissolves into the column and the link follows the description; from lg it sits beside the title. */}
+            <div className="box-border w-full h-fit shrink-0 contents lg:flex flex-row lg:flex-nowrap lg:gap-0 justify-between items-center [&>a]:order-last lg:[&>a]:order-none">
               <h2 className="text-[19px]/[normal] box-border text-[#0F5C82] font-poppins font-semibold text-left lg:[white-space:nowrap]">{title}</h2>
               <ArrowLink {...viewAll} size="md" />
             </div>
