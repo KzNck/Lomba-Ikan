@@ -54,7 +54,7 @@ const STATUS_STYLES = {
 // a cart on the action.
 const VARIANTS = {
   recommendation: { card: 'w-full lg:w-[230px] shrink-0 gap-[10px]', actionIcon: 'arrow-right', sizes: '(min-width: 1024px) 206px, 343px' },
-  marketplace: { card: '[flex:1_1_0] min-w-0 gap-[8px]', actionIcon: 'shopping-cart', sizes: '240px' },
+  marketplace: { card: '[flex:1_1_0] min-w-0 gap-[8px]', actionIcon: 'shopping-cart', sizes: '(min-width: 1024px) 240px, 343px' },
 } as const
 
 // One batch tile. The export paints the photo as a CSS background; it's a next/image here, with the badge row
@@ -86,7 +86,8 @@ export function ProductCard({
     <article
       className={`box-border ${style.card} h-fit [box-shadow:0px_4px_16px_0px_#0B3B5C0F] flex flex-col p-[12px] justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[16px] ${CARD_LIFT}`}
     >
-      <div className="box-border w-full h-[124px] shrink-0 flex flex-col gap-0 p-[8px] justify-end items-start [border:1px_solid_#0000001A] rounded-[4px] overflow-hidden relative">
+      {/* Taller below lg, where the card is a full column wide and a 124px strip would show mostly the blurred fill. */}
+      <div className="box-border w-full h-[180px] lg:h-[124px] shrink-0 flex flex-col gap-0 p-[8px] justify-end items-start [border:1px_solid_#0000001A] rounded-[4px] overflow-hidden relative">
         <CardPhoto src={image.src} alt={image.alt} sizes={style.sizes} loading={eager ? 'eager' : undefined} />
         <div className="box-border w-full h-fit shrink-0 flex flex-row gap-0 justify-between items-center relative">
           <span
