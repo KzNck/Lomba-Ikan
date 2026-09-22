@@ -28,6 +28,8 @@ type FreshnessModalProps = {
 
 // The "Overlay" + "Modal Hasil Kesegaran" layers, shown once the catch photo has been graded. Like CatchModal, the
 // scrim is fixed to the viewport (the export pins it to the 1440×1100 frame) and scrolls if the modal outgrows it.
+// From lg the spacing is tighter than the export's, so the whole result fits a laptop window (about 720px tall)
+// without scrolling; the card is centred vertically and only scrolls on shorter windows.
 export function FreshnessModal({
   modal,
   catchId,
@@ -40,7 +42,7 @@ export function FreshnessModal({
   phoneMissing,
 }: FreshnessModalProps) {
   return (
-    <div className="box-border fixed inset-0 overflow-y-auto overscroll-contain flex flex-col gap-0 p-0 sm:p-[16px] lg:p-[72px_0px] justify-start items-center bg-[#0B3B5CA6] z-[60] lg:z-[2]">
+    <div className="box-border fixed inset-0 overflow-y-auto overscroll-contain flex flex-col gap-0 p-0 sm:p-[16px] lg:p-[16px_0px] justify-start items-center bg-[#0B3B5CA6] z-[60] lg:z-[2]">
       <ScrollLock />
       <form
         action={action}
@@ -48,7 +50,7 @@ export function FreshnessModal({
         aria-modal="true"
         aria-labelledby="freshness-modal-title"
         // Full screen on phones, a card on tablets, the design's 940px card from lg.
-        className="box-border w-full lg:w-[940px] min-h-dvh sm:min-h-0 h-fit shrink-0 [box-shadow:0px_24px_64px_0px_#0B3B5C33] flex flex-col gap-[20px] lg:gap-[24px] p-[16px] sm:p-[24px] lg:p-[32px] justify-start items-start bg-[#FFFFFF] rounded-none sm:rounded-[24px]"
+        className="box-border w-full lg:w-[940px] min-h-dvh sm:min-h-0 h-fit shrink-0 lg:my-auto [box-shadow:0px_24px_64px_0px_#0B3B5C33] flex flex-col gap-[20px] lg:gap-[16px] p-[16px] sm:p-[24px] justify-start items-start bg-[#FFFFFF] rounded-none sm:rounded-[24px]"
       >
         <input type="hidden" name="id" value={catchId} />
         <ModalHeader
@@ -62,7 +64,7 @@ export function FreshnessModal({
         />
         <div className="box-border w-full h-fit shrink-0 flex flex-col lg:flex-row gap-[20px] justify-start items-stretch lg:items-start">
           <GradePanel result={result} ungraded={ungraded} {...gradePanel} />
-          <div className="box-border [flex:1_1_0] min-w-0 h-fit flex flex-col gap-[14px] p-[16px] sm:p-[24px] justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[20px]">
+          <div className="box-border [flex:1_1_0] min-w-0 h-fit flex flex-col gap-[14px] lg:gap-[10px] p-[16px] sm:p-[24px] lg:p-[20px] justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[20px]">
             <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[4px] p-[0px_0px_4px_0px] justify-start items-start">
               <h3 className="text-[18px]/[normal] box-border text-[#0B3B5C] font-poppins font-semibold text-left lg:[white-space:nowrap]">{recommendations.title}</h3>
               <p className="text-[14px]/[20px] box-border text-[#5B6B7C] font-inter font-normal text-left">{recommendations.subtitle}</p>
@@ -82,7 +84,7 @@ export function FreshnessModal({
             <span className="text-[14px]/[20px] box-border [flex:1_1_0] text-[#5C3700] font-inter font-medium text-left">{phoneMissing.message}</span>
           </p>
         )}
-        <div className="box-border w-full h-fit shrink-0 flex flex-col sm:flex-row gap-[16px] sm:gap-0 p-[20px_0px_0px_0px] sm:p-[24px_0px_0px_0px] justify-between items-stretch sm:items-center [border-width:1px_0px_0px_0px] [border-style:solid] [border-color:#E2E8F0]">
+        <div className="box-border w-full h-fit shrink-0 flex flex-col sm:flex-row gap-[16px] sm:gap-0 p-[20px_0px_0px_0px] sm:p-[24px_0px_0px_0px] lg:p-[16px_0px_0px_0px] justify-between items-stretch sm:items-center [border-width:1px_0px_0px_0px] [border-style:solid] [border-color:#E2E8F0]">
           <p className="box-border w-fit shrink sm:shrink-0 h-fit flex flex-row gap-[8px] justify-start items-center">
             <Icon name="info" fill="#5B6B7C" className="box-border w-[16px] shrink-0 h-[16px]" />
             <span className="text-[12px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left sm:[white-space:nowrap]">{modal.disclaimer}</span>

@@ -33,7 +33,7 @@ type GradePanelProps = {
 // The left half of the result: the grade ring over a wave, then the "Ringkasan Hasil" figures.
 export function GradePanel({ result, ungraded, gradeLabel, summaryTitle, metricLabels }: GradePanelProps) {
   return (
-    <div className="box-border w-full lg:w-[430px] shrink-0 h-auto lg:h-full flex flex-col gap-[24px] p-[20px_16px_16px_16px] sm:p-[28px_24px_24px_24px] justify-between items-start [background-image:linear-gradient(180deg,_#F3FAFF_0%,_#E5F3FF_100%)] bg-no-repeat bg-[length:100%_100%] rounded-[20px] overflow-hidden relative">
+    <div className="box-border w-full lg:w-[430px] shrink-0 h-auto lg:h-full flex flex-col gap-[24px] lg:gap-[16px] p-[20px_16px_16px_16px] sm:p-[28px_24px_24px_24px] lg:p-[24px_24px_20px_24px] justify-between items-start [background-image:linear-gradient(180deg,_#F3FAFF_0%,_#E5F3FF_100%)] bg-no-repeat bg-[length:100%_100%] rounded-[20px] overflow-hidden relative">
       <div aria-hidden="true" className="box-border w-[430px] absolute left-0 top-[150px] bottom-0 [z-index:0]">
         <svg
           viewBox="0 0 430 140"
