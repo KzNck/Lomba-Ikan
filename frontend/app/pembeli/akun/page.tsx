@@ -47,7 +47,6 @@ export default async function PembeliAkunPage() {
                 roleLabel={PROFILE_HEADER.roleLabel}
                 email={profile.email}
                 location={locationLabel(profile.provinsi, profile.kabKota)}
-                changePhoto={PROFILE_HEADER.changePhoto}
               />
               <AccountInfoForm initialValues={profile} action={saveAccount} />
             </section>

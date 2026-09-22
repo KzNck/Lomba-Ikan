@@ -1,6 +1,7 @@
 import { Icon, type IconName } from '@/components/ui/icon'
 import { UserAvatar } from '@/components/dashboard/user-avatar'
-import { ChangePhotoButton, type ChangePhotoCopy } from '@/components/dashboard/change-photo-button'
+import { ChangePhotoButton } from '@/components/dashboard/change-photo-button'
+import { currentAvatar } from '@/lib/supabase/avatar'
 
 type ProfileHeaderProps = {
   // The avatar's placeholder until a photo is uploaded: a building for pembeli, a boat for nelayan.
@@ -9,12 +10,12 @@ type ProfileHeaderProps = {
   roleLabel: string
   email: string
   location: string
-  changePhoto: ChangePhotoCopy
 }
 
 // "Profile Header" at the top of the account form card: the profile photo (or the role icon until there is one), the
-// name and contact lines, and "Ubah foto".
-export function ProfileHeader({ icon = 'building-2', name, roleLabel, email, location, changePhoto }: ProfileHeaderProps) {
+// name and contact lines, then "Atur foto" (once there is a photo) and "Ubah foto".
+export async function ProfileHeader({ icon = 'building-2', name, roleLabel, email, location }: ProfileHeaderProps) {
+  const photo = await currentAvatar()
   return (
     <div className="box-border w-full h-fit shrink-0 flex flex-row flex-wrap sm:flex-nowrap gap-[16px] sm:gap-[20px] p-[0px_0px_24px_0px] justify-start items-center [border-width:0px_0px_1px_0px] [border-style:solid] [border-color:#E2E8F0]">
       <div className="box-border w-[64px] shrink-0 h-[64px] sm:w-[80px] sm:h-[80px] flex flex-row gap-0 justify-center items-center bg-[#DCEEFB] rounded-[999px] overflow-hidden relative">
@@ -33,7 +34,7 @@ export function ProfileHeader({ icon = 'building-2', name, roleLabel, email, loc
           <span className="text-[13px]/[normal] box-border min-w-0 text-[#5B6B7C] font-inter font-normal text-left sm:[white-space:nowrap]">{location}</span>
         </p>
       </div>
-      <ChangePhotoButton copy={changePhoto} />
+      <ChangePhotoButton photo={photo} />
     </div>
   )
 }

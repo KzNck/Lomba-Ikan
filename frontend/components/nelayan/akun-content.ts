@@ -42,13 +42,6 @@ export function akunNav(t: AkunT) {
 export function profileHeader(t: AkunT, roleLabel: string) {
   return {
     roleLabel,
-    changePhoto: {
-      label: t('changePhoto'),
-      pending: t('changePhotoPending'),
-      saved: t('changePhotoSaved'),
-      invalid: t('changePhotoInvalid'),
-      failed: t('changePhotoFailed'),
-    },
     // Shown in place of the landing site until one is saved.
     noPpi: t('noPpi'),
   }

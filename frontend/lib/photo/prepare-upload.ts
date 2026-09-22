@@ -12,9 +12,8 @@ const JPEG_QUALITY = 0.85
 /**
  * JPEG yang sudah diperkecil, atau file aslinya kalau browser tidak bisa
  * membacanya (misalnya HEIC di Chrome) — Freshness API tetap bisa menilainya.
- * `maxEdge` lebih kecil untuk foto profil, yang cuma tampil sebagai lingkaran kecil.
  */
-export async function prepareUpload(photo: Blob, maxEdge = MAX_EDGE): Promise<Blob> {
+export async function prepareUpload(photo: Blob): Promise<Blob> {
     let bitmap: ImageBitmap
     try {
         // from-image: foto HP yang diputar lewat EXIF tetap tegak setelah disimpan ulang.
@@ -23,7 +22,7 @@ export async function prepareUpload(photo: Blob, maxEdge = MAX_EDGE): Promise<Bl
         return photo
     }
 
-    const scale = Math.min(1, maxEdge / Math.max(bitmap.width, bitmap.height))
+    const scale = Math.min(1, MAX_EDGE / Math.max(bitmap.width, bitmap.height))
     const width = Math.round(bitmap.width * scale)
     const height = Math.round(bitmap.height * scale)
 
