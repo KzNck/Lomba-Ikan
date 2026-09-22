@@ -1,4 +1,3 @@
-import { Fragment } from 'react'
 import Image from 'next/image'
 import { Logo } from '@/components/ui/logo'
 import { BackLink } from '@/components/login/back-link'
@@ -9,12 +8,7 @@ import type { ImageContent } from '@/components/home/hero'
 type LoginLayoutProps = {
   backLink: NavItem
   illustration: ImageContent
-  tagline: {
-    // Rendered one per line.
-    headline: string[]
-    body: string
-  }
-  // The card, placed at the export's left-[200px] top-[184px].
+  // The card, centred in the frame below the header.
   children: React.ReactNode
 }
 
@@ -24,10 +18,10 @@ type LoginLayoutProps = {
 // it instead of zooming the crop. At exactly 1440×1024 every layer lands where the export puts it.
 // Windows shorter than 940px (the `short:` variant, most laptops) move everything up and tighten the card so the page
 // fits without scrolling; below 720px it scrolls.
-// Layers keep the export's stacking: illustration 0, fades 1–2, wave 3, card 4, header 5, tagline 6.
-// All of that is from lg. Below lg the page is one column — logo and back link, the card, the tagline — with the
+// Layers keep the export's stacking: illustration 0, fades 1–2, wave 3, card 4, header 5.
+// All of that is from lg. Below lg the page is one column — logo and back link, then the card — with the
 // illustration as a band above the wave at the bottom.
-export function LoginLayout({ backLink, illustration, tagline, children }: LoginLayoutProps) {
+export function LoginLayout({ backLink, illustration, children }: LoginLayoutProps) {
   return (
     <div className="box-border w-full lg:min-w-[1440px] min-h-dvh lg:min-h-[720px] lg:h-dvh flex flex-col lg:block relative bg-[#F3FAFF] overflow-clip [--frame-x:max(0px,calc((100%_-_1440px)/2))]">
       {/* Width is 50vw + 160px at any window width: from the column's 560px mark to the right edge. */}
@@ -49,29 +43,13 @@ export function LoginLayout({ backLink, illustration, tagline, children }: Login
         <WaveDecoration />
       </div>
       <div className="box-border w-full lg:w-[1440px] flex flex-col lg:block gap-[24px] p-[20px_16px_8px] sm:p-[32px_24px_16px] lg:p-0 items-stretch sm:items-center relative lg:absolute lg:left-[var(--frame-x)] lg:top-0 lg:bottom-0 [z-index:4] lg:[z-index:auto]">
-        <div className="order-2 lg:order-none w-full sm:w-fit relative lg:absolute lg:left-[200px] lg:top-[184px] lg:short:top-[128px] [z-index:4] motion-safe:animate-fade-up">{children}</div>
+        {/* From lg the card is centred in the frame, with room above for the header. */}
+        <div className="order-2 lg:order-none w-full lg:absolute lg:inset-0 lg:flex lg:items-center lg:justify-center lg:pt-[140px] lg:pb-[48px] lg:short:pt-[100px] lg:short:pb-[24px] lg:pointer-events-none [z-index:4]">
+          <div className="w-full sm:w-fit sm:mx-auto lg:mx-0 lg:pointer-events-auto motion-safe:animate-fade-up">{children}</div>
+        </div>
         <div className="box-border order-1 lg:order-none w-full sm:w-[580px] lg:w-fit h-fit relative lg:absolute lg:left-[120px] lg:top-[48px] lg:short:top-[24px] flex flex-col gap-[12px] lg:gap-[16px] lg:short:gap-[10px] justify-start items-start [z-index:5]">
           <Logo tone="dark" />
           <BackLink {...backLink} />
-        </div>
-        <div className="box-border order-3 lg:order-none w-full sm:w-[580px] lg:w-[460px] h-fit relative lg:absolute lg:left-[880px] lg:top-[176px] lg:short:top-[120px] flex flex-col gap-[12px] lg:gap-[16px] p-[8px_4px_0px] lg:p-0 justify-start items-start [z-index:6]">
-          <p
-            className="text-[24px]/[30px] sm:text-[28px]/[34px] lg:text-[32px]/[38px] box-border w-full text-[#0B3B5C] font-poppins font-extrabold text-left motion-safe:animate-fade-up"
-            style={{ animationDelay: '100ms' }}
-          >
-            {tagline.headline.map((line, index) => (
-              <Fragment key={line}>
-                {index > 0 && <br />}
-                {line}
-              </Fragment>
-            ))}
-          </p>
-          <p
-            className="text-[16px]/[24px] lg:text-[17px]/[26px] box-border w-full text-[#5B6B7C] font-inter font-normal text-left motion-safe:animate-fade-up"
-            style={{ animationDelay: '200ms' }}
-          >
-            {tagline.body}
-          </p>
         </div>
       </div>
     </div>

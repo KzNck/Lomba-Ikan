@@ -12,10 +12,6 @@ export function loginContent(t: Translator<'auth.login'>) {
       src: '/images/login/illustration.jpg',
       alt: t('illustrationAlt'),
     },
-    tagline: {
-      headline: [t('taglineFirst'), t('taglineSecond')],
-      body: t('taglineBody'),
-    },
     title: t('title'),
     subtitle: t('subtitle'),
     // Email only for now; the export's Nomor HP tab is left out.

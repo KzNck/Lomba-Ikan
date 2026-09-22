@@ -22,7 +22,7 @@ export default async function KonfirmasiEmailPage({
   const confirm = confirmEmailContent(await getTranslations('auth.confirmEmail'), email)
 
   return (
-    <LoginLayout backLink={login.backLink} illustration={login.illustration} tagline={login.tagline}>
+    <LoginLayout backLink={login.backLink} illustration={login.illustration}>
       <AuthCard title={confirm.title} subtitle={confirm.subtitle}>
         <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[12px] p-[16px] justify-start items-start bg-[#DCEEFB] rounded-[12px]">
           <Icon name="mailbox" fill="#0F6CB8" className="box-border w-[20px] shrink-0 h-[20px] mt-[1px]" />

@@ -21,7 +21,7 @@ export default async function LoginPage({
   const content = loginContent(await getTranslations('auth.login'))
 
   return (
-    <LoginLayout backLink={content.backLink} illustration={content.illustration} tagline={content.tagline}>
+    <LoginLayout backLink={content.backLink} illustration={content.illustration}>
       <AuthCard title={content.title} subtitle={content.subtitle}>
         <LoginForm
           next={typeof next === 'string' ? next : undefined}
