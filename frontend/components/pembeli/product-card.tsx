@@ -50,15 +50,15 @@ const STATUS_STYLES = {
   sold: { badge: 'bg-[#E2E8F0]', text: 'text-[#0B3B5C]' },
 }
 
-// The dashboard's fixed 230px recommendation tile, or the marketplace's grid card: a third of the row, 8px gaps, a
-// darker favourite disc and a cart on the action.
+// The dashboard's fixed 230px recommendation tile, or the marketplace's grid card: a third of the row, 8px gaps and
+// a cart on the action.
 const VARIANTS = {
-  recommendation: { card: 'w-[230px] shrink-0 gap-[10px]', favorite: 'bg-[#0B3B5C40]', actionIcon: 'arrow-right', sizes: '206px' },
-  marketplace: { card: '[flex:1_1_0] min-w-0 gap-[8px]', favorite: 'bg-[#0B3B5C99]', actionIcon: 'shopping-cart', sizes: '240px' },
+  recommendation: { card: 'w-[230px] shrink-0 gap-[10px]', actionIcon: 'arrow-right', sizes: '206px' },
+  marketplace: { card: '[flex:1_1_0] min-w-0 gap-[8px]', actionIcon: 'shopping-cart', sizes: '240px' },
 } as const
 
-// One batch tile. The export paints the photo as a CSS background; it's a next/image here, with the
-// favourite and badge rows stacked above it.
+// One batch tile. The export paints the photo as a CSS background; it's a next/image here, with the badge row
+// over its bottom edge. (The export's favourite heart is left out: there's nothing to save a batch to.)
 export function ProductCard({
   href,
   image,
@@ -86,14 +86,8 @@ export function ProductCard({
     <article
       className={`box-border ${style.card} h-fit [box-shadow:0px_4px_16px_0px_#0B3B5C0F] flex flex-col p-[12px] justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[16px] ${CARD_LIFT}`}
     >
-      <div className="box-border w-full h-[124px] shrink-0 flex flex-col gap-0 p-[8px] justify-between items-start [border:1px_solid_#0000001A] rounded-[4px] overflow-hidden relative">
+      <div className="box-border w-full h-[124px] shrink-0 flex flex-col gap-0 p-[8px] justify-end items-start [border:1px_solid_#0000001A] rounded-[4px] overflow-hidden relative">
         <CardPhoto src={image.src} alt={image.alt} sizes={style.sizes} loading={eager ? 'eager' : undefined} />
-        {/* Favourite toggle from the design; not wired up yet, so it's shown but not interactive. */}
-        <div className="box-border w-full h-fit shrink-0 flex flex-row gap-0 justify-end items-start relative">
-          <span aria-hidden="true" className={`box-border w-[28px] shrink-0 h-[28px] flex flex-row gap-0 justify-center items-center ${style.favorite} rounded-[999px]`}>
-            <Icon name="heart" fill="#FFFFFF" className="box-border w-[16px] shrink-0 h-[16px]" />
-          </span>
-        </div>
         <div className="box-border w-full h-fit shrink-0 flex flex-row gap-0 justify-between items-center relative">
           <span
             aria-label={gradeName(grade)}
