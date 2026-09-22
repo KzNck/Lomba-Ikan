@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* Windows shorter than the auth frames (most laptops): the login and "Pilih Role" layouts tighten so they fit
+   without scrolling. */
+@custom-variant short (@media (max-height: 940px));
+
 :root {
   --background: #ffffff;
   --foreground: #171717;

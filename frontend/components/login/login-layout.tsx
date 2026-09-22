@@ -22,10 +22,12 @@ type LoginLayoutProps = {
 // its fades, and the wave bleed to the window's right edge and bottom, so wide or tall screens show no gaps.
 // The illustration keeps its designed 1024px height and sits on the bottom edge, so tall windows add sky above
 // it instead of zooming the crop. At exactly 1440×1024 every layer lands where the export puts it.
+// Windows shorter than 940px (the `short:` variant, most laptops) move everything up and tighten the card so the page
+// fits without scrolling; below 720px it scrolls.
 // Layers keep the export's stacking: illustration 0, fades 1–2, wave 3, card 4, header 5, tagline 6.
 export function LoginLayout({ backLink, illustration, tagline, children }: LoginLayoutProps) {
   return (
-    <div className="box-border w-full min-w-[1440px] min-h-[1024px] h-dvh relative bg-[#F3FAFF] overflow-clip [--frame-x:max(0px,calc((100%_-_1440px)/2))]">
+    <div className="box-border w-full min-w-[1440px] min-h-[720px] h-dvh relative bg-[#F3FAFF] overflow-clip [--frame-x:max(0px,calc((100%_-_1440px)/2))]">
       {/* Width is 50vw + 160px at any window width: from the column's 560px mark to the right edge. */}
       <div className="box-border h-[1024px] absolute left-[calc(var(--frame-x)_+_560px)] right-0 bottom-[-40px] [z-index:0] motion-safe:animate-fade-in">
         <Image
@@ -44,12 +46,12 @@ export function LoginLayout({ backLink, illustration, tagline, children }: Login
         <WaveDecoration />
       </div>
       <div className="box-border w-[1440px] absolute left-[var(--frame-x)] top-0 bottom-0">
-        <div className="absolute left-[200px] top-[184px] [z-index:4] motion-safe:animate-fade-up">{children}</div>
-        <div className="box-border w-fit h-fit absolute left-[120px] top-[48px] flex flex-col gap-[16px] justify-start items-start [z-index:5]">
+        <div className="absolute left-[200px] top-[184px] short:top-[128px] [z-index:4] motion-safe:animate-fade-up">{children}</div>
+        <div className="box-border w-fit h-fit absolute left-[120px] top-[48px] short:top-[24px] flex flex-col gap-[16px] short:gap-[10px] justify-start items-start [z-index:5]">
           <Logo tone="dark" />
           <BackLink {...backLink} />
         </div>
-        <div className="box-border w-[460px] h-fit absolute left-[880px] top-[176px] flex flex-col gap-[16px] justify-start items-start [z-index:6]">
+        <div className="box-border w-[460px] h-fit absolute left-[880px] top-[176px] short:top-[120px] flex flex-col gap-[16px] justify-start items-start [z-index:6]">
           <p
             className="text-[32px]/[38px] box-border w-full text-[#0B3B5C] font-poppins font-extrabold text-left motion-safe:animate-fade-up"
             style={{ animationDelay: '100ms' }}

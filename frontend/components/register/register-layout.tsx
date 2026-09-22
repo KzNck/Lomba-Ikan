@@ -8,9 +8,10 @@ import { useTranslations } from 'next-intl'
 import { authLinks, footer } from '@/components/home/content'
 import { registerNavItems, registerSteps } from '@/components/register/content'
 
-// The Pilih Role frame is roomier and ends in a wave; the profile forms sit tighter above the full footer.
+// The Pilih Role frame is roomier and ends in a wave; the profile forms sit tighter above the full footer. On short
+// windows (the `short:` variant) Pilih Role tightens so it fits without scrolling.
 const LAYOUT_KINDS = {
-  role: 'gap-[48px] p-[48px_120px_56px_120px]',
+  role: 'gap-[48px] short:gap-[24px] p-[48px_120px_56px_120px] short:p-[24px_120px_16px_120px]',
   form: 'gap-[40px] p-[48px_120px_24px_120px]',
 }
 
@@ -31,16 +32,25 @@ export function RegisterLayout({ kind, currentStep, heading, children }: Registe
   return (
     <div className="bg-[#F3FAFF]">
       {/* Full-width frame; content stays on the export's 1440px grid (min width), centred by px-frame. overflow-clip (not hidden) keeps the navbar sticky. */}
-      <div className="box-border w-full min-w-[1440px] h-fit flex flex-col gap-0 justify-start items-start bg-[#F3FAFF] overflow-clip">
+      <div
+        className={`box-border w-full min-w-[1440px] h-fit flex flex-col gap-0 justify-start items-start bg-[#F3FAFF] overflow-clip ${kind === 'role' ? 'min-h-dvh relative' : ''}`}
+      >
         <Navbar items={navItems} login={links.login} register={links.register} />
-        <div className={`box-border w-full h-fit shrink-0 flex flex-col ${LAYOUT_KINDS[kind]} justify-start items-center`}>
-          <div className="box-border w-fit h-fit shrink-0 flex flex-col gap-[32px] justify-start items-center">
+        <div className={`box-border w-full h-fit shrink-0 flex flex-col ${LAYOUT_KINDS[kind]} justify-start items-center relative [z-index:1]`}>
+          <div className="box-border w-fit h-fit shrink-0 flex flex-col gap-[32px] short:gap-[20px] justify-start items-center">
             <Stepper steps={steps} currentStep={currentStep} />
             <PageHeading {...heading} />
           </div>
           {children}
         </div>
-        {kind === 'role' ? <WaveDecoration /> : <Footer {...footer(t)} quickLinks={navItems} />}
+        {kind === 'role' ? (
+          // Pinned to the window's bottom edge; on short windows it sits behind the cards instead of below them.
+          <div className="box-border w-full mt-auto short:absolute short:left-0 short:bottom-0 [z-index:0]">
+            <WaveDecoration />
+          </div>
+        ) : (
+          <Footer {...footer(t)} quickLinks={navItems} />
+        )}
       </div>
       {/* Drives the footer's `data-reveal`, as on the landing page. */}
       <ScrollReveal />
