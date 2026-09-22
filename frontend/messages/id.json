@@ -33,46 +33,20 @@
     "grade": {
       "unrated": "Belum dinilai",
       "label": "Grade {grade} · {condition, select, live {Hidup} other {Mati}}",
-      "freshness": "{grade}, {score, select, good {Bagus} fine {Baik} other {Cukup}} · {percent}%"
+      "freshness": "{grade}, {state} · keyakinan {percent}%",
+      "state": {
+        "A1": "Sangat segar",
+        "A2": "Segar",
+        "A3": "Kurang segar",
+        "B1": "Mutu baik",
+        "B2": "Mutu sedang",
+        "B3": "Mutu rendah"
+      }
     },
     "storage": {
       "crushed_ice": "Banyak es",
       "chilled_seawater": "Sedikit es",
       "ambient": "Tanpa es"
-    },
-    "usage": {
-      "campuran": {
-        "live": "Konsumsi Langsung, Ikan Asin",
-        "dead": "Pakan Maggot (BSF), Silase Ikan"
-      },
-      "teri": {
-        "live": "Teri Nasi Kering, Konsumsi Langsung",
-        "dead": "Terasi, Pakan Ternak"
-      },
-      "udang": {
-        "live": "Konsumsi Langsung, Udang Beku",
-        "dead": "Terasi, Pakan Ternak"
-      },
-      "cumi-cumi-sotong": {
-        "live": "Konsumsi Langsung, Cumi Beku",
-        "dead": "Umpan Pancing, Tepung Ikan"
-      },
-      "ikan-pelagis-kecil": {
-        "live": "Konsumsi Langsung, Pindang",
-        "dead": "Ikan Asin, Tepung Ikan"
-      },
-      "ikan-demersal": {
-        "live": "Konsumsi Langsung, Ikan Asap",
-        "dead": "Silase Ikan, Pupuk Organik"
-      },
-      "rajungan": {
-        "live": "Konsumsi Langsung, Daging Rajungan",
-        "dead": "Tepung Cangkang, Pakan Ternak"
-      },
-      "fallback": {
-        "live": "Konsumsi Langsung",
-        "dead": "Pakan Maggot (BSF), Pupuk Organik"
-      }
     },
     "price": {
       "unset": "Belum diatur"
@@ -96,7 +70,38 @@
       "active": "Aktif",
       "activeFooter": "Sisa {time}",
       "logged": "Dicatat {date}"
-    }
+    },
+    "uses": {
+      "maggot": {
+        "title": "Pakan Maggot (BSF)",
+        "description": "Kandungan protein tinggi, ideal untuk pakan larva BSF."
+      },
+      "silase": {
+        "title": "Silase Ikan",
+        "description": "Dapat difermentasi dengan baik untuk pakan ternak."
+      },
+      "pupuk": {
+        "title": "Pupuk Organik Cair",
+        "description": "Kaya unsur hara, cocok untuk pupuk cair organik."
+      },
+      "tepung": {
+        "title": "Tepung Ikan",
+        "description": "Bahan baku pakan ternak dan budidaya perikanan."
+      },
+      "lepas": {
+        "title": "Lepas Kembali",
+        "description": "Masih vital, bisa dilepas ke laut untuk menjaga stok ikan."
+      },
+      "pakanBasah": {
+        "title": "Pakan Basah",
+        "description": "Diberikan langsung sebagai pakan basah untuk budidaya ikan dan unggas."
+      },
+      "kompos": {
+        "title": "Kompos",
+        "description": "Dicampur bahan organik lain jadi kompos padat untuk lahan pertanian."
+      }
+    },
+    "usageUnrated": "Belum ada rekomendasi, tangkapan ini belum dinilai."
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -262,13 +267,13 @@
         "title": "Hasil Kesegaran",
         "subtitle": "Berikut hasil analisis kesegaran dari foto yang Anda unggah.",
         "close": "Tutup",
-        "disclaimer": "Estimasi indikatif dari AI, bukan sertifikasi mutu pangan. Tetap cek manual di PPI.",
+        "disclaimer": "Estimasi indikatif, bukan sertifikasi mutu pangan. Tetap cek manual di PPI.",
         "submit": "Pasang ke listing",
         "gradeLabel": "Grade",
         "summaryTitle": "Ringkasan Hasil",
-        "freshnessLabel": "Estimasi kesegaran",
+        "freshnessLabel": "Keyakinan hasil",
         "temperatureLabel": "Suhu Estimasi",
-        "condition": "{condition, select, live {Hidup} other {Mati}}, {score}%",
+        "condition": "{condition, select, live {Hidup} other {Mati}}, {state}",
         "usageTitle": "Rekomendasi Penggunaan",
         "usageSubtitle": "Komoditas ini cocok untuk industri hilir berikut:",
         "price": {
@@ -284,44 +289,6 @@
           "retry": "Nilai ulang",
           "retrying": "Menilai…",
           "stillFailing": "Masih belum berhasil. Coba lagi beberapa saat lagi."
-        },
-        "uses": {
-          "maggot": {
-            "title": "Pakan Maggot (BSF)",
-            "description": "Kandungan protein tinggi, ideal untuk pakan larva BSF."
-          },
-          "silase": {
-            "title": "Silase Ikan",
-            "description": "Dapat difermentasi dengan baik untuk pakan ternak."
-          },
-          "pupuk": {
-            "title": "Pupuk Organik Cair",
-            "description": "Kaya unsur hara, cocok untuk pupuk cair organik."
-          },
-          "tepung": {
-            "title": "Tepung Ikan",
-            "description": "Bahan baku pakan ternak dan budidaya perikanan."
-          },
-          "terasi": {
-            "title": "Terasi",
-            "description": "Difermentasi jadi terasi, jalur klasik untuk udang kecil."
-          },
-          "umpan": {
-            "title": "Umpan Pancing",
-            "description": "Dijual sebagai umpan untuk kapal pancing di sekitar PPI."
-          },
-          "konsumsi": {
-            "title": "Konsumsi Langsung",
-            "description": "Masih layak dijual segar untuk pasar konsumsi."
-          },
-          "asin": {
-            "title": "Ikan Asin",
-            "description": "Diawetkan dengan garam dan dijemur, tahan disimpan lama."
-          },
-          "pakanTernak": {
-            "title": "Pakan Ternak",
-            "description": "Diolah jadi campuran pakan unggas dan ikan budidaya."
-          }
         },
         "phoneMissing": "Tambahkan nomor WhatsApp di Akun sebelum memasang listing, supaya pembeli bisa menghubungi Anda.",
         "phoneMissingAction": "Buka Akun"

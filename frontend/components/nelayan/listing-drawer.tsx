@@ -118,6 +118,9 @@ export function ListingDrawer({ listing, labels, actions, closeHref, error, edit
               </DetailRow>
               <DetailRow icon="recycle" label={labels.usageLabel}>
                 <DetailValue>{detail.usage}</DetailValue>
+                {detail.usageOptions && (
+                  <p className="text-[13px]/[19px] box-border w-full mt-[4px] text-[#5B6B7C] font-inter font-normal text-left">{detail.usageOptions}</p>
+                )}
               </DetailRow>
               <DetailRow icon="images" label={labels.photosLabel}>
                 <div className="box-border w-fit h-fit shrink-0 flex flex-row gap-[8px] p-[4px_0px_0px_0px] justify-start items-start">

@@ -7,8 +7,10 @@ export type FreshnessResult = {
   // "A1" … "B3"; the letter picks the ring's tone. "–" while the AI hasn't graded the catch.
   grade: string
   condition: string
-  // 0–100; fills the ring and is shown as "Estimasi kesegaran".
-  freshness: number
+  // 0–100 from the grade (A1 full … B3 low); fills the ring.
+  level: number
+  // The model's confidence in the grade, "37%"; shown as "Keyakinan hasil".
+  confidence: string
   temperature: string
 }
 
@@ -27,7 +29,7 @@ type GradePanelProps = {
   ungraded?: UngradedState
   gradeLabel: string
   summaryTitle: string
-  metricLabels: { freshness: string; temperature: string }
+  metricLabels: { confidence: string; temperature: string }
 }
 
 // The left half of the result: the grade ring over a wave, then the "Ringkasan Hasil" figures.
@@ -59,11 +61,11 @@ export function GradePanel({ result, ungraded, gradeLabel, summaryTitle, metricL
         <UngradedNotice {...ungraded} />
       ) : (
         <>
-          <GradeRing grade={result.grade} gradeLabel={gradeLabel} condition={result.condition} freshness={result.freshness} />
+          <GradeRing grade={result.grade} gradeLabel={gradeLabel} condition={result.condition} level={result.level} />
           <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[14px] p-[18px] justify-start items-start bg-[#FFFFFFB3] rounded-[16px] relative [z-index:2]">
             <h3 className="text-[15px]/[normal] box-border text-[#0B3B5C] font-poppins font-semibold text-left [white-space:nowrap]">{summaryTitle}</h3>
             <div className="box-border w-full h-fit shrink-0 flex flex-row gap-0 justify-start items-start">
-              <Metric icon="shield-check" label={metricLabels.freshness} value={`${result.freshness}%`} />
+              <Metric icon="sparkles" label={metricLabels.confidence} value={result.confidence} />
               <Metric icon="thermometer" label={metricLabels.temperature} value={result.temperature} divider />
             </div>
           </div>

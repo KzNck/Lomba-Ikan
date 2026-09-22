@@ -6,7 +6,6 @@
 import type { ImageContent } from '@/components/home/hero'
 import type { ProductCardContent } from '@/components/pembeli/product-card'
 import { MARKETPLACE_PATH, PPI_LOCATIONS, type Condition } from '@/components/pembeli/marketplace-content'
-import type { FreshnessT } from '@/components/nelayan/freshness-content'
 import { getTranslations } from 'next-intl/server'
 import {
   catchImage,
@@ -18,11 +17,11 @@ import {
   storageLabel,
   timeAgo,
   timeLeft,
+  usageLabel,
   type Presenter,
 } from '@/lib/catches/present'
 import { getPresenter } from '@/lib/i18n/presenter'
 import type { Translator } from '@/lib/i18n/translator'
-import { recommendationsFor } from '@/lib/catches/recommendations'
 import { getListedCatches } from '@/lib/supabase/catches'
 import { getProfileNames, type ProfileName } from '@/lib/supabase/profiles'
 import { requireProfile } from '@/lib/supabase/auth'
@@ -89,12 +88,12 @@ export function batchNumber(entry: Pick<Catch, 'id' | 'created_at'>): string {
   return `BL-${new Date(entry.created_at).getFullYear()}-${entry.id.slice(0, 4).toUpperCase()}`
 }
 
-// `t` is the marketplace's batch copy; `freshness` names the derived recommended uses.
-type BatchCopy = { t: Translator<'dashboard.pembeli.marketplace.batch'>; freshness: FreshnessT }
+// The marketplace's batch copy.
+type BatchCopy = { t: Translator<'dashboard.pembeli.marketplace.batch'> }
 
 export function toBatch(
   p: Presenter,
-  { t, freshness }: BatchCopy,
+  { t }: BatchCopy,
   entry: Catch,
   seller: ProfileName | undefined,
   origin: string | null
@@ -133,13 +132,8 @@ export function toBatch(
       condition: conditionOf(entry),
       caught: t('caught', { ago: timeAgo(p, entry.catch_time) }),
       auctionLeft: remaining ?? undefined,
-      // The model's own recommendation when it graded this catch; the derived
-      // list stands in for anything it has not looked at yet.
-      usage:
-        entry.hilirisasi_recommendation ??
-        recommendationsFor(freshness, entry)
-          .map((option) => option.title)
-          .join(', '),
+      // The model's sentence for this grade, or the uses derived from the same grade (see usageLabel).
+      usage: usageLabel(p, entry),
       fisherman: seller?.full_name ?? t('registeredFisher'),
       // Metode tangkap belum ada kolomnya; yang tercatat baru cara penyimpanannya.
       method: storageLabel(p, entry.storage_method),
@@ -158,11 +152,10 @@ export function batchTotal(batch: Batch): number {
 export async function loadBatches(): Promise<Batch[]> {
   const profile = await requireProfile('pembeli')
   const listed = await getListedCatches()
-  const [sellers, p, t, freshness] = await Promise.all([
+  const [sellers, p, t] = await Promise.all([
     getProfileNames(listed.map((entry) => entry.nelayan_id)),
     getPresenter(),
     getTranslations('dashboard.pembeli.marketplace.batch'),
-    getTranslations('dashboard.nelayan.freshness'),
   ])
-  return listed.map((entry) => toBatch(p, { t, freshness }, entry, sellers.get(entry.nelayan_id), profile.ppi_location))
+  return listed.map((entry) => toBatch(p, { t }, entry, sellers.get(entry.nelayan_id), profile.ppi_location))
 }

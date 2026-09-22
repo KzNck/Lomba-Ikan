@@ -24,7 +24,7 @@ export function gradePanel(t: FreshnessT) {
   return {
     gradeLabel: t('gradeLabel'),
     summaryTitle: t('summaryTitle'),
-    metricLabels: { freshness: t('freshnessLabel'), temperature: t('temperatureLabel') },
+    metricLabels: { confidence: t('freshnessLabel'), temperature: t('temperatureLabel') },
   }
 }
 

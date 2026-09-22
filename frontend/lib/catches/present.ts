@@ -12,6 +12,7 @@ import type { ListingCardContent } from '@/components/nelayan/listing-card'
 import type { ActiveListing } from '@/components/nelayan/listing-content'
 import { CATEGORY_OPTIONS } from '@/components/nelayan/catch-content'
 import type { Translator } from '@/lib/i18n/translator'
+import { usageOptionsLabel } from './recommendations'
 import type { Catch, FreshnessGrade, StorageMethod } from '@/types/database'
 
 /** Pesan `common` dan formatter bahasa aktif. Di server: `await getPresenter()` (lib/i18n/presenter.ts). */
@@ -80,19 +81,29 @@ export function storageLabel({ t }: Presenter, method: StorageMethod): string {
   return t(`storage.${method}`)
 }
 
-/** Kata sifat untuk skor kesegaran, dipakai di baris "Estimasi kesegaran". */
-function scoreWord(score: number): 'good' | 'fine' | 'fair' {
-  if (score >= 85) return 'good'
-  if (score >= 75) return 'fine'
-  return 'fair'
+/**
+ * Arti grade dalam kata-kata ("Mutu rendah" untuk B3). Mengikuti grade, bukan persentasenya: angka dari model
+ * adalah keyakinannya pada grade itu, bukan tingkat kesegaran.
+ */
+export function gradeState({ t }: Presenter, grade: FreshnessGrade): string {
+  return t(`grade.state.${grade}`)
 }
 
-/** "Grade A · Hidup, Bagus · 92%" — atau tanpa skor kalau AI belum selesai. */
+const GRADE_ORDER: FreshnessGrade[] = ['B3', 'B2', 'B1', 'A3', 'A2', 'A1']
+
+/** Seberapa penuh cincin grade, 0–100: A1 penuh, turun satu langkah per grade sampai B3. */
+export function gradeLevel(grade: FreshnessGrade | null): number {
+  if (!grade) return 0
+  return Math.round(((GRADE_ORDER.indexOf(grade) + 1) / GRADE_ORDER.length) * 100)
+}
+
+/** "Grade B3 · Mati, Mutu rendah · keyakinan 37%" — atau tanpa keyakinan kalau model tidak mengirimnya. */
 export function freshnessLabel(p: Presenter, entry: Pick<Catch, 'freshness_grade' | 'freshness_score'>): string {
   const grade = gradeLabel(p, entry.freshness_grade)
-  if (entry.freshness_score === null) return grade
-  const score = Number(entry.freshness_score)
-  return p.t('grade.freshness', { grade, score: scoreWord(score), percent: Math.round(score) })
+  if (!entry.freshness_grade) return grade
+  const state = gradeState(p, entry.freshness_grade)
+  if (entry.freshness_score === null) return `${grade}, ${state}`
+  return p.t('grade.freshness', { grade, state, percent: Math.round(Number(entry.freshness_score)) })
 }
 
 /** "Rp 8.000". Harga yang belum diisi nelayan ditandai, bukan ditampilkan sebagai Rp 0. */
@@ -129,22 +140,11 @@ export function timeAgo({ t, format }: Presenter, iso: string | null, now: Date 
 }
 
 /**
- * Rekomendasi penggunaan per kategori. Belum ada kolomnya di database, jadi
- * diturunkan dari kategori + grade: yang masih hidup layak konsumsi, yang sudah
- * mati diarahkan ke jalur pengolahan.
+ * Rekomendasi penggunaan: kalimat dari model kalau sudah menilai tangkapan ini, kalau tidak judul kartu yang
+ * diturunkan dari grade-nya (lib/catches/recommendations.ts) — keduanya mengikuti grade yang sama.
  */
-const USAGE_KEYS = new Set<string>(CATEGORIES.filter((category) => category !== 'lainnya'))
-type UsageKey = Exclude<Category, 'lainnya'> | 'fallback'
-
-export function usageLabel(
-  { t }: Presenter,
-  entry: Pick<Catch, 'species' | 'freshness_grade' | 'hilirisasi_recommendation'>
-): string {
-  // Kalau model sudah memberi rekomendasi, itu yang dipakai (teks dari model, apa
-  // adanya); sisanya diturunkan dari kategori dan grade.
-  if (entry.hilirisasi_recommendation) return entry.hilirisasi_recommendation
-  const key = (USAGE_KEYS.has(entry.species) ? entry.species : 'fallback') as UsageKey
-  return t(`usage.${key}.${gradeCondition(entry.freshness_grade)}`)
+export function usageLabel(p: Presenter, entry: Pick<Catch, 'species' | 'freshness_grade' | 'hilirisasi_recommendation'>): string {
+  return entry.hilirisasi_recommendation || usageOptionsLabel(p, entry) || p.t('usageUnrated')
 }
 
 /** Status kartu: LISTED masih berjalan, CLAIMED/COMPLETED sudah tutup. */
@@ -214,6 +214,8 @@ export function toActiveListing(p: Presenter, entry: Catch): ActiveListing {
       logged: `${p.format.dateTime(new Date(entry.created_at), 'day')}, ${p.format.dateTime(new Date(entry.created_at), 'time')}`,
       freshness: freshnessLabel(p, entry),
       usage: usageLabel(p, entry),
+      // The cards' titles under the model's sentence, so the drawer lists the same uses as the result modal.
+      usageOptions: entry.hilirisasi_recommendation ? usageOptionsLabel(p, entry) : '',
       photos: [catchImage(p, entry)],
     },
   }

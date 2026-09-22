@@ -33,46 +33,20 @@
     "grade": {
       "unrated": "Not graded yet",
       "label": "Grade {grade} · {condition, select, live {Live} other {Dead}}",
-      "freshness": "{grade}, {score, select, good {Excellent} fine {Good} other {Fair}} · {percent}%"
+      "freshness": "{grade}, {state} · {percent}% confidence",
+      "state": {
+        "A1": "Very fresh",
+        "A2": "Fresh",
+        "A3": "Less fresh",
+        "B1": "Good quality",
+        "B2": "Fair quality",
+        "B3": "Low quality"
+      }
     },
     "storage": {
       "crushed_ice": "Plenty of ice",
       "chilled_seawater": "Some ice",
       "ambient": "No ice"
-    },
-    "usage": {
-      "campuran": {
-        "live": "Direct Consumption, Salted Fish",
-        "dead": "Maggot Feed (BSF), Fish Silage"
-      },
-      "teri": {
-        "live": "Dried Anchovies, Direct Consumption",
-        "dead": "Shrimp Paste, Livestock Feed"
-      },
-      "udang": {
-        "live": "Direct Consumption, Frozen Shrimp",
-        "dead": "Shrimp Paste, Livestock Feed"
-      },
-      "cumi-cumi-sotong": {
-        "live": "Direct Consumption, Frozen Squid",
-        "dead": "Fishing Bait, Fish Meal"
-      },
-      "ikan-pelagis-kecil": {
-        "live": "Direct Consumption, Boiled Salted Fish",
-        "dead": "Salted Fish, Fish Meal"
-      },
-      "ikan-demersal": {
-        "live": "Direct Consumption, Smoked Fish",
-        "dead": "Fish Silage, Organic Fertilizer"
-      },
-      "rajungan": {
-        "live": "Direct Consumption, Crab Meat",
-        "dead": "Shell Meal, Livestock Feed"
-      },
-      "fallback": {
-        "live": "Direct Consumption",
-        "dead": "Maggot Feed (BSF), Organic Fertilizer"
-      }
     },
     "price": {
       "unset": "Not set"
@@ -96,7 +70,38 @@
       "active": "Active",
       "activeFooter": "{time} left",
       "logged": "Logged {date}"
-    }
+    },
+    "uses": {
+      "maggot": {
+        "title": "Maggot Feed (BSF)",
+        "description": "High in protein, ideal feed for BSF larvae."
+      },
+      "silase": {
+        "title": "Fish Silage",
+        "description": "Ferments well into livestock feed."
+      },
+      "pupuk": {
+        "title": "Liquid Organic Fertilizer",
+        "description": "Rich in nutrients, good for liquid organic fertilizer."
+      },
+      "tepung": {
+        "title": "Fish Meal",
+        "description": "Raw material for livestock feed and aquaculture."
+      },
+      "lepas": {
+        "title": "Release Back",
+        "description": "Still vital, can be released to the sea to protect fish stocks."
+      },
+      "pakanBasah": {
+        "title": "Wet Feed",
+        "description": "Fed directly as wet feed for farmed fish and poultry."
+      },
+      "kompos": {
+        "title": "Compost",
+        "description": "Mixed with other organic matter into solid compost for farmland."
+      }
+    },
+    "usageUnrated": "No recommendation yet, this catch hasn't been graded."
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -262,13 +267,13 @@
         "title": "Freshness Result",
         "subtitle": "Here's the freshness analysis of the photo you uploaded.",
         "close": "Close",
-        "disclaimer": "An indicative AI estimate, not a food quality certification. Still check it by hand at the PPI.",
+        "disclaimer": "An indicative estimate, not a food-safety certification. Still check by hand at the PPI.",
         "submit": "Post listing",
         "gradeLabel": "Grade",
         "summaryTitle": "Result Summary",
-        "freshnessLabel": "Estimated freshness",
+        "freshnessLabel": "Result confidence",
         "temperatureLabel": "Estimated Temperature",
-        "condition": "{condition, select, live {Live} other {Dead}}, {score}%",
+        "condition": "{condition, select, live {Live} other {Dead}}, {state}",
         "usageTitle": "Recommended Uses",
         "usageSubtitle": "This catch suits these downstream industries:",
         "price": {
@@ -284,44 +289,6 @@
           "retry": "Grade again",
           "retrying": "Grading…",
           "stillFailing": "Still didn't go through. Try again in a little while."
-        },
-        "uses": {
-          "maggot": {
-            "title": "Maggot Feed (BSF)",
-            "description": "High in protein, ideal feed for BSF larvae."
-          },
-          "silase": {
-            "title": "Fish Silage",
-            "description": "Ferments well into livestock feed."
-          },
-          "pupuk": {
-            "title": "Liquid Organic Fertilizer",
-            "description": "Rich in nutrients, good for liquid organic fertilizer."
-          },
-          "tepung": {
-            "title": "Fish Meal",
-            "description": "Raw material for livestock feed and aquaculture."
-          },
-          "terasi": {
-            "title": "Shrimp Paste",
-            "description": "Fermented into shrimp paste, the classic route for small shrimp."
-          },
-          "umpan": {
-            "title": "Fishing Bait",
-            "description": "Sold as bait to fishing boats around the PPI."
-          },
-          "konsumsi": {
-            "title": "Direct Consumption",
-            "description": "Still fit to sell fresh for the consumer market."
-          },
-          "asin": {
-            "title": "Salted Fish",
-            "description": "Salted and sun-dried, keeps for a long time."
-          },
-          "pakanTernak": {
-            "title": "Livestock Feed",
-            "description": "Processed into feed mixes for poultry and farmed fish."
-          }
         },
         "phoneMissing": "Add your WhatsApp number in Account before posting a listing, so buyers can contact you.",
         "phoneMissingAction": "Open Account"

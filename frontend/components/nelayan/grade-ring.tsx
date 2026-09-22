@@ -29,13 +29,13 @@ type GradeRingProps = {
   grade: string
   gradeLabel: string
   condition: string
-  // 0–100; how much of the ring is filled.
-  freshness: number
+  // 0–100 from the grade (see gradeLevel); how much of the ring is filled.
+  level: number
 }
 
 // The export cuts the ring out with a clip-path traced for 92%. It's an SVG stroke here with the same geometry
 // (236px ring, 16.52px band, starting at 12 o'clock and running clockwise) so any percentage draws correctly.
-export function GradeRing({ grade, gradeLabel, condition, freshness }: GradeRingProps) {
+export function GradeRing({ grade, gradeLabel, condition, level }: GradeRingProps) {
   // Anything that isn't grade A (C, or a catch the AI hasn't scored) takes the neutral tone.
   const tone = GRADE_TONES[grade[0] as keyof typeof GRADE_TONES] ?? GRADE_TONES.B
 
@@ -55,7 +55,7 @@ export function GradeRing({ grade, gradeLabel, condition, freshness }: GradeRing
           stroke={tone.progress}
           strokeWidth="16.52"
           pathLength="100"
-          strokeDasharray={`${freshness} 100`}
+          strokeDasharray={`${level} 100`}
         />
       </svg>
       <div className="box-border w-[192px] h-[192px] [box-shadow:0px_6px_20px_0px_#0F5C821A] absolute left-[calc(50%-96px)] lg:left-[95px] top-[22px] flex flex-col gap-[2px] justify-center items-center bg-[#FFFFFF] rounded-[999px] [z-index:2]">

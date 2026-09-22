@@ -16,7 +16,9 @@ export type ListingDetailContent = {
   // "21 Sep 2026, 14.30": when the catch was logged.
   logged: string
   freshness: string
+  // The model's sentence (or, without one, the derived uses); `usageOptions` lists the derived uses under it.
   usage: string
+  usageOptions: string
   // The drawer shows the first two and a "+N" tile for the rest.
   photos: ImageContent[]
 }
