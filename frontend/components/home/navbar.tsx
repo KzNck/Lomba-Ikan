@@ -71,16 +71,17 @@ export function Navbar({ items, activeHref, login, register }: NavbarProps) {
         onClick={(e) => (e.target as Element).closest('a') && setOpen(false)}
         className={`${open ? 'flex' : 'hidden'} lg:contents absolute left-0 right-0 top-full flex-col gap-[16px] p-[8px_16px_20px] sm:px-[24px] bg-[#FFFFFF] [border-width:0px_0px_1px_0px] [border-style:solid] [border-color:#E2E8F0] shadow-[0px_8px_24px_0px_#0B3B5C1F]`}
       >
-        <nav className="box-border w-fit shrink-0 h-fit flex flex-col items-start lg:flex-row gap-[4px] lg:gap-[40px] justify-start lg:items-center [&>a]:min-h-[44px] [&>a]:min-w-[44px] [&>a]:justify-center lg:[&>a]:min-h-auto lg:[&>a]:min-w-auto lg:[&>a]:justify-start">
+        <nav className="box-border w-fit shrink-0 h-fit flex flex-col items-start lg:flex-row gap-[4px] lg:gap-[40px] justify-start lg:items-center [&>a]:min-h-[44px] [&>a]:min-w-[44px] [&>a]:justify-center [&>a]:items-start lg:[&>a]:min-h-auto lg:[&>a]:min-w-auto lg:[&>a]:justify-start lg:[&>a]:items-center">
           {activeHref ? (
             <NavLinks items={items} initialHref={activeHref} />
           ) : (
             items.map((item) => <NavLink key={item.href} {...item} active={false} />)
           )}
         </nav>
-        <div className="box-border w-fit shrink-0 h-fit justify-self-end flex flex-row flex-wrap lg:flex-nowrap gap-[12px] justify-start items-center">
-          {/* Moved last below lg, so its right-aligned options open inside the screen rather than off its left edge. */}
-          <div className="order-last lg:contents">
+        {/* Below lg: the two buttons share the row equally, and the language switcher sits centred under them (where its
+            right-aligned options still open on screen), all under a divider that separates them from the links. */}
+        <div className="box-border w-full lg:w-fit shrink-0 h-fit justify-self-end grid grid-cols-2 lg:flex lg:flex-row lg:flex-nowrap gap-[12px] pt-[16px] lg:pt-0 [border-width:1px_0px_0px_0px] lg:[border-width:0px] [border-style:solid] [border-color:#E2E8F0] [&>a]:w-full lg:[&>a]:w-fit justify-start items-center">
+          <div className="order-last col-span-2 justify-self-center lg:contents">
             <LanguageSwitcher />
           </div>
           <PillLink href={login.href} label={login.label} variant="outline" size="md" className="min-h-[44px] lg:min-h-auto" />
