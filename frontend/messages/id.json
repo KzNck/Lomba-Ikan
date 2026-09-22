@@ -343,7 +343,6 @@
       "listing": {
         "title": "Listing Saya",
         "subtitle": "Kelola semua hasil tangkapan yang Anda daftarkan di platform.",
-        "addAction": "Tambah Tangkapan",
         "weight": "Berat",
         "pricePerKg": "Harga per kg",
         "active": {

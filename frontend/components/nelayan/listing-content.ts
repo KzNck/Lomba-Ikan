@@ -38,7 +38,6 @@ export function listingPage(t: ListingT) {
   return {
     title: t('title'),
     subtitle: t('subtitle'),
-    addAction: { href: '/nelayan/catat', label: t('addAction') },
     metricLabels: { weight: t('weight'), pricePerKg: t('pricePerKg') },
   }
 }

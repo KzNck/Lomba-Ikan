@@ -18,7 +18,7 @@ import { requireProfile } from '@/lib/supabase/auth'
 import { displayNameFor } from '@/lib/supabase/display-name'
 import { getMyCatches } from '@/lib/supabase/catches'
 import { getMyTransactions } from '@/lib/supabase/transactions'
-import { greetingFor, initialsOf, recentNotifications } from '@/lib/nelayan/dashboard-data'
+import { initialsOf, recentNotifications } from '@/lib/nelayan/dashboard-data'
 
 // The "13 Riwayat Transaksi" frame: the history table beside the fisher's own dashboard chrome. The URL holds the
 // view — ?status= filters the rows, ?transaksi=<id> opens that row's drawer.
@@ -56,8 +56,8 @@ export default async function RiwayatPage({
   return (
     <div className="box-border [flex:1_1_0] flex flex-col gap-0 justify-start items-start relative">
       <DashboardHeader
-        greeting={greetingFor(home, name)}
-        subtitle={DASHBOARD.subtitle}
+        title={RIWAYAT_PAGE.title}
+        subtitle={RIWAYAT_PAGE.subtitle}
         notifications={{ ...DASHBOARD.notifications, unreadCount: notifications.length }}
         user={{ name, initials: initialsOf(profile.full_name) }}
       />
@@ -67,10 +67,6 @@ export default async function RiwayatPage({
         <div
           className={`box-border w-full [flex:1_1_0] flex flex-col gap-[20px] p-[16px_16px_120px_16px] sm:p-[20px_24px_120px_24px] ${detail ? 'lg:p-[20px_424px_120px_32px]' : 'lg:p-[20px_32px_120px_32px]'} justify-start items-start relative [z-index:2]`}
         >
-          <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[6px] justify-start items-start">
-            <h2 className="text-[24px]/[30px] lg:text-[28px]/[32px] box-border text-[#0B3B5C] font-poppins font-bold text-left lg:[white-space:nowrap]">{RIWAYAT_PAGE.title}</h2>
-            <p className="text-[15px]/[normal] box-border w-full text-[#5B6B7C] font-inter font-normal text-left">{RIWAYAT_PAGE.subtitle}</p>
-          </div>
           <RiwayatFilters action={RIWAYAT_PATH} status={status} range={range} dateLabel={dateLabelFor(p, t, range, shownRange)} />
           <p className="box-border w-full h-fit shrink-0 flex flex-row gap-[6px] justify-start items-center">
             <span className="text-[13px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left [white-space:nowrap]">

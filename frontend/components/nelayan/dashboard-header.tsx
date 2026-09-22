@@ -9,8 +9,11 @@ import type { ImageContent } from '@/components/home/hero'
 import { OUTLINE_HOVER, PRESS } from '@/components/ui/interaction'
 
 type DashboardHeaderProps = {
-  greeting: string
+  // The time-of-day greeting on the Dashboard; the page's own title everywhere else.
+  title: string
   subtitle: string
+  // The waving hand, which belongs to the Dashboard's greeting only.
+  wave?: boolean
   notifications: { href: string; unreadCount: number }
   // Profiles carry no photo, so the avatar falls back to initials like the sidebar's.
   user: { name: string; initials: string; avatar?: ImageContent }
@@ -22,24 +25,27 @@ type DashboardHeaderProps = {
 // pushes the right-hand cards off-frame; it's border-box full width here, which is what the design shows.
 // No z-index of its own: that would trap the account menu below the main column (z-index 2) and the drawers (3).
 export function DashboardHeader({
-  greeting,
+  title,
   subtitle,
+  wave = false,
   notifications,
   user,
   accountHref = '/nelayan/akun',
 }: DashboardHeaderProps) {
   const t = useTranslations('nav')
-  // Below lg the greeting takes its own line and the controls wrap under it.
+  // Below lg the title takes its own line and the controls wrap under it.
   return (
     <header className="box-border w-full h-fit shrink-0 flex flex-row flex-wrap lg:flex-nowrap gap-x-[12px] gap-y-[14px] lg:gap-0 p-[16px] sm:p-[20px_24px] lg:p-[20px_32px] justify-between items-center bg-[#FFFFFF] [border-width:0px_0px_1px_0px] [border-style:solid] [border-color:#E2E8F0] [margin:0px_0px_-0.5px_0px] relative">
       <div className="box-border w-full lg:w-fit shrink-0 h-fit flex flex-col gap-[4px] justify-start items-start">
         <div className="box-border w-fit h-fit shrink-0 flex flex-row gap-[8px] justify-start items-center motion-safe:animate-fade-up">
           <h1 className="text-[20px]/[normal] sm:text-[22px]/[normal] box-border text-[#0B3B5C] font-poppins font-semibold text-left lg:[white-space:nowrap]">
-            {greeting}
+            {title}
           </h1>
-          <span aria-hidden="true" className="text-[20px]/[normal] box-border text-[#0B3B5C] font-inter font-normal text-left [white-space:nowrap]">
-            👋
-          </span>
+          {wave && (
+            <span aria-hidden="true" className="text-[20px]/[normal] box-border text-[#0B3B5C] font-inter font-normal text-left [white-space:nowrap]">
+              👋
+            </span>
+          )}
         </div>
         <p
           className="text-[14px]/[20px] lg:text-[14px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left lg:[white-space:nowrap] motion-safe:animate-fade-up"

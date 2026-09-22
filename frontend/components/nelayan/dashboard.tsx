@@ -24,7 +24,8 @@ export function NelayanDashboard({ data }: { data: NelayanDashboardData }) {
   return (
     <div className="box-border [flex:1_1_0] flex flex-col gap-0 justify-start items-start relative">
       <DashboardHeader
-        greeting={data.greeting}
+        title={data.greeting}
+        wave
         subtitle={DASHBOARD.subtitle}
         notifications={{ ...DASHBOARD.notifications, unreadCount: data.notifications.length }}
         user={data.user}

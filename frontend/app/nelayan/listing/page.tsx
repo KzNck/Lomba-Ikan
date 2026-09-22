@@ -32,7 +32,7 @@ import { toActiveListing, toListingCard } from '@/lib/catches/present'
 import { getMyCatches } from '@/lib/supabase/catches'
 import { getMyTransactions } from '@/lib/supabase/transactions'
 import { requireProfile } from '@/lib/supabase/auth'
-import { greetingFor, initialsOf, recentNotifications } from '@/lib/nelayan/dashboard-data'
+import { initialsOf, recentNotifications } from '@/lib/nelayan/dashboard-data'
 import { formatDay, withinRange } from '@/lib/nelayan/riwayat'
 import { getPresenter } from '@/lib/i18n/presenter'
 import { displayNameFor } from '@/lib/supabase/display-name'
@@ -168,7 +168,6 @@ export default async function ListingSayaPage({ searchParams }: { searchParams: 
     <>
       <ListingShell
         header={{
-          greeting: greetingFor(home, name),
           user: { name, initials: initialsOf(profile.full_name) },
           unreadCount: recentNotifications(p, home, catches, transactions).length,
         }}

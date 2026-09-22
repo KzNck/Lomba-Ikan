@@ -12,7 +12,7 @@ import { signOut } from '@/app/auth/actions'
 import { getAccountValues } from '@/lib/nelayan/account'
 import { getMyCatches } from '@/lib/supabase/catches'
 import { getMyTransactions } from '@/lib/supabase/transactions'
-import { greetingFor, initialsOf, recentNotifications } from '@/lib/nelayan/dashboard-data'
+import { initialsOf, recentNotifications } from '@/lib/nelayan/dashboard-data'
 import { displayNameOf } from '@/lib/supabase/display-name'
 import { getPresenter } from '@/lib/i18n/presenter'
 import { getLokasiPelabuhan, getPelabuhanById } from '@/lib/wilayah'
@@ -47,17 +47,13 @@ export default async function NelayanAkunPage() {
   return (
     <div className="box-border [flex:1_1_0] flex flex-col gap-0 justify-start items-start relative">
       <DashboardHeader
-        greeting={greetingFor(home, name)}
-        subtitle={DASHBOARD.subtitle}
+        title={AKUN_PAGE.title}
+        subtitle={AKUN_PAGE.subtitle}
         notifications={{ ...DASHBOARD.notifications, unreadCount: notifications.length }}
         user={{ name, initials: initialsOf(profile.fullName) }}
       />
       <MainDecoration />
       <div className="box-border w-full [flex:1_1_0] flex flex-col gap-[20px] p-[16px_16px_120px_16px] sm:p-[20px_24px_120px_24px] lg:p-[20px_32px_120px_32px] justify-start items-start relative [z-index:2]">
-        <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[6px] justify-start items-start">
-          <h2 className="text-[24px]/[30px] lg:text-[28px]/[32px] box-border text-[#0B3B5C] font-poppins font-bold text-left lg:[white-space:nowrap]">{AKUN_PAGE.title}</h2>
-          <p className="text-[15px]/[normal] box-border w-full text-[#5B6B7C] font-inter font-normal text-left">{AKUN_PAGE.subtitle}</p>
-        </div>
         <UnsavedChangesProvider dialog={UNSAVED_DIALOG}>
           <div className="box-border w-full h-fit shrink-0 flex flex-col lg:flex-row gap-[20px] justify-start items-stretch lg:items-start">
             <AccountSubnav {...AKUN_NAV} signOut={signOut} />

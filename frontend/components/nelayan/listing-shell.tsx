@@ -1,12 +1,10 @@
 import { DashboardHeader } from '@/components/nelayan/dashboard-header'
 import { MainDecoration } from '@/components/nelayan/main-decoration'
-import { ListingPageHead } from '@/components/nelayan/listing-page-head'
 import { useTranslations } from 'next-intl'
 import { dashboardCopy } from '@/components/nelayan/content'
 import { listingPage } from '@/components/nelayan/listing-content'
 
 export type ListingHeader = {
-  greeting: string
   user: { name: string; initials: string }
   unreadCount: number
 }
@@ -20,7 +18,7 @@ type ListingShellProps = {
   drawer?: React.ReactNode
 }
 
-// The "09 Listing Saya" main column: header, waves and page title around the tabs and grid.
+// The "09 Listing Saya" main column: the header (carrying the page title) and waves around the filters and grid.
 // Shared by the page and its loading state.
 export function ListingShell({ header, children, drawer }: ListingShellProps) {
   const DASHBOARD = dashboardCopy(useTranslations('dashboard.nelayan.home'))
@@ -29,8 +27,8 @@ export function ListingShell({ header, children, drawer }: ListingShellProps) {
     <div className="box-border [flex:1_1_0] flex flex-col gap-0 justify-start items-start relative">
       {header ? (
         <DashboardHeader
-          greeting={header.greeting}
-          subtitle={DASHBOARD.subtitle}
+          title={LISTING_PAGE.title}
+          subtitle={LISTING_PAGE.subtitle}
           notifications={{ ...DASHBOARD.notifications, unreadCount: header.unreadCount }}
           user={header.user}
         />
@@ -47,7 +45,6 @@ export function ListingShell({ header, children, drawer }: ListingShellProps) {
         <div
           className={`box-border w-full [flex:1_1_0] flex flex-col gap-[24px] p-[16px_16px_120px_16px] sm:p-[20px_24px_120px_24px] ${drawer ? 'lg:p-[20px_412px_120px_32px]' : 'lg:p-[20px_32px_120px_32px]'} justify-start items-start relative [z-index:2]`}
         >
-          <ListingPageHead title={LISTING_PAGE.title} subtitle={LISTING_PAGE.subtitle} action={LISTING_PAGE.addAction} />
           {children}
         </div>
         {drawer}

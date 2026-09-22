@@ -343,7 +343,6 @@
       "listing": {
         "title": "My Listings",
         "subtitle": "Manage every catch you've listed on the platform.",
-        "addAction": "Add Catch",
         "weight": "Weight",
         "pricePerKg": "Price per kg",
         "active": {
