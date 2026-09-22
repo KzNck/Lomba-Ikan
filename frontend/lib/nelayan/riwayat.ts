@@ -26,9 +26,9 @@ import {
 import { categoryLabel, formatRupiah, gradeLabel, storageLabel, type Presenter } from '@/lib/catches/present'
 import { getPresenter } from '@/lib/i18n/presenter'
 import { batchNumber } from '@/lib/marketplace/batches'
-import { getMyTransactions } from '@/lib/supabase/transactions'
+import { getMyTransactions, type TransactionWithCatch } from '@/lib/supabase/transactions'
 import { requireProfile } from '@/lib/supabase/auth'
-import type { Catch, FreshnessGrade, Transaction } from '@/types/database'
+import type { FreshnessGrade } from '@/types/database'
 
 /** Satu baris tabel, sudah dalam bentuk teks siap tampil. */
 export type TransactionRowContent = {
@@ -98,7 +98,6 @@ export type RiwayatData = {
     range: { from: string; to: string } | null
 }
 
-type TransactionWithCatch = Transaction & { catches: Catch | null }
 
 /** "2025-06-01" → "1 Jun 2025", untuk label filter tanggal. */
 export const formatDay = ({ format }: Presenter, day: string) => format.dateTime(new Date(`${day}T00:00:00`), 'day')

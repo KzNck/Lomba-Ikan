@@ -12,10 +12,10 @@ import { getTranslations } from 'next-intl/server'
 import { getPresenter } from '@/lib/i18n/presenter'
 import type { Translator } from '@/lib/i18n/translator'
 import { loadBatches, type Batch } from '@/lib/marketplace/batches'
-import { getMyTransactions } from '@/lib/supabase/transactions'
+import { getMyTransactions, type TransactionWithCatch } from '@/lib/supabase/transactions'
 import { requireProfile } from '@/lib/supabase/auth'
 import { displayNameFor } from '@/lib/supabase/display-name'
-import type { Catch, Transaction } from '@/types/database'
+import type { Transaction } from '@/types/database'
 
 export type PembeliDashboardData = {
     greeting: string
@@ -45,7 +45,7 @@ function delta(now: number, before: number): string {
 
 const DAY = 24 * 60 * 60 * 1000
 
-function activityStats(t: HomeT, transactions: (Transaction & { catches: Catch | null })[]): ActivityStatContent[] {
+function activityStats(t: HomeT, transactions: TransactionWithCatch[]): ActivityStatContent[] {
     const now = Date.now()
     const since = (from: number, to: number) =>
         transactions.filter((tx) => {
@@ -107,7 +107,7 @@ const STATUS_ICON: Record<Transaction['status'], NotificationItemContent['icon']
 function notifications(
     p: Presenter,
     t: HomeT,
-    transactions: (Transaction & { catches: Catch | null })[]
+    transactions: TransactionWithCatch[]
 ): NotificationItemContent[] {
     return transactions.slice(0, 4).map((tx) => {
         const name = tx.catches ? categoryLabel(p, tx.catches.species) : t('batch')

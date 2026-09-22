@@ -24,9 +24,9 @@ import { getPresenter } from '@/lib/i18n/presenter'
 import type { Translator } from '@/lib/i18n/translator'
 import { recommendationsFor } from '@/lib/catches/recommendations'
 import { getListedCatches } from '@/lib/supabase/catches'
-import { getProfileNames } from '@/lib/supabase/profiles'
+import { getProfileNames, type ProfileName } from '@/lib/supabase/profiles'
 import { requireProfile } from '@/lib/supabase/auth'
-import type { Catch, Profile } from '@/types/database'
+import type { Catch } from '@/types/database'
 
 export type Batch = ProductCardContent & {
   slug: string
@@ -96,7 +96,7 @@ export function toBatch(
   p: Presenter,
   { t, freshness }: BatchCopy,
   entry: Catch,
-  seller: Profile | undefined,
+  seller: ProfileName | undefined,
   origin: string | null
 ): Batch {
   const weightKg = Number(entry.weight_kg)

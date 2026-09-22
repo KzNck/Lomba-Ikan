@@ -4,33 +4,55 @@
 // Logic sensitif (escrow, disbursement) dijalankan Edge Function dengan service
 // role, bukan langsung dari client — lihat supabase/functions/.
 
+import { cache } from 'react'
 import { createClient } from './server'
 import type { Catch, Transaction } from '@/types/database'
 
-/** Transaksi yang melibatkan user yang login, sebagai nelayan maupun pembeli. */
-export async function getMyTransactions(): Promise<(Transaction & { catches: Catch | null })[]> {
+// Kolom tangkapan yang dibaca dari sebuah transaksi (riwayat, notifikasi) — bukan seluruh row-nya. Tambahkan di
+// kedua tempat kalau ada tampilan yang butuh kolom lain.
+const TRANSACTION_CATCH_COLUMNS =
+    'id, created_at, species, weight_kg, catch_location, catch_time, storage_method, freshness_grade, photo_url, price_per_kg, listed_at'
+export type TransactionCatch = Pick<
+    Catch,
+    | 'id'
+    | 'created_at'
+    | 'species'
+    | 'weight_kg'
+    | 'catch_location'
+    | 'catch_time'
+    | 'storage_method'
+    | 'freshness_grade'
+    | 'photo_url'
+    | 'price_per_kg'
+    | 'listed_at'
+>
+export type TransactionWithCatch = Transaction & { catches: TransactionCatch | null }
+
+/**
+ * Transaksi yang melibatkan user yang login, sebagai nelayan maupun pembeli. Sekali per request: halaman dan
+ * helper-nya (mis. loadRiwayat) yang sama-sama memanggilnya berbagi satu query.
+ */
+export const getMyTransactions = cache(async (): Promise<TransactionWithCatch[]> => {
     const supabase = await createClient()
     const { data, error } = await supabase
         .from('transactions')
-        .select('*, catches(*)')
+        .select(`*, catches(${TRANSACTION_CATCH_COLUMNS})`)
         .order('created_at', { ascending: false })
 
     if (error) throw new Error(`Gagal ambil transaksi: ${error.message}`)
-    return (data ?? []) as (Transaction & { catches: Catch | null })[]
-}
+    return (data ?? []) as TransactionWithCatch[]
+})
 
-export async function getTransactionById(
-    id: string
-): Promise<(Transaction & { catches: Catch | null }) | null> {
+export async function getTransactionById(id: string): Promise<TransactionWithCatch | null> {
     const supabase = await createClient()
     const { data, error } = await supabase
         .from('transactions')
-        .select('*, catches(*)')
+        .select(`*, catches(${TRANSACTION_CATCH_COLUMNS})`)
         .eq('id', id)
         .maybeSingle()
 
     if (error) throw new Error(`Gagal ambil transaksi: ${error.message}`)
-    return data as (Transaction & { catches: Catch | null }) | null
+    return data as TransactionWithCatch | null
 }
 
 /**

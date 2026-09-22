@@ -4,12 +4,16 @@
 // jadi memakai client dari server.ts (bawa cookie sesi) — RLS yang menentukan
 // baris mana yang kelihatan, bukan filter manual di sini.
 
+import { cache } from 'react'
 import { createClient } from './server'
 import { CATCH_PHOTOS_BUCKET } from './storage'
 import type { Catch, CatchStatus, CreateCatchInput } from '@/types/database'
 
-/** Tangkapan milik nelayan yang sedang login. RLS memfilter berdasarkan auth.uid(). */
-export async function getMyCatches(): Promise<Catch[]> {
+/**
+ * Tangkapan milik nelayan yang sedang login. RLS memfilter berdasarkan auth.uid(). Sekali per request: halaman dan
+ * helper-nya (mis. notifikasi di header) yang sama-sama memanggilnya berbagi satu query.
+ */
+export const getMyCatches = cache(async (): Promise<Catch[]> => {
     const supabase = await createClient()
     const { data, error } = await supabase
         .from('catches')
@@ -18,7 +22,7 @@ export async function getMyCatches(): Promise<Catch[]> {
 
     if (error) throw new Error(`Gagal ambil data tangkapan: ${error.message}`)
     return data ?? []
-}
+})
 
 export async function getCatchById(id: string): Promise<Catch | null> {
     const supabase = await createClient()

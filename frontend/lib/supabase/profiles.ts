@@ -28,11 +28,14 @@ export async function updateProfile(updates: Partial<Profile>): Promise<Profile>
  * Nama nelayan pemilik tiap tangkapan, untuk ditampilkan di marketplace.
  * Dikembalikan sebagai Map id → nama supaya pemanggilnya tidak perlu query per baris.
  */
-export async function getProfileNames(ids: string[]): Promise<Map<string, Profile>> {
+export type ProfileName = Pick<Profile, 'id' | 'full_name'>
+
+export async function getProfileNames(ids: string[]): Promise<Map<string, ProfileName>> {
     if (ids.length === 0) return new Map()
 
     const supabase = await createClient()
-    const { data, error } = await supabase.from('profiles').select('*').in('id', [...new Set(ids)])
+    // Hanya nama yang ditampilkan; kolom lain (telepon, rekening) tidak perlu ikut terkirim.
+    const { data, error } = await supabase.from('profiles').select('id, full_name').in('id', [...new Set(ids)])
 
     if (error) throw new Error(`Gagal ambil profil penjual: ${error.message}`)
     return new Map((data ?? []).map((profile) => [profile.id, profile]))
