@@ -33,7 +33,7 @@ export function TransactionDrawer({ detail, closeHref, copy, handover, chat, can
   return (
     <aside
       aria-labelledby={TITLE_ID}
-      className="box-border w-full sm:w-[400px] [box-shadow:-12px_0px_32px_0px_#0B3B5C14] fixed lg:absolute left-0 sm:left-auto right-0 top-0 bottom-0 z-[60] lg:z-[3] flex flex-col gap-0 justify-start items-start bg-[#FFFFFF] [border-width:0px_0px_0px_1px] [border-style:solid] [border-color:#E2E8F0] overflow-clip motion-safe:animate-fade-in"
+      className="box-border w-full sm:w-[400px] [box-shadow:-12px_0px_32px_0px_#0B3B5C14] fixed lg:absolute left-0 sm:left-auto right-0 top-0 bottom-0 z-[60] lg:z-[3] flex flex-col gap-0 justify-start items-start bg-[#FFFFFF] [border-width:0px] sm:[border-width:0px_0px_0px_1px] [border-style:solid] [border-color:#E2E8F0] overflow-clip motion-safe:animate-fade-in"
     >
       <DrawerFocusLock />
       <header className="box-border w-full h-fit shrink-0 flex flex-row gap-[12px] p-[16px] sm:p-[18px_20px] justify-between items-center [border-width:0px_0px_1px_0px] [border-style:solid] [border-color:#E2E8F0]">
@@ -173,7 +173,8 @@ export function TransactionDrawer({ detail, closeHref, copy, handover, chat, can
           <Row label={copy.paymentLabels.method} value={copy.paymentMethod} />
           <Row label={copy.paymentLabels.status}>
             <span
-              className={`box-border w-fit shrink-0 h-fit flex flex-row gap-[6px] p-[4px_10px] justify-start items-center ${detail.paid ? 'bg-[#E8F8F2]' : 'bg-[#F7F9FC] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px]'} rounded-[999px]`}
+              // Below lg the label may wrap inside the pill, so a long status stays within the panel.
+              className={`box-border w-fit min-w-0 shrink lg:shrink-0 h-fit flex flex-row gap-[6px] p-[4px_10px] justify-start items-center ${detail.paid ? 'bg-[#E8F8F2]' : 'bg-[#F7F9FC] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px]'} rounded-[999px]`}
             >
               <Icon
                 name={detail.paid ? 'circle-check' : 'clock-3'}
@@ -181,7 +182,7 @@ export function TransactionDrawer({ detail, closeHref, copy, handover, chat, can
                 className="box-border w-[13px] shrink-0 h-[13px]"
               />
               <span
-                className={`text-[12px]/[normal] box-border ${detail.paid ? 'text-[#17704A]' : 'text-[#0B3B5C]'} font-poppins font-semibold text-left [white-space:nowrap]`}
+                className={`text-[12px]/[16px] lg:text-[12px]/[normal] box-border ${detail.paid ? 'text-[#17704A]' : 'text-[#0B3B5C]'} font-poppins font-semibold text-left lg:[white-space:nowrap]`}
               >
                 {detail.paid ? copy.paymentPaid : copy.paymentPending}
               </span>

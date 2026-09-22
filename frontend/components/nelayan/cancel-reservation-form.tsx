@@ -73,7 +73,7 @@ export function CancelReservationForm({ transactionId, role, returnHref, action 
           ref={startRef}
           type="button"
           onClick={() => setConfirming(true)}
-          className={`box-border w-full h-fit shrink-0 flex flex-row gap-[8px] p-[11px_16px] justify-center items-center bg-[#FFFFFF] [outline:1.5px_solid_#C23B35] [outline-offset:-0.75px] rounded-[999px] cursor-pointer hover:bg-[#FDECEC] ${PRESS} ${FOCUS_RING}`}
+          className={`box-border w-full h-fit min-h-[44px] lg:min-h-auto shrink-0 flex flex-row gap-[8px] p-[11px_16px] justify-center items-center bg-[#FFFFFF] [outline:1.5px_solid_#C23B35] [outline-offset:-0.75px] rounded-[999px] cursor-pointer hover:bg-[#FDECEC] ${PRESS} ${FOCUS_RING}`}
         >
           <Icon name="circle-x" fill="#C23B35" className="box-border w-[16px] shrink-0 h-[16px]" />
           <span className="text-[14px]/[normal] box-border text-[#C23B35] font-poppins font-semibold text-left [white-space:nowrap]">
@@ -98,7 +98,7 @@ function BackButton({ label, onBack }: { label: string; onBack: () => void }) {
       type="button"
       disabled={pending}
       onClick={onBack}
-      className={`box-border [flex:1_1_0] h-fit flex flex-row gap-[8px] p-[10px_12px] justify-center items-center bg-[#FFFFFF] [outline:1.5px_solid_#0F6CB8] [outline-offset:-0.75px] rounded-[999px] cursor-pointer disabled:cursor-wait disabled:opacity-70 ${OUTLINE_HOVER} ${PRESS} ${FOCUS_RING}`}
+      className={`box-border [flex:1_1_0] h-fit min-h-[44px] lg:min-h-auto flex flex-row gap-[8px] p-[10px_12px] justify-center items-center bg-[#FFFFFF] [outline:1.5px_solid_#0F6CB8] [outline-offset:-0.75px] rounded-[999px] cursor-pointer disabled:cursor-wait disabled:opacity-70 ${OUTLINE_HOVER} ${PRESS} ${FOCUS_RING}`}
     >
       <span className="text-[13px]/[normal] box-border text-[#0F6CB8] font-poppins font-semibold text-left [white-space:nowrap]">{label}</span>
     </button>
@@ -112,7 +112,7 @@ function ConfirmButton({ label, pendingLabel }: { label: string; pendingLabel: s
       type="submit"
       disabled={pending}
       aria-busy={pending || undefined}
-      className={`box-border [flex:1.3_1_0] h-fit flex flex-row gap-[8px] p-[10px_12px] justify-center items-center bg-[#C23B35] rounded-[999px] cursor-pointer disabled:cursor-wait disabled:opacity-80 ${pending ? '' : `${SOLID_HOVER} ${PRESS}`} ${FOCUS_RING}`}
+      className={`box-border [flex:1.3_1_0] h-fit min-h-[44px] lg:min-h-auto flex flex-row gap-[8px] p-[10px_12px] justify-center items-center bg-[#C23B35] rounded-[999px] cursor-pointer disabled:cursor-wait disabled:opacity-80 ${pending ? '' : `${SOLID_HOVER} ${PRESS}`} ${FOCUS_RING}`}
     >
       {pending && <Icon name="loader-circle" fill="#FFFFFF" className="box-border w-[14px] shrink-0 h-[14px] motion-safe:animate-spin" />}
       <span className="text-[13px]/[normal] box-border text-[#FFFFFF] font-poppins font-semibold text-left [white-space:nowrap]">

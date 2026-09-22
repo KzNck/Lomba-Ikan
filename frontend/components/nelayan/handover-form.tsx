@@ -83,7 +83,7 @@ export function HandoverForm({ transactionId, weightKg, returnHref, action }: Ha
               readOnly={confirming}
               aria-describedby={state.error ? `${FIELD}-helper ${FIELD}-error` : `${FIELD}-helper`}
               aria-invalid={state.error ? true : undefined}
-              className="text-[15px]/[normal] box-border [flex:1_1_0] w-0 min-w-0 bg-transparent text-[#0B3B5C] font-poppins font-semibold text-left outline-none read-only:text-[#5B6B7C]"
+              className="text-[16px]/[normal] lg:text-[15px]/[normal] box-border [flex:1_1_0] w-0 min-w-0 self-stretch lg:self-auto bg-transparent text-[#0B3B5C] font-poppins font-semibold text-left outline-none read-only:text-[#5B6B7C]"
             />
             <span aria-hidden="true" className="text-[13px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left">
               kg
@@ -130,7 +130,7 @@ export function HandoverForm({ transactionId, weightKg, returnHref, action }: Ha
             ref={startRef}
             type="button"
             onClick={() => setConfirming(true)}
-            className={`box-border w-full h-fit shrink-0 flex flex-row gap-[8px] p-[12px_16px] justify-center items-center bg-[#0F6CB8] rounded-[999px] cursor-pointer ${SOLID_HOVER} ${PRESS} ${FOCUS_RING}`}
+            className={`box-border w-full h-fit min-h-[44px] lg:min-h-auto shrink-0 flex flex-row gap-[8px] p-[12px_16px] justify-center items-center bg-[#0F6CB8] rounded-[999px] cursor-pointer ${SOLID_HOVER} ${PRESS} ${FOCUS_RING}`}
           >
             <Icon name="handshake" fill="#FFFFFF" className="box-border w-[16px] shrink-0 h-[16px]" />
             <span className="text-[14px]/[normal] box-border text-[#FFFFFF] font-poppins font-semibold text-left [white-space:nowrap]">
@@ -150,7 +150,7 @@ function BackButton({ label, onBack }: { label: string; onBack: () => void }) {
       type="button"
       disabled={pending}
       onClick={onBack}
-      className={`box-border [flex:1_1_0] h-fit flex flex-row gap-[8px] p-[10px_12px] justify-center items-center bg-[#FFFFFF] [outline:1.5px_solid_#0F6CB8] [outline-offset:-0.75px] rounded-[999px] cursor-pointer disabled:cursor-wait disabled:opacity-70 ${OUTLINE_HOVER} ${PRESS} ${FOCUS_RING}`}
+      className={`box-border [flex:1_1_0] h-fit min-h-[44px] lg:min-h-auto flex flex-row gap-[8px] p-[10px_12px] justify-center items-center bg-[#FFFFFF] [outline:1.5px_solid_#0F6CB8] [outline-offset:-0.75px] rounded-[999px] cursor-pointer disabled:cursor-wait disabled:opacity-70 ${OUTLINE_HOVER} ${PRESS} ${FOCUS_RING}`}
     >
       <span className="text-[13px]/[normal] box-border text-[#0F6CB8] font-poppins font-semibold text-left [white-space:nowrap]">{label}</span>
     </button>
@@ -164,7 +164,7 @@ function ConfirmButton({ label, pendingLabel }: { label: string; pendingLabel: s
       type="submit"
       disabled={pending}
       aria-busy={pending || undefined}
-      className={`box-border [flex:1.3_1_0] h-fit flex flex-row gap-[8px] p-[10px_12px] justify-center items-center bg-[#0F6CB8] rounded-[999px] cursor-pointer disabled:cursor-wait disabled:opacity-80 ${pending ? '' : `${SOLID_HOVER} ${PRESS}`} ${FOCUS_RING}`}
+      className={`box-border [flex:1.3_1_0] h-fit min-h-[44px] lg:min-h-auto flex flex-row gap-[8px] p-[10px_12px] justify-center items-center bg-[#0F6CB8] rounded-[999px] cursor-pointer disabled:cursor-wait disabled:opacity-80 ${pending ? '' : `${SOLID_HOVER} ${PRESS}`} ${FOCUS_RING}`}
     >
       {pending && <Icon name="loader-circle" fill="#FFFFFF" className="box-border w-[14px] shrink-0 h-[14px] motion-safe:animate-spin" />}
       <span className="text-[13px]/[normal] box-border text-[#FFFFFF] font-poppins font-semibold text-left [white-space:nowrap]">
