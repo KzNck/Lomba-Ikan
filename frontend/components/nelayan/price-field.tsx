@@ -1,4 +1,5 @@
 import { Icon } from '@/components/ui/icon'
+import { RupiahInput } from '@/components/nelayan/rupiah-input'
 
 type PriceFieldProps = {
   name: string
@@ -16,7 +17,8 @@ type PriceFieldProps = {
 }
 
 // "Harga Jual": a rupiah-per-kg input with the market range beside it. The export's value text is the input
-// itself here; its focus state (the "Fokus keyboard" example) turns the border blue and adds the 2px ring.
+// itself here, grouping thousands as it's typed (RupiahInput); its focus state (the "Fokus keyboard" example) turns
+// the border blue and adds the 2px ring.
 export function PriceField({ name, label, helper, prefix, suffix, defaultValue, marketLabel, marketRange, error, layout = 'inline' }: PriceFieldProps) {
   return (
     <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[12px] p-[18px_0px_0px_0px] justify-start items-start [border-width:1px_0px_0px_0px] [border-style:solid] [border-color:#E2E8F0]">
@@ -33,10 +35,9 @@ export function PriceField({ name, label, helper, prefix, suffix, defaultValue, 
           <span aria-hidden="true" className="box-border w-fit shrink-0 h-[40px] flex flex-row gap-0 p-[0px_12px] justify-start items-center bg-[#F7F9FC] rounded-[8px]">
             <span className="text-[15px]/[normal] box-border text-[#5B6B7C] font-poppins font-semibold text-left [white-space:nowrap]">{prefix}</span>
           </span>
-          <input
+          <RupiahInput
             id={name}
             name={name}
-            inputMode="numeric"
             defaultValue={defaultValue}
             aria-describedby={error ? `${name}-helper ${name}-error` : `${name}-helper`}
             aria-invalid={error ? true : undefined}
