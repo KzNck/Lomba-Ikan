@@ -69,6 +69,17 @@ export const getClaims = cache(async () => {
 })
 
 /**
+ * Id, email, dan user_metadata user yang login, dibaca dari token sesi (lihat getClaims) — tanpa round trip ke
+ * Auth server seperti getUser(). Untuk halaman yang hanya menampilkan data; simpan tetap lewat getUser(), dan
+ * penyimpan metadata me-refresh sesinya supaya token berikutnya membawa nilai baru.
+ */
+export async function getSessionUser(): Promise<{ id: string; email: string; metadata: Record<string, unknown> } | null> {
+    const claims = await getClaims()
+    if (!claims) return null
+    return { id: claims.sub, email: claims.email ?? '', metadata: (claims.user_metadata ?? {}) as Record<string, unknown> }
+}
+
+/**
  * Profil user yang sedang login. `null` kalau belum login, atau kalau row
  * `profiles`-nya belum sempat dibuat. Sekali per request: layout dan halaman
  * yang sama-sama memanggilnya berbagi satu query.

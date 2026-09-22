@@ -10,6 +10,7 @@
 
 import type { AccountValues } from '@/components/nelayan/akun-content'
 import { createClient } from '@/lib/supabase/server'
+import { getProfile, getSessionUser } from '@/lib/supabase/auth'
 import { getPelabuhanById, searchPelabuhan } from '@/lib/wilayah'
 import type { Profile } from '@/types/database'
 
@@ -30,16 +31,15 @@ function locationOf(ppiId: string, chosenKabKota?: string): Pick<AccountValues, 
     return { provinsi: kabKota.split('.')[0], kabKota, ppi: pelabuhan.id }
 }
 
-/** Isi form dari profil + metadata user. */
+/**
+ * Isi form dari profil + metadata user. Dibaca dari token sesi dan profil yang sudah dimuat layout (keduanya sekali
+ * per request), jadi membuka halaman Akun tidak menambah round trip ke Supabase.
+ */
 export async function getAccountValues(): Promise<AccountValues> {
-    const supabase = await createClient()
-    const {
-        data: { user },
-    } = await supabase.auth.getUser()
+    const [user, profile] = await Promise.all([getSessionUser(), getProfile()])
     if (!user) throw new Error('User belum login')
 
-    const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle()
-    const meta = (user.user_metadata ?? {}) as AccountMetadata
+    const meta = user.metadata as AccountMetadata
 
     // Registrasi hanya menyimpan nama PPI; cari pelabuhannya lewat nama kalau id-nya belum pernah disimpan.
     const ppiName = profile?.ppi_location ?? ''

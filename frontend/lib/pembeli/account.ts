@@ -10,6 +10,7 @@
 
 import type { AccountValues } from '@/components/pembeli/akun-content'
 import { createClient } from '@/lib/supabase/server'
+import { getProfile, getSessionUser } from '@/lib/supabase/auth'
 import type { Profile } from '@/types/database'
 
 /** Bagian akun yang belum punya kolom di `profiles`. */
@@ -25,16 +26,15 @@ type AccountMetadata = {
     jenis_usaha?: string[]
 }
 
-/** Isi form dari profil + metadata user. */
+/**
+ * Isi form dari profil + metadata user. Dibaca dari token sesi dan profil yang sudah dimuat layout (keduanya sekali
+ * per request), jadi membuka halaman Akun tidak menambah round trip ke Supabase.
+ */
 export async function getAccountValues(): Promise<AccountValues> {
-    const supabase = await createClient()
-    const {
-        data: { user },
-    } = await supabase.auth.getUser()
+    const [user, profile] = await Promise.all([getSessionUser(), getProfile()])
     if (!user) throw new Error('User belum login')
 
-    const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle()
-    const meta = (user.user_metadata ?? {}) as AccountMetadata
+    const meta = user.metadata as AccountMetadata
 
     return {
         contactName: profile?.full_name ?? '',

@@ -7,6 +7,7 @@
 // pilihan saat mendaftar.
 
 import { createClient } from '@/lib/supabase/server'
+import { getSessionUser } from '@/lib/supabase/auth'
 
 export type PreferenceValues = {
     jenisBahan: string[]
@@ -23,14 +24,12 @@ type PreferenceMetadata = {
 
 const list = (value: unknown) => (Array.isArray(value) ? value.map(String) : [])
 
+/** Dibaca dari token sesi (sekali per request), tanpa round trip ke Auth server. */
 export async function getPreferenceValues(): Promise<PreferenceValues> {
-    const supabase = await createClient()
-    const {
-        data: { user },
-    } = await supabase.auth.getUser()
+    const user = await getSessionUser()
     if (!user) throw new Error('User belum login')
 
-    const meta = (user.user_metadata ?? {}) as PreferenceMetadata
+    const meta = user.metadata as PreferenceMetadata
     return { jenisBahan: list(meta.jenis_bahan), grade: list(meta.grade), ppiPrioritas: list(meta.ppi_prioritas) }
 }
 
@@ -40,4 +39,9 @@ export async function savePreferenceValues(values: PreferenceValues): Promise<vo
     const metadata: PreferenceMetadata = { jenis_bahan: values.jenisBahan, grade: values.grade, ppi_prioritas: values.ppiPrioritas }
     const { error } = await supabase.auth.updateUser({ data: metadata })
     if (error) throw new Error(`Gagal simpan preferensi: ${error.message}`)
+
+    // updateUser tidak menerbitkan token baru, dan halaman ini membaca dari token: tanpa refresh, preferensi lama
+    // tampil lagi sampai token berikutnya diterbitkan.
+    const { error: refreshError } = await supabase.auth.refreshSession()
+    if (refreshError) throw new Error(`Gagal memperbarui sesi: ${refreshError.message}`)
 }
