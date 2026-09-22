@@ -16,7 +16,7 @@ export function NotificationSection({ title, viewAll, items, empty }: Notificati
 
   return (
     <section
-      className={`box-border w-[320px] shrink-0 flex flex-col ${isEmpty ? 'gap-[16px]' : 'gap-[6px]'} p-[20px] justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[20px] motion-safe:animate-fade-up`}
+      className={`box-border w-full lg:w-[320px] shrink-0 flex flex-col ${isEmpty ? 'gap-[16px]' : 'gap-[6px]'} p-[20px] justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[20px] motion-safe:animate-fade-up`}
       style={{ animationDelay: '400ms' }}
     >
       <SectionHeader icon="bell" title={title} />

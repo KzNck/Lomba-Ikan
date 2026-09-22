@@ -28,8 +28,8 @@ export function PriceField({ name, label, helper, prefix, suffix, defaultValue, 
           {helper}
         </p>
       </div>
-      <div className={`box-border w-full h-fit shrink-0 flex ${layout === 'stacked' ? 'flex-col gap-[10px] items-start' : 'flex-row gap-[16px] items-center'} justify-start`}>
-        <div className={`box-border ${layout === 'stacked' ? 'w-full' : '[flex:1_1_0]'} h-[52px] shrink-0 flex flex-row gap-[12px] p-[0px_16px_0px_6px] justify-start items-center bg-[#FFFFFF] ${error ? '[outline:1.5px_solid_#C23B35]' : '[outline:1px_solid_#7F8FA4]'} [outline-offset:-0.5px] rounded-[12px] focus-within:[outline-color:#0F6CB8] focus-within:[box-shadow:0px_0px_0px_2px_#FFFFFF,_0px_0px_0px_4px_#0F6CB8]`}>
+      <div className={`box-border w-full h-fit shrink-0 flex ${layout === 'stacked' ? 'flex-col gap-[10px] items-start' : 'flex-col sm:flex-row gap-[10px] sm:gap-[16px] items-start sm:items-center'} justify-start`}>
+        <div className={`box-border ${layout === 'stacked' ? 'w-full' : 'w-full sm:w-auto sm:[flex:1_1_0]'} h-[52px] shrink-0 flex flex-row gap-[12px] p-[0px_16px_0px_6px] justify-start items-center bg-[#FFFFFF] ${error ? '[outline:1.5px_solid_#C23B35]' : '[outline:1px_solid_#7F8FA4]'} [outline-offset:-0.5px] rounded-[12px] focus-within:[outline-color:#0F6CB8] focus-within:[box-shadow:0px_0px_0px_2px_#FFFFFF,_0px_0px_0px_4px_#0F6CB8]`}>
           <span aria-hidden="true" className="box-border w-fit shrink-0 h-[40px] flex flex-row gap-0 p-[0px_12px] justify-start items-center bg-[#F7F9FC] rounded-[8px]">
             <span className="text-[15px]/[normal] box-border text-[#5B6B7C] font-poppins font-semibold text-left [white-space:nowrap]">{prefix}</span>
           </span>
@@ -40,13 +40,13 @@ export function PriceField({ name, label, helper, prefix, suffix, defaultValue, 
             defaultValue={defaultValue}
             aria-describedby={error ? `${name}-helper ${name}-error` : `${name}-helper`}
             aria-invalid={error ? true : undefined}
-            className="text-[18px]/[normal] box-border [flex:1_1_0] w-0 min-w-0 bg-transparent text-[#0B3B5C] font-poppins font-semibold text-left outline-none"
+            className="text-[18px]/[normal] box-border [flex:1_1_0] w-0 min-w-0 self-stretch lg:self-auto bg-transparent text-[#0B3B5C] font-poppins font-semibold text-left outline-none"
           />
           <span aria-hidden="true" className="text-[14px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left [white-space:nowrap]">
             {suffix}
           </span>
         </div>
-        <div className={`box-border w-fit shrink-0 h-fit flex ${layout === 'stacked' ? 'flex-row gap-[8px] items-center' : 'flex-col gap-[6px] items-start'} justify-start`}>
+        <div className={`box-border w-fit shrink-0 h-fit flex ${layout === 'stacked' ? 'flex-row gap-[8px] items-center' : 'flex-row sm:flex-col gap-[8px] sm:gap-[6px] items-center sm:items-start'} justify-start`}>
           <p className="text-[12px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left [white-space:nowrap]">{marketLabel}</p>
           <p className="box-border w-fit h-fit shrink-0 flex flex-row gap-0 p-[4px_10px] justify-start items-start bg-[#F7F9FC] rounded-[999px]">
             <span className="text-[13px]/[normal] box-border text-[#0B3B5C] font-inter font-medium text-left [white-space:nowrap]">{marketRange}</span>

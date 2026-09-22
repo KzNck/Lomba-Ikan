@@ -54,16 +54,16 @@ export default async function NelayanAkunPage() {
         user={{ name, initials: initialsOf(profile.fullName) }}
       />
       <MainDecoration />
-      <div className="box-border w-full [flex:1_1_0] flex flex-col gap-[20px] p-[20px_32px_120px_32px] justify-start items-start relative [z-index:2]">
+      <div className="box-border w-full [flex:1_1_0] flex flex-col gap-[20px] p-[16px_16px_120px_16px] sm:p-[20px_24px_120px_24px] lg:p-[20px_32px_120px_32px] justify-start items-start relative [z-index:2]">
         <Breadcrumb current={AKUN_PAGE.breadcrumb} />
         <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[6px] justify-start items-start">
-          <h2 className="text-[28px]/[32px] box-border text-[#0B3B5C] font-poppins font-bold text-left [white-space:nowrap]">{AKUN_PAGE.title}</h2>
+          <h2 className="text-[24px]/[30px] lg:text-[28px]/[32px] box-border text-[#0B3B5C] font-poppins font-bold text-left lg:[white-space:nowrap]">{AKUN_PAGE.title}</h2>
           <p className="text-[15px]/[normal] box-border w-full text-[#5B6B7C] font-inter font-normal text-left">{AKUN_PAGE.subtitle}</p>
         </div>
         <UnsavedChangesProvider dialog={UNSAVED_DIALOG}>
-          <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[20px] justify-start items-start">
+          <div className="box-border w-full h-fit shrink-0 flex flex-col lg:flex-row gap-[20px] justify-start items-stretch lg:items-start">
             <AccountSubnav {...AKUN_NAV} signOut={signOut} />
-            <section className="box-border [flex:1_1_0] min-w-0 h-fit flex flex-col gap-[24px] p-[28px] justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[20px]">
+            <section className="box-border [flex:1_1_0] min-w-0 h-fit flex flex-col gap-[24px] p-[20px] sm:p-[28px] justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[20px]">
               <ProfileHeader
                 icon="sailboat"
                 name={profile.fullName}

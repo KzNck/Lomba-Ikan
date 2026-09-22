@@ -13,7 +13,7 @@ type QuickActionCardProps = {
 export function QuickActionCard({ href, label, caption, offlineNote }: QuickActionCardProps) {
   return (
     <div
-      className="box-border w-[320px] shrink-0 self-stretch flex flex-col gap-[12px] p-[12px] justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[20px] motion-safe:animate-fade-up"
+      className="box-border w-full lg:w-[320px] shrink-0 self-stretch flex flex-col gap-[12px] p-[12px] justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[20px] motion-safe:animate-fade-up"
       style={{ animationDelay: '240ms' }}
     >
       <Link

@@ -44,7 +44,7 @@ export function GradeRing({ grade, gradeLabel, condition, freshness }: GradeRing
       <svg
         viewBox="0 0 236 236"
         aria-hidden="true"
-        className="box-border w-[236px] h-[236px] absolute left-[73px] top-0 -rotate-90 [z-index:0]"
+        className="box-border w-[236px] h-[236px] absolute left-[calc(50%-118px)] lg:left-[73px] top-0 -rotate-90 [z-index:0]"
       >
         <circle cx="118" cy="118" r="109.74" fill="none" stroke={tone.track} strokeWidth="16.52" />
         <circle
@@ -58,7 +58,7 @@ export function GradeRing({ grade, gradeLabel, condition, freshness }: GradeRing
           strokeDasharray={`${freshness} 100`}
         />
       </svg>
-      <div className="box-border w-[192px] h-[192px] [box-shadow:0px_6px_20px_0px_#0F5C821A] absolute left-[95px] top-[22px] flex flex-col gap-[2px] justify-center items-center bg-[#FFFFFF] rounded-[999px] [z-index:2]">
+      <div className="box-border w-[192px] h-[192px] [box-shadow:0px_6px_20px_0px_#0F5C821A] absolute left-[calc(50%-96px)] lg:left-[95px] top-[22px] flex flex-col gap-[2px] justify-center items-center bg-[#FFFFFF] rounded-[999px] [z-index:2]">
         <Icon name="fish" fill={tone.icon} className="box-border w-[30px] h-[30px] shrink-0" />
         <span className={`box-border w-fit h-fit shrink-0 flex flex-row gap-0 p-[3px_12px] justify-start items-start ${tone.badge} rounded-[999px]`}>
           <span className="text-[13px]/[normal] box-border text-[#FFFFFF] font-poppins font-semibold text-left [white-space:nowrap]">{gradeLabel}</span>
@@ -72,7 +72,8 @@ export function GradeRing({ grade, gradeLabel, condition, freshness }: GradeRing
           {grade}
         </span>
       </div>
-      <div className="box-border w-[382px] h-fit absolute left-0 top-[210px] flex flex-row gap-0 justify-center items-start [z-index:3]">
+      {/* Offsets centre the ring in the 382px panel from lg; below lg the panel is fluid, so they centre on 50%. */}
+      <div className="box-border w-full lg:w-[382px] h-fit absolute left-0 top-[210px] flex flex-row gap-0 justify-center items-start [z-index:3]">
         <span className={`box-border w-fit shrink-0 h-fit [box-shadow:0px_4px_14px_0px_#0F5C821A] flex flex-row gap-[8px] p-[10px_18px] justify-start items-center bg-[#FFFFFF] ${tone.pill} [outline-offset:-1px] rounded-[999px]`}>
           <Icon name={tone.pillIcon} fill={tone.icon} className="box-border w-[18px] shrink-0 h-[18px]" />
           <span className={`text-[15px]/[normal] box-border ${tone.pillText} font-poppins font-semibold text-left [white-space:nowrap]`}>{condition}</span>

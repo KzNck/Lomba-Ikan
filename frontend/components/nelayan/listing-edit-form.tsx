@@ -48,7 +48,7 @@ export function ListingEditForm({ listing, action, cancelHref }: ListingEditForm
     <form ref={formRef} action={formAction} noValidate className="contents">
       <input type="hidden" name="id" value={listing.slug} />
       {/* Scrolls on its own between the drawer's header and this form's footer (see ListingDrawer). */}
-      <div className="box-border w-full [flex:1_1_0] min-h-0 overflow-y-auto overscroll-contain flex flex-col gap-[20px] p-[24px] justify-start items-start">
+      <div className="box-border w-full [flex:1_1_0] min-h-0 overflow-y-auto overscroll-contain flex flex-col gap-[20px] p-[16px] sm:p-[24px] justify-start items-start">
         <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[14px] justify-start items-center">
           <div className="box-border w-[64px] h-[64px] shrink-0 [border:1px_solid_#0000001A] rounded-[12px] overflow-hidden relative">
             <Image src={listing.image.src} alt="" fill sizes="64px" className="object-cover object-center" />
@@ -85,7 +85,7 @@ export function ListingEditForm({ listing, action, cancelHref }: ListingEditForm
               defaultValue={state.values.berat}
               aria-describedby={weightError ? `${weight.name}-helper ${weight.name}-error` : `${weight.name}-helper`}
               aria-invalid={weightError ? true : undefined}
-              className="text-[18px]/[normal] box-border [flex:1_1_0] w-0 min-w-0 bg-transparent text-[#0B3B5C] font-poppins font-semibold text-left outline-none"
+              className="text-[18px]/[normal] box-border [flex:1_1_0] w-0 min-w-0 self-stretch lg:self-auto bg-transparent text-[#0B3B5C] font-poppins font-semibold text-left outline-none"
             />
             <span aria-hidden="true" className="text-[14px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left [white-space:nowrap]">
               {weight.suffix}
@@ -103,7 +103,7 @@ export function ListingEditForm({ listing, action, cancelHref }: ListingEditForm
         <PriceField key={state.values.harga} {...PRICE_FIELD} defaultValue={state.values.harga} error={state.errors.harga} layout="stacked" />
       </div>
 
-      <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[12px] p-[16px_24px_24px_24px] justify-start items-start bg-[#FFFFFF] [border-width:1px_0px_0px_0px] [border-style:solid] [border-color:#E2E8F0]">
+      <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[12px] p-[16px] sm:p-[16px_24px_24px_24px] justify-start items-start bg-[#FFFFFF] [border-width:1px_0px_0px_0px] [border-style:solid] [border-color:#E2E8F0]">
         {/* A stable live region, so a form-level error is announced when it appears. */}
         <div role="status" className="contents">
           {state.formError && (

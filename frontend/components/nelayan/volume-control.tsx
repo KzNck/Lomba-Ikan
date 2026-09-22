@@ -19,11 +19,11 @@ export function VolumeControl({ value, min, max, unit, decreaseLabel, increaseLa
   return (
     <div className="box-border w-full h-fit shrink-0 flex flex-row gap-0 p-[8px_0px] justify-center items-start">
       <div
-        className={`box-border w-fit shrink-0 h-fit flex flex-row gap-[40px] p-[16px_20px] justify-start items-center bg-[#F3FAFF] ${invalid ? '[outline:2px_solid_#C23B35] [outline-offset:-1px]' : ''} rounded-[24px]`}
+        className={`box-border w-fit shrink-0 h-fit flex flex-row gap-[12px] sm:gap-[40px] p-[12px] sm:p-[16px_20px] justify-start items-center bg-[#F3FAFF] ${invalid ? '[outline:2px_solid_#C23B35] [outline-offset:-1px]' : ''} rounded-[24px]`}
       >
         <RoundButton icon="minus" label={decreaseLabel} disabled={value <= min} onClick={() => onChange(value - 1)} />
         {/* The slider below carries the value for assistive tech, so the readout is visual only. */}
-        <div aria-hidden="true" className="box-border w-[140px] shrink-0 h-fit flex flex-row gap-[8px] justify-center items-end">
+        <div aria-hidden="true" className="box-border w-[120px] sm:w-[140px] shrink-0 h-fit flex flex-row gap-[8px] justify-center items-end">
           <span className="text-[48px]/[48px] box-border text-[#0B3B5C] font-poppins font-bold text-left [white-space:nowrap]">{value}</span>
           <span className="text-[20px]/[32px] box-border text-[#5B6B7C] font-poppins font-semibold text-left [white-space:nowrap]">{unit}</span>
         </div>

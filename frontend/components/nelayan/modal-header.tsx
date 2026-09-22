@@ -23,7 +23,7 @@ export function ModalHeader({ icon, title, titleId, subtitle, closeHref, closeLa
         <Icon name={icon} fill="#0F6CB8" className="box-border w-[24px] shrink-0 h-[24px]" />
       </div>
       <div className="box-border [flex:1_1_0] h-fit flex flex-col gap-[4px] justify-start items-start">
-        <h2 id={titleId} className="text-[22px]/[26px] box-border text-[#0B3B5C] font-poppins font-semibold text-left [white-space:nowrap]">
+        <h2 id={titleId} className="text-[20px]/[26px] sm:text-[22px]/[26px] box-border text-[#0B3B5C] font-poppins font-semibold text-left sm:[white-space:nowrap]">
           {title}
         </h2>
         <p className="text-[14px]/[normal] box-border w-full text-[#5B6B7C] font-inter font-normal text-left">{subtitle}</p>
@@ -31,7 +31,7 @@ export function ModalHeader({ icon, title, titleId, subtitle, closeHref, closeLa
       <Link
         href={closeHref}
         aria-label={closeLabel}
-        className={`box-border w-[40px] shrink-0 h-[40px] flex flex-row gap-0 justify-center items-center bg-[#F7F9FC] hover:bg-[#E3F0F9] rounded-[999px] ${PRESS} ${FOCUS_RING}`}
+        className={`box-border w-[44px] shrink-0 h-[44px] lg:w-[40px] lg:h-[40px] flex flex-row gap-0 justify-center items-center bg-[#F7F9FC] hover:bg-[#E3F0F9] rounded-[999px] ${PRESS} ${FOCUS_RING}`}
       >
         <Icon name="x" fill="#0B3B5C" className="box-border w-[20px] shrink-0 h-[20px]" />
       </Link>

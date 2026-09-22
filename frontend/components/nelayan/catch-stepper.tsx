@@ -50,7 +50,7 @@ export function CatchStepper({ steps, currentStep }: CatchStepperProps) {
             )}
             <div
               aria-current={status === 'active' ? 'step' : undefined}
-              className="box-border w-[72px] shrink-0 h-fit flex flex-col gap-[8px] justify-start items-center"
+              className="box-border w-[32px] md:w-[72px] shrink-0 h-fit flex flex-col gap-[8px] justify-start items-center"
             >
               <div
                 aria-hidden="true"
@@ -64,7 +64,8 @@ export function CatchStepper({ steps, currentStep }: CatchStepperProps) {
                   </span>
                 )}
               </div>
-              <span className={`text-[14px]/[normal] box-border ${state.label} font-inter text-left [white-space:nowrap]`}>
+              {/* Below md six labels don't fit under the circles; they stay for screen readers and the step's own heading names it. */}
+              <span className={`text-[14px]/[normal] box-border ${state.label} font-inter text-left [white-space:nowrap] max-md:sr-only`}>
                 {label}
               </span>
             </div>

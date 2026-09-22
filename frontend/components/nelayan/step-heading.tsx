@@ -12,12 +12,12 @@ type StepHeadingProps = {
 export function StepHeading({ id, title, description, descriptionWraps }: StepHeadingProps) {
   return (
     <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[4px] justify-start items-start">
-      <h3 id={id} tabIndex={-1} className="focus:outline-none text-[18px]/[normal] box-border text-[#0B3B5C] font-poppins font-semibold text-left [white-space:nowrap]">
+      <h3 id={id} tabIndex={-1} className="focus:outline-none text-[18px]/[normal] box-border text-[#0B3B5C] font-poppins font-semibold text-left md:[white-space:nowrap]">
         {title}
       </h3>
       <p
         id={`${id}-description`}
-        className={`text-[14px]/[normal] box-border ${descriptionWraps ? 'w-full' : '[white-space:nowrap]'} text-[#5B6B7C] font-inter font-normal text-left`}
+        className={`text-[14px]/[normal] box-border ${descriptionWraps ? 'w-full' : 'md:[white-space:nowrap]'} text-[#5B6B7C] font-inter font-normal text-left`}
       >
         {description}
       </p>

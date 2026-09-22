@@ -38,7 +38,7 @@ export function PhotoPlaceholder({ tone, icon, title, description, action }: Pho
         <Icon name={icon} fill={style.fill} className="box-border w-[26px] shrink-0 h-[26px]" />
       </div>
       <p className="text-[16px]/[normal] box-border text-[#0B3B5C] font-poppins font-semibold text-left [white-space:nowrap]">{title}</p>
-      <p className="text-[14px]/[21px] box-border w-[420px] text-[#5B6B7C] font-inter font-normal text-center">{description}</p>
+      <p className="text-[14px]/[21px] box-border w-full md:w-[420px] text-[#5B6B7C] font-inter font-normal text-center">{description}</p>
       <PillButton variant="solid" {...action} />
     </div>
   )

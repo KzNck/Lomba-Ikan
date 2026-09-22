@@ -34,33 +34,35 @@ const GRADE_BADGES = {
   '—': { badge: 'bg-[#F7F9FC]', text: 'text-[#5B6B7C]' },
 }
 
-const CELL = 'box-border p-[13px_0px] [border-width:0px_0px_1px_0px] [border-style:solid] [border-color:#E2E8F0]'
+const CELL = 'box-border p-0 lg:p-[13px_0px] border-0 lg:[border-width:0px_0px_1px_0px] [border-style:solid] [border-color:#E2E8F0]'
 
 // "Tabel Transaksi". The export draws it with flex rows; a real table keeps the columns tied to their headers for
 // screen readers. Each row's chevron is the link, stretched across the row so anywhere in it opens the drawer.
+// Below lg the seven columns don't fit, so each row becomes a three-line card (date and status; partner and chevron;
+// grade, weight and total) and the header keeps only the date sort, the other headings staying for screen readers.
 export function TransactionTable({ rows, order, toggleSortHref, hrefFor, selectedId, copy }: TransactionTableProps) {
   const sort = copy.sort[order]
   return (
     <div className="box-border w-full h-fit shrink-0 flex flex-col gap-0 justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[16px] overflow-hidden">
-      <table className="box-border w-full table-fixed border-collapse">
+      <table className="box-border w-full block lg:table table-fixed border-collapse">
         <caption className="sr-only">
           {copy.label}. {sort.caption}.
         </caption>
-        <thead>
-          <tr className="box-border h-[46px] bg-[#F7F9FC] [border-width:0px_0px_1px_0px] [border-style:solid] [border-color:#E2E8F0]">
+        <thead className="block lg:table-header-group">
+          <tr className="box-border h-[44px] lg:h-[46px] flex lg:table-row items-center bg-[#F7F9FC] [border-width:0px_0px_1px_0px] [border-style:solid] [border-color:#E2E8F0]">
             {COLUMNS.map(({ key, width, align }, index) => (
               <th
                 key={key}
                 scope="col"
                 aria-sort={key === 'date' ? sort.aria : undefined}
-                className={`text-[12px]/[normal] box-border ${width} ${align} ${index === 0 ? 'p-[0px_0px_0px_16px]' : index === COLUMNS.length - 1 ? 'p-[0px_16px_0px_0px]' : 'p-[0px_10px_0px_0px]'} text-[#5B6B7C] font-poppins font-semibold [white-space:nowrap]`}
+                className={`text-[12px]/[normal] box-border ${width} ${align} ${key === 'date' ? '' : 'max-lg:sr-only'} ${index === 0 ? 'p-[0px_0px_0px_16px]' : index === COLUMNS.length - 1 ? 'p-[0px_16px_0px_0px]' : 'p-[0px_10px_0px_0px]'} text-[#5B6B7C] font-poppins font-semibold [white-space:nowrap]`}
               >
                 {key === 'date' ? (
                   <Link
                     href={toggleSortHref}
                     scroll={false}
                     aria-label={sort.action}
-                    className={`box-border inline-flex flex-row gap-[4px] justify-start items-center align-middle rounded-[4px] hover:text-[#0B3B5C] ${FOCUS_RING}`}
+                    className={`box-border inline-flex min-h-[44px] lg:min-h-auto flex-row gap-[4px] justify-start items-center align-middle rounded-[4px] hover:text-[#0B3B5C] ${FOCUS_RING}`}
                   >
                     {copy.columns[key]}
                     <Icon name={sort.icon} fill="#0F6CB8" className="box-border w-[13px] shrink-0 h-[13px]" />
@@ -72,7 +74,7 @@ export function TransactionTable({ rows, order, toggleSortHref, hrefFor, selecte
             ))}
           </tr>
         </thead>
-        <tbody>
+        <tbody className="block lg:table-row-group">
           {rows.map((row) => (
             <TransactionRow key={row.id} row={row} href={hrefFor(row.id)} selected={row.id === selectedId} detailLabel={copy.detailLabel} stateLabel={copy.states[row.state]} />
           ))}
@@ -99,15 +101,17 @@ function TransactionRow({
   const grade = GRADE_BADGES[row.gradeLetter as keyof typeof GRADE_BADGES] ?? GRADE_BADGES['—']
 
   return (
-    <tr className={`box-border relative ${selected ? 'bg-[#F3FAFF]' : 'bg-[#FFFFFF] hover:bg-[#F7F9FC]'} transition-colors duration-150 ease-out`}>
-      <td className={`${CELL} p-[13px_10px_13px_16px] align-middle`}>
+    <tr
+      className={`box-border relative grid lg:table-row grid-cols-[auto_1fr_auto] gap-x-[10px] gap-y-[10px] p-[14px_16px] lg:p-0 items-center [border-width:0px_0px_1px_0px] lg:[border-width:0px] [border-style:solid] [border-color:#E2E8F0] ${selected ? 'bg-[#F3FAFF]' : 'bg-[#FFFFFF] hover:bg-[#F7F9FC]'} transition-colors duration-150 ease-out`}
+    >
+      <td className={`${CELL} row-start-1 col-start-1 col-span-2 lg:p-[13px_10px_13px_16px] align-middle`}>
         {selected && <span aria-hidden="true" className="box-border w-[3px] absolute left-0 top-0 bottom-0 bg-[#0F6CB8]" />}
         <span className="box-border flex flex-col gap-[2px] justify-start items-start">
           <span className="text-[13px]/[normal] box-border text-[#0B3B5C] font-inter font-semibold text-left [white-space:nowrap]">{row.date}</span>
           <span className="text-[12px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left [white-space:nowrap]">{row.time}</span>
         </span>
       </td>
-      <td className={`${CELL} p-[13px_10px_13px_0px] align-middle`}>
+      <td className={`${CELL} row-start-2 col-start-1 col-span-2 lg:p-[13px_10px_13px_0px] align-middle`}>
         <span className="box-border flex flex-row gap-[10px] justify-start items-center">
           <span className="box-border w-[32px] shrink-0 h-[32px] flex flex-row gap-0 justify-center items-center bg-[#F3FAFF] rounded-[999px]">
             <Icon name={row.partner.icon} fill="#0F6CB8" className="box-border w-[16px] shrink-0 h-[16px]" />
@@ -120,20 +124,20 @@ function TransactionRow({
           </span>
         </span>
       </td>
-      <td className={`${CELL} p-[13px_10px_13px_0px] align-middle`}>
+      <td className={`${CELL} row-start-3 col-start-1 lg:p-[13px_10px_13px_0px] align-middle`}>
         <span className={`box-border w-[30px] h-[30px] flex flex-row gap-0 justify-center items-center ${grade.badge} rounded-[999px]`}>
           <span className={`text-[13px]/[normal] box-border ${grade.text} font-poppins font-bold text-left [white-space:nowrap]`}>{row.gradeLetter}</span>
         </span>
       </td>
-      <td className={`text-[13px]/[normal] ${CELL} p-[13px_10px_13px_0px] text-right align-middle text-[#0B3B5C] font-inter font-medium`}>{row.weight}</td>
-      <td className={`text-[13px]/[normal] ${CELL} p-[13px_10px_13px_0px] text-right align-middle text-[#0B3B5C] font-poppins font-semibold`}>{row.total}</td>
-      <td className={`${CELL} p-[13px_10px_13px_0px] align-middle`}>
+      <td className={`text-[13px]/[normal] ${CELL} row-start-3 col-start-2 lg:p-[13px_10px_13px_0px] text-left lg:text-right align-middle text-[#0B3B5C] font-inter font-medium`}>{row.weight}</td>
+      <td className={`text-[13px]/[normal] ${CELL} row-start-3 col-start-3 lg:p-[13px_10px_13px_0px] text-right align-middle text-[#0B3B5C] font-poppins font-semibold`}>{row.total}</td>
+      <td className={`${CELL} row-start-1 col-start-3 justify-self-end lg:p-[13px_10px_13px_0px] align-middle`}>
         <span className={`box-border w-fit h-fit flex flex-row gap-[5px] p-[4px_9px] justify-start items-center ${state.chip} rounded-[999px]`}>
           <Icon name={state.icon} fill={state.fill} className="box-border w-[13px] shrink-0 h-[13px]" />
           <span className={`text-[12px]/[normal] box-border ${state.text} font-poppins font-semibold text-left [white-space:nowrap]`}>{stateLabel}</span>
         </span>
       </td>
-      <td className={`${CELL} p-[13px_16px_13px_0px] text-right align-middle`}>
+      <td className={`${CELL} row-start-2 col-start-3 justify-self-end lg:p-[13px_16px_13px_0px] text-right align-middle`}>
         <Link
           href={href}
           scroll={false}

@@ -13,9 +13,9 @@ type ListingPageHeadProps = {
 // The page title and subtitle, with the "Tambah Tangkapan" pill bottom-aligned beside them.
 export function ListingPageHead({ title, subtitle, action }: ListingPageHeadProps) {
   return (
-    <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[24px] justify-start items-end">
-      <div className="box-border [flex:1_1_0] h-fit flex flex-col gap-[6px] justify-start items-start">
-        <h2 className="text-[28px]/[32px] box-border text-[#0B3B5C] font-poppins font-bold text-left [white-space:nowrap]">{title}</h2>
+    <div className="box-border w-full h-fit shrink-0 flex flex-col sm:flex-row gap-[16px] sm:gap-[24px] justify-start items-start sm:items-end">
+      <div className="box-border w-full sm:w-auto [flex:1_1_0] h-fit flex flex-col gap-[6px] justify-start items-start">
+        <h2 className="text-[24px]/[30px] lg:text-[28px]/[32px] box-border text-[#0B3B5C] font-poppins font-bold text-left lg:[white-space:nowrap]">{title}</h2>
         <p className="text-[15px]/[normal] box-border w-full text-[#5B6B7C] font-inter font-normal text-left">{subtitle}</p>
       </div>
       <Link

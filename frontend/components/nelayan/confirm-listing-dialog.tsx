@@ -28,11 +28,11 @@ export function ConfirmListingDialog({ listingId, icon, hidden = {}, title, body
       role="alertdialog"
       labelledBy="confirm-listing-title"
       describedBy="confirm-listing-body"
-      className="m-auto w-[420px] rounded-[24px] [box-shadow:0px_16px_48px_0px_#0B3B5C33] motion-safe:animate-fade-up"
+      className="m-auto w-[calc(100%-32px)] sm:w-[420px] rounded-[24px] [box-shadow:0px_16px_48px_0px_#0B3B5C33] motion-safe:animate-fade-up"
     >
       <form
         action={action}
-        className="box-border w-full h-fit flex flex-col gap-[20px] p-[28px] justify-start items-start bg-[#FFFFFF] rounded-[24px]"
+        className="box-border w-full h-fit flex flex-col gap-[20px] p-[20px] sm:p-[28px] justify-start items-start bg-[#FFFFFF] rounded-[24px]"
       >
         <input type="hidden" name="id" value={listingId} />
         {Object.entries(hidden).map(([name, value]) => (
@@ -42,14 +42,14 @@ export function ConfirmListingDialog({ listingId, icon, hidden = {}, title, body
           <Icon name={icon} fill="#C23B35" className="box-border w-[22px] shrink-0 h-[22px]" />
         </div>
         <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[6px] justify-start items-start">
-          <h2 id="confirm-listing-title" className="text-[20px]/[normal] box-border text-[#0B3B5C] font-poppins font-semibold text-left [white-space:nowrap]">
+          <h2 id="confirm-listing-title" className="text-[20px]/[normal] box-border text-[#0B3B5C] font-poppins font-semibold text-left sm:[white-space:nowrap]">
             {title}
           </h2>
           <p id="confirm-listing-body" className="text-[14px]/[21px] box-border w-full text-[#5B6B7C] font-inter font-normal text-left">
             {body}
           </p>
         </div>
-        <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[12px] justify-end items-start">
+        <div className="box-border w-full h-fit shrink-0 flex flex-row flex-wrap sm:flex-nowrap gap-[12px] justify-end items-start">
           <Link
             href={back.href}
             scroll={false}

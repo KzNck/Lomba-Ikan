@@ -43,9 +43,10 @@ export function ListingShell({ header, children, drawer }: ListingShellProps) {
       )}
       <MainDecoration />
       <div className="box-border w-full [flex:1_1_0] flex flex-col gap-0 justify-start items-start relative">
-        {/* The export's 412px right padding leaves room for the open drawer; without one the grid takes the width. */}
+        {/* From lg the export's 412px right padding leaves room for the open drawer; without one the grid takes the width.
+            Below lg the drawer covers the screen (phones) or slides over the right edge (tablets). */}
         <div
-          className={`box-border w-full [flex:1_1_0] flex flex-col gap-[24px] ${drawer ? 'p-[20px_412px_120px_32px]' : 'p-[20px_32px_120px_32px]'} justify-start items-start relative [z-index:2]`}
+          className={`box-border w-full [flex:1_1_0] flex flex-col gap-[24px] p-[16px_16px_120px_16px] sm:p-[20px_24px_120px_24px] ${drawer ? 'lg:p-[20px_412px_120px_32px]' : 'lg:p-[20px_32px_120px_32px]'} justify-start items-start relative [z-index:2]`}
         >
           <Breadcrumb current={LISTING_PAGE.breadcrumb} />
           <ListingPageHead title={LISTING_PAGE.title} subtitle={LISTING_PAGE.subtitle} action={LISTING_PAGE.addAction} />

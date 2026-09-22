@@ -34,7 +34,7 @@ export function VolumeSlider({ name, value, min, max, unit, labelledBy, describe
           aria-invalid={invalid || undefined}
           className="peer box-border absolute inset-0 w-full h-full m-0 opacity-0 cursor-pointer [z-index:3]"
         />
-        <div className="box-border w-[656px] h-[6px] absolute left-0 top-[9px] bg-[#E2E8F0] rounded-[3px] [z-index:0]" />
+        <div className="box-border w-full md:w-[656px] h-[6px] absolute left-0 top-[9px] bg-[#E2E8F0] rounded-[3px] [z-index:0]" />
         <div className="box-border w-[var(--fill)] h-[6px] absolute left-0 top-[9px] bg-[#0F6CB8] rounded-[3px] [z-index:1]" />
         <div className="box-border w-[24px] h-[24px] [box-shadow:0px_2px_6px_0px_#0B3B5C26] peer-focus-visible:[box-shadow:0px_2px_6px_0px_#0B3B5C26,_0px_0px_0px_3px_#FFFFFF,_0px_0px_0px_5px_#0F6CB8] absolute left-[clamp(0px,calc(var(--fill)-12px),calc(100%-24px))] top-0 bg-[#FFFFFF] [outline:3px_solid_#0F6CB8] [outline-offset:-1.5px] rounded-full [z-index:2]" />
       </div>

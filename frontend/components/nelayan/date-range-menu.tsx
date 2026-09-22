@@ -29,7 +29,7 @@ type DateRangeMenuProps = {
 
 const CONTROL =
   'box-border w-full h-[46px] shrink-0 flex flex-row gap-[10px] p-[0px_14px] justify-start items-center bg-[#FFFFFF] [outline:1px_solid_#7F8FA4] [outline-offset:-0.5px] rounded-[12px]'
-const VALUE = 'text-[14px]/[normal] box-border [flex:1_1_0] min-w-0 text-[#0B3B5C] font-inter font-medium text-left'
+const VALUE = 'text-[16px]/[normal] lg:text-[14px]/[normal] box-border [flex:1_1_0] min-w-0 text-[#0B3B5C] font-inter font-medium text-left'
 const FOCUS_WITHIN = 'focus-within:[outline-color:#0F6CB8] focus-within:[box-shadow:0px_0px_0px_3px_#FFFFFF,_0px_0px_0px_5px_#0F6CB8]'
 
 // The "Rentang tanggal" filter from Riwayat, shared with "Listing Saya": the button discloses two date fields that
@@ -39,7 +39,7 @@ export function DateRangeMenu({ action, keep, range, value, editLabel, copy }: D
   const { open, setOpen, rootRef, buttonProps, panelProps } = usePopover()
 
   return (
-    <div ref={rootRef} className="box-border w-[280px] shrink-0 h-fit flex flex-col gap-[6px] justify-start items-start relative">
+    <div ref={rootRef} className="box-border w-full sm:w-[280px] shrink-0 h-fit flex flex-col gap-[6px] justify-start items-start relative">
       <span className="text-[12px]/[normal] box-border text-[#5B6B7C] font-inter font-medium text-left [white-space:nowrap]">{copy.label}</span>
       <button
         {...buttonProps}
@@ -59,7 +59,7 @@ export function DateRangeMenu({ action, keep, range, value, editLabel, copy }: D
         action={action}
         scroll={false}
         onSubmit={() => setOpen(false)}
-        className="box-border w-[280px] h-fit absolute left-0 top-[calc(100%+8px)] [box-shadow:0px_8px_24px_0px_#0B3B5C1F] flex flex-col gap-[10px] p-[14px] justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[12px] [z-index:20] motion-safe:animate-fade-in"
+        className="box-border w-full sm:w-[280px] h-fit absolute left-0 top-[calc(100%+8px)] [box-shadow:0px_8px_24px_0px_#0B3B5C1F] flex flex-col gap-[10px] p-[14px] justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[12px] [z-index:20] motion-safe:animate-fade-in"
       >
         {Object.entries(keep).map(([name, kept]) => (
           <input key={name} type="hidden" name={name} value={kept} />
@@ -81,7 +81,7 @@ export function DateRangeMenu({ action, keep, range, value, editLabel, copy }: D
         </fieldset>
         <button
           type="submit"
-          className={`box-border w-full h-[40px] shrink-0 flex flex-row gap-0 justify-center items-center bg-[#0F6CB8] rounded-[8px] cursor-pointer ${SOLID_HOVER} ${PRESS_WIDE} ${FOCUS_RING}`}
+          className={`box-border w-full h-[44px] lg:h-[40px] shrink-0 flex flex-row gap-0 justify-center items-center bg-[#0F6CB8] rounded-[8px] cursor-pointer ${SOLID_HOVER} ${PRESS_WIDE} ${FOCUS_RING}`}
         >
           <span className="text-[14px]/[normal] box-border text-[#FFFFFF] font-poppins font-semibold text-left [white-space:nowrap]">{copy.apply}</span>
         </button>
@@ -97,7 +97,7 @@ export function DateRangeMenu({ action, keep, range, value, editLabel, copy }: D
               input.disabled = true
             })
           }}
-          className={`box-border w-full h-[36px] shrink-0 flex flex-row gap-0 justify-center items-center rounded-[8px] cursor-pointer hover:bg-[#F7F9FC] ${FOCUS_RING}`}
+          className={`box-border w-full h-[44px] lg:h-[36px] shrink-0 flex flex-row gap-0 justify-center items-center rounded-[8px] cursor-pointer hover:bg-[#F7F9FC] ${FOCUS_RING}`}
         >
           <span className="text-[13px]/[normal] box-border text-[#0F6CB8] font-poppins font-semibold text-left [white-space:nowrap]">{copy.reset}</span>
         </button>

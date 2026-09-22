@@ -88,7 +88,7 @@ export function AccountInfoForm({ initialValues, action }: AccountInfoFormProps)
           </Row>
         </Group>
       </div>
-      <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[16px] p-[20px_0px_0px_0px] justify-end items-center [border-width:1px_0px_0px_0px] [border-style:solid] [border-color:#E2E8F0]">
+      <div className="box-border w-full h-fit shrink-0 flex flex-row flex-wrap lg:flex-nowrap gap-[16px] p-[20px_0px_0px_0px] justify-end items-center [border-width:1px_0px_0px_0px] [border-style:solid] [border-color:#E2E8F0]">
         {/* The "Toast" from "Menyimpan → tersimpan". A stable live region, so the message is announced when it appears. */}
         <div role="status" className="box-border [flex:1_1_0] h-fit flex flex-row justify-start items-center">
           {state.saveError && !dirty && (
@@ -134,5 +134,6 @@ function Group({ children }: { children: React.ReactNode }) {
 }
 
 function Row({ children }: { children: React.ReactNode }) {
-  return <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[20px] justify-start items-start">{children}</div>
+  // Two fields side by side from sm; stacked on phones.
+  return <div className="box-border w-full h-fit shrink-0 flex flex-col sm:flex-row gap-[18px] sm:gap-[20px] justify-start items-stretch sm:items-start">{children}</div>
 }

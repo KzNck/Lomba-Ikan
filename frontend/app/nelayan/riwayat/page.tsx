@@ -66,11 +66,11 @@ export default async function RiwayatPage({
       <div className="box-border w-full [flex:1_1_0] flex flex-col gap-0 justify-start items-start relative">
         {/* The export pads the content by 424px on the right to leave room for the open drawer. */}
         <div
-          className={`box-border w-full [flex:1_1_0] flex flex-col gap-[20px] ${detail ? 'p-[20px_424px_120px_32px]' : 'p-[20px_32px_120px_32px]'} justify-start items-start relative [z-index:2]`}
+          className={`box-border w-full [flex:1_1_0] flex flex-col gap-[20px] p-[16px_16px_120px_16px] sm:p-[20px_24px_120px_24px] ${detail ? 'lg:p-[20px_424px_120px_32px]' : 'lg:p-[20px_32px_120px_32px]'} justify-start items-start relative [z-index:2]`}
         >
           <Breadcrumb current={RIWAYAT_PAGE.breadcrumb} />
           <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[6px] justify-start items-start">
-            <h2 className="text-[28px]/[32px] box-border text-[#0B3B5C] font-poppins font-bold text-left [white-space:nowrap]">{RIWAYAT_PAGE.title}</h2>
+            <h2 className="text-[24px]/[30px] lg:text-[28px]/[32px] box-border text-[#0B3B5C] font-poppins font-bold text-left lg:[white-space:nowrap]">{RIWAYAT_PAGE.title}</h2>
             <p className="text-[15px]/[normal] box-border w-full text-[#5B6B7C] font-inter font-normal text-left">{RIWAYAT_PAGE.subtitle}</p>
           </div>
           <RiwayatFilters action={RIWAYAT_PATH} status={status} range={range} dateLabel={dateLabelFor(p, t, range, shownRange)} />

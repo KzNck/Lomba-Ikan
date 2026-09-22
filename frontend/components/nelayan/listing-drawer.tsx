@@ -2,6 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Icon } from '@/components/ui/icon'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
+import { DrawerFocusLock } from '@/components/nelayan/drawer-focus-lock'
 import { DetailRow, DetailValue } from '@/components/nelayan/detail-row'
 import { mapHref, type ActiveListing, type ListingDrawerContent } from '@/components/nelayan/listing-content'
 import { OUTLINE_HOVER, PRESS, SOLID_HOVER } from '@/components/ui/interaction'
@@ -51,17 +52,19 @@ export function ListingDrawer({ listing, labels, actions, closeHref, error, edit
   return (
     <aside
       aria-labelledby="listing-drawer-title"
-      className="box-border w-[380px] [box-shadow:-12px_0px_32px_0px_#0B3B5C14] absolute right-0 top-0 bottom-0 bg-[#FFFFFF] [border-width:0px_0px_0px_1px] [border-style:solid] [border-color:#E2E8F0] [z-index:3] motion-safe:animate-fade-in"
+      className="box-border w-full sm:w-[380px] [box-shadow:-12px_0px_32px_0px_#0B3B5C14] fixed lg:absolute left-0 sm:left-auto right-0 top-0 bottom-0 bg-[#FFFFFF] [border-width:0px_0px_0px_1px] [border-style:solid] [border-color:#E2E8F0] z-[60] lg:z-[3] motion-safe:animate-fade-in"
     >
-      <div className="box-border w-full h-full max-h-[calc(100dvh-81px)] sticky top-0 flex flex-col gap-0 justify-start items-start overflow-clip">
-        <div className="box-border w-full h-fit shrink-0 flex flex-row gap-0 p-[20px_24px] justify-between items-center [border-width:0px_0px_1px_0px] [border-style:solid] [border-color:#E2E8F0]">
+      <DrawerFocusLock />
+      <div className="box-border w-full h-full max-h-dvh lg:max-h-[calc(100dvh-81px)] sticky top-0 flex flex-col gap-0 justify-start items-start overflow-clip">
+        <div className="box-border w-full h-fit shrink-0 flex flex-row gap-0 p-[16px] sm:p-[20px_24px] justify-between items-center [border-width:0px_0px_1px_0px] [border-style:solid] [border-color:#E2E8F0]">
           <h2 id="listing-drawer-title" className="text-[20px]/[normal] box-border text-[#0B3B5C] font-poppins font-semibold text-left [white-space:nowrap]">
             {edit ? edit.title : labels.title}
           </h2>
           <Link
             href={closeHref}
             aria-label={edit ? edit.closeLabel : labels.closeLabel}
-            className={`box-border w-[40px] shrink-0 h-[40px] flex flex-row gap-0 justify-center items-center bg-[#F7F9FC] hover:bg-[#E3F0F9] rounded-[999px] ${PRESS} ${FOCUS_RING}`}
+            data-drawer-close
+            className={`box-border w-[44px] shrink-0 h-[44px] lg:w-[40px] lg:h-[40px] flex flex-row gap-0 justify-center items-center bg-[#F7F9FC] hover:bg-[#E3F0F9] rounded-[999px] ${PRESS} ${FOCUS_RING}`}
           >
             <Icon name="x" fill="#0B3B5C" className="box-border w-[20px] shrink-0 h-[20px]" />
           </Link>
@@ -70,7 +73,7 @@ export function ListingDrawer({ listing, labels, actions, closeHref, error, edit
           edit.form
         ) : (
           <>
-            <div className="box-border w-full [flex:1_1_0] min-h-0 overflow-y-auto overscroll-contain flex flex-col gap-[16px] p-[24px] justify-start items-start">
+            <div className="box-border w-full [flex:1_1_0] min-h-0 overflow-y-auto overscroll-contain flex flex-col gap-[16px] p-[16px] sm:p-[24px] justify-start items-start">
               <div className="box-border w-full h-[160px] shrink-0 [border:1px_solid_#0000001A] rounded-[12px] overflow-hidden relative">
                 <Image src={image.src} alt={image.alt} fill sizes="332px" className="object-cover object-center" />
               </div>
@@ -101,7 +104,7 @@ export function ListingDrawer({ listing, labels, actions, closeHref, error, edit
                 trailing={
                   <a
                     href={mapHref(location)}
-                    className={`text-[13px]/[normal] box-border text-[#0F6CB8] hover:underline font-poppins font-semibold text-left [white-space:nowrap] rounded-[4px] ${FOCUS_RING}`}
+                    className={`inline-flex items-center min-h-[44px] lg:inline lg:min-h-auto text-[13px]/[normal] box-border text-[#0F6CB8] hover:underline font-poppins font-semibold text-left [white-space:nowrap] rounded-[4px] ${FOCUS_RING}`}
                   >
                     {labels.mapLabel}
                   </a>
@@ -134,7 +137,7 @@ export function ListingDrawer({ listing, labels, actions, closeHref, error, edit
                 </div>
               </DetailRow>
             </div>
-            <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[12px] p-[16px_24px_24px_24px] justify-start items-start bg-[#FFFFFF] [border-width:1px_0px_0px_0px] [border-style:solid] [border-color:#E2E8F0]">
+            <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[12px] p-[16px] sm:p-[16px_24px_24px_24px] justify-start items-start bg-[#FFFFFF] [border-width:1px_0px_0px_0px] [border-style:solid] [border-color:#E2E8F0]">
               {error && (
                 <p role="alert" className="text-[13px]/[19px] box-border w-full p-[10px_12px] text-[#9B2C27] bg-[#FDECEC] rounded-[10px] font-inter font-medium text-left">
                   {error}

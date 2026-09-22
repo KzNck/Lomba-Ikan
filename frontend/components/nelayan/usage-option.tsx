@@ -14,7 +14,7 @@ export function UsageOption({ icon, title, description }: UsageOptionContent) {
         <Icon name={icon} fill="#0F6CB8" className="box-border w-[24px] shrink-0 h-[24px]" />
       </span>
       <span className="box-border [flex:1_1_0] h-fit flex flex-col gap-[4px] justify-start items-start">
-        <span className="text-[15px]/[normal] box-border text-[#0B3B5C] font-poppins font-semibold text-left [white-space:nowrap]">{title}</span>
+        <span className="text-[15px]/[normal] box-border text-[#0B3B5C] font-poppins font-semibold text-left lg:[white-space:nowrap]">{title}</span>
         <span className="text-[13px]/[19px] box-border w-full text-[#5B6B7C] font-inter font-normal text-left">{description}</span>
       </span>
     </li>

@@ -162,7 +162,7 @@ export function ListingCard({
           href={href}
           aria-label={`${cta ?? detailLabel} ${category}`}
           aria-current={selected ? 'true' : undefined}
-          className={`group box-border w-full h-[40px] shrink-0 flex flex-row gap-[8px] justify-center items-center ${cta ? `bg-[#0F6CB8] ${SOLID_HOVER}` : `[outline:1.5px_solid_#0F6CB8] [outline-offset:-0.75px] ${OUTLINE_HOVER}`} rounded-[8px] ${PRESS_WIDE} ${FOCUS_RING}`}
+          className={`group box-border w-full h-[44px] lg:h-[40px] shrink-0 flex flex-row gap-[8px] justify-center items-center ${cta ? `bg-[#0F6CB8] ${SOLID_HOVER}` : `[outline:1.5px_solid_#0F6CB8] [outline-offset:-0.75px] ${OUTLINE_HOVER}`} rounded-[8px] ${PRESS_WIDE} ${FOCUS_RING}`}
         >
           <span className={`text-[14px]/[normal] box-border ${cta ? 'text-[#FFFFFF]' : 'text-[#0F6CB8]'} font-inter font-semibold text-left [white-space:nowrap]`}>{cta ?? detailLabel}</span>
           <Icon name={cta ? 'send' : 'arrow-right'} fill={cta ? '#FFFFFF' : '#0F6CB8'} className={`box-border w-[16px] shrink-0 h-[16px] ${ARROW_NUDGE_RIGHT}`} />

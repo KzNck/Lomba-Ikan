@@ -30,7 +30,7 @@ export function FilterMenu({ label, icon, options, align = 'start' }: FilterMenu
   const current = options.find((option) => option.selected) ?? options[0]
 
   return (
-    <div ref={rootRef} className="box-border w-[190px] shrink-0 h-fit flex flex-col gap-[6px] justify-start items-start relative">
+    <div ref={rootRef} className="box-border w-full sm:w-[190px] shrink-0 h-fit flex flex-col gap-[6px] justify-start items-start relative">
       <span id={labelId} className="text-[12px]/[normal] box-border text-[#5B6B7C] font-inter font-medium text-left [white-space:nowrap]">
         {label}
       </span>
@@ -51,7 +51,7 @@ export function FilterMenu({ label, icon, options, align = 'start' }: FilterMenu
       </button>
       <ul
         {...panelProps}
-        className={`box-border w-[220px] h-fit absolute ${align === 'end' ? 'right-0' : 'left-0'} top-[calc(100%+8px)] [box-shadow:0px_8px_24px_0px_#0B3B5C1F] flex flex-col gap-0 p-[6px] justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[12px] [z-index:20] motion-safe:animate-fade-in`}
+        className={`box-border w-full lg:w-[220px] h-fit absolute ${align === 'end' ? 'right-0' : 'left-0'} top-[calc(100%+8px)] [box-shadow:0px_8px_24px_0px_#0B3B5C1F] flex flex-col gap-0 p-[6px] justify-start items-start bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px] rounded-[12px] [z-index:20] motion-safe:animate-fade-in`}
       >
         {options.map(({ href, label, selected }) => (
           <li key={href} className="box-border w-full">
@@ -60,7 +60,7 @@ export function FilterMenu({ label, icon, options, align = 'start' }: FilterMenu
               scroll={false}
               aria-current={selected ? 'true' : undefined}
               onClick={() => setOpen(false)}
-              className={`box-border w-full h-[40px] shrink-0 flex flex-row gap-[8px] p-[0px_12px] justify-between items-center ${selected ? 'bg-[#F3FAFF]' : 'bg-[#00000000] hover:bg-[#F7F9FC]'} rounded-[8px] ${FOCUS_RING}`}
+              className={`box-border w-full h-[44px] lg:h-[40px] shrink-0 flex flex-row gap-[8px] p-[0px_12px] justify-between items-center ${selected ? 'bg-[#F3FAFF]' : 'bg-[#00000000] hover:bg-[#F7F9FC]'} rounded-[8px] ${FOCUS_RING}`}
             >
               <span
                 className={`text-[14px]/[normal] box-border ${selected ? 'text-[#0F6CB8] font-semibold' : 'text-[#0B3B5C] font-medium'} font-inter text-left [white-space:nowrap]`}

@@ -13,13 +13,13 @@ export type BreadcrumbContent = {
 export function Breadcrumb({ trail = [], current }: BreadcrumbContent) {
   const t = useTranslations('dashboard')
   return (
-    <nav aria-label={t('breadcrumbLabel')} className="box-border w-fit h-fit shrink-0 flex flex-row gap-[8px] justify-start items-center">
+    <nav aria-label={t('breadcrumbLabel')} className="box-border w-fit max-w-full h-fit shrink-0 flex flex-row flex-wrap lg:flex-nowrap gap-[8px] justify-start items-center">
       <Icon name="house" fill="#0B3B5C" className="box-border w-[18px] shrink-0 h-[18px]" />
       {trail.map(({ href, label }) => (
         <Separated key={href}>
           <Link
             href={href}
-            className={`text-[14px]/[normal] box-border text-[#5B6B7C] hover:text-[#0B3B5C] font-inter font-normal text-left [white-space:nowrap] rounded-[4px] ${FOCUS_RING}`}
+            className={`flex items-center min-h-[44px] lg:min-h-auto lg:block text-[14px]/[normal] box-border text-[#5B6B7C] hover:text-[#0B3B5C] font-inter font-normal text-left [white-space:nowrap] rounded-[4px] ${FOCUS_RING}`}
           >
             {label}
           </Link>

@@ -30,7 +30,7 @@ export function RiwayatFilters({ action, dateLabel, range, status }: RiwayatFilt
   const { dateRange } = FILTERS
 
   return (
-    <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[14px] justify-start items-end">
+    <div className="box-border w-full h-fit shrink-0 flex flex-col sm:flex-row gap-[14px] justify-start items-stretch sm:items-end">
       <DateRangeMenu
         action={action}
         keep={status !== 'semua' ? { status } : {}}

@@ -202,7 +202,7 @@ export default async function ListingSayaPage({ searchParams }: { searchParams: 
           )
         }
       >
-        <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[14px] justify-start items-end">
+        <div className="box-border w-full h-fit shrink-0 flex flex-row flex-wrap lg:flex-nowrap gap-[14px] justify-start items-end">
           <DateRangeMenu
             action={LISTING_PATH}
             keep={keep}
@@ -220,11 +220,11 @@ export default async function ListingSayaPage({ searchParams }: { searchParams: 
             }}
           />
           <FilterMenu label={FILTERS.status.label} icon="funnel" options={statusOptions} />
-          <div className="box-border [flex:1_1_0]" />
+          <div className="box-border hidden sm:block [flex:1_1_0]" />
           <FilterMenu label={FILTERS.sort.label} icon="arrow-up-down" options={sortOptions} align="end" />
         </div>
         {cards.length > 0 ? (
-          <ul className="box-border w-full h-fit shrink-0 grid grid-cols-3 gap-[16px] justify-start items-stretch">
+          <ul className="box-border w-full h-fit shrink-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[16px] justify-start items-stretch">
             {cards.map(({ key, ...card }) => (
               <li key={key} className="box-border min-w-0 flex">
                 <ListingCard {...card} metricLabels={LISTING_PAGE.metricLabels} photo="short" selected={key === selected?.listing.slug} />

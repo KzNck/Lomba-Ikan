@@ -21,7 +21,7 @@ export function ListingSection({ title, viewAll, detailLabel, metricLabels, item
     >
       <SectionHeader icon="tag" title={title} link={items.length > 0 ? viewAll : undefined} />
       {items.length > 0 ? (
-        <div className="box-border w-full [flex:1_1_auto] flex flex-row gap-[14px] justify-start items-stretch">
+        <div className="box-border w-full [flex:1_1_auto] grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-row gap-[14px] justify-start items-stretch">
           {items.map((item) => (
             <ListingCard key={item.href} {...item} metricLabels={metricLabels} detailLabel={detailLabel} />
           ))}

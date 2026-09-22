@@ -23,7 +23,7 @@ export function CatchFooter({ back, submitLabel }: CatchFooterProps) {
   )
 
   return (
-    <div className="[box-sizing:content-box] w-[656px] h-fit shrink-0 flex flex-row gap-0 p-[16px_0px_0px_0px] justify-between items-center [border-width:1px_0px_0px_0px] [border-style:solid] [border-color:#E2E8F0] [margin:-0.5px_0px_0px_0px]">
+    <div className="[box-sizing:content-box] w-full md:w-[656px] h-fit shrink-0 flex flex-row gap-0 p-[16px_0px_0px_0px] justify-between items-center [border-width:1px_0px_0px_0px] [border-style:solid] [border-color:#E2E8F0] [margin:-0.5px_0px_0px_0px]">
       {back.href !== undefined ? (
         <Link href={back.href} className={BACK_CLASS}>
           {label}

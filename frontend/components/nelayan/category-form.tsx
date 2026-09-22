@@ -102,10 +102,11 @@ export function CategoryForm({
           aria-labelledby="category-title"
           aria-describedby={showError ? 'category-title-description category-error' : 'category-title-description'}
           aria-invalid={showError || undefined}
-          className="box-border w-full h-fit shrink-0 flex flex-col gap-[12px] justify-start items-start"
+          // Two per row on phones (the rows dissolve into one grid); from md the design's rows of four.
+          className="box-border w-full h-fit shrink-0 grid grid-cols-2 md:flex md:flex-col gap-[12px] justify-start items-start"
         >
           {rows.map((row, index) => (
-            <div key={index} className="box-border w-full h-fit shrink-0 flex flex-row gap-[12px] justify-start items-start">
+            <div key={index} className="box-border w-full h-fit shrink-0 contents md:flex md:flex-row gap-[12px] justify-start items-start">
               {row.map((option) => (
                 <CategoryOption key={option.value} name={FIELD_NAME} defaultChecked={option.value === defaultValue} {...option} />
               ))}
@@ -133,7 +134,7 @@ export function CategoryForm({
                 placeholder={other.placeholder}
                 aria-describedby={showOtherError ? `${OTHER_FIELD}-helper ${OTHER_FIELD}-error` : `${OTHER_FIELD}-helper`}
                 aria-invalid={showOtherError || undefined}
-                className="text-[15px]/[normal] box-border [flex:1_1_0] w-0 min-w-0 bg-transparent text-[#0B3B5C] placeholder:text-[#7F8FA4] font-inter font-medium text-left outline-none"
+                className="text-[16px]/[normal] lg:text-[15px]/[normal] box-border [flex:1_1_0] w-0 min-w-0 self-stretch lg:self-auto bg-transparent text-[#0B3B5C] placeholder:text-[#7F8FA4] font-inter font-medium text-left outline-none"
               />
             </div>
             <p id={`${OTHER_FIELD}-helper`} className="text-[13px]/[normal] box-border w-full text-[#5B6B7C] font-inter font-normal text-left">

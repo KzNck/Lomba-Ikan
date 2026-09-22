@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Icon } from '@/components/ui/icon'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
+import { DrawerFocusLock } from '@/components/nelayan/drawer-focus-lock'
 import { PRESS, SOLID_HOVER } from '@/components/ui/interaction'
 import { TRANSACTION_STATES, type TransactionDrawerCopy } from '@/components/nelayan/riwayat-content'
 import { gradeCondition } from '@/lib/catches/present'
@@ -32,9 +33,10 @@ export function TransactionDrawer({ detail, closeHref, copy, handover, chat, can
   return (
     <aside
       aria-labelledby={TITLE_ID}
-      className="box-border w-[400px] [box-shadow:-12px_0px_32px_0px_#0B3B5C14] absolute right-0 top-0 bottom-0 flex flex-col gap-0 justify-start items-start bg-[#FFFFFF] [border-width:0px_0px_0px_1px] [border-style:solid] [border-color:#E2E8F0] overflow-clip [z-index:3] motion-safe:animate-fade-in"
+      className="box-border w-full sm:w-[400px] [box-shadow:-12px_0px_32px_0px_#0B3B5C14] fixed lg:absolute left-0 sm:left-auto right-0 top-0 bottom-0 z-[60] lg:z-[3] flex flex-col gap-0 justify-start items-start bg-[#FFFFFF] [border-width:0px_0px_0px_1px] [border-style:solid] [border-color:#E2E8F0] overflow-clip motion-safe:animate-fade-in"
     >
-      <header className="box-border w-full h-fit shrink-0 flex flex-row gap-[12px] p-[18px_20px] justify-between items-center [border-width:0px_0px_1px_0px] [border-style:solid] [border-color:#E2E8F0]">
+      <DrawerFocusLock />
+      <header className="box-border w-full h-fit shrink-0 flex flex-row gap-[12px] p-[16px] sm:p-[18px_20px] justify-between items-center [border-width:0px_0px_1px_0px] [border-style:solid] [border-color:#E2E8F0]">
         <div className="box-border w-fit shrink-0 h-fit flex flex-row gap-[10px] justify-start items-center">
           <span className="box-border w-[34px] shrink-0 h-[34px] flex flex-row gap-0 justify-center items-center bg-[#F3FAFF] rounded-[999px]">
             <Icon name="receipt-text" fill="#0F6CB8" className="box-border w-[18px] shrink-0 h-[18px]" />
@@ -47,12 +49,13 @@ export function TransactionDrawer({ detail, closeHref, copy, handover, chat, can
           href={closeHref}
           scroll={false}
           aria-label={copy.closeLabel}
-          className={`box-border w-[36px] shrink-0 h-[36px] flex flex-row gap-0 justify-center items-center bg-[#F7F9FC] hover:bg-[#E3F0F9] rounded-[999px] ${PRESS} ${FOCUS_RING}`}
+          data-drawer-close
+          className={`box-border w-[44px] shrink-0 h-[44px] lg:w-[36px] lg:h-[36px] flex flex-row gap-0 justify-center items-center bg-[#F7F9FC] hover:bg-[#E3F0F9] rounded-[999px] ${PRESS} ${FOCUS_RING}`}
         >
           <Icon name="x" fill="#0B3B5C" className="box-border w-[18px] shrink-0 h-[18px]" />
         </Link>
       </header>
-      <div className="box-border w-full [flex:1_1_0] min-h-0 flex flex-col gap-[14px] p-[20px] justify-start items-start overflow-y-auto overscroll-contain">
+      <div className="box-border w-full [flex:1_1_0] min-h-0 flex flex-col gap-[14px] p-[16px] sm:p-[20px] justify-start items-start overflow-y-auto overscroll-contain">
         <p className={`box-border w-full h-fit shrink-0 flex flex-row gap-[10px] p-[12px_14px] justify-start items-center ${state.chip} rounded-[12px]`}>
           <Icon name={state.icon} fill={state.fill} className="box-border w-[18px] shrink-0 h-[18px]" />
           <span className={`text-[13px]/[normal] box-border [flex:1_1_0] ${state.text} font-poppins font-semibold text-left`}>{banner}</span>
@@ -155,7 +158,7 @@ export function TransactionDrawer({ detail, closeHref, copy, handover, chat, can
                   href={detail.photoUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className={`text-[13px]/[normal] box-border text-[#0F6CB8] hover:underline font-poppins font-semibold text-left [white-space:nowrap] rounded-[4px] ${FOCUS_RING}`}
+                  className={`inline-flex items-center min-h-[44px] lg:inline lg:min-h-auto text-[13px]/[normal] box-border text-[#0F6CB8] hover:underline font-poppins font-semibold text-left [white-space:nowrap] rounded-[4px] ${FOCUS_RING}`}
                 >
                   {copy.photoLink}
                 </a>
