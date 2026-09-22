@@ -2,9 +2,11 @@
 
 import { revalidatePath } from 'next/cache'
 import { getTranslations } from 'next-intl/server'
-import { getKabupatenKota, PROVINSI } from '@/lib/wilayah'
+import { getKabupatenKota, getPelabuhanById, PROVINSI } from '@/lib/wilayah'
 import { infoPribadi, JENIS_USAHA_FIELD, validation, type AccountValues } from '@/components/pembeli/akun-content'
 import { saveAccountValues } from '@/lib/pembeli/account'
+import { savePreferenceValues, type PreferenceValues } from '@/lib/pembeli/preferences'
+import { pembeliPreferensi } from '@/components/register/content'
 import { requireProfile } from '@/lib/supabase/auth'
 
 export type AccountFormState = {
@@ -69,4 +71,36 @@ export async function saveAccount(previous: AccountFormState, formData: FormData
   // The sidebar and top bar print the business name, so they need re-rendering too.
   revalidatePath('/pembeli', 'layout')
   return { status: 'saved', values, errors }
+}
+
+export type PreferencesFormState = {
+  status: 'idle' | 'saved' | 'error'
+  // What was saved (or submitted), so the form keeps showing it after React resets it.
+  values: PreferenceValues
+  error?: string
+}
+
+// Saves the Preferensi section. Every part is optional, as at registration; anything that isn't one of the form's
+// own options (or a known PPI) is dropped rather than stored.
+export async function savePreferences(_previous: PreferencesFormState, formData: FormData): Promise<PreferencesFormState> {
+  await requireProfile('pembeli')
+
+  const PREFERENSI = pembeliPreferensi(await getTranslations('auth.register'))
+  const picked = (name: string, allowed: (value: string) => boolean) => [...new Set(formData.getAll(name).map(String))].filter(allowed)
+  const materials = new Set<string>(PREFERENSI.jenisBahan.options.map(({ value }) => value))
+  const grades = new Set<string>(PREFERENSI.grade.groups.flatMap(({ options }) => options.map(({ value }) => value)))
+  const values: PreferenceValues = {
+    jenisBahan: picked(PREFERENSI.jenisBahan.name, (value) => materials.has(value)),
+    grade: picked(PREFERENSI.grade.name, (value) => grades.has(value)),
+    ppiPrioritas: picked(PREFERENSI.ppi.combobox.name, (value) => getPelabuhanById(value) !== undefined),
+  }
+
+  try {
+    await savePreferenceValues(values)
+  } catch (error) {
+    return { status: 'error', values, error: (error as Error).message }
+  }
+
+  revalidatePath('/pembeli/akun/preferensi')
+  return { status: 'saved', values }
 }

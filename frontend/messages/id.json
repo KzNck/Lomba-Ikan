@@ -94,7 +94,8 @@
       "draft": "Belum dipasang",
       "draftFooter": "Pasang untuk mulai 48 jam klaim",
       "active": "Aktif",
-      "activeFooter": "Sisa {time}"
+      "activeFooter": "Sisa {time}",
+      "logged": "Dicatat {date}"
     }
   },
   "nav": {
@@ -153,7 +154,6 @@
           "emptyTitle": "Belum ada notifikasi",
           "emptyDescription": "Kabar dari pembeli dan PPI akan muncul di sini."
         },
-        "tagline": "Laut memberi, kita jaga bersama",
         "stats": {
           "sold": "Total Terjual",
           "revenue": "Pendapatan",
@@ -352,17 +352,54 @@
           "emptyDescription": "Catat tangkapan hari ini supaya pembeli di sekitar PPI bisa melihat dan menawarnya.",
           "emptyAction": "Tambah tangkapan pertama"
         },
-        "closed": {
-          "label": "Terjual/Diambil",
+        "processing": {
+          "label": "Diproses",
           "detailLabel": "Lihat transaksi",
-          "panelTitle": "Listing Terjual/Diambil",
+          "panelTitle": "Listing Diproses",
+          "emptyTitle": "Belum ada listing yang diproses",
+          "emptyDescription": "Listing yang sudah diklaim pembeli dan menunggu pembayaran atau pengambilan akan muncul di sini."
+        },
+        "sold": {
+          "label": "Terjual",
+          "detailLabel": "Lihat transaksi",
+          "panelTitle": "Listing Terjual",
           "emptyTitle": "Belum ada listing terjual",
-          "emptyDescription": "Listing yang sudah terjual atau diambil pembeli akan muncul di sini."
+          "emptyDescription": "Listing yang transaksinya sudah selesai akan muncul di sini."
+        },
+        "expired": {
+          "label": "Kedaluwarsa",
+          "detailLabel": "Lihat detail",
+          "panelTitle": "Listing Kedaluwarsa",
+          "emptyTitle": "Belum ada listing kedaluwarsa",
+          "emptyDescription": "Listing yang waktu klaimnya habis tanpa pembeli akan muncul di sini."
+        },
+        "sort": {
+          "label": "Urutkan",
+          "baru": "Terbaru",
+          "lama": "Terlama",
+          "berakhir": "Segera berakhir"
+        },
+        "status": {
+          "label": "Status",
+          "semua": "Semua status"
+        },
+        "dateRange": {
+          "label": "Rentang tanggal",
+          "empty": "Semua tanggal",
+          "legend": "Tampilkan listing yang dicatat antara",
+          "from": "Dari",
+          "to": "Sampai",
+          "apply": "Terapkan",
+          "reset": "Semua tanggal",
+          "since": "Sejak {from}",
+          "until": "Sampai {to}",
+          "edit": "Ubah rentang tanggal: {value}"
         },
         "drawer": {
           "title": "Detail Listing",
           "close": "Tutup detail listing",
           "timeLeft": "Sisa waktu",
+          "logged": "Dicatat",
           "location": "Lokasi pengambilan",
           "map": "Lihat peta",
           "freshness": "Estimasi kesegaran",
@@ -371,7 +408,12 @@
           "morePhotos": "foto lainnya",
           "edit": "Edit listing",
           "cancel": "Batalkan listing",
-          "note": "Listing tetap aktif sampai terjual atau Anda batalkan."
+          "note": "Listing tetap aktif sampai terjual atau Anda batalkan.",
+          "delete": "Hapus",
+          "publish": "Pasang",
+          "deleteNote": "Listing yang dihapus hilang permanen, beserta fotonya.",
+          "lockedNote": "Listing ini punya riwayat transaksi, jadi tidak bisa dihapus.",
+          "deleteFailed": "Listing gagal dihapus. Mungkin statusnya sudah berubah; muat ulang halaman lalu coba lagi."
         },
         "edit": {
           "title": "Edit Listing",
@@ -391,6 +433,12 @@
           "body": "Pembeli tidak bisa lagi menawar {category} {weight}, dan tawaran yang sudah masuk ikut dibatalkan.",
           "back": "Kembali",
           "confirm": "Batalkan listing"
+        },
+        "deleteDialog": {
+          "title": "Hapus listing ini?",
+          "body": "{category} {weight} dan fotonya akan dihapus permanen. Tindakan ini tidak bisa dibatalkan.",
+          "back": "Kembali",
+          "confirm": "Hapus permanen"
         },
         "loading": "Memuat listing…"
       }
@@ -542,7 +590,6 @@
       "navLabel": "Bagian akun",
       "personalInfo": "Info Pribadi",
       "preferences": "Preferensi",
-      "notifications": "Notifikasi",
       "signOut": "Keluar",
       "changePhoto": "Ubah foto",
       "changePhotoUnavailable": "Unggah foto belum tersedia.",
@@ -599,6 +646,7 @@
       "pembeli": {
         "subtitle": "Kelola informasi dan preferensi akun Anda.",
         "infoSubtitle": "Data dasar akun dan usaha Anda. Kolom bertanda * wajib diisi.",
+        "preferencesSubtitle": "Pilihan saat mendaftar. Marketplace memakainya untuk menampilkan batch yang relevan; semuanya opsional.",
         "contactNamePlaceholder": "Nama penanggung jawab",
         "nicknamePlaceholder": "Contoh: Bu Sari",
         "nicknameHelper": "Ditampilkan di dashboard. Kosongkan untuk memakai nama usaha.",

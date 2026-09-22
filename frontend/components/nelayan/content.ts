@@ -55,6 +55,5 @@ export function dashboardCopy(t: Translator<'dashboard.nelayan.home'>) {
         description: t('notificationList.emptyDescription'),
       },
     },
-    tagline: t('tagline'),
   }
 }

@@ -19,9 +19,11 @@ export type GradeGroupContent = {
 type GradeGroupProps = GradeGroupContent & {
   // Checkbox name, shared by every grade group so they submit as one field.
   name: string
+  // Grades that start selected, e.g. the account's saved preference.
+  defaultValues?: string[]
 }
 
-export function GradeGroup({ tone, icon, title, options, name }: GradeGroupProps) {
+export function GradeGroup({ tone, icon, title, options, name, defaultValues = [] }: GradeGroupProps) {
   const titleId = useId()
   const styles = GRADE_TONES[tone]
 
@@ -42,7 +44,7 @@ export function GradeGroup({ tone, icon, title, options, name }: GradeGroupProps
       </div>
       <div className="box-border w-fit h-fit shrink-0 flex flex-row gap-[10px] justify-start items-start">
         {options.map((option) => (
-          <Chip key={option.value} name={name} {...option} />
+          <Chip key={option.value} name={name} {...option} defaultChecked={defaultValues.includes(option.value)} />
         ))}
       </div>
     </div>

@@ -5,6 +5,7 @@
 // baris mana yang kelihatan, bukan filter manual di sini.
 
 import { createClient } from './server'
+import { CATCH_PHOTOS_BUCKET } from './storage'
 import type { Catch, CatchStatus, CreateCatchInput } from '@/types/database'
 
 /** Tangkapan milik nelayan yang sedang login. RLS memfilter berdasarkan auth.uid(). */
@@ -133,6 +134,34 @@ export async function cancelListing(catchId: string): Promise<void> {
         .eq('id', catchId)
 
     if (error) throw new Error(`Gagal batalkan listing: ${error.message}`)
+}
+
+/** Status yang boleh dihapus: draft yang belum dipasang, dan listing yang sudah kedaluwarsa atau dibatalkan. */
+export const DELETABLE_STATUSES: CatchStatus[] = ['WAITING_FOR_SYNC', 'EXPIRED']
+
+/**
+ * Hapus tangkapan secara permanen, beserta fotonya. Hanya status di DELETABLE_STATUSES yang dihapus, dan
+ * transactions.catch_id ON DELETE RESTRICT menolak tangkapan yang pernah diklaim — riwayat transaksi tidak ikut
+ * hilang. Mengembalikan false kalau tidak ada yang terhapus (status lain, sudah dihapus, atau ada transaksinya).
+ */
+export async function deleteCatch(nelayanId: string, catchId: string): Promise<boolean> {
+    const supabase = await createClient()
+    const { data, error } = await supabase
+        .from('catches')
+        .delete()
+        .eq('id', catchId)
+        .in('status', DELETABLE_STATUSES)
+        .select('id')
+
+    // 23503: masih dirujuk transaksi. Itu penolakan yang diharapkan, bukan galat.
+    if (error && error.code !== '23503') throw new Error(`Gagal hapus listing: ${error.message}`)
+    if (error || (data ?? []).length === 0) return false
+
+    // Fotonya disimpan di <nelayan>/<catch>.jpg (lihat uploadCatchPhoto). Kalau gagal, row-nya sudah terhapus;
+    // foto yang tertinggal hanya memakan tempat, jadi cukup dicatat.
+    const { error: photoError } = await supabase.storage.from(CATCH_PHOTOS_BUCKET).remove([`${nelayanId}/${catchId}.jpg`])
+    if (photoError) console.error(`Foto listing ${catchId} tidak terhapus: ${photoError.message}`)
+    return true
 }
 
 /** Tempelkan URL foto yang sudah diupload ke row tangkapannya — foto ini yang tampil di listing. */

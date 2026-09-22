@@ -2,7 +2,7 @@
 
 import { useId, useState } from 'react'
 import { Icon } from '@/components/ui/icon'
-import { getLokasiPelabuhan, searchPelabuhan, type Pelabuhan } from '@/lib/wilayah'
+import { getLokasiPelabuhan, getPelabuhanById, searchPelabuhan, type Pelabuhan } from '@/lib/wilayah'
 
 export type PpiComboboxContent = {
   // Name of the hidden inputs that submit the chosen ports' ids.
@@ -26,24 +26,45 @@ const CONTROL_STATES = {
   open: 'gap-[10px] bg-[#FFFFFF] [border:2px_solid_#0F6CB8]',
 }
 
+type PpiComboboxProps = PpiComboboxContent & {
+  // Ports that start chosen, by id (the account's saved preference).
+  defaultIds?: string[]
+  // Called when a port is added or removed: the tags aren't form fields, so the form's own change events miss it.
+  onSelectionChange?: () => void
+}
+
 // Searchable multi-select over every registered port. Chosen ports show as removable tags below.
-export function PpiCombobox({ name, label, placeholder, emptyTitle, emptyHint, missingPpi, removeLabel }: PpiComboboxContent) {
+export function PpiCombobox({
+  name,
+  label,
+  placeholder,
+  emptyTitle,
+  emptyHint,
+  missingPpi,
+  removeLabel,
+  defaultIds = [],
+  onSelectionChange,
+}: PpiComboboxProps) {
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
-  const [selected, setSelected] = useState<Pelabuhan[]>([])
+  const [selected, setSelected] = useState<Pelabuhan[]>(() =>
+    defaultIds.map((id) => getPelabuhanById(id)).filter((pelabuhan): pelabuhan is Pelabuhan => pelabuhan !== undefined),
+  )
   const listboxId = useId()
 
   const results = searchPelabuhan(query)
   const optionId = (index: number) => `${listboxId}-${index}`
   const isSelected = (pelabuhan: Pelabuhan) => selected.some((p) => p.id === pelabuhan.id)
 
-  const toggle = (pelabuhan: Pelabuhan) =>
+  const toggle = (pelabuhan: Pelabuhan) => {
     setSelected((current) =>
       current.some((p) => p.id === pelabuhan.id)
         ? current.filter((p) => p.id !== pelabuhan.id)
         : [...current, pelabuhan],
     )
+    onSelectionChange?.()
+  }
 
   const moveActive = (index: number) => {
     setActiveIndex(index)

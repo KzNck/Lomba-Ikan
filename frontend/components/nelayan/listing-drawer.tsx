@@ -3,19 +3,28 @@ import Link from 'next/link'
 import { Icon } from '@/components/ui/icon'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
 import { DetailRow, DetailValue } from '@/components/nelayan/detail-row'
-import { LISTING_PATH, mapHref, type ActiveListing, type ListingDrawerContent } from '@/components/nelayan/listing-content'
+import { mapHref, type ActiveListing, type ListingDrawerContent } from '@/components/nelayan/listing-content'
 import { OUTLINE_HOVER, PRESS, SOLID_HOVER } from '@/components/ui/interaction'
 
 type ListingDrawerProps = {
   listing: ActiveListing
   labels: ListingDrawerContent
-  // Where "Batalkan listing" goes: the same drawer with the confirmation dialog over it.
-  cancelHref: string
-  // Where "Edit listing" goes: the same drawer in edit mode.
-  editHref: string
+  // What the footer offers, by status. A running listing is edited or cancelled ("Batalkan listing" and "Edit listing"
+  // lead to the same drawer with the confirmation dialog over it, or in edit mode). A draft or an expired listing is
+  // deleted instead (a draft can also be posted), unless someone once claimed it: then it stays, for the transaction.
+  actions: DrawerActions
+  // Back to the grid with the same filters.
+  closeHref: string
+  // Shown above the actions when a delete was refused.
+  error?: string
   // The edit mode (?ubah=1): replaces the details and actions, under its own title.
   edit?: { title: string; closeLabel: string; form: React.ReactNode }
 }
+
+export type DrawerActions =
+  | { kind: 'active'; cancelHref: string; editHref: string }
+  | { kind: 'removable'; deleteHref: string; publishHref?: string }
+  | { kind: 'locked' }
 
 // Chip styles by grade condition, at the drawer's 12px Poppins (the cards use 13px Inter).
 const GRADE_CHIPS = {
@@ -30,7 +39,7 @@ const THUMB_SLOTS = 3
 // it's pinned to the right of the area under the header and runs its full height. The page pads the grid by 412px
 // (380px + the 32px gutter) while it's open. The actions footer is sticky, so on windows shorter than the page it
 // stays on screen; overflow-clip (not hidden) so the aside doesn't become the footer's scroll container.
-export function ListingDrawer({ listing, labels, cancelHref, editHref, edit }: ListingDrawerProps) {
+export function ListingDrawer({ listing, labels, actions, closeHref, error, edit }: ListingDrawerProps) {
   const { image, category, location, statusLabel, grade, weight, pricePerKg, detail } = listing
   const gradeChip = GRADE_CHIPS[grade.condition]
   const thumbs = detail.photos.length > THUMB_SLOTS ? detail.photos.slice(0, THUMB_SLOTS - 1) : detail.photos
@@ -50,7 +59,7 @@ export function ListingDrawer({ listing, labels, cancelHref, editHref, edit }: L
             {edit ? edit.title : labels.title}
           </h2>
           <Link
-            href={LISTING_PATH}
+            href={closeHref}
             aria-label={edit ? edit.closeLabel : labels.closeLabel}
             className={`box-border w-[40px] shrink-0 h-[40px] flex flex-row gap-0 justify-center items-center bg-[#F7F9FC] hover:bg-[#E3F0F9] rounded-[999px] ${PRESS} ${FOCUS_RING}`}
           >
@@ -80,8 +89,12 @@ export function ListingDrawer({ listing, labels, cancelHref, editHref, edit }: L
               <dl className="box-border w-full h-fit shrink-0 flex flex-row gap-[12px] p-[12px_14px] justify-start items-start bg-[#F7F9FC] rounded-[12px]">
                 <DrawerMetric label={labels.metricLabels.weight} value={weight} />
                 <DrawerMetric label={labels.metricLabels.pricePerKg} value={pricePerKg} />
-                <DrawerMetric label={labels.metricLabels.timeLeft} value={detail.timeLeft} />
+                {/* Only a running listing has a claim window left. */}
+                {actions.kind === 'active' && <DrawerMetric label={labels.metricLabels.timeLeft} value={detail.timeLeft} />}
               </dl>
+              <DetailRow icon="calendar" label={labels.loggedLabel}>
+                <DetailValue>{detail.logged}</DetailValue>
+              </DetailRow>
               <DetailRow
                 icon="map-pin"
                 label={labels.locationLabel}
@@ -122,22 +135,58 @@ export function ListingDrawer({ listing, labels, cancelHref, editHref, edit }: L
               </DetailRow>
             </div>
             <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[12px] p-[16px_24px_24px_24px] justify-start items-start bg-[#FFFFFF] [border-width:1px_0px_0px_0px] [border-style:solid] [border-color:#E2E8F0]">
-              {/* The export pads both buttons 20px a side (and the Edit icon 12px from its label), which overflows the 332px
-                  row by 16px once the labels render; 16px sides and an 8px gap make them fit. */}
-              <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[12px] justify-start items-start">
-                <Link href={editHref} className={`${EDIT_BUTTON} ${OUTLINE_HOVER} ${PRESS} ${FOCUS_RING}`}>
-                  <span className="text-[16px]/[normal] box-border text-[#0F6CB8] font-poppins font-semibold text-left [white-space:nowrap]">{labels.editLabel}</span>
-                  <Icon name="pencil" fill="#0F6CB8" className="box-border w-[18px] shrink-0 h-[18px]" />
-                </Link>
-                <Link
-                  href={cancelHref}
-                  className={`box-border [flex:1_1_0] h-fit flex flex-row gap-[8px] p-[14px_16px] justify-center items-center bg-[#C23B35] rounded-[999px] ${SOLID_HOVER} ${PRESS} ${FOCUS_RING}`}
-                >
-                  <Icon name="trash-2" fill="#FFFFFF" className="box-border w-[16px] shrink-0 h-[16px]" />
-                  <span className="text-[15px]/[normal] box-border text-[#FFFFFF] font-poppins font-semibold text-left [white-space:nowrap]">{labels.cancelLabel}</span>
-                </Link>
-              </div>
-              <p className="text-[12px]/[normal] box-border w-full text-[#5B6B7C] font-inter font-normal text-left">{labels.note}</p>
+              {error && (
+                <p role="alert" className="text-[13px]/[19px] box-border w-full p-[10px_12px] text-[#9B2C27] bg-[#FDECEC] rounded-[10px] font-inter font-medium text-left">
+                  {error}
+                </p>
+              )}
+              {actions.kind === 'active' && (
+                <>
+                {/* The export pads both buttons 20px a side (and the Edit icon 12px from its label), which overflows the 332px
+                    row by 16px once the labels render; 16px sides and an 8px gap make them fit. */}
+                <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[12px] justify-start items-start">
+                  <Link href={actions.editHref} className={`${EDIT_BUTTON} ${OUTLINE_HOVER} ${PRESS} ${FOCUS_RING}`}>
+                    <span className="text-[16px]/[normal] box-border text-[#0F6CB8] font-poppins font-semibold text-left [white-space:nowrap]">{labels.editLabel}</span>
+                    <Icon name="pencil" fill="#0F6CB8" className="box-border w-[18px] shrink-0 h-[18px]" />
+                  </Link>
+                  <Link
+                    href={actions.cancelHref}
+                    className={`box-border [flex:1_1_0] h-fit flex flex-row gap-[8px] p-[14px_16px] justify-center items-center bg-[#C23B35] rounded-[999px] ${SOLID_HOVER} ${PRESS} ${FOCUS_RING}`}
+                  >
+                    <Icon name="trash-2" fill="#FFFFFF" className="box-border w-[16px] shrink-0 h-[16px]" />
+                    <span className="text-[15px]/[normal] box-border text-[#FFFFFF] font-poppins font-semibold text-left [white-space:nowrap]">{labels.cancelLabel}</span>
+                  </Link>
+                </div>
+                  <p className="text-[12px]/[normal] box-border w-full text-[#5B6B7C] font-inter font-normal text-left">{labels.note}</p>
+                </>
+              )}
+              {actions.kind === 'removable' && (
+                <>
+                  {/* Two equal columns, so "Pasang" and "Hapus" match whatever their labels' widths. */}
+                  <div className={`box-border w-full h-fit shrink-0 grid ${actions.publishHref ? 'grid-cols-2' : 'grid-cols-1'} gap-[12px]`}>
+                    {actions.publishHref && (
+                      <Link
+                        href={actions.publishHref}
+                        className={`box-border min-w-0 h-fit flex flex-row gap-[8px] p-[14px_16px] justify-center items-center bg-[#0F6CB8] rounded-[999px] ${SOLID_HOVER} ${PRESS} ${FOCUS_RING}`}
+                      >
+                        <Icon name="send" fill="#FFFFFF" className="box-border w-[16px] shrink-0 h-[16px]" />
+                        <span className="text-[15px]/[normal] box-border text-[#FFFFFF] font-poppins font-semibold text-left [white-space:nowrap]">{labels.publishLabel}</span>
+                      </Link>
+                    )}
+                    <Link
+                      href={actions.deleteHref}
+                      className={`box-border min-w-0 h-fit flex flex-row gap-[8px] p-[14px_16px] justify-center items-center bg-[#C23B35] rounded-[999px] ${SOLID_HOVER} ${PRESS} ${FOCUS_RING}`}
+                    >
+                      <Icon name="trash-2" fill="#FFFFFF" className="box-border w-[16px] shrink-0 h-[16px]" />
+                      <span className="text-[15px]/[normal] box-border text-[#FFFFFF] font-poppins font-semibold text-left [white-space:nowrap]">{labels.deleteLabel}</span>
+                    </Link>
+                  </div>
+                  <p className="text-[12px]/[normal] box-border w-full text-[#5B6B7C] font-inter font-normal text-left">{labels.deleteNote}</p>
+                </>
+              )}
+              {actions.kind === 'locked' && (
+                <p className="text-[12px]/[normal] box-border w-full text-[#5B6B7C] font-inter font-normal text-left">{labels.lockedNote}</p>
+              )}
             </div>
           </>
         )}

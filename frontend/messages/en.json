@@ -94,7 +94,8 @@
       "draft": "Not listed",
       "draftFooter": "List it to start the 48-hour claim window",
       "active": "Active",
-      "activeFooter": "{time} left"
+      "activeFooter": "{time} left",
+      "logged": "Logged {date}"
     }
   },
   "nav": {
@@ -153,7 +154,6 @@
           "emptyTitle": "No notifications yet",
           "emptyDescription": "News from buyers and the PPI will show up here."
         },
-        "tagline": "The sea provides, we look after it together",
         "stats": {
           "sold": "Total Sold",
           "revenue": "Revenue",
@@ -352,17 +352,54 @@
           "emptyDescription": "Log today's catch so buyers around the PPI can see it and make offers.",
           "emptyAction": "Add your first catch"
         },
-        "closed": {
-          "label": "Sold/Collected",
+        "processing": {
+          "label": "In progress",
           "detailLabel": "See transaction",
-          "panelTitle": "Sold/Collected Listings",
+          "panelTitle": "Listings in Progress",
+          "emptyTitle": "No listings in progress",
+          "emptyDescription": "Listings a buyer has claimed that are waiting on payment or pickup will show up here."
+        },
+        "sold": {
+          "label": "Sold",
+          "detailLabel": "See transaction",
+          "panelTitle": "Sold Listings",
           "emptyTitle": "No sold listings yet",
-          "emptyDescription": "Listings that were sold or collected by a buyer will show up here."
+          "emptyDescription": "Listings whose transaction is complete will show up here."
+        },
+        "expired": {
+          "label": "Expired",
+          "detailLabel": "See details",
+          "panelTitle": "Expired Listings",
+          "emptyTitle": "No expired listings",
+          "emptyDescription": "Listings whose claim window ran out with no buyer will show up here."
+        },
+        "sort": {
+          "label": "Sort by",
+          "baru": "Newest",
+          "lama": "Oldest",
+          "berakhir": "Ending soonest"
+        },
+        "status": {
+          "label": "Status",
+          "semua": "All statuses"
+        },
+        "dateRange": {
+          "label": "Date range",
+          "empty": "All dates",
+          "legend": "Show listings logged between",
+          "from": "From",
+          "to": "To",
+          "apply": "Apply",
+          "reset": "All dates",
+          "since": "Since {from}",
+          "until": "Until {to}",
+          "edit": "Change date range: {value}"
         },
         "drawer": {
           "title": "Listing Details",
           "close": "Close listing details",
           "timeLeft": "Time left",
+          "logged": "Logged",
           "location": "Pickup location",
           "map": "View map",
           "freshness": "Estimated freshness",
@@ -371,7 +408,12 @@
           "morePhotos": "more photos",
           "edit": "Edit listing",
           "cancel": "Cancel listing",
-          "note": "The listing stays active until it's sold or you cancel it."
+          "note": "The listing stays active until it's sold or you cancel it.",
+          "delete": "Delete",
+          "publish": "Post",
+          "deleteNote": "A deleted listing is gone for good, photo included.",
+          "lockedNote": "This listing has a transaction history, so it can't be deleted.",
+          "deleteFailed": "The listing couldn't be deleted. Its status may have changed; reload the page and try again."
         },
         "edit": {
           "title": "Edit Listing",
@@ -391,6 +433,12 @@
           "body": "Buyers can no longer bid on {category} {weight}, and any offers already made are cancelled too.",
           "back": "Back",
           "confirm": "Cancel listing"
+        },
+        "deleteDialog": {
+          "title": "Delete this listing?",
+          "body": "{category} {weight} and its photo will be deleted for good. This can't be undone.",
+          "back": "Back",
+          "confirm": "Delete for good"
         },
         "loading": "Loading listings…"
       }
@@ -542,7 +590,6 @@
       "navLabel": "Account sections",
       "personalInfo": "Personal Info",
       "preferences": "Preferences",
-      "notifications": "Notifications",
       "signOut": "Sign out",
       "changePhoto": "Change photo",
       "changePhotoUnavailable": "Photo upload isn't available yet.",
@@ -599,6 +646,7 @@
       "pembeli": {
         "subtitle": "Manage your account information and preferences.",
         "infoSubtitle": "Your basic account and business details. Fields marked * are required.",
+        "preferencesSubtitle": "What you chose when you signed up. The marketplace uses it to show relevant batches; all of it is optional.",
         "contactNamePlaceholder": "Person in charge",
         "nicknamePlaceholder": "e.g. Bu Sari",
         "nicknameHelper": "Shown on your dashboard. Leave empty to use your business name.",

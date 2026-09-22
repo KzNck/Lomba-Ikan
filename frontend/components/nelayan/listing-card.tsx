@@ -10,6 +10,8 @@ export type ListingCardContent = {
   image: ImageContent
   category: string
   location: string
+  // When the catch was logged: the ISO stamp for <time>, and what the card reads ("Dicatat 21 Sep 2026").
+  logged: { at: string; label: string }
   status: keyof typeof STATUS_STYLES
   statusLabel: string
   grade: { label: string; condition: keyof typeof GRADE_STYLES }
@@ -96,6 +98,7 @@ export function ListingCard({
   image,
   category,
   location,
+  logged,
   status,
   statusLabel,
   grade,
@@ -133,7 +136,13 @@ export function ListingCard({
               </span>
             </span>
           </div>
-          <p className="text-[13px]/[normal] box-border w-full text-[#5B6B7C] font-inter font-normal text-left">{location}</p>
+          <p className="text-[13px]/[normal] box-border w-full text-[#5B6B7C] font-inter font-normal text-left">
+            {location}
+            <span aria-hidden="true"> · </span>
+            <time dateTime={logged.at} className="[white-space:nowrap]">
+              {logged.label}
+            </time>
+          </p>
         </div>
         <span className={`box-border w-fit h-fit shrink-0 flex flex-row gap-[6px] p-[4px_10px] justify-start items-center ${gradeStyle.badge} rounded-[999px]`}>
           <Icon name={gradeStyle.icon} fill={gradeStyle.iconFill} className="box-border w-[14px] shrink-0 h-[14px]" />

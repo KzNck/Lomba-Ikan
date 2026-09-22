@@ -189,6 +189,8 @@ function cardContent(p: Presenter, entry: Catch): Omit<ListingCardContent, 'href
     grade: { label: gradeLabel(p, entry.freshness_grade), condition: gradeCondition(entry.freshness_grade) },
     weight: formatWeight(p, entry.weight_kg),
     pricePerKg: formatRupiah(p, entry.price_per_kg),
+    // The day the catch was logged, the date "Listing Saya" filters and sorts on.
+    logged: { at: entry.created_at, label: p.t('listingStatus.logged', { date: p.format.dateTime(new Date(entry.created_at), 'day') }) },
     ...cardStatus(p, entry),
   }
 }
@@ -208,6 +210,8 @@ export function toActiveListing(p: Presenter, entry: Catch): ActiveListing {
       weightKg: Number(entry.weight_kg),
       pricePerKg: entry.price_per_kg === null ? null : Number(entry.price_per_kg),
       timeLeft: timeLeft(p, entry.expires_at) ?? p.t('timeLeft.over'),
+      // "21 Sep 2026, 14.30"
+      logged: `${p.format.dateTime(new Date(entry.created_at), 'day')}, ${p.format.dateTime(new Date(entry.created_at), 'time')}`,
       freshness: freshnessLabel(p, entry),
       usage: usageLabel(p, entry),
       photos: [catchImage(p, entry)],

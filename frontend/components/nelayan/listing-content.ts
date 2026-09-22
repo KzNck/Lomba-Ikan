@@ -13,6 +13,8 @@ export type ListingDetailContent = {
   weightKg: number
   pricePerKg: number | null
   timeLeft: string
+  // "21 Sep 2026, 14.30": when the catch was logged.
+  logged: string
   freshness: string
   usage: string
   // The drawer shows the first two and a "+N" tile for the rest.
@@ -52,7 +54,7 @@ export function activeTab(t: ListingT) {
     publishLabel: t('active.publishLabel'),
     // Also the heading of the loading state's panel.
     panelTitle: t('active.panelTitle'),
-    // Shown when there are no active listings (the "Aktif kosong" state).
+    // Shown when there are no active listings (the "Aktif kosong" state), and when there are none at all.
     empty: {
       panelTitle: t('active.panelTitle'),
       title: t('active.emptyTitle'),
@@ -62,17 +64,92 @@ export function activeTab(t: ListingT) {
   }
 }
 
-export function closedTab(t: ListingT) {
+// The statuses past "Aktif". Claimed listings are "diproses" until the sale settles.
+export const CLOSED_STATUSES = ['diproses', 'terjual', 'kedaluwarsa'] as const
+export type ClosedStatus = (typeof CLOSED_STATUSES)[number]
+
+const CLOSED_STATUS_KEYS = { diproses: 'processing', terjual: 'sold', kedaluwarsa: 'expired' } as const
+
+export function closedStatus(t: ListingT, status: ClosedStatus) {
+  const key = CLOSED_STATUS_KEYS[status]
   return {
-    label: t('closed.label'),
-    detailLabel: t('closed.detailLabel'),
-    // Not in the export: the tab has no empty state there, so this mirrors the "Aktif" one without the button.
+    label: t(`${key}.label`),
+    detailLabel: t(`${key}.detailLabel`),
+    // Claimed and sold cards open their transaction; an expired one opens its drawer, where it can be deleted.
+    cardHref: '/nelayan/riwayat',
+    // Not in the export, which has no empty state for these; this mirrors the "Aktif" one without the button.
     empty: {
-      panelTitle: t('closed.panelTitle'),
-      title: t('closed.emptyTitle'),
-      description: t('closed.emptyDescription'),
+      panelTitle: t(`${key}.panelTitle`),
+      title: t(`${key}.emptyTitle`),
+      description: t(`${key}.emptyDescription`),
     } satisfies EmptyTabContent,
   }
+}
+
+// ?status= in the URL, like Riwayat; "semua" is the default and stays out of it.
+export const LISTING_STATUSES = ['semua', 'aktif', ...CLOSED_STATUSES] as const
+export type ListingStatus = (typeof LISTING_STATUSES)[number]
+
+// ?urut=. "berakhir" (ending soonest) only means something while the claim window runs, so it is offered with the
+// "Aktif" filter alone; elsewhere it reads as "baru".
+export const LISTING_SORTS = ['baru', 'lama', 'berakhir'] as const
+export type ListingSort = (typeof LISTING_SORTS)[number]
+export const sortsFor = (status: ListingStatus): ListingSort[] => (status === 'aktif' ? [...LISTING_SORTS] : ['baru', 'lama'])
+
+export function listingFilters(t: ListingT) {
+  return {
+    status: {
+      label: t('status.label'),
+      optionLabel: (status: ListingStatus) =>
+        status === 'semua' ? t('status.semua') : status === 'aktif' ? t('active.label') : closedStatus(t, status).label,
+    },
+    sort: {
+      label: t('sort.label'),
+      optionLabel: (sort: ListingSort) => t(`sort.${sort}`),
+    },
+    dateRange: {
+      label: t('dateRange.label'),
+      // What the button reads with no range set.
+      empty: t('dateRange.empty'),
+      legend: t('dateRange.legend'),
+      fromLabel: t('dateRange.from'),
+      toLabel: t('dateRange.to'),
+      apply: t('dateRange.apply'),
+      reset: t('dateRange.reset'),
+      between: (from: string, to: string) => `${from} – ${to}`,
+      since: (from: string) => t('dateRange.since', { from }),
+      until: (to: string) => t('dateRange.until', { to }),
+      editLabel: (value: string) => t('dateRange.edit', { value }),
+    },
+  }
+}
+
+// The page's URL for a view; the defaults ("semua", "baru", all dates) stay out of it. `detail` opens a card's
+// drawer, `ubah` its edit mode and `konfirmasi` the "Batalkan listing" or "Hapus listing" dialog over it.
+export type ListingView = {
+  status: ListingStatus
+  urut: ListingSort
+  dari?: string
+  sampai?: string
+  detail?: string
+  ubah?: boolean
+  konfirmasi?: 'batal' | 'hapus'
+  // Set when a delete was refused, so the drawer can say so.
+  gagal?: 'hapus'
+}
+
+export function listingHref({ status, urut, dari, sampai, detail, ubah, konfirmasi, gagal }: ListingView): string {
+  const params = new URLSearchParams()
+  if (status !== 'semua') params.set('status', status)
+  if (dari) params.set('dari', dari)
+  if (sampai) params.set('sampai', sampai)
+  if (urut !== 'baru') params.set('urut', urut)
+  if (detail) params.set('detail', detail)
+  if (ubah) params.set('ubah', '1')
+  if (konfirmasi) params.set('konfirmasi', konfirmasi)
+  if (gagal) params.set('gagal', gagal)
+  const query = params.toString()
+  return query ? `${LISTING_PATH}?${query}` : LISTING_PATH
 }
 
 export function listingDrawer(t: ListingT) {
@@ -80,6 +157,7 @@ export function listingDrawer(t: ListingT) {
     title: t('drawer.title'),
     closeLabel: t('drawer.close'),
     metricLabels: { weight: t('weight'), pricePerKg: t('pricePerKg'), timeLeft: t('drawer.timeLeft') },
+    loggedLabel: t('drawer.logged'),
     locationLabel: t('drawer.location'),
     mapLabel: t('drawer.map'),
     freshnessLabel: t('drawer.freshness'),
@@ -90,6 +168,13 @@ export function listingDrawer(t: ListingT) {
     editLabel: t('drawer.edit'),
     cancelLabel: t('drawer.cancel'),
     note: t('drawer.note'),
+    // Drafts and expired listings: they can be deleted instead of edited or cancelled.
+    publishLabel: t('drawer.publish'),
+    deleteLabel: t('drawer.delete'),
+    deleteNote: t('drawer.deleteNote'),
+    // An expired listing someone once claimed keeps its row for the transaction's sake.
+    lockedNote: t('drawer.lockedNote'),
+    deleteFailed: t('drawer.deleteFailed'),
   }
 }
 
@@ -130,6 +215,15 @@ export function cancelDialog(t: ListingT) {
     body: (category: string, weight: string) => t('cancelDialog.body', { category, weight }),
     backLabel: t('cancelDialog.back'),
     confirmLabel: t('cancelDialog.confirm'),
+  }
+}
+
+export function deleteDialog(t: ListingT) {
+  return {
+    title: t('deleteDialog.title'),
+    body: (category: string, weight: string) => t('deleteDialog.body', { category, weight }),
+    backLabel: t('deleteDialog.back'),
+    confirmLabel: t('deleteDialog.confirm'),
   }
 }
 

@@ -45,7 +45,7 @@ export function ListingShell({ header, children, drawer }: ListingShellProps) {
       <div className="box-border w-full [flex:1_1_0] flex flex-col gap-0 justify-start items-start relative">
         {/* The export's 412px right padding leaves room for the open drawer; without one the grid takes the width. */}
         <div
-          className={`box-border w-full [flex:1_1_0] flex flex-col gap-[24px] ${drawer ? 'p-[20px_412px_32px_32px]' : 'p-[20px_32px_32px_32px]'} justify-start items-start relative [z-index:2]`}
+          className={`box-border w-full [flex:1_1_0] flex flex-col gap-[24px] ${drawer ? 'p-[20px_412px_120px_32px]' : 'p-[20px_32px_120px_32px]'} justify-start items-start relative [z-index:2]`}
         >
           <Breadcrumb current={LISTING_PAGE.breadcrumb} />
           <ListingPageHead title={LISTING_PAGE.title} subtitle={LISTING_PAGE.subtitle} action={LISTING_PAGE.addAction} />

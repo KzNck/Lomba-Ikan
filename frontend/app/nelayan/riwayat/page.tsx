@@ -66,7 +66,7 @@ export default async function RiwayatPage({
       <div className="box-border w-full [flex:1_1_0] flex flex-col gap-0 justify-start items-start relative">
         {/* The export pads the content by 424px on the right to leave room for the open drawer. */}
         <div
-          className={`box-border w-full [flex:1_1_0] flex flex-col gap-[20px] ${detail ? 'p-[20px_424px_32px_32px]' : 'p-[20px_32px_32px_32px]'} justify-start items-start relative [z-index:2]`}
+          className={`box-border w-full [flex:1_1_0] flex flex-col gap-[20px] ${detail ? 'p-[20px_424px_120px_32px]' : 'p-[20px_32px_120px_32px]'} justify-start items-start relative [z-index:2]`}
         >
           <Breadcrumb current={RIWAYAT_PAGE.breadcrumb} />
           <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[6px] justify-start items-start">

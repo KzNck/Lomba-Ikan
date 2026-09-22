@@ -56,7 +56,7 @@ export function MainSkeleton({ role }: { role: 'nelayan' | 'pembeli' }) {
         className="box-border w-full h-[81px] shrink-0 bg-[#FFFFFF] [border-width:0px_0px_1px_0px] [border-style:solid] [border-color:#E2E8F0] relative [z-index:0]"
       />
       <MainDecoration />
-      <div className="box-border w-full [flex:1_1_0] flex flex-col gap-0 p-[20px_32px_32px_32px] justify-start items-start relative [z-index:2]">
+      <div className="box-border w-full [flex:1_1_0] flex flex-col gap-0 p-[20px_32px_120px_32px] justify-start items-start relative [z-index:2]">
         {content}
       </div>
     </div>

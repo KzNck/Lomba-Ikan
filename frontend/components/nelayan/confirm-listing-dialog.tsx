@@ -1,11 +1,15 @@
 import Link from 'next/link'
-import { Icon } from '@/components/ui/icon'
+import { Icon, type IconName } from '@/components/ui/icon'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
 import { ModalDialog } from '@/components/nelayan/modal-dialog'
 import { OUTLINE_HOVER, PRESS, SOLID_HOVER } from '@/components/ui/interaction'
 
-type CancelListingDialogProps = {
+type ConfirmListingDialogProps = {
   listingId: string
+  // circle-x for "Batalkan listing", trash-2 for "Hapus listing".
+  icon: IconName
+  // More fields for the action, e.g. the view to return to.
+  hidden?: Record<string, string>
   title: string
   body: string
   back: { href: string; label: string }
@@ -14,15 +18,16 @@ type CancelListingDialogProps = {
   action: (formData: FormData) => void | Promise<void>
 }
 
-// "Konfirmasi batalkan listing". The export shows the dialog alone; it sits on the same scrim as the other nelayan
-// modals, centred in the viewport. Opening it focuses "Kembali", the first control and the safe choice.
-export function CancelListingDialog({ listingId, title, body, back, confirmLabel, action }: CancelListingDialogProps) {
+// "Konfirmasi batalkan listing", also used to confirm "Hapus listing". The export shows the dialog alone; it sits on
+// the same scrim as the other nelayan modals, centred in the viewport. Opening it focuses "Kembali", the first
+// control and the safe choice.
+export function ConfirmListingDialog({ listingId, icon, hidden = {}, title, body, back, confirmLabel, action }: ConfirmListingDialogProps) {
   return (
     <ModalDialog
       closeHref={back.href}
       role="alertdialog"
-      labelledBy="cancel-listing-title"
-      describedBy="cancel-listing-body"
+      labelledBy="confirm-listing-title"
+      describedBy="confirm-listing-body"
       className="m-auto w-[420px] rounded-[24px] [box-shadow:0px_16px_48px_0px_#0B3B5C33] motion-safe:animate-fade-up"
     >
       <form
@@ -30,14 +35,17 @@ export function CancelListingDialog({ listingId, title, body, back, confirmLabel
         className="box-border w-full h-fit flex flex-col gap-[20px] p-[28px] justify-start items-start bg-[#FFFFFF] rounded-[24px]"
       >
         <input type="hidden" name="id" value={listingId} />
+        {Object.entries(hidden).map(([name, value]) => (
+          <input key={name} type="hidden" name={name} value={value} />
+        ))}
         <div className="box-border w-[48px] h-[48px] shrink-0 flex flex-row gap-0 justify-center items-center bg-[#FDECEC] rounded-[999px]">
-          <Icon name="circle-x" fill="#C23B35" className="box-border w-[22px] shrink-0 h-[22px]" />
+          <Icon name={icon} fill="#C23B35" className="box-border w-[22px] shrink-0 h-[22px]" />
         </div>
         <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[6px] justify-start items-start">
-          <h2 id="cancel-listing-title" className="text-[20px]/[normal] box-border text-[#0B3B5C] font-poppins font-semibold text-left [white-space:nowrap]">
+          <h2 id="confirm-listing-title" className="text-[20px]/[normal] box-border text-[#0B3B5C] font-poppins font-semibold text-left [white-space:nowrap]">
             {title}
           </h2>
-          <p id="cancel-listing-body" className="text-[14px]/[21px] box-border w-full text-[#5B6B7C] font-inter font-normal text-left">
+          <p id="confirm-listing-body" className="text-[14px]/[21px] box-border w-full text-[#5B6B7C] font-inter font-normal text-left">
             {body}
           </p>
         </div>

@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { requireProfile } from '@/lib/supabase/auth'
 import {
     cancelListing as cancel,
+    deleteCatch,
     createCatch,
     getCatchById,
     publishCatch,
@@ -216,6 +217,29 @@ export async function cancelListing(formData: FormData): Promise<void> {
 
     revalidatePath('/nelayan/listing')
     redirect('/nelayan/listing')
+}
+
+/**
+ * Hapus listing secara permanen dari dialog konfirmasi di "Listing Saya". `back` adalah tampilan yang dibuka
+ * sebelumnya (filter dan urutan); kalau gagal, drawer-nya dibuka lagi dengan pesan galat.
+ */
+export async function deleteListing(formData: FormData): Promise<void> {
+    const profile = await requireProfile('nelayan')
+
+    const id = String(formData.get('id') ?? '')
+    const requested = String(formData.get('back') ?? '')
+    // Hanya kembali ke halaman ini sendiri, supaya field ini tidak bisa dipakai untuk redirect ke tempat lain.
+    const back = requested === LISTING_PATH || requested.startsWith(`${LISTING_PATH}?`) ? requested : LISTING_PATH
+
+    const deleted = id ? await deleteCatch(profile.id, id) : false
+
+    revalidatePath('/nelayan/listing')
+    revalidatePath('/nelayan')
+    if (deleted) redirect(back)
+    const failed = new URL(back, 'http://x')
+    failed.searchParams.set('detail', id)
+    failed.searchParams.set('gagal', 'hapus')
+    redirect(`${failed.pathname}${failed.search}`)
 }
 
 export type AccountFormState = {

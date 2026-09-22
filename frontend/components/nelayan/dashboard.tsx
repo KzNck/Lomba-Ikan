@@ -36,8 +36,8 @@ export function NelayanDashboard({
         notifications={{ ...DASHBOARD.notifications, unreadCount: data.notifications.length }}
         user={data.user}
       />
-      <MainDecoration tagline={DASHBOARD.tagline} />
-      <div className="box-border w-full [flex:1_1_0] flex flex-col gap-[20px] p-[20px_32px_32px_32px] justify-start items-start relative [z-index:2]">
+      <MainDecoration />
+      <div className="box-border w-full [flex:1_1_0] flex flex-col gap-[20px] p-[20px_32px_120px_32px] justify-start items-start relative [z-index:2]">
         <Breadcrumb {...(breadcrumb ?? { current: DASHBOARD.breadcrumb })} />
         <div className="box-border w-full h-fit shrink-0 flex flex-row gap-[24px] justify-start items-start">
           <SummaryCard {...DASHBOARD.summary} stats={data.stats} />

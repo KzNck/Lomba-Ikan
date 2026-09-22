@@ -54,7 +54,7 @@ export default async function NelayanAkunPage() {
         user={{ name, initials: initialsOf(profile.fullName) }}
       />
       <MainDecoration />
-      <div className="box-border w-full [flex:1_1_0] flex flex-col gap-[20px] p-[20px_32px_32px_32px] justify-start items-start relative [z-index:2]">
+      <div className="box-border w-full [flex:1_1_0] flex flex-col gap-[20px] p-[20px_32px_120px_32px] justify-start items-start relative [z-index:2]">
         <Breadcrumb current={AKUN_PAGE.breadcrumb} />
         <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[6px] justify-start items-start">
           <h2 className="text-[28px]/[32px] box-border text-[#0B3B5C] font-poppins font-bold text-left [white-space:nowrap]">{AKUN_PAGE.title}</h2>
