@@ -39,7 +39,7 @@ export async function cancelReservation(
     }
 
     // The batch is back on the marketplace, and both sides' dashboards and histories changed.
-    revalidatePath('/marketplace')
+    revalidatePath('/marketplace', 'layout')
     revalidatePath('/nelayan', 'layout')
     revalidatePath('/pembeli', 'layout')
 

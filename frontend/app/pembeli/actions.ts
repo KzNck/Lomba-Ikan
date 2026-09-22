@@ -68,8 +68,9 @@ export async function saveAccount(previous: AccountFormState, formData: FormData
     return { status: 'error', values, errors: { contactName: (error as Error).message } }
   }
 
-  // The sidebar and top bar print the business name, so they need re-rendering too.
+  // The sidebar and header print the business name, and the marketplace measures distances from the saved location.
   revalidatePath('/pembeli', 'layout')
+  revalidatePath('/marketplace', 'layout')
   return { status: 'saved', values, errors }
 }
 
@@ -101,6 +102,8 @@ export async function savePreferences(_previous: PreferencesFormState, formData:
     return { status: 'error', values, error: (error as Error).message }
   }
 
-  revalidatePath('/pembeli/akun/preferensi')
+  // Preferences drive the dashboard's recommendations and the marketplace's default filters.
+  revalidatePath('/pembeli', 'layout')
+  revalidatePath('/marketplace', 'layout')
   return { status: 'saved', values }
 }

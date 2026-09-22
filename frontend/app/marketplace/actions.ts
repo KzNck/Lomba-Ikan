@@ -38,13 +38,13 @@ export async function buyBatch(formData: FormData): Promise<void> {
     // RLS menyembunyikan tangkapan yang tidak berstatus LISTED dari pembeli,
     // jadi row yang hilang dan row yang sudah diklaim sama-sama berakhir di sini.
     if (!entry || entry.status !== 'LISTED') {
-        revalidatePath('/marketplace')
+        revalidatePath('/marketplace', 'layout')
         redirect('/marketplace')
     }
 
     const transaction = await claimCatch(catchId, Number(entry.weight_kg) * Number(entry.price_per_kg ?? 0))
 
-    revalidatePath('/marketplace')
+    revalidatePath('/marketplace', 'layout')
     revalidatePath('/pembeli', 'layout')
 
     // Nomor nelayan hanya terbuka untuk pembeli transaksi ini. Tanpa nomor (atau

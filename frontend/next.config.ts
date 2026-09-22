@@ -10,6 +10,11 @@ const nextConfig: NextConfig = {
   // but one the browser can't decode (HEIC in Chrome) is sent as is, so allow up to Vercel's 4.5MB request limit.
   experimental: {
     serverActions: { bodySizeLimit: "4mb" },
+    // Keep a visited dashboard page in the browser for 30s, so going back to it is instant instead of a fresh
+    // server render. Every page is per-user (RLS through the session cookie), so this client-side copy is the safe
+    // place to cache it. Server Actions that change data call revalidatePath, which clears these copies, so a
+    // user's own edits always show at once; changes made by someone else show within 30s or on a refresh.
+    staleTimes: { dynamic: 30 },
   },
   images: {
     remotePatterns: supabaseUrl

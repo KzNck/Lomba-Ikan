@@ -94,7 +94,8 @@ export async function submitCatch(formData: FormData): Promise<void> {
         }
     }
 
-    revalidatePath('/nelayan')
+    // The new catch shows on the dashboard and in Listing Saya.
+    revalidatePath('/nelayan', 'layout')
     redirect(`/nelayan/catat/hasil?id=${entry.id}`)
 }
 
@@ -165,8 +166,9 @@ export async function publishListing(formData: FormData): Promise<void> {
     const raw = String(formData.get('harga') ?? '').replace(/[^\d]/g, '')
     await publishCatch(id, raw ? Number(raw) : null)
 
-    revalidatePath('/nelayan')
-    revalidatePath('/nelayan/listing')
+    // The batch appears in Listing Saya, on the dashboard, and in the buyers' marketplace.
+    revalidatePath('/nelayan', 'layout')
+    revalidatePath('/marketplace', 'layout')
     redirect('/nelayan/listing')
 }
 
@@ -204,7 +206,9 @@ export async function saveListingEdit(_previous: ListingEditState, formData: For
         return { values, errors: {}, formError: messages.saveFailed }
     }
 
+    // The new weight and price show in Listing Saya, on the dashboard, and in the marketplace.
     revalidatePath('/nelayan', 'layout')
+    revalidatePath('/marketplace', 'layout')
     redirect(`${LISTING_PATH}?detail=${id}`)
 }
 
@@ -215,7 +219,9 @@ export async function cancelListing(formData: FormData): Promise<void> {
     const id = String(formData.get('id') ?? '')
     if (id) await cancel(id)
 
-    revalidatePath('/nelayan/listing')
+    // The listing leaves Listing Saya's active tab, the dashboard's panel and stats, and the marketplace.
+    revalidatePath('/nelayan', 'layout')
+    revalidatePath('/marketplace', 'layout')
     redirect('/nelayan/listing')
 }
 
