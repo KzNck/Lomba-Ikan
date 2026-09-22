@@ -2,7 +2,7 @@ import { Logo } from '@/components/ui/logo'
 import { AccountMenu } from '@/components/dashboard/account-menu'
 import { UserAvatar } from '@/components/dashboard/user-avatar'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
-import { SidebarNav, type SidebarNavItem, type SidebarNotifications } from '@/components/dashboard/sidebar-nav'
+import { SidebarNav, type SidebarNavItem } from '@/components/dashboard/sidebar-nav'
 import { BottomTabBar } from '@/components/dashboard/bottom-tab-bar'
 
 // Where the two role frames differ. The pembeli export's "Sea Decoration" waves have empty paths (they render
@@ -15,7 +15,6 @@ const ROLE_STYLES = {
 type SidebarProps = {
   role: keyof typeof ROLE_STYLES
   nav: SidebarNavItem[]
-  notifications?: SidebarNotifications
   user: { name: string; role: string; initials: string }
   // Where the card's account menu sends "Akun".
   accountHref: string
@@ -23,8 +22,8 @@ type SidebarProps = {
 
 // The dashboard sidebar shared by both roles. Sticky and viewport-tall, so it stays in place while the main column
 // scrolls. The sea decoration is pinned to the bottom (the export's top-[700px] in a 1100px frame). Below lg it gives
-// way to a bottom tab bar; the page headers there carry the account menu and notifications.
-export function Sidebar({ role, nav, notifications, user, accountHref }: SidebarProps) {
+// way to a bottom tab bar; the page headers there carry the account menu and the notification bell.
+export function Sidebar({ role, nav, user, accountHref }: SidebarProps) {
   const style = ROLE_STYLES[role]
 
   return (
@@ -35,7 +34,7 @@ export function Sidebar({ role, nav, notifications, user, accountHref }: Sidebar
         <div className="box-border w-fit h-fit shrink-0 flex flex-row gap-0 p-[4px_12px] justify-start items-start relative [z-index:1]">
           <Logo tone="light" />
         </div>
-        <SidebarNav items={nav} notifications={notifications} />
+        <SidebarNav items={nav} />
         {/* The card opens the account menu: on a narrow screen it is the only way to reach "Keluar". The nelayan
             frame draws no chevron, but the card is a control now, so it gets one in both roles. */}
         <div className="box-border w-full h-fit shrink-0 relative [z-index:5]">

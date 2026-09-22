@@ -5,16 +5,12 @@ import { AccountSubnav } from '@/components/pembeli/account-subnav'
 import { ProfileHeader } from '@/components/pembeli/profile-header'
 import { UnsavedChangesProvider } from '@/components/pembeli/unsaved-changes'
 import { getTranslations } from 'next-intl/server'
-import { dashboardCopy } from '@/components/nelayan/content'
 import { akunNav, akunPage, profileHeader, unsavedDialog } from '@/components/nelayan/akun-content'
 import { saveAccount } from '@/app/nelayan/actions'
 import { signOut } from '@/app/auth/actions'
 import { getAccountValues } from '@/lib/nelayan/account'
-import { getMyCatches } from '@/lib/supabase/catches'
-import { getMyTransactions } from '@/lib/supabase/transactions'
-import { initialsOf, recentNotifications } from '@/lib/nelayan/dashboard-data'
+import { initialsOf } from '@/lib/nelayan/dashboard-data'
 import { displayNameOf } from '@/lib/supabase/display-name'
-import { getPresenter } from '@/lib/i18n/presenter'
 import { getLokasiPelabuhan, getPelabuhanById } from '@/lib/wilayah'
 
 // "PPI Muncar · Banyuwangi, Jawa Timur", as the profile header shows the landing site.
@@ -27,21 +23,13 @@ function ppiLabel(ppiId: string, noPpi: string) {
 // The nelayan account page. No frame of its own yet: the pembeli "12 Akun" layout (sections beside the Info Pribadi
 // card) inside the fisher's dashboard chrome, with the fisher's fields.
 export default async function NelayanAkunPage() {
-  const [profile, catches, transactions, p] = await Promise.all([
+  const [profile, t, nav] = await Promise.all([
     getAccountValues(),
-    getMyCatches(),
-    getMyTransactions(),
-    getPresenter(),
-  ])
-  const [home, t, nav] = await Promise.all([
-    getTranslations('dashboard.nelayan.home'),
     getTranslations('dashboard.akun'),
     getTranslations('nav'),
   ])
   const [AKUN_PAGE, AKUN_NAV, UNSAVED_DIALOG] = [akunPage(t), akunNav(t), unsavedDialog(t)]
   const PROFILE_HEADER = profileHeader(t, nav('roles.nelayan'))
-  const DASHBOARD = dashboardCopy(home)
-  const notifications = recentNotifications(p, home, catches, transactions)
   const name = displayNameOf({ full_name: profile.fullName, role: 'nelayan' }, { nickname: profile.nickname })
 
   return (
@@ -49,7 +37,6 @@ export default async function NelayanAkunPage() {
       <DashboardHeader
         title={AKUN_PAGE.title}
         subtitle={AKUN_PAGE.subtitle}
-        notifications={{ ...DASHBOARD.notifications, unreadCount: notifications.length }}
         user={{ name, initials: initialsOf(profile.fullName) }}
       />
       <MainDecoration />

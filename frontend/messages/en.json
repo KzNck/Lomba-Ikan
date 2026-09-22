@@ -152,12 +152,6 @@
           "emptyDescription": "Log today's catch so buyers around the PPI can see it and make offers.",
           "emptyAction": "Add Catch"
         },
-        "notificationList": {
-          "title": "Latest Notifications",
-          "viewAll": "See all notifications",
-          "emptyTitle": "No notifications yet",
-          "emptyDescription": "News from buyers and the PPI will show up here."
-        },
         "stats": {
           "sold": "Total Sold",
           "revenue": "Revenue",
@@ -168,14 +162,6 @@
           "sameAsYesterday": "same as yesterday",
           "upFromYesterday": "{percent}% up from yesterday",
           "downFromYesterday": "{percent}% below yesterday"
-        },
-        "notifications": {
-          "yourCatch": "your catch",
-          "sold": "Your batch ({name}) sold for {price}.",
-          "cancelled": "The transaction for {name} was cancelled.",
-          "claimed": "A buyer claimed your listing ({name}). Expect their WhatsApp message to arrange payment and pickup.",
-          "expiring": "Your {name} listing ends in {time}.",
-          "expiringSoon": "Ending soon"
         }
       },
       "catch": {
@@ -677,27 +663,13 @@
         "recommendationsEmptyTitle": "No recommendations yet",
         "recommendationsEmptyDescription": "Set your processing types and location radius so we can pick catches that suit you.",
         "recommendationsEmptyAction": "Set preferences",
-        "notificationsTitle": "Latest Notifications",
-        "notificationsViewAll": "See all notifications",
-        "notificationsEmptyTitle": "No notifications yet",
-        "notificationsEmptyDescription": "News about offers, transactions and stock from the PPI will show up here.",
         "activityTitle": "Activity Summary",
         "viewDetail": "See details",
         "activeOffers": "Active Offers",
         "runningTransactions": "Ongoing Transactions",
         "totalTransactions": "Total Transactions (30 days)",
         "fromYesterday": "since yesterday",
-        "fromLastMonth": "since last month",
-        "batch": "Batch",
-        "status": {
-          "ESCROW_PENDING": "Awaiting Handover",
-          "ESCROW_HELD": "Awaiting Handover",
-          "DELIVERY_SCHEDULED": "Delivery Scheduled",
-          "WEIGHING_DONE": "Weighing Complete",
-          "RECONCILED": "Reconciliation Complete",
-          "COMPLETED": "Transaction Complete",
-          "CANCELLED": "Transaction Cancelled"
-        }
+        "fromLastMonth": "since last month"
       },
       "marketplace": {
         "title": "Marketplace",
@@ -1075,6 +1047,41 @@
       "businessNameRequired": "Business name is required.",
       "businessTypeRequired": "Choose at least one business type.",
       "phoneRequired": "Enter an active WhatsApp number, e.g. +62 812 3456 7890."
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "unread": "Unread",
+    "emptyTitle": "No notifications yet",
+    "emptyNelayan": "Updates about your listings and buyers will show up here.",
+    "emptyPembeli": "Updates about your claims and handovers will show up here.",
+    "emptyActionNelayan": "Add a catch",
+    "emptyActionPembeli": "Browse the marketplace",
+    "yourCatch": "Your catch",
+    "nelayan": {
+      "claimedTitle": "Batch claimed by a buyer",
+      "claimed": "{subject} · estimated {price}. The buyer will contact you on WhatsApp to arrange payment and pickup.",
+      "soldTitle": "Batch sold",
+      "sold": "{subject} sold for {price}.",
+      "cancelledTitle": "Transaction cancelled",
+      "cancelledRelisted": "{subject} is back on the marketplace.",
+      "cancelledExpired": "{subject} didn't return to the marketplace because its listing time had run out.",
+      "cancelled": "The transaction for {subject} was cancelled.",
+      "listedTitle": "Listing live",
+      "listed": "{subject} · {grade} · {price}/kg is now on the marketplace.",
+      "expiringTitle": "Listing ending soon",
+      "expiring": "{subject} ends in {time}.",
+      "expiredTitle": "Listing ended",
+      "expired": "{subject} didn't sell before its deadline."
+    },
+    "pembeli": {
+      "claimedTitle": "Claim successful",
+      "claimed": "{subject} · estimated {price}. Contact the fisher on WhatsApp to arrange payment and pickup.",
+      "claimedAt": "{subject} · estimated {price} · {place}. Contact the fisher on WhatsApp to arrange payment and pickup.",
+      "completedTitle": "Handover complete",
+      "completed": "{subject} received for a total of {price}.",
+      "cancelledTitle": "Transaction cancelled",
+      "cancelled": "Your claim on {subject} was cancelled."
     }
   }
 }

@@ -152,12 +152,6 @@
           "emptyDescription": "Catat tangkapan hari ini supaya pembeli di sekitar PPI bisa melihat dan menawarnya.",
           "emptyAction": "Tambah Tangkapan"
         },
-        "notificationList": {
-          "title": "Notifikasi Terbaru",
-          "viewAll": "Lihat semua notifikasi",
-          "emptyTitle": "Belum ada notifikasi",
-          "emptyDescription": "Kabar dari pembeli dan PPI akan muncul di sini."
-        },
         "stats": {
           "sold": "Total Terjual",
           "revenue": "Pendapatan",
@@ -168,14 +162,6 @@
           "sameAsYesterday": "sama dengan kemarin",
           "upFromYesterday": "{percent}% dari kemarin",
           "downFromYesterday": "{percent}% di bawah kemarin"
-        },
-        "notifications": {
-          "yourCatch": "tangkapan Anda",
-          "sold": "Batch Anda ({name}) telah terjual dengan harga {price}.",
-          "cancelled": "Transaksi untuk {name} dibatalkan.",
-          "claimed": "Pembeli mengklaim listing Anda ({name}). Pesan WhatsApp-nya akan datang untuk mengatur pembayaran dan pengambilan.",
-          "expiring": "Listing {name} akan berakhir dalam {time}.",
-          "expiringSoon": "Segera berakhir"
         }
       },
       "catch": {
@@ -677,27 +663,13 @@
         "recommendationsEmptyTitle": "Belum ada rekomendasi",
         "recommendationsEmptyDescription": "Atur jenis olahan dan radius lokasi supaya kami bisa memilihkan hasil laut yang cocok untuk Anda.",
         "recommendationsEmptyAction": "Atur preferensi",
-        "notificationsTitle": "Notifikasi Terbaru",
-        "notificationsViewAll": "Lihat semua notifikasi",
-        "notificationsEmptyTitle": "Belum ada notifikasi",
-        "notificationsEmptyDescription": "Kabar penawaran, transaksi, dan stok dari PPI akan muncul di sini.",
         "activityTitle": "Ringkasan Aktivitas",
         "viewDetail": "Lihat detail",
         "activeOffers": "Penawaran Aktif",
         "runningTransactions": "Transaksi Berjalan",
         "totalTransactions": "Total Transaksi (30 hari)",
         "fromYesterday": "dari kemarin",
-        "fromLastMonth": "dari bulan lalu",
-        "batch": "Batch",
-        "status": {
-          "ESCROW_PENDING": "Menunggu Serah Terima",
-          "ESCROW_HELD": "Menunggu Serah Terima",
-          "DELIVERY_SCHEDULED": "Pengiriman Dijadwalkan",
-          "WEIGHING_DONE": "Penimbangan Selesai",
-          "RECONCILED": "Rekonsiliasi Selesai",
-          "COMPLETED": "Transaksi Selesai",
-          "CANCELLED": "Transaksi Dibatalkan"
-        }
+        "fromLastMonth": "dari bulan lalu"
       },
       "marketplace": {
         "title": "Marketplace",
@@ -1075,6 +1047,41 @@
       "businessNameRequired": "Nama usaha wajib diisi.",
       "businessTypeRequired": "Pilih minimal satu jenis usaha.",
       "phoneRequired": "Masukkan nomor WhatsApp yang aktif, contoh +62 812 3456 7890."
+    }
+  },
+  "notifications": {
+    "title": "Notifikasi",
+    "unread": "Belum dibaca",
+    "emptyTitle": "Belum ada notifikasi",
+    "emptyNelayan": "Kabar tentang listing dan pembeli Anda akan muncul di sini.",
+    "emptyPembeli": "Kabar tentang klaim dan serah terima Anda akan muncul di sini.",
+    "emptyActionNelayan": "Tambah tangkapan",
+    "emptyActionPembeli": "Jelajahi marketplace",
+    "yourCatch": "Tangkapan Anda",
+    "nelayan": {
+      "claimedTitle": "Batch diklaim pembeli",
+      "claimed": "{subject} · estimasi {price}. Pembeli akan menghubungi Anda lewat WhatsApp untuk mengatur pembayaran dan pengambilan.",
+      "soldTitle": "Batch terjual",
+      "sold": "{subject} terjual seharga {price}.",
+      "cancelledTitle": "Transaksi dibatalkan",
+      "cancelledRelisted": "{subject} kembali tampil di marketplace.",
+      "cancelledExpired": "{subject} tidak kembali ke marketplace karena waktu listing-nya sudah habis.",
+      "cancelled": "Transaksi {subject} dibatalkan.",
+      "listedTitle": "Listing tayang",
+      "listed": "{subject} · {grade} · {price}/kg kini tampil di marketplace.",
+      "expiringTitle": "Listing segera berakhir",
+      "expiring": "{subject} berakhir dalam {time}.",
+      "expiredTitle": "Listing berakhir",
+      "expired": "{subject} tidak terjual sebelum batas waktunya."
+    },
+    "pembeli": {
+      "claimedTitle": "Klaim berhasil",
+      "claimed": "{subject} · estimasi {price}. Hubungi nelayan lewat WhatsApp untuk mengatur pembayaran dan pengambilan.",
+      "claimedAt": "{subject} · estimasi {price} · {place}. Hubungi nelayan lewat WhatsApp untuk mengatur pembayaran dan pengambilan.",
+      "completedTitle": "Serah terima selesai",
+      "completed": "{subject} diterima dengan total {price}.",
+      "cancelledTitle": "Transaksi dibatalkan",
+      "cancelled": "Klaim {subject} dibatalkan."
     }
   }
 }

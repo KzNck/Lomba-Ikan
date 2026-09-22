@@ -1,31 +1,23 @@
 // lib/pembeli/dashboard.ts
 //
-// Merakit data dashboard pembeli: rekomendasi batch, notifikasi dari transaksi,
-// dan ringkasan aktivitas.
+// Merakit data dashboard pembeli: rekomendasi batch dan ringkasan aktivitas.
 
 import type { ProductCardContent } from '@/components/pembeli/product-card'
-import type { NotificationItemContent } from '@/components/pembeli/notification-item'
 import type { ActivityStatContent } from '@/components/pembeli/activity-stat'
 import { MARKETPLACE_PATH } from '@/components/pembeli/marketplace-content'
-import { categoryLabel, formatRupiah, timeAgo, type Presenter } from '@/lib/catches/present'
 import { getTranslations } from 'next-intl/server'
-import { getPresenter } from '@/lib/i18n/presenter'
 import type { Translator } from '@/lib/i18n/translator'
 import { loadBatches, type Batch } from '@/lib/marketplace/batches'
 import { getMyTransactions, type TransactionWithCatch } from '@/lib/supabase/transactions'
 import { requireProfile } from '@/lib/supabase/auth'
 import { displayNameFor } from '@/lib/supabase/display-name'
-import type { Transaction } from '@/types/database'
 
 export type PembeliDashboardData = {
     greeting: string
     user: { name: string; role: string }
     recommendations: ProductCardContent[]
-    notifications: NotificationItemContent[]
     activity: ActivityStatContent[]
 }
-
-const NOTIFICATIONS_PATH = '/pembeli/notifikasi'
 
 type HomeT = Translator<'dashboard.pembeli.home'>
 
@@ -90,45 +82,12 @@ function activityStats(t: HomeT, transactions: TransactionWithCatch[]): Activity
     ]
 }
 
-/**
- * Belum ada tabel notifikasi, jadi daftarnya disusun dari transaksi pembeli
- * sendiri — status terakhir tiap transaksi, terbaru di atas.
- */
-const STATUS_ICON: Record<Transaction['status'], NotificationItemContent['icon']> = {
-    ESCROW_PENDING: 'tag',
-    ESCROW_HELD: 'file-text',
-    DELIVERY_SCHEDULED: 'truck',
-    WEIGHING_DONE: 'file-text',
-    RECONCILED: 'file-text',
-    COMPLETED: 'truck',
-    CANCELLED: 'info',
-}
-
-function notifications(
-    p: Presenter,
-    t: HomeT,
-    transactions: TransactionWithCatch[]
-): NotificationItemContent[] {
-    return transactions.slice(0, 4).map((tx) => {
-        const name = tx.catches ? categoryLabel(p, tx.catches.species) : t('batch')
-        return {
-            id: tx.id,
-            href: NOTIFICATIONS_PATH,
-            icon: STATUS_ICON[tx.status],
-            title: t(`status.${tx.status}`),
-            description: `${name} · ${formatRupiah(p, Number(tx.final_total ?? tx.estimated_total))}`,
-            time: timeAgo(p, tx.updated_at),
-        }
-    })
-}
-
 export async function loadPembeliDashboard(): Promise<PembeliDashboardData> {
     // Loaded together; RLS scopes the data, and the role check redirects if it fails.
-    const [profile, batches, transactions, p] = await Promise.all([
+    const [profile, batches, transactions] = await Promise.all([
         requireProfile('pembeli'),
         loadBatches(),
         getMyTransactions(),
-        getPresenter(),
     ])
     const [name, t, nav] = await Promise.all([
         displayNameFor(profile),
@@ -140,7 +99,6 @@ export async function loadPembeliDashboard(): Promise<PembeliDashboardData> {
         greeting: name,
         user: { name, role: nav('roles.pembeli') },
         recommendations: topRecommendations(t, batches),
-        notifications: notifications(p, t, transactions),
         activity: activityStats(t, transactions),
     }
 }

@@ -5,7 +5,6 @@ import { EmptyState } from '@/components/nelayan/empty-state'
 import { RiwayatFilters } from '@/components/nelayan/riwayat-filters'
 import { TransactionTable } from '@/components/nelayan/transaction-table'
 import { TransactionDrawer } from '@/components/nelayan/transaction-drawer'
-import { PEMBELI_NOTIFICATIONS } from '@/components/pembeli/content'
 import {
   drawerCopy,
   emptyState,
@@ -55,7 +54,6 @@ export default async function PembeliRiwayatPage({
       <DashboardHeader
         title={RIWAYAT_PAGE.title}
         subtitle={RIWAYAT_PAGE.subtitle}
-        notifications={PEMBELI_NOTIFICATIONS}
         user={{ name, initials: initialsOf(name) }}
         accountHref="/pembeli/akun"
       />

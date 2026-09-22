@@ -1,5 +1,5 @@
 // All copy and imagery for the nelayan dashboard. Edit here to swap content without touching layout.
-// Figures, listings and notifications come from Supabase — see lib/nelayan/dashboard-data.ts.
+// Figures and listings come from Supabase — see lib/nelayan/dashboard-data.ts.
 import type { SidebarNavItem } from '@/components/dashboard/sidebar-nav'
 import type { Translator } from '@/lib/i18n/translator'
 
@@ -13,13 +13,10 @@ export const NELAYAN_NAV: SidebarNavItem[] = [
 ]
 
 // Text lives in messages/*.json under `dashboard.nelayan.home`.
-export const NOTIFICATIONS = { href: '/nelayan/notifikasi', unreadCount: 3 }
-
 export function dashboardCopy(t: Translator<'dashboard.nelayan.home'>) {
   return {
     // The greeting is built per request from the profile name and the time of day.
     subtitle: t('subtitle'),
-    notifications: NOTIFICATIONS,
     summary: {
       title: t('summaryTitle'),
       image: {
@@ -43,15 +40,6 @@ export function dashboardCopy(t: Translator<'dashboard.nelayan.home'>) {
         title: t('listings.emptyTitle'),
         description: t('listings.emptyDescription'),
         action: { href: '/nelayan/catat', label: t('listings.emptyAction') },
-      },
-    },
-    notificationList: {
-      title: t('notificationList.title'),
-      viewAll: { href: '/nelayan/notifikasi', label: t('notificationList.viewAll') },
-      // Shown when `items` is empty (the "Notifikasi kosong" state).
-      empty: {
-        title: t('notificationList.emptyTitle'),
-        description: t('notificationList.emptyDescription'),
       },
     },
   }

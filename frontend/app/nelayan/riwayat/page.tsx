@@ -7,7 +7,6 @@ import { TransactionDrawer } from '@/components/nelayan/transaction-drawer'
 import { HandoverForm } from '@/components/nelayan/handover-form'
 import { confirmHandover } from '@/app/nelayan/actions'
 import { getTranslations } from 'next-intl/server'
-import { dashboardCopy } from '@/components/nelayan/content'
 import { emptyState, riwayatPage, RIWAYAT_PATH, tableCopy, transactionDrawer } from '@/components/nelayan/riwayat-content'
 import { dateLabelFor, loadRiwayat, nelayanSide, parseRiwayatView, riwayatHref } from '@/lib/nelayan/riwayat'
 import { getPresenter } from '@/lib/i18n/presenter'
@@ -16,9 +15,7 @@ import { CancelReservationForm } from '@/components/nelayan/cancel-reservation-f
 import { cancelReservation } from '@/app/transaction-actions'
 import { requireProfile } from '@/lib/supabase/auth'
 import { displayNameFor } from '@/lib/supabase/display-name'
-import { getMyCatches } from '@/lib/supabase/catches'
-import { getMyTransactions } from '@/lib/supabase/transactions'
-import { initialsOf, recentNotifications } from '@/lib/nelayan/dashboard-data'
+import { initialsOf } from '@/lib/nelayan/dashboard-data'
 
 // The "13 Riwayat Transaksi" frame: the history table beside the fisher's own dashboard chrome. The URL holds the
 // view — ?status= filters the rows, ?transaksi=<id> opens that row's drawer.
@@ -34,17 +31,12 @@ export default async function RiwayatPage({
   const RIWAYAT_PAGE = riwayatPage(t)
   const EMPTY_STATE = emptyState(t)
 
-  const [profile, { rows, details, range: shownRange }, catches, transactions, p] = await Promise.all([
+  const [profile, { rows, details, range: shownRange }, p] = await Promise.all([
     requireProfile('nelayan'),
     loadRiwayat(status, range, order, drawerCopy.steps, nelayanSide(t)),
-    getMyCatches(),
-    getMyTransactions(),
     getPresenter(),
   ])
 
-  const home = await getTranslations('dashboard.nelayan.home')
-  const DASHBOARD = dashboardCopy(home)
-  const notifications = recentNotifications(p, home, catches, transactions)
   const name = await displayNameFor(profile)
   const detail = openId ? details.get(openId) : undefined
   const chat = detail && (await transactionChat(detail, 'nelayan', name))
@@ -58,7 +50,6 @@ export default async function RiwayatPage({
       <DashboardHeader
         title={RIWAYAT_PAGE.title}
         subtitle={RIWAYAT_PAGE.subtitle}
-        notifications={{ ...DASHBOARD.notifications, unreadCount: notifications.length }}
         user={{ name, initials: initialsOf(profile.full_name) }}
       />
       <MainDecoration />

@@ -1,12 +1,10 @@
 import { DashboardHeader } from '@/components/dashboard/dashboard-header'
 import { MainDecoration } from '@/components/nelayan/main-decoration'
 import { useTranslations } from 'next-intl'
-import { dashboardCopy } from '@/components/nelayan/content'
 import { listingPage } from '@/components/nelayan/listing-content'
 
 export type ListingHeader = {
   user: { name: string; initials: string }
-  unreadCount: number
 }
 
 type ListingShellProps = {
@@ -21,7 +19,6 @@ type ListingShellProps = {
 // The "09 Listing Saya" main column: the header (carrying the page title) and waves around the filters and grid.
 // Shared by the page and its loading state.
 export function ListingShell({ header, children, drawer }: ListingShellProps) {
-  const DASHBOARD = dashboardCopy(useTranslations('dashboard.nelayan.home'))
   const LISTING_PAGE = listingPage(useTranslations('dashboard.nelayan.listing'))
   return (
     <div className="box-border [flex:1_1_0] flex flex-col gap-0 justify-start items-start relative">
@@ -29,7 +26,6 @@ export function ListingShell({ header, children, drawer }: ListingShellProps) {
         <DashboardHeader
           title={LISTING_PAGE.title}
           subtitle={LISTING_PAGE.subtitle}
-          notifications={{ ...DASHBOARD.notifications, unreadCount: header.unreadCount }}
           user={header.user}
         />
       ) : (

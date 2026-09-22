@@ -1,11 +1,8 @@
-import Link from 'next/link'
-import { useTranslations } from 'next-intl'
-import { Icon } from '@/components/ui/icon'
 import { AccountMenu } from '@/components/dashboard/account-menu'
 import { LanguageSwitcher } from '@/components/ui/language-switcher'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
-import { OUTLINE_HOVER, PRESS } from '@/components/ui/interaction'
 import { UserAvatar } from '@/components/dashboard/user-avatar'
+import { NotificationBell } from '@/components/dashboard/notification-bell'
 
 type DashboardHeaderProps = {
   // The time-of-day greeting on the Dashboard; the page's own title everywhere else.
@@ -13,7 +10,6 @@ type DashboardHeaderProps = {
   subtitle: string
   // The waving hand, which belongs to the Dashboard's greeting only.
   wave?: boolean
-  notifications: { href: string; unreadCount: number }
   // The avatar shows the profile photo when there is one (UserAvatar reads it from the session), else the initials.
   user: { name: string; initials: string }
   // Where the account menu's "Akun" item goes.
@@ -27,11 +23,9 @@ export function DashboardHeader({
   title,
   subtitle,
   wave = false,
-  notifications,
   user,
   accountHref = '/nelayan/akun',
 }: DashboardHeaderProps) {
-  const t = useTranslations('nav')
   // Below lg the title takes its own line and the controls wrap under it.
   return (
     <header className="box-border w-full h-fit shrink-0 flex flex-row flex-wrap lg:flex-nowrap gap-x-[12px] gap-y-[14px] lg:gap-0 p-[16px] sm:p-[20px_24px] lg:p-[20px_32px] justify-between items-center bg-[#FFFFFF] [border-width:0px_0px_1px_0px] [border-style:solid] [border-color:#E2E8F0] [margin:0px_0px_-0.5px_0px] relative">
@@ -57,20 +51,8 @@ export function DashboardHeader({
       <div className="box-border w-full lg:w-fit shrink-0 h-fit flex flex-row gap-[12px] lg:gap-[20px] justify-start items-center">
         {/* The same switcher as the landing navbar. */}
         <LanguageSwitcher startBelowLg />
-        <Link
-          href={notifications.href}
-          aria-label={t('unread', { label: t('notifications'), count: notifications.unreadCount })}
-          className={`box-border ms-auto lg:ms-0 w-[44px] shrink-0 h-[44px] lg:w-[40px] lg:h-[40px] rounded-[999px] relative ${OUTLINE_HOVER} ${PRESS} ${FOCUS_RING}`}
-        >
-          <Icon name="bell" fill="#0B3B5C" className="box-border w-[22px] h-[22px] absolute left-[11px] top-[11px] lg:left-[9px] lg:top-[9px] [z-index:0]" />
-          {notifications.unreadCount > 0 && (
-            <span className="box-border w-[18px] h-[18px] absolute left-[24px] top-[4px] lg:left-[22px] lg:top-[2px] flex flex-row gap-0 justify-center items-center bg-[#C23B35] [outline:2px_solid_#FFFFFF] [outline-offset:-1px] rounded-[999px] [z-index:1]">
-              <span className="text-[11px]/[normal] box-border text-[#FFFFFF] font-inter font-bold text-left [white-space:nowrap]">
-                {notifications.unreadCount}
-              </span>
-            </span>
-          )}
-        </Link>
+        {/* The feed comes from the role layout (see NotificationsProvider). */}
+        <NotificationBell />
         <div className="box-border w-[1px] shrink-0 h-[36px] bg-[#E2E8F0]" />
         {/* The design draws a pill with a chevron; it opens the account menu (Akun, then Keluar). */}
         <div className="box-border w-fit shrink-0 h-fit">

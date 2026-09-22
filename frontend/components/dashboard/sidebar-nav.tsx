@@ -14,8 +14,6 @@ export type SidebarNavItem = {
   icon: IconName
 }
 
-export type SidebarNotifications = { href: string; unreadCount: number }
-
 const ITEM_STATES = {
   active: { item: 'bg-[#0F6CB8]', icon: '#FFFFFF', label: 'text-[#FFFFFF] font-semibold' },
   idle: { item: 'bg-[#00000000] hover:bg-[#FFFFFF14]', icon: '#B9D6E8', label: 'text-[#E3F0F9] font-medium' },
@@ -23,8 +21,6 @@ const ITEM_STATES = {
 
 type SidebarNavProps = {
   items: SidebarNavItem[]
-  // Pinned above the user card, below the spacer (pembeli only).
-  notifications?: SidebarNotifications
 }
 
 // The item whose href is the longest match for the current path, so pages below an item keep it highlighted
@@ -36,8 +32,8 @@ export function activeHref(items: SidebarNavItem[], pathname: string) {
     .sort((a, b) => b.length - a.length)[0]
 }
 
-// The main nav, the spacer that pushes the rest to the bottom, and the optional notifications link.
-export function SidebarNav({ items, notifications }: SidebarNavProps) {
+// The main nav and the spacer that pushes the user card to the bottom.
+export function SidebarNav({ items }: SidebarNavProps) {
   const t = useTranslations('nav')
   const pathname = usePathname()
   const currentHref = activeHref(items, pathname)
@@ -64,25 +60,6 @@ export function SidebarNav({ items, notifications }: SidebarNavProps) {
         })}
       </nav>
       <div className="box-border w-full [flex:1_1_0] relative [z-index:3]" />
-      {notifications && (
-        <Link
-          href={notifications.href}
-          aria-label={t('unread', { label: t('notifications'), count: notifications.unreadCount })}
-          className={`box-border w-full h-[44px] shrink-0 flex flex-row gap-[12px] p-[0px_14px] justify-start items-center hover:bg-[#FFFFFF14] rounded-[12px] relative [z-index:4] ${PRESS_WIDE} ${FOCUS_RING}`}
-        >
-          <Icon name="bell" fill="#B9D6E8" className="box-border w-[20px] shrink-0 h-[20px]" />
-          <span className={`text-[15px]/[normal] box-border text-[#E3F0F9] font-inter font-medium text-left [white-space:nowrap]`}>
-            {t('notifications')}
-          </span>
-          {notifications.unreadCount > 0 && (
-            <span className="box-border w-[20px] shrink-0 h-[20px] flex flex-row gap-0 justify-center items-center bg-[#C23B35] rounded-[999px]">
-              <span className="text-[11px]/[normal] box-border text-[#FFFFFF] font-poppins font-semibold text-left [white-space:nowrap]">
-                {notifications.unreadCount}
-              </span>
-            </span>
-          )}
-        </Link>
-      )}
     </>
   )
 }

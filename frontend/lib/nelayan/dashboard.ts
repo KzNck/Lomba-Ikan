@@ -12,7 +12,7 @@ import { getMyCatches } from '@/lib/supabase/catches'
 import { getMyTransactions } from '@/lib/supabase/transactions'
 import { requireProfile } from '@/lib/supabase/auth'
 import { displayNameFor } from '@/lib/supabase/display-name'
-import { greetingFor, initialsOf, recentNotifications, summaryStats } from './dashboard-data'
+import { greetingFor, initialsOf, summaryStats } from './dashboard-data'
 
 export async function loadNelayanDashboard(): Promise<NelayanDashboardData> {
     // The profile and the data load together: RLS already scopes the catches and transactions to this user, so they
@@ -35,6 +35,5 @@ export async function loadNelayanDashboard(): Promise<NelayanDashboardData> {
             .filter((entry) => entry.status === 'LISTED')
             .slice(0, 3)
             .map((entry) => toListingCard(p, entry, `${LISTING_PATH}?detail=${entry.id}`)),
-        notifications: recentNotifications(p, home, catches, transactions),
     }
 }

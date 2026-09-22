@@ -5,7 +5,6 @@ import { AccountSubnav } from '@/components/pembeli/account-subnav'
 import { ProfileHeader } from '@/components/pembeli/profile-header'
 import { AccountInfoForm } from '@/components/pembeli/account-info-form'
 import { UnsavedChangesProvider } from '@/components/pembeli/unsaved-changes'
-import { PEMBELI_NOTIFICATIONS } from '@/components/pembeli/content'
 import { akunNav, akunPage, profileHeader, unsavedDialog } from '@/components/pembeli/akun-content'
 import { saveAccount } from '@/app/pembeli/actions'
 import { signOut } from '@/app/auth/actions'
@@ -35,7 +34,6 @@ export default async function PembeliAkunPage() {
       <DashboardHeader
         title={AKUN_PAGE.title}
         subtitle={AKUN_PAGE.subtitle}
-        notifications={PEMBELI_NOTIFICATIONS}
         user={{ name, initials: initialsOf(name) }}
         accountHref="/pembeli/akun"
       />

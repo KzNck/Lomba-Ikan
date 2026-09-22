@@ -32,7 +32,7 @@ import { toActiveListing, toListingCard } from '@/lib/catches/present'
 import { getMyCatches } from '@/lib/supabase/catches'
 import { getMyTransactions } from '@/lib/supabase/transactions'
 import { requireProfile } from '@/lib/supabase/auth'
-import { initialsOf, recentNotifications } from '@/lib/nelayan/dashboard-data'
+import { initialsOf } from '@/lib/nelayan/dashboard-data'
 import { formatDay, withinRange } from '@/lib/nelayan/riwayat'
 import { getPresenter } from '@/lib/i18n/presenter'
 import { displayNameFor } from '@/lib/supabase/display-name'
@@ -89,7 +89,7 @@ export default async function ListingSayaPage({ searchParams }: { searchParams: 
     getPresenter(),
   ])
   const name = await displayNameFor(profile)
-  const [home, t] = await Promise.all([getTranslations('dashboard.nelayan.home'), getTranslations('dashboard.nelayan.listing')])
+  const t = await getTranslations('dashboard.nelayan.listing')
   const [LISTING_PAGE, ACTIVE_TAB, FILTERS] = [listingPage(t), activeTab(t), listingFilters(t)]
   const [LISTING_DRAWER, EDIT_LISTING, CANCEL_DIALOG, DELETE_DIALOG] = [listingDrawer(t), editListing(t), cancelDialog(t), deleteDialog(t)]
 
@@ -169,7 +169,6 @@ export default async function ListingSayaPage({ searchParams }: { searchParams: 
       <ListingShell
         header={{
           user: { name, initials: initialsOf(profile.full_name) },
-          unreadCount: recentNotifications(p, home, catches, transactions).length,
         }}
         drawer={
           selected && (

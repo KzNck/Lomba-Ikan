@@ -3,9 +3,8 @@
 // Angka dan daftar untuk dashboard nelayan, dihitung dari row `catches` dan
 // `transactions` milik user yang login.
 
-import type { NotificationContent } from '@/components/nelayan/notification-item'
 import type { SummaryStatContent } from '@/components/nelayan/summary-stat'
-import { categoryLabel, formatRupiah, timeAgo, timeLeft, type Presenter } from '@/lib/catches/present'
+import { formatRupiah, type Presenter } from '@/lib/catches/present'
 import type { Translator } from '@/lib/i18n/translator'
 import type { Catch, Transaction } from '@/types/database'
 
@@ -88,93 +87,6 @@ export function summaryStats(
             note: t('stats.rescuedNote'),
         },
     ]
-}
-
-/**
- * Belum ada tabel notifikasi di schema, jadi daftar ini disusun dari kejadian
- * yang memang tercatat: transaksi atas tangkapan nelayan, dan listing yang
- * hampir kedaluwarsa. Terbaru di atas.
- */
-export function recentNotifications(
-    p: Presenter,
-    t: HomeT,
-    catches: Catch[],
-    transactions: Transaction[],
-    now: Date = new Date()
-): NotificationContent[] {
-    const byId = new Map(catches.map((entry) => [entry.id, entry]))
-    // [waktu kejadian, isi notifikasi] — waktunya cuma dipakai untuk mengurutkan.
-    const items: [at: number, item: NotificationContent][] = []
-
-    for (const tx of transactions) {
-        const entry = byId.get(tx.catch_id)
-        const name = entry ? categoryLabel(p, entry.species) : t('notifications.yourCatch')
-        const at = new Date(tx.updated_at).getTime()
-
-        if (tx.status === 'COMPLETED') {
-            items.push([
-                at,
-                {
-                    id: tx.id,
-                    tone: 'success',
-                    icon: 'shopping-cart',
-                    message: t('notifications.sold', {
-                        name,
-                        price: formatRupiah(p, Number(tx.final_total ?? tx.estimated_total)),
-                    }),
-                    time: timeAgo(p, tx.updated_at, now),
-                },
-            ])
-        } else if (tx.status === 'CANCELLED') {
-            items.push([
-                at,
-                {
-                    id: tx.id,
-                    tone: 'warning',
-                    icon: 'circle-alert',
-                    message: t('notifications.cancelled', { name }),
-                    time: timeAgo(p, tx.updated_at, now),
-                },
-            ])
-        } else {
-            items.push([
-                at,
-                {
-                    id: tx.id,
-                    tone: 'info',
-                    icon: 'check',
-                    message: t('notifications.claimed', { name }),
-                    time: timeAgo(p, tx.updated_at, now),
-                },
-            ])
-        }
-    }
-
-    // Peringatan untuk listing yang sisa waktunya di bawah tiga jam.
-    const threeHours = 3 * 60 * 60 * 1000
-    for (const entry of catches) {
-        if (entry.status !== 'LISTED' || !entry.expires_at) continue
-        const remaining = new Date(entry.expires_at).getTime() - now.getTime()
-        if (remaining <= 0 || remaining > threeHours) continue
-        items.push([
-            now.getTime(),
-            {
-                id: `expiring-${entry.id}`,
-                tone: 'warning',
-                icon: 'badge-check',
-                message: t('notifications.expiring', {
-                    name: categoryLabel(p, entry.species),
-                    time: timeLeft(p, entry.expires_at, now) ?? '',
-                }),
-                time: t('notifications.expiringSoon'),
-            },
-        ])
-    }
-
-    return items
-        .sort(([a], [b]) => b - a)
-        .slice(0, 4)
-        .map(([, item]) => item)
 }
 
 /**

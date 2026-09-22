@@ -4,7 +4,6 @@ import { initialsOf } from '@/lib/nelayan/dashboard-data'
 import { AccountSubnav } from '@/components/pembeli/account-subnav'
 import { PreferencesForm } from '@/components/pembeli/preferences-form'
 import { UnsavedChangesProvider } from '@/components/pembeli/unsaved-changes'
-import { PEMBELI_NOTIFICATIONS } from '@/components/pembeli/content'
 import { akunNav, akunPage, unsavedDialog } from '@/components/pembeli/akun-content'
 import { savePreferences } from '@/app/pembeli/actions'
 import { signOut } from '@/app/auth/actions'
@@ -27,7 +26,6 @@ export default async function PembeliPreferensiPage() {
       <DashboardHeader
         title={AKUN_PAGE.title}
         subtitle={AKUN_PAGE.subtitle}
-        notifications={PEMBELI_NOTIFICATIONS}
         user={{ name, initials: initialsOf(name) }}
         accountHref="/pembeli/akun"
       />

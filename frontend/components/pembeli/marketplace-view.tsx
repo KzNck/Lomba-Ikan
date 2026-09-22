@@ -6,7 +6,6 @@ import { FilterBar } from '@/components/pembeli/filter-bar'
 import { ProductCard } from '@/components/pembeli/product-card'
 import { NoResults } from '@/components/pembeli/no-results'
 import { PpiMap } from '@/components/pembeli/ppi-map'
-import { PEMBELI_NOTIFICATIONS } from '@/components/pembeli/content'
 import { useTranslations } from 'next-intl'
 import {
   GRADES,
@@ -130,7 +129,6 @@ export function MarketplaceView({
       <DashboardHeader
         title={MARKETPLACE.title}
         subtitle={MARKETPLACE.subtitle}
-        notifications={PEMBELI_NOTIFICATIONS}
         user={{ name: user.name, initials: initialsOf(user.name) }}
         accountHref="/pembeli/akun"
       />
