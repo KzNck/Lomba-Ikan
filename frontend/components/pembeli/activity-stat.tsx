@@ -16,7 +16,7 @@ export function ActivityStat({ icon, label, value, delta, caption }: ActivitySta
         <Icon name={icon} fill="#0F6CB8" className="box-border w-[20px] shrink-0 h-[20px]" />
       </div>
       <dl className="box-border [flex:1_1_0] min-w-0 lg:min-w-auto h-fit flex flex-col gap-[2px] justify-start items-start">
-        <dt className="text-[12px]/[normal] box-border text-[#5B6B7C] font-inter font-medium text-left [white-space:nowrap]">{label}</dt>
+        <dt className="text-[12px]/[normal] box-border text-[#5B6B7C] font-inter font-medium text-left sm:[white-space:nowrap]">{label}</dt>
         <dd className="text-[22px]/[normal] sm:text-[26px]/[normal] box-border text-[#0B3B5C] font-poppins font-bold text-left [white-space:nowrap]">{value}</dd>
       </dl>
       <div className="box-border w-fit shrink-0 h-fit flex flex-col gap-[6px] justify-start items-end">
