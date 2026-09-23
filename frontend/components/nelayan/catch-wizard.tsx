@@ -2,7 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
-import { CatchModal } from '@/components/nelayan/catch-modal'
+import { CatchModal, STEP_BODY } from '@/components/nelayan/catch-modal'
+import { CatchFooter } from '@/components/nelayan/catch-footer'
+import { StepHeading } from '@/components/nelayan/step-heading'
+import { Icon } from '@/components/ui/icon'
 import { CategoryForm } from '@/components/nelayan/category-form'
 import { VolumeForm } from '@/components/nelayan/volume-form'
 import { IconChoiceForm } from '@/components/nelayan/icon-choice-form'
@@ -34,14 +37,17 @@ type CatchAnswers = {
 
 // Heading of each step, focused when the step changes so keyboard and screen-reader users land on the new question.
 const STEP_HEADING_IDS = ['category-title', 'volume-title', 'waktu-title', 'kondisi-title', 'es-title', 'foto-title']
+const SAVED_HEADING_ID = 'tersimpan-title'
 
 // The "Tambah Tangkapan" modal as a client-side wizard: one route, the step body swapped in place. It builds its own
-// copy: the photo step's captions are functions, which a server page can't pass down as props.
-export function CatchWizard() {
+// copy: the photo step's captions are functions, which a server page can't pass down as props. `exitHref` is where
+// closing and "Batal" go: the dashboard, or the offline page (app/offline) when the app opened without signal.
+export function CatchWizard({ exitHref = '/nelayan' }: { exitHref?: string }) {
   const t = useTranslations('dashboard.nelayan.catch')
   const categoryName = useTranslations('common.category')
-  const modal = catchModal(t)
-  const category = categoryStep(t, categoryName)
+  const modal = { ...catchModal(t), closeHref: exitHref }
+  const categoryCopy = categoryStep(t, categoryName)
+  const category = { ...categoryCopy, cancel: { ...categoryCopy.cancel, href: exitHref } }
   const volume = volumeStep(t)
   const time = timeStep(t)
   const condition = conditionStep(t)
@@ -59,6 +65,11 @@ export function CatchWizard() {
     focusedStep.current = step
     document.getElementById(STEP_HEADING_IDS[step])?.focus()
   }, [step])
+
+  // Saved on the device: the heading of the done view takes focus, as a new step's would.
+  useEffect(() => {
+    if (status === 'saved-offline') document.getElementById(SAVED_HEADING_ID)?.focus()
+  }, [status])
 
   // Offline, the catch goes to the device's queue instead; online, it is saved and graded, and
   // submitCatch redirects to the result. A failed request falls back to the same local queue, so
@@ -178,7 +189,29 @@ export function CatchWizard() {
           }}
         />
       )}
-      {step === 5 && (
+      {step === 5 && status === 'saved-offline' && (
+        // Done: the catch is in the device's queue. The photo step's "Analisis foto" would queue it a second time,
+        // so it gives way to "Catat tangkapan lain" (a fresh wizard) and "Selesai".
+        <form
+          onSubmit={(event) => {
+            event.preventDefault()
+            setAnswers({})
+            setStatus(undefined)
+            setStep(0)
+          }}
+          className="contents"
+        >
+          <div className={`${STEP_BODY} flex flex-col gap-[16px] justify-start items-start`}>
+            <StepHeading id={SAVED_HEADING_ID} title={t('photo.savedOfflineTitle')} description={t('photo.savedOffline')} descriptionWraps />
+            <p className="box-border w-full h-fit shrink-0 flex flex-row gap-[12px] p-[12px_16px] justify-start items-start bg-[#E8F8F2] rounded-[12px]">
+              <Icon name="circle-check" fill="#17704A" className="box-border w-[20px] shrink-0 h-[20px]" />
+              <span className="text-[14px]/[20px] box-border [flex:1_1_0] text-[#17704A] font-inter font-medium text-left">{t('photo.savedOfflineNote')}</span>
+            </p>
+          </div>
+          <CatchFooter back={{ href: exitHref, label: t('photo.savedOfflineDone') }} submitLabel={t('photo.savedOfflineAnother')} />
+        </form>
+      )}
+      {step === 5 && status !== 'saved-offline' && (
         <PhotoForm
           {...photo}
           defaultPhoto={answers.photo}

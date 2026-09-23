@@ -260,7 +260,11 @@
           "savedOffline": "Photo saved on this device. It's analysed automatically once the device is back online.",
           "analyzingTitle": "Analysing photo…",
           "analyzingDescription": "Please wait a moment. Don't close this page.",
-          "submit": "Analyse photo"
+          "submit": "Analyse photo",
+          "savedOfflineTitle": "Catch saved on this device",
+          "savedOfflineNote": "It’s safe to close the app. This catch stays saved until it’s sent.",
+          "savedOfflineDone": "Done",
+          "savedOfflineAnother": "Log another catch"
         }
       },
       "freshness": {
@@ -1141,5 +1145,15 @@
       "newListingTitle": "New listing that matches your preferences",
       "newListing": "{subject} · {grade} · {price}/kg at {place}."
     }
+  },
+  "offline": {
+    "pageTitle": "No signal · ByCatch Loop",
+    "title": "No signal",
+    "body": "You can still log catches. They’re saved on this device and sent automatically when the signal is back.",
+    "onlineTitle": "The signal is back",
+    "onlineBody": "Open the dashboard to send your saved catches and see their freshness estimates.",
+    "queued": "{count, plural, one {# catch is} other {# catches are}} waiting to be sent from this device.",
+    "logCatch": "Log a catch",
+    "openDashboard": "Open dashboard"
   }
 }

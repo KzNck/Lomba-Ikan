@@ -260,7 +260,11 @@
           "savedOffline": "Foto tersimpan di perangkat. Analisis berjalan otomatis saat perangkat kembali online.",
           "analyzingTitle": "Menganalisis foto…",
           "analyzingDescription": "Mohon tunggu sebentar. Jangan tutup halaman ini.",
-          "submit": "Analisis foto"
+          "submit": "Analisis foto",
+          "savedOfflineTitle": "Tangkapan tersimpan di perangkat",
+          "savedOfflineNote": "Aman untuk menutup aplikasi. Tangkapan ini tetap tersimpan sampai terkirim.",
+          "savedOfflineDone": "Selesai",
+          "savedOfflineAnother": "Catat tangkapan lain"
         }
       },
       "freshness": {
@@ -1141,5 +1145,15 @@
       "newListingTitle": "Listing baru sesuai preferensi",
       "newListing": "{subject} · {grade} · {price}/kg di {place}."
     }
+  },
+  "offline": {
+    "pageTitle": "Tanpa sinyal · ByCatch Loop",
+    "title": "Tidak ada sinyal",
+    "body": "Anda tetap bisa mencatat tangkapan. Tangkapan tersimpan di perangkat ini dan terkirim otomatis saat sinyal kembali.",
+    "onlineTitle": "Sinyal sudah kembali",
+    "onlineBody": "Buka dashboard untuk mengirim tangkapan yang tersimpan dan melihat estimasi kesegarannya.",
+    "queued": "{count, plural, other {# tangkapan}} menunggu dikirim dari perangkat ini.",
+    "logCatch": "Catat tangkapan",
+    "openDashboard": "Buka dashboard"
   }
 }

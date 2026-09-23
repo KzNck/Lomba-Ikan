@@ -18,6 +18,19 @@ const nextConfig: NextConfig = {
     // cache gives catches and transactions (lib/supabase/cached.ts), instead of the 5-minute default.
     staleTimes: { dynamic: 30, static: 60 },
   },
+  // The service worker must never be served from an HTTP cache, or a fix to it would reach users late.
+  async headers() {
+    return [
+      {
+        source: '/sw.js',
+        headers: [
+          { key: 'Content-Type', value: 'application/javascript; charset=utf-8' },
+          { key: 'Cache-Control', value: 'no-cache, no-store, must-revalidate' },
+          { key: 'Content-Security-Policy', value: "default-src 'self'; script-src 'self'" },
+        ],
+      },
+    ]
+  },
   images: {
     remotePatterns: supabaseUrl
       ? [

@@ -3,6 +3,7 @@ import { Dancing_Script, Geist, Geist_Mono, Inter, Poppins } from "next/font/goo
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
 import "./globals.css";
+import { ServiceWorker } from "@/components/pwa/service-worker";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -53,6 +54,7 @@ export default async function RootLayout({
         <main className="flex-1">
           <NextIntlClientProvider>{children}</NextIntlClientProvider>
         </main>
+        <ServiceWorker />
       </body>
     </html>
   );
