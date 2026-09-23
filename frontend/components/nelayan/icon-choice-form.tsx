@@ -56,7 +56,7 @@ export function IconChoiceForm(props: IconChoiceFormProps) {
           aria-labelledby={titleId}
           aria-describedby={showError ? `${titleId}-description ${errorId}` : `${titleId}-description`}
           aria-invalid={showError || undefined}
-          className="box-border w-full h-fit shrink-0 grid grid-cols-2 md:flex md:flex-row gap-[12px] justify-start items-stretch md:items-start"
+          className="box-border w-full h-fit shrink-0 grid grid-cols-2 [&>*:last-child:nth-child(odd)]:col-span-2 md:flex md:flex-row gap-[12px] justify-start items-stretch"
         >
           {options.map((option) => (
             <IconOption key={option.value} name={name} defaultChecked={option.value === defaultValue} {...option} />

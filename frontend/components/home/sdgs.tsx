@@ -21,8 +21,8 @@ export function Sdgs({ id, eyebrow, title, subtitle, goals }: SdgsProps) {
         subtitle={subtitle}
         subtitleClassName="text-[16px]/[26px] sm:text-[17px]/[27px] lg:text-[17px]/[normal] lg:[white-space:nowrap]"
       />
-      {/* One column on phones, two on tablets; from lg the row of five. */}
-      <div className="box-border w-full h-fit lg:h-[339px] shrink-0 grid grid-cols-1 sm:grid-cols-2 gap-[16px] lg:flex lg:flex-row lg:gap-[20px] justify-start items-stretch lg:items-start">
+      {/* One column on phones, two on tablets (the fifth spans both); from lg the row of five. */}
+      <div className="box-border w-full h-fit lg:h-[339px] shrink-0 grid grid-cols-1 sm:grid-cols-2 sm:[&>*:last-child:nth-child(odd)]:col-span-2 gap-[16px] lg:flex lg:flex-row lg:gap-[20px] justify-start items-stretch lg:items-start">
         {goals.map((goal) => (
           <SdgCard key={goal.number} {...goal} />
         ))}

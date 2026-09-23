@@ -12,13 +12,13 @@ type PhotoMethodToggleProps = {
 // "Metode Foto": two radios styled as segmented cards. The selected one swaps its icon for a check.
 export function PhotoMethodToggle({ label, options, value, onChange }: PhotoMethodToggleProps) {
   return (
-    <div role="radiogroup" aria-label={label} className="box-border w-full h-fit shrink-0 flex flex-row gap-[12px] justify-start items-start">
+    <div role="radiogroup" aria-label={label} className="box-border w-full h-fit shrink-0 flex flex-row gap-[12px] justify-start items-stretch">
       {options.map((option) => {
         const selected = option.value === value
         return (
           <label
             key={option.value}
-            className={`box-border [flex:1_1_0] h-[56px] flex flex-row gap-[10px] justify-center items-center ${selected ? 'bg-[#F3FAFF] [outline:2px_solid_#0F6CB8] [outline-offset:-1px]' : 'bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px]'} rounded-[14px] cursor-pointer has-[:focus-visible]:[box-shadow:0px_0px_0px_2px_#FFFFFF,_0px_0px_0px_4px_#0F6CB8]`}
+            className={`box-border [flex:1_1_0] min-w-0 min-h-[56px] flex flex-row gap-[10px] p-[8px_4px] justify-center items-center ${selected ? 'bg-[#F3FAFF] [outline:2px_solid_#0F6CB8] [outline-offset:-1px]' : 'bg-[#FFFFFF] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px]'} rounded-[14px] cursor-pointer has-[:focus-visible]:[box-shadow:0px_0px_0px_2px_#FFFFFF,_0px_0px_0px_4px_#0F6CB8]`}
           >
             <input
               type="radio"
@@ -29,7 +29,7 @@ export function PhotoMethodToggle({ label, options, value, onChange }: PhotoMeth
               className="sr-only"
             />
             <Icon name={selected ? 'circle-check' : option.icon} fill="#0F6CB8" className="box-border w-[20px] shrink-0 h-[20px]" />
-            <span className={`text-[15px]/[normal] box-border ${selected ? 'text-[#0F6CB8]' : 'text-[#0B3B5C]'} font-inter font-semibold text-left [white-space:nowrap]`}>
+            <span className={`text-[15px]/[normal] box-border ${selected ? 'text-[#0F6CB8]' : 'text-[#0B3B5C]'} font-inter font-semibold text-left sm:[white-space:nowrap]`}>
               {option.label}
             </span>
           </label>

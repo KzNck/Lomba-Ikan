@@ -19,7 +19,7 @@ type IconOptionProps = IconOptionContent & {
 // The circle deepens from #F3FAFF to #DCEEFB when the card is selected.
 export function IconOption({ name, value, label, icon, description, defaultChecked }: IconOptionProps) {
   return (
-    <ChoiceCard name={name} value={value} defaultChecked={defaultChecked} sizeClassName="h-fit p-[24px_12px_20px_12px]">
+    <ChoiceCard name={name} value={value} defaultChecked={defaultChecked} sizeClassName="h-auto p-[24px_12px_20px_12px]">
       <div className="box-border w-[56px] h-[56px] shrink-0 flex flex-row gap-0 justify-center items-center bg-[#F3FAFF] group-has-[:checked]:bg-[#DCEEFB] rounded-[999px] relative [z-index:0]">
         <Icon name={icon} fill="#0F6CB8" className="box-border w-[28px] shrink-0 h-[28px]" />
       </div>
