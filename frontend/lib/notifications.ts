@@ -64,6 +64,16 @@ function nelayanItems(p: Presenter, t: NotificationsT, catches: Catch[], transac
     const byId = new Map(catches.map((entry) => [entry.id, entry]))
     const items: Omit<NotificationEntry, 'time'>[] = []
     const href = (tx: TransactionWithCatch) => `/nelayan/riwayat?transaksi=${tx.id}`
+    // Transaksi terbaru tiap tangkapan (getMyTransactions mengurutkan dari yang terbaru).
+    const latestTx = new Map<string, TransactionWithCatch>()
+    for (const tx of transactions) if (!latestTx.has(tx.catch_id)) latestTx.set(tx.catch_id, tx)
+    // Tujuan notifikasi sebuah tangkapan, sama seperti kartunya di Listing Saya: drawer-nya selama masih punya (aktif,
+    // draft, kedaluwarsa), atau transaksinya di Riwayat kalau sudah diklaim atau terjual.
+    const catchHref = (entry: Catch) => {
+        const tx = latestTx.get(entry.id)
+        if (entry.status === 'CLAIMED' || entry.status === 'COMPLETED') return tx ? href(tx) : '/nelayan/riwayat'
+        return `/nelayan/listing?detail=${entry.id}`
+    }
 
     for (const tx of transactions) {
         const entry = byId.get(tx.catch_id)
@@ -123,7 +133,7 @@ function nelayanItems(p: Presenter, t: NotificationsT, catches: Catch[], transac
                     price: formatRupiah(p, entry.price_per_kg),
                 }),
                 at: time(entry.listed_at),
-                href: entry.status === 'LISTED' ? `/nelayan/listing?detail=${entry.id}` : '/nelayan/listing',
+                href: catchHref(entry),
             })
         }
         if (!entry.expires_at) continue
@@ -138,7 +148,7 @@ function nelayanItems(p: Presenter, t: NotificationsT, catches: Catch[], transac
                 // Dihitung sejak listing masuk tiga jam terakhirnya, bukan "sekarang" — kalau tidak, peringatan
                 // ini selalu jadi yang terbaru dan tak pernah terbaca.
                 at: expiresAt - EXPIRING_WITHIN,
-                href: `/nelayan/listing?detail=${entry.id}`,
+                href: catchHref(entry),
             })
         } else if (entry.status === 'EXPIRED') {
             items.push({
@@ -148,7 +158,7 @@ function nelayanItems(p: Presenter, t: NotificationsT, catches: Catch[], transac
                 title: t('nelayan.expiredTitle'),
                 description: t('nelayan.expired', { subject: batch }),
                 at: expiresAt,
-                href: '/nelayan/listing',
+                href: catchHref(entry),
             })
         }
     }
