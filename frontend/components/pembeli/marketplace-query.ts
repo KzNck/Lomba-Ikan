@@ -7,6 +7,7 @@
 //   ?prioritas=  PPIs to list first (repeatable), or "semua" for none
 // A filter left out of the URL falls back to the buyer's saved preferences, so /marketplace opens with them.
 import {
+  type MarketplaceDefaults,
   CATEGORY_VALUES,
   GRADES,
   MARKETPLACE_PATH,
@@ -30,6 +31,8 @@ export type MarketplaceQuery = {
   categories: Category[]
   // Empty: no PPI listed first.
   priorityPpis: string[]
+  // The buyer's saved preferences: what the page opens with, what "Reset filter" returns to, and what the URL leaves out.
+  defaults: MarketplaceDefaults
 }
 
 // The URL value for "filter removed". Any value that isn't an option reads as removed; this is the one we write.
@@ -48,7 +51,7 @@ function listParam<T extends string>(raw: string | string[] | undefined, valid: 
   return valid.filter((option) => values.includes(option)) as T[]
 }
 
-export function parseMarketplaceQuery(params: SearchParams): MarketplaceQuery {
+export function parseMarketplaceQuery(params: SearchParams, defaults: MarketplaceDefaults = PREFERENCES): MarketplaceQuery {
   const sort = SORT_VALUES.find((value) => value === first(params.urut)) ?? DEFAULT_SORT
   const ppi = first(params.ppi)
   const grade = first(params.grade)
@@ -57,24 +60,25 @@ export function parseMarketplaceQuery(params: SearchParams): MarketplaceQuery {
     sort,
     // Any PPI name: one with no batches simply shows "Tidak ada hasil".
     ppi: ppi || undefined,
-    maxGrade: params.grade === undefined ? PREFERENCES.maxGrade : ((GRADES as readonly string[]).includes(grade) ? (grade as Grade) : null),
-    categories: listParam<Category>(params.jenis, CATEGORY_VALUES, PREFERENCES.categories),
-    priorityPpis: listParam<string>(params.prioritas, null, PREFERENCES.priorityPpis),
+    maxGrade: params.grade === undefined ? defaults.maxGrade : ((GRADES as readonly string[]).includes(grade) ? (grade as Grade) : null),
+    categories: listParam<Category>(params.jenis, CATEGORY_VALUES, defaults.categories),
+    priorityPpis: listParam<string>(params.prioritas, null, defaults.priorityPpis),
+    defaults,
   }
 }
 
 const sameSet = (a: readonly string[], b: readonly string[]) => a.length === b.length && a.every((value) => b.includes(value))
 
 // The view as URL params, leaving out anything at its default so the plain /marketplace stays clean.
-export function marketplaceParams({ q, sort, ppi, maxGrade, categories, priorityPpis }: MarketplaceQuery) {
+export function marketplaceParams({ q, sort, ppi, maxGrade, categories, priorityPpis, defaults }: MarketplaceQuery) {
   const params = new URLSearchParams()
   if (q) params.set('q', q)
   if (sort !== DEFAULT_SORT) params.set('urut', sort)
   if (ppi) params.set('ppi', ppi)
-  if (maxGrade !== PREFERENCES.maxGrade) params.set('grade', maxGrade ?? NONE)
+  if (maxGrade !== defaults.maxGrade) params.set('grade', maxGrade ?? NONE)
   const lists = [
-    ['jenis', categories, PREFERENCES.categories],
-    ['prioritas', priorityPpis, PREFERENCES.priorityPpis],
+    ['jenis', categories, defaults.categories],
+    ['prioritas', priorityPpis, defaults.priorityPpis],
   ] as const
   for (const [name, values, preference] of lists) {
     if (sameSet(values, preference)) continue
@@ -99,9 +103,10 @@ export function resetHref(query: MarketplaceQuery) {
   return marketplaceHref({
     q: '',
     sort: query.sort,
-    maxGrade: PREFERENCES.maxGrade,
-    categories: PREFERENCES.categories,
-    priorityPpis: PREFERENCES.priorityPpis,
+    maxGrade: query.defaults.maxGrade,
+    categories: query.defaults.categories,
+    priorityPpis: query.defaults.priorityPpis,
+    defaults: query.defaults,
   })
 }
 

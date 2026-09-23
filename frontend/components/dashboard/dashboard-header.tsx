@@ -14,6 +14,8 @@ type DashboardHeaderProps = {
   user: { name: string; initials: string }
   // Where the account menu's "Akun" item goes.
   accountHref?: string
+  // A page's own shortcut, first among the controls from lg (Listing Saya's "+ Tambah Tangkapan").
+  action?: React.ReactNode
 }
 
 // The export sizes this bar as content-box w-[1180px] plus 64px padding, which overflows the 1180px column and
@@ -25,6 +27,7 @@ export function DashboardHeader({
   wave = false,
   user,
   accountHref = '/nelayan/akun',
+  action,
 }: DashboardHeaderProps) {
   // Below lg the title takes its own line and the controls wrap under it.
   return (
@@ -49,6 +52,7 @@ export function DashboardHeader({
       </div>
       {/* Below lg the row spans the header: the switcher on the left edge, the bell and account on the right. */}
       <div className="box-border w-full lg:w-fit shrink-0 h-fit flex flex-row gap-[12px] lg:gap-[20px] justify-start items-center">
+        {action}
         {/* The same switcher as the landing navbar. */}
         <LanguageSwitcher startBelowLg />
         {/* The feed comes from the role layout (see NotificationsProvider). */}

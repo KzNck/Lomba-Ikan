@@ -132,3 +132,26 @@ export async function cancelTransaction(transactionId: string): Promise<CancelOu
     if (error) throw new Error(error.message)
     return data as CancelOutcome
 }
+
+/**
+ * Ubah data pengambilan dari sisi pembeli: jadwal (`delivery_scheduled_at`) atau konfirmasi batch sudah diterima
+ * (`pembeli_confirmed_at`, dari supabase/pickup-confirmation.sql). Hanya transaksi milik pembeli ini yang masih
+ * berjalan yang tersentuh; false kalau tidak ada (sudah selesai, dibatalkan, atau bukan miliknya).
+ */
+export async function updatePickup(
+    transactionId: string,
+    pembeliId: string,
+    changes: { delivery_scheduled_at?: string; pembeli_confirmed_at?: string }
+): Promise<boolean> {
+    const supabase = await createClient()
+    const { data, error } = await supabase
+        .from('transactions')
+        .update(changes)
+        .eq('id', transactionId)
+        .eq('pembeli_id', pembeliId)
+        .not('status', 'in', '(COMPLETED,CANCELLED)')
+        .select('id')
+
+    if (error) throw new Error(`Gagal ubah pengambilan: ${error.message}`)
+    return (data ?? []).length > 0
+}

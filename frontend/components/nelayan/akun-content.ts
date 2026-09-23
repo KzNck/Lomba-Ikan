@@ -30,11 +30,14 @@ export function akunPage(t: AkunT) {
   }
 }
 
-// "Sub Navigation". Only Info Pribadi exists so far.
+// "Sub Navigation": Info Pribadi and Notifikasi. Preferensi is the buyer's alone (designv2 §13).
 export function akunNav(t: AkunT) {
   return {
     label: t('navLabel'),
-    items: [{ href: AKUN_PATH, label: t('personalInfo'), icon: 'user' }] satisfies AccountNavItem[],
+    items: [
+      { href: AKUN_PATH, label: t('personalInfo'), icon: 'user' },
+      { href: `${AKUN_PATH}/notifikasi`, label: t('notificationsNav'), icon: 'bell' },
+    ] satisfies AccountNavItem[],
     signOutLabel: t('signOut'),
   }
 }

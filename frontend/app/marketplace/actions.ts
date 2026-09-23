@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { getTranslations } from 'next-intl/server'
 import { requireProfile } from '@/lib/supabase/auth'
-import { getCatchById } from '@/lib/supabase/catches'
+import { getCatchById, isOverdue } from '@/lib/supabase/catches'
 import { cacheTags, expireTags } from '@/lib/supabase/cached'
 import { claimCatch, getTransactionContact } from '@/lib/supabase/transactions'
 import { displayNameFor } from '@/lib/supabase/display-name'
@@ -37,15 +37,27 @@ export async function buyBatch(formData: FormData): Promise<void> {
     const entry = catchId ? await getCatchById(catchId) : null
 
     // RLS menyembunyikan tangkapan yang tidak berstatus LISTED dari pembeli,
-    // jadi row yang hilang dan row yang sudah diklaim sama-sama berakhir di sini.
-    if (!entry || entry.status !== 'LISTED') {
+    // jadi row yang hilang dan row yang sudah diklaim sama-sama berakhir di sini —
+    // begitu juga listing yang 48 jamnya sudah lewat (process-escrow menolaknya).
+    if (!entry || entry.status !== 'LISTED' || isOverdue(entry)) {
         // Daftar yang tersimpan masih memuat batch ini; ambil ulang supaya tidak muncul lagi.
         expireTags(cacheTags.marketplace)
         revalidatePath('/marketplace', 'layout')
-        redirect('/marketplace')
+        redirect('/marketplace?habis=1')
     }
 
-    const transaction = await claimCatch(catchId, Number(entry.weight_kg) * Number(entry.price_per_kg ?? 0))
+    let transaction
+    try {
+        transaction = await claimCatch(catchId, Number(entry.weight_kg) * Number(entry.price_per_kg ?? 0))
+    } catch (error) {
+        // Another buyer claimed it between the check above and this claim (process-escrow refuses it): the same
+        // "sudah terjual" message as above, not an error page. Anything else is a real failure.
+        const now = await getCatchById(catchId)
+        if (now?.status === 'LISTED' && !isOverdue(now)) throw error
+        expireTags(cacheTags.marketplace)
+        revalidatePath('/marketplace', 'layout')
+        redirect('/marketplace?habis=1')
+    }
 
     // Batch-nya keluar dari marketplace, dan transaksinya masuk ke riwayat pembeli dan nelayannya — termasuk status
     // "Diproses" di Listing Saya dan notifikasi nelayan.

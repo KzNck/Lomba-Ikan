@@ -10,10 +10,18 @@ import { cachedForUser, cacheTags, REVALIDATE } from './cached'
 import { CATCH_PHOTOS_BUCKET } from './storage'
 import type { Catch, CatchStatus, CreateCatchInput } from '@/types/database'
 
+/** Listing yang batas waktu klaimnya sudah lewat, meski job kedaluwarsa (supabase/expire-listings.sql) belum mengubahnya. */
+export const isOverdue = (entry: Pick<Catch, 'status' | 'expires_at'>, now = Date.now()) =>
+    entry.status === 'LISTED' && entry.expires_at !== null && Date.parse(entry.expires_at) <= now
+
 /**
  * Tangkapan milik nelayan yang sedang login. RLS memfilter berdasarkan auth.uid(). Sekali per request: halaman dan
  * helper-nya (mis. notifikasi di header) yang sama-sama memanggilnya berbagi satu query. Antar request dibaca dari
  * cache server (lib/supabase/cached.ts); aksi yang mengubah tangkapan mengosongkan tag-nya.
+ *
+ * Listing yang sudah lewat 48 jamnya dikembalikan sebagai EXPIRED, dihitung ulang tiap request: job di database
+ * baru mengubahnya beberapa menit kemudian, dan sampai saat itu dashboard, Listing Saya, dan notifikasi harus
+ * sudah menampilkannya sebagai kedaluwarsa.
  */
 export const getMyCatches = cache(async (): Promise<Catch[]> => {
     const result = await cachedForUser(
@@ -29,7 +37,8 @@ export const getMyCatches = cache(async (): Promise<Catch[]> => {
             return data ?? []
         }
     )
-    return result?.data ?? []
+    const now = Date.now()
+    return (result?.data ?? []).map((entry) => (isOverdue(entry, now) ? { ...entry, status: 'EXPIRED' as CatchStatus } : entry))
 })
 
 export async function getCatchById(id: string): Promise<Catch | null> {
@@ -37,6 +46,15 @@ export async function getCatchById(id: string): Promise<Catch | null> {
     const { data, error } = await supabase.from('catches').select('*').eq('id', id).maybeSingle()
 
     if (error) throw new Error(`Gagal ambil tangkapan: ${error.message}`)
+    return data
+}
+
+/** Tangkapan dari antrean offline yang sudah pernah tersimpan, lewat `local_id`-nya; null kalau belum. */
+export async function getCatchByLocalId(localId: string): Promise<Pick<Catch, 'id'> | null> {
+    const supabase = await createClient()
+    const { data, error } = await supabase.from('catches').select('id').eq('local_id', localId).maybeSingle()
+
+    if (error) throw new Error(`Gagal cek tangkapan offline: ${error.message}`)
     return data
 }
 
@@ -157,7 +175,10 @@ export async function cancelListing(catchId: string): Promise<void> {
     if (error) throw new Error(`Gagal batalkan listing: ${error.message}`)
 }
 
-/** Status yang boleh dihapus: draft yang belum dipasang, dan listing yang sudah kedaluwarsa atau dibatalkan. */
+/**
+ * Status yang boleh dihapus: draft yang belum dipasang, dan listing yang sudah kedaluwarsa atau dibatalkan —
+ * termasuk listing LISTED yang batas waktunya sudah lewat tapi belum diubah job kedaluwarsa.
+ */
 export const DELETABLE_STATUSES: CatchStatus[] = ['WAITING_FOR_SYNC', 'EXPIRED']
 
 /**
@@ -171,7 +192,7 @@ export async function deleteCatch(nelayanId: string, catchId: string): Promise<b
         .from('catches')
         .delete()
         .eq('id', catchId)
-        .in('status', DELETABLE_STATUSES)
+        .or(`status.in.(${DELETABLE_STATUSES.join(',')}),and(status.eq.LISTED,expires_at.lte."${new Date().toISOString()}")`)
         .select('id')
 
     // 23503: masih dirujuk transaksi. Itu penolakan yang diharapkan, bukan galat.

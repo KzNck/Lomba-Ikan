@@ -39,6 +39,7 @@ type ListingT = Translator<'dashboard.nelayan.listing'>
 export function listingPage(t: ListingT) {
   return {
     title: t('title'),
+    addCatch: t('addCatch'),
     subtitle: t('subtitle'),
     metricLabels: { weight: t('weight'), pricePerKg: t('pricePerKg') },
   }

@@ -3,12 +3,14 @@
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { requireProfile } from '@/lib/supabase/auth'
+import type { Profile } from '@/types/database'
 import { cacheTags, expireTags } from '@/lib/supabase/cached'
 import {
     cancelListing as cancel,
     deleteCatch,
     createCatch,
     getCatchById,
+    getCatchByLocalId,
     publishCatch,
     saveFreshness,
     setCatchPhoto,
@@ -36,7 +38,55 @@ import { saveAccountValues } from '@/lib/nelayan/account'
  */
 export async function submitCatch(formData: FormData): Promise<void> {
     const profile = await requireProfile('nelayan')
+    const id = await recordCatch(profile, formData)
 
+    // The new catch shows on the dashboard and in Listing Saya.
+    expireTags(cacheTags.catches(profile.id))
+    revalidatePath('/nelayan', 'layout')
+    redirect(`/nelayan/catat/hasil?id=${id}`)
+}
+
+export type SyncResult = { status: 'synced'; id: string } | { status: 'invalid' }
+
+/**
+ * Kirim satu tangkapan dari antrean offline (components/nelayan/offline-sync.tsx), lewat jalur simpan yang sama
+ * dengan submitCatch, tapi tanpa redirect: sinkronisasi berjalan di latar belakang, di halaman mana pun.
+ * `catch_time` dihitung saat dicatat di laut; `local_id` membuat pengiriman ulang tidak membuat baris ganda.
+ */
+export async function syncOfflineCatch(formData: FormData): Promise<SyncResult> {
+    const profile = await requireProfile('nelayan')
+
+    const localId = String(formData.get('local_id') ?? '')
+    const caughtAt = new Date(String(formData.get('catch_time') ?? ''))
+    // Tidak ada tangkapan dari masa depan; sedikit kelonggaran untuk jam perangkat yang tidak tepat.
+    if (!localId || Number.isNaN(caughtAt.getTime()) || caughtAt.getTime() > Date.now() + 5 * 60_000) {
+        return { status: 'invalid' }
+    }
+
+    // Sudah pernah terkirim (jawabannya hilang di jalan, lalu perangkat mengirim ulang): jangan simpan dan nilai lagi.
+    const existing = await getCatchByLocalId(localId)
+    if (existing) return { status: 'synced', id: existing.id }
+
+    let id: string
+    try {
+        id = await recordCatch(profile, formData, caughtAt)
+    } catch (error) {
+        if ((error as Error).message === INCOMPLETE) return { status: 'invalid' }
+        throw error
+    }
+
+    expireTags(cacheTags.catches(profile.id))
+    revalidatePath('/nelayan', 'layout')
+    return { status: 'synced', id }
+}
+
+const INCOMPLETE = 'Data tangkapan belum lengkap.'
+
+/**
+ * Simpan satu tangkapan dari jawaban wizard dan nilai kesegarannya. `caughtAt` diisi untuk tangkapan dari antrean
+ * offline: waktu tangkapnya sudah dihitung saat dicatat, dan jam sejak ditarik dihitung dari situ sampai sekarang.
+ */
+async function recordCatch(profile: Profile, formData: FormData, caughtAt?: Date): Promise<string> {
     const category = String(formData.get('category') ?? '')
     const time = String(formData.get('time') ?? '')
     const ice = String(formData.get('ice') ?? '')
@@ -45,12 +95,13 @@ export async function submitCatch(formData: FormData): Promise<void> {
     const photo = formData.get('photo')
 
     if (!category || !time || !ice || !condition || !(weight > 0)) {
-        throw new Error('Data tangkapan belum lengkap.')
+        throw new Error(INCOMPLETE)
     }
 
     // Jawaban wizard diterjemahkan sekali ke kosakata model; hasilnya ikut
     // disimpan di row-nya, lalu dipakai lagi saat memanggil Freshness API.
     const inputs = toModelInputs({ category, time, ice, condition })
+    if (caughtAt) inputs.hours_post_haul = Math.max(1, Math.round((Date.now() - caughtAt.getTime()) / 3_600_000))
 
     // "Lainnya" disimpan dengan nama yang diketik nelayan, supaya listing dan
     // marketplace menampilkannya; model tetap menerima kategori "lainnya" (rucah).
@@ -62,7 +113,7 @@ export async function submitCatch(formData: FormData): Promise<void> {
         weight_kg: weight,
         // PPI dari profil nelayan adalah titik pengambilannya.
         catch_location: profile.ppi_location ?? 'Belum diatur',
-        catch_time: catchTimestamp(time),
+        catch_time: caughtAt ? caughtAt.toISOString() : catchTimestamp(time),
         storage_method: inputs.storage_method,
         // Nama kapal belum ditanyakan di wizard; diisi setelah ada kolomnya di form.
         vessel_name: '-',
@@ -95,10 +146,7 @@ export async function submitCatch(formData: FormData): Promise<void> {
         }
     }
 
-    // The new catch shows on the dashboard and in Listing Saya.
-    expireTags(cacheTags.catches(profile.id))
-    revalidatePath('/nelayan', 'layout')
-    redirect(`/nelayan/catat/hasil?id=${entry.id}`)
+    return entry.id
 }
 
 /**
@@ -351,6 +399,9 @@ export async function confirmHandover(_previous: HandoverState, formData: FormDa
     ) {
         return { weight, error: t('notActive') }
     }
+    // Both sides confirm the pickup (PRD story 9): the buyer first, from their drawer. `undefined` means the column
+    // isn't there yet (supabase/pickup-confirmation.sql not run), and completing works as it did before.
+    if (transaction.pembeli_confirmed_at === null) return { weight, error: t('awaitingBuyer') }
 
     try {
         await completeHandover(transaction.qr_scan_code, Math.round(weightKg * 100) / 100)

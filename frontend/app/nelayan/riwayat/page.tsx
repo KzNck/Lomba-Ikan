@@ -1,3 +1,4 @@
+import { Icon } from '@/components/ui/icon'
 import { DashboardHeader } from '@/components/dashboard/dashboard-header'
 import { MainDecoration } from '@/components/nelayan/main-decoration'
 import { EmptyState } from '@/components/nelayan/empty-state'
@@ -97,7 +98,16 @@ export default async function RiwayatPage({
               )
             }
             handover={
-              detail.state === 'diproses' && (
+              detail.state === 'diproses' &&
+              (detail.pickup.receipt === 'pending' ? (
+                // Both sides confirm the pickup: the buyer's "Batch sudah diterima" comes first.
+                <p className="box-border w-full h-fit shrink-0 flex flex-row gap-[10px] p-[12px_14px] justify-start items-start bg-[#FFF4E0] rounded-[12px]">
+                  <Icon name="clock-3" fill="#8A5100" className="box-border w-[16px] shrink-0 h-[16px] mt-[1px]" />
+                  <span className="text-[12px]/[18px] box-border [flex:1_1_0] text-[#8A5100] font-inter font-medium text-left">
+                    {t('handover.awaitingBuyer')}
+                  </span>
+                </p>
+              ) : (
                 // Keyed by transaction so opening another row starts a fresh form.
                 <HandoverForm
                   key={`handover-${detail.id}`}
@@ -106,7 +116,7 @@ export default async function RiwayatPage({
                   returnHref={hrefWith({ transaksi: detail.id })}
                   action={confirmHandover}
                 />
-              )
+              ))
             }
           />
         )}

@@ -34,13 +34,14 @@ export function akunPage(t: AkunT) {
 
 export type AccountNavItem = { href: string; label: string; icon: IconName }
 
-// "Sub Navigation": Info Pribadi and Preferensi. (The design's Notifikasi section is left out.)
+// "Sub Navigation": Info Pribadi, Preferensi and Notifikasi.
 export function akunNav(t: AkunT) {
   return {
     label: t('navLabel'),
     items: [
       { href: AKUN_PATH, label: t('personalInfo'), icon: 'user' },
       { href: `${AKUN_PATH}/preferensi`, label: t('preferences'), icon: 'sliders-horizontal' },
+      { href: `${AKUN_PATH}/notifikasi`, label: t('notificationsNav'), icon: 'bell' },
     ] satisfies AccountNavItem[],
     signOutLabel: t('signOut'),
   }

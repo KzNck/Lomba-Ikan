@@ -19,9 +19,11 @@ export const CATEGORY_VALUES: readonly string[] = CATEGORY_OPTIONS.map(({ value 
 export type Category = string
 
 // The filters the marketplace opens with when the URL says nothing. "PPI prioritas" puts those PPIs' batches first
-// rather than hiding the rest. "Reset filter" comes back here. The buyer's own saved preferences are not stored yet
-// (no column for them), so these are the defaults for everyone — see the note in lib/supabase/auth.ts.
-export const PREFERENCES: { maxGrade: Grade | null; categories: Category[]; priorityPpis: string[] } = {
+// rather than hiding the rest. "Reset filter" comes back here. Each buyer's saved Preferensi replace these (see
+// marketplaceDefaults in lib/pembeli/preferences.ts); this is the fallback for a buyer who skipped them.
+export type MarketplaceDefaults = { maxGrade: Grade | null; categories: Category[]; priorityPpis: string[] }
+
+export const PREFERENCES: MarketplaceDefaults = {
   maxGrade: null,
   categories: [],
   priorityPpis: [],

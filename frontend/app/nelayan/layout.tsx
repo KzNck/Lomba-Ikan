@@ -6,6 +6,7 @@ import { initialsOf } from '@/lib/nelayan/dashboard-data'
 import { displayNameFor } from '@/lib/supabase/display-name'
 import { loadNotifications } from '@/lib/notifications'
 import { NotificationsProvider } from '@/components/dashboard/notifications-context'
+import { OfflineSync } from '@/components/nelayan/offline-sync'
 
 // The "06 Dashboard Nelayan" frame: a 260px sidebar beside a fluid main column. Designed at 1440×1100; it keeps the
 // 1440px width as a minimum, but is only as tall as the window or its content, so a page that fits the window (a
@@ -32,6 +33,8 @@ export default async function NelayanLayout({ children }: { children: React.Reac
         }}
       />
       <NotificationsProvider value={{ ...feed, role: 'nelayan' }}>{children}</NotificationsProvider>
+      {/* Sends catches saved on this device while offline, on whichever fisher page is open when the signal returns. */}
+      <OfflineSync />
     </div>
   )
 }

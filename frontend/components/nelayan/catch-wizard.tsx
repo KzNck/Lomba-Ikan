@@ -17,8 +17,8 @@ import {
   volumeStep,
 } from '@/components/nelayan/catch-content'
 import { submitCatch } from '@/app/nelayan/actions'
-import { saveCatchLocally } from '@/lib/offline/storage'
-import { catchTimestamp, toModelInputs } from '@/lib/catches/model-inputs'
+import { queueCatch } from '@/lib/offline/storage'
+import { catchTimestamp } from '@/lib/catches/model-inputs'
 
 // What the user has entered so far. Each step writes its answer on "Lanjut", and steps 2+ also on "Kembali".
 type CatchAnswers = {
@@ -67,28 +67,25 @@ export function CatchWizard() {
     const { category: species, otherName, weight, time: hauledAt, condition: alive, ice: iceLevel, photo: taken } = entered
     if (!species || !weight || !hauledAt || !alive || !iceLevel || !taken) return
 
-    const queueLocally = () => {
-      // The queued row carries the same model inputs a synced one would, so the
-      // catch can be graded from it once the device is back online.
-      const inputs = toModelInputs({ category: species, time: hauledAt, ice: iceLevel, condition: alive })
-      saveCatchLocally({
-        // "Lainnya" is stored under the name the fisher typed, as submitCatch does.
-        species: species === 'lainnya' && otherName ? otherName : species,
-        weight_kg: weight,
-        catch_location: '',
-        catch_time: catchTimestamp(hauledAt),
-        storage_method: inputs.storage_method,
-        vessel_name: '-',
-        status_ikan: inputs.status_ikan,
-        ice_to_fish_ratio: inputs.ice_to_fish_ratio,
-        ambient_temp_celsius: inputs.ambient_temp_celsius,
-        fish_category: inputs.fish_category,
-      })
-      setStatus('saved-offline')
+    // The answers and the photo go into the device's queue as entered; OfflineSync sends them through the same save
+    // as an online catch once the connection is back. The haul time is fixed now, while "pagi" still means this morning.
+    const queueLocally = async () => {
+      try {
+        await queueCatch({
+          catchTime: catchTimestamp(hauledAt),
+          answers: { category: species, otherName, weight, time: hauledAt, condition: alive, ice: iceLevel },
+          photo: taken.blob,
+        })
+        setStatus('saved-offline')
+      } catch (error) {
+        // Nothing to fall back to: the device can't store it (private window, storage full). Stay on the photo step.
+        console.error('Gagal simpan tangkapan di perangkat:', error)
+        setStatus(undefined)
+      }
     }
 
     if (typeof navigator !== 'undefined' && !navigator.onLine) {
-      queueLocally()
+      await queueLocally()
       return
     }
 
@@ -108,7 +105,7 @@ export function CatchWizard() {
       // A redirect from the action surfaces as a thrown control-flow signal; let it through.
       if (error && typeof error === 'object' && 'digest' in error) throw error
       console.error('Gagal simpan tangkapan:', error)
-      queueLocally()
+      await queueLocally()
     }
   }
 

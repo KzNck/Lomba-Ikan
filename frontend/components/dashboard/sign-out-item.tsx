@@ -5,27 +5,18 @@ import { useFormStatus } from 'react-dom'
 import { Icon } from '@/components/ui/icon'
 import { FOCUS_RING } from '@/components/nelayan/focus-ring'
 import { useTranslations } from 'next-intl'
-import { getLocalCatches } from '@/lib/offline/storage'
+import { queuedCount, subscribeQueuedCount } from '@/lib/offline/storage'
 import { signOut } from '@/app/auth/actions'
 import { PRESS_WIDE, SOLID_HOVER } from '@/components/ui/interaction'
 
-// "Keluar" inside the account menu. Catches saved while offline live only in this device's localStorage, so signing
+// "Keluar" inside the account menu. Catches saved while offline live only in this device's IndexedDB, so signing
 // out with some still queued would lose them: that case asks first. With none queued it signs out straight away.
 // The dialog sits inside the form so the confirm button submits it directly and shares its pending state.
-// The offline queue is a localStorage key, so it is read as an external store: the server renders 0 (no queue
-// there), and the real count arrives on hydration without a mismatch. Another tab emptying it updates this one.
-function subscribe(onChange: () => void) {
-  window.addEventListener('storage', onChange)
-  return () => window.removeEventListener('storage', onChange)
-}
-
+// The queue's count is read as an external store: the server renders 0 (no queue there), and the real count arrives
+// after hydration without a mismatch. Another tab syncing or adding a catch updates this one.
 export function SignOutItem() {
   const t = useTranslations('dashboard.accountMenu')
-  const queued = useSyncExternalStore(
-    subscribe,
-    () => getLocalCatches().length,
-    () => 0
-  )
+  const queued = useSyncExternalStore(subscribeQueuedCount, queuedCount, () => 0)
   const dialogRef = useRef<HTMLDialogElement>(null)
   // The header and the sidebar each render one of these, so the dialog's ids have to be unique per instance.
   const titleId = useId()

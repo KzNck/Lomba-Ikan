@@ -11,6 +11,9 @@ import { loadBatches, type Batch } from '@/lib/marketplace/batches'
 import { getMyTransactions, type TransactionWithCatch } from '@/lib/supabase/transactions'
 import { requireProfile } from '@/lib/supabase/auth'
 import { displayNameFor } from '@/lib/supabase/display-name'
+import { parseMarketplaceQuery, selectBatches } from '@/components/pembeli/marketplace-query'
+import type { MarketplaceDefaults } from '@/components/pembeli/marketplace-content'
+import { getPreferenceValues, marketplaceDefaults } from '@/lib/pembeli/preferences'
 
 export type PembeliDashboardData = {
     greeting: string
@@ -21,12 +24,16 @@ export type PembeliDashboardData = {
 
 type HomeT = Translator<'dashboard.pembeli.home'>
 
-/** Enam batch teratas: yang terdekat dulu, lalu yang paling segar. */
-function topRecommendations(t: HomeT, batches: Batch[]): ProductCardContent[] {
-    return [...batches]
-        .sort((a, b) => (a.distanceKm ?? Infinity) - (b.distanceKm ?? Infinity))
-        .slice(0, 6)
-        .map((batch) => ({ ...batch, actionLabel: t('viewDetail') }))
+/**
+ * Enam batch untuk "Rekomendasi sesuai preferensi Anda": yang lolos filter Preferensi pembeli, diurutkan seperti
+ * marketplace yang terbuka dengan preferensi itu (PPI prioritas dulu, lalu yang terdekat). Tanpa satu pun yang cocok,
+ * batch terdekat yang masih tersedia — panel ini tidak dibiarkan kosong selama marketplace berisi.
+ */
+function topRecommendations(t: HomeT, batches: Batch[], defaults: MarketplaceDefaults): ProductCardContent[] {
+    const available = batches.filter((batch) => batch.status !== 'sold')
+    const matching = selectBatches(available, parseMarketplaceQuery({}, defaults))
+    const picks = matching.length > 0 ? matching : [...available].sort((a, b) => (a.distanceKm ?? Infinity) - (b.distanceKm ?? Infinity))
+    return picks.slice(0, 6).map((batch) => ({ ...batch, actionLabel: t('viewDetail') }))
 }
 
 /** Perubahan dibanding periode sebelumnya, ditulis "+3" / "-2" / "0". */
@@ -84,10 +91,11 @@ function activityStats(t: HomeT, transactions: TransactionWithCatch[]): Activity
 
 export async function loadPembeliDashboard(): Promise<PembeliDashboardData> {
     // Loaded together; RLS scopes the data, and the role check redirects if it fails.
-    const [profile, batches, transactions] = await Promise.all([
+    const [profile, batches, transactions, preferences] = await Promise.all([
         requireProfile('pembeli'),
         loadBatches(),
         getMyTransactions(),
+        getPreferenceValues(),
     ])
     const [name, t, nav] = await Promise.all([
         displayNameFor(profile),
@@ -98,7 +106,7 @@ export async function loadPembeliDashboard(): Promise<PembeliDashboardData> {
     return {
         greeting: name,
         user: { name, role: nav('roles.pembeli') },
-        recommendations: topRecommendations(t, batches),
+        recommendations: topRecommendations(t, batches, marketplaceDefaults(preferences)),
         activity: activityStats(t, transactions),
     }
 }

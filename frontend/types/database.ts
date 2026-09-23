@@ -87,6 +87,8 @@ export type Transaction = {
     handover_photo_url: string | null
     disbursed_at: string | null
     notes: string | null
+    // Added by supabase/pickup-confirmation.sql; absent (undefined) on a project that hasn't run it yet.
+    pembeli_confirmed_at?: string | null
     created_at: string
     updated_at: string
 }
@@ -251,6 +253,7 @@ export type Database = {
                     handover_photo_url?: string | null
                     disbursed_at?: string | null
                     notes?: string | null
+                    pembeli_confirmed_at?: string | null
                     created_at?: string
                     updated_at?: string
                 }

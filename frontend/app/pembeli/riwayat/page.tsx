@@ -17,7 +17,8 @@ import { dateLabelFor, loadRiwayat, parseRiwayatView, riwayatHref } from '@/lib/
 import { getPresenter } from '@/lib/i18n/presenter'
 import { transactionChat } from '@/lib/contact/transaction-chat'
 import { CancelReservationForm } from '@/components/nelayan/cancel-reservation-form'
-import { cancelReservation } from '@/app/transaction-actions'
+import { cancelReservation, confirmReceipt, schedulePickup } from '@/app/transaction-actions'
+import { PickupForm } from '@/components/pembeli/pickup-form'
 import { requireProfile } from '@/lib/supabase/auth'
 import { displayNameFor } from '@/lib/supabase/display-name'
 
@@ -96,6 +97,17 @@ export default async function PembeliRiwayatPage({
             closeHref={hrefFor(detail.id)}
             copy={DRAWER_COPY}
             chat={chat}
+            pickupForm={
+              detail.state === 'diproses' && (
+                <PickupForm
+                  key={`pickup-${detail.id}`}
+                  transactionId={detail.id}
+                  pickup={detail.pickup}
+                  scheduleAction={schedulePickup}
+                  receiptAction={confirmReceipt}
+                />
+              )
+            }
             cancel={
               detail.state === 'diproses' && (
                 <CancelReservationForm

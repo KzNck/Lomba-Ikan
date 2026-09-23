@@ -395,7 +395,16 @@
           "back": "Kembali",
           "confirm": "Hapus permanen"
         },
-        "loading": "Memuat listing…"
+        "loading": "Memuat listing…",
+        "addCatch": "Tambah Tangkapan"
+      },
+      "offlineSync": {
+        "sending": "Mengirim {count, plural, other {# tangkapan}} yang tersimpan di perangkat ini…",
+        "sent": "{count, plural, other {# tangkapan}} dari perangkat ini sudah terkirim. Estimasi kesegarannya ada di Listing Saya.",
+        "waiting": "{count, plural, other {# tangkapan}} belum terkirim. Dikirim lagi otomatis saat sinyal kembali, atau kirim sekarang.",
+        "retry": "Kirim lagi",
+        "view": "Lihat di Listing Saya",
+        "close": "Tutup pesan"
       }
     },
     "riwayat": {
@@ -449,7 +458,8 @@
           "sold": "Terjual",
           "handover": "Diambil",
           "done": "Selesai",
-          "cancelled": "Dibatalkan"
+          "cancelled": "Dibatalkan",
+          "received": "Diterima pembeli"
         },
         "infoTitle": "Informasi Transaksi",
         "id": "ID transaksi",
@@ -497,7 +507,8 @@
           "sold": "Anda klaim",
           "handover": "Diambil",
           "done": "Selesai",
-          "cancelled": "Dibatalkan"
+          "cancelled": "Dibatalkan",
+          "received": "Anda terima"
         },
         "pending": "Bayar langsung ke nelayan",
         "noteCompleted": "Pembelian ini sudah selesai dan tidak bisa diubah. Kalau ada kendala, hubungi kami lewat menu Bantuan.",
@@ -518,7 +529,8 @@
         "confirmYes": "Ya, selesaikan",
         "confirming": "Menyelesaikan…",
         "notActive": "Transaksi ini sudah tidak berjalan, jadi serah terimanya tidak bisa dikonfirmasi lagi.",
-        "failed": "Serah terima belum terkonfirmasi. Periksa koneksi internet Anda, lalu coba lagi."
+        "failed": "Serah terima belum terkonfirmasi. Periksa koneksi internet Anda, lalu coba lagi.",
+        "awaitingBuyer": "Menunggu pembeli mengonfirmasi batch sudah diterima. Setelah itu Anda bisa mengonfirmasi serah terima dengan berat akhir dari timbangan PPI."
       },
       "contact": {
         "chatFisher": "Chat nelayan di WhatsApp",
@@ -537,6 +549,33 @@
         "cancelling": "Membatalkan…",
         "notActive": "Pesanan ini sudah tidak berjalan, jadi tidak bisa dibatalkan lagi.",
         "failed": "Pesanan belum dibatalkan. Periksa koneksi internet Anda, lalu coba lagi."
+      },
+      "pickup": {
+        "title": "Pengambilan",
+        "location": "Lokasi PPI",
+        "schedule": "Jadwal",
+        "notScheduled": "Belum diatur",
+        "receipt": "Diterima pembeli",
+        "receiptPending": "Belum dikonfirmasi",
+        "receiptConfirmed": "Dikonfirmasi {at}",
+        "mapLabel": "Peta lokasi {ppi}",
+        "scheduleLabel": "Jadwal pengambilan",
+        "scheduleHelper": "Kapan Anda mengambil batch di PPI. Nelayan melihat jadwal ini.",
+        "scheduleSave": "Simpan jadwal",
+        "scheduleChange": "Ubah jadwal",
+        "scheduleSaving": "Menyimpan…",
+        "scheduleSaved": "Jadwal disimpan. Nelayan sudah bisa melihatnya.",
+        "scheduleInvalid": "Pilih waktu dalam {days} hari ke depan.",
+        "receiptTitle": "Batch sudah Anda terima?",
+        "receiptDescription": "Konfirmasi setelah batch Anda terima di PPI. Setelah itu nelayan bisa menandai transaksi selesai dengan berat akhirnya.",
+        "receiptButton": "Batch sudah diterima",
+        "receiptConfirmTitle": "Konfirmasi batch sudah diterima?",
+        "receiptConfirmBody": "Pastikan batch sudah ada di tangan Anda. Konfirmasi ini tidak bisa dibatalkan.",
+        "receiptConfirmYes": "Ya, sudah diterima",
+        "receiptConfirming": "Mengonfirmasi…",
+        "back": "Kembali",
+        "notActive": "Transaksi ini sudah tidak berjalan, jadi pengambilannya tidak bisa diubah lagi.",
+        "failed": "Belum tersimpan. Periksa koneksi internet Anda, lalu coba lagi."
       }
     },
     "akun": {
@@ -633,6 +672,31 @@
         "businessTypeHelper": "Pilih satu atau lebih. Dipakai untuk menyesuaikan rekomendasi dan penawaran untuk Anda.",
         "kodePosError": "Kode pos terdiri dari 5 angka.",
         "businessTypeError": "Pilih minimal satu jenis usaha."
+      },
+      "notificationsNav": "Notifikasi",
+      "notifications": {
+        "title": "Notifikasi",
+        "subtitle": "Pilih kabar yang muncul di lonceng notifikasi.",
+        "topics": {
+          "newListings": {
+            "label": "Listing baru yang cocok",
+            "description": "Batch baru di marketplace yang sesuai Preferensi Anda."
+          },
+          "orders": {
+            "label": "Pembaruan pesanan",
+            "description": "Saat pesanan Anda tercatat, selesai, atau dibatalkan."
+          },
+          "sales": {
+            "label": "Pembelian batch",
+            "description": "Saat batch Anda dibeli, dijadwalkan diambil, diterima pembeli, terjual, atau dibatalkan."
+          },
+          "listings": {
+            "label": "Status listing",
+            "description": "Saat listing Anda tayang, hampir berakhir, atau berakhir."
+          }
+        },
+        "channelNote": "Kabar tampil di lonceng aplikasi. Kabar lewat email atau WhatsApp belum tersedia.",
+        "failed": "Pengaturan belum tersimpan. Periksa koneksi internet Anda, lalu coba lagi."
       }
     },
     "pembeli": {
@@ -643,7 +707,7 @@
         "recommendationsDescription": "Kami pilihkan hasil laut terbaik berdasarkan kebutuhan dan lokasi Anda.",
         "recommendationsViewAll": "Lihat semua di Marketplace",
         "recommendationsEmptyTitle": "Belum ada rekomendasi",
-        "recommendationsEmptyDescription": "Atur jenis olahan dan radius lokasi supaya kami bisa memilihkan hasil laut yang cocok untuk Anda.",
+        "recommendationsEmptyDescription": "Atur jenis bahan, grade, dan PPI prioritas di Preferensi supaya kami bisa memilihkan batch yang cocok untuk Anda.",
         "recommendationsEmptyAction": "Atur preferensi",
         "activityTitle": "Ringkasan Aktivitas",
         "viewDetail": "Lihat detail",
@@ -738,7 +802,12 @@
           "gradeUnrated": "Grade belum dinilai",
           "priceUnset": "Harga belum diatur"
         },
-        "whatsappMessage": "Halo {fisher}, saya {buyer} dari ByCatch Loop. Saya baru membeli batch {batch}: {category}, {weight}, {price}, di {ppi}. Kapan dan di mana kita bisa serah terima?"
+        "whatsappMessage": "Halo {fisher}, saya {buyer} dari ByCatch Loop. Saya baru membeli batch {batch}: {category}, {weight}, {price}, di {ppi}. Kapan dan di mana kita bisa serah terima?",
+        "soldOutNotice": {
+          "title": "Maaf, batch ini sudah terjual",
+          "body": "Batch yang Anda pilih sudah dibeli pembeli lain atau waktu listing-nya habis. Pilih batch lain di bawah.",
+          "dismiss": "Tutup pesan"
+        }
       }
     }
   },
@@ -772,7 +841,7 @@
         },
         "listing": {
           "title": "Pasang Listing",
-          "description": "Data tersinkron & jadi listing saat sinyal tersedia."
+          "description": "Data tersinkron saat sinyal tersedia, lalu dipasang ke listing dengan satu tombol."
         },
         "buy": {
           "title": "Pembeli Beli Langsung",
@@ -780,7 +849,7 @@
         },
         "handover": {
           "title": "Serah Terima di PPI",
-          "description": "Batch diverifikasi PPI saat kapal merapat, lalu diserahkan ke pembeli."
+          "description": "Pembeli mengambil batch di PPI; berat akhirnya ditimbang saat serah terima."
         }
       }
     },
@@ -1054,7 +1123,12 @@
       "expiringTitle": "Listing segera berakhir",
       "expiring": "{subject} berakhir dalam {time}.",
       "expiredTitle": "Listing berakhir",
-      "expired": "{subject} tidak terjual sebelum batas waktunya."
+      "expired": "{subject} tidak terjual sebelum batas waktunya.",
+      "scheduledTitle": "Jadwal pengambilan diatur",
+      "scheduled": "Pembeli akan mengambil {subject} pada {time}.",
+      "receivedTitle": "Batch diterima pembeli",
+      "received": "Pembeli sudah menerima {subject}. Konfirmasi serah terima dengan berat akhir dari timbangan PPI.",
+      "receivedDone": "Pembeli sudah menerima {subject}."
     },
     "pembeli": {
       "claimedTitle": "Klaim berhasil",
@@ -1063,7 +1137,9 @@
       "completedTitle": "Serah terima selesai",
       "completed": "{subject} diterima dengan total {price}.",
       "cancelledTitle": "Transaksi dibatalkan",
-      "cancelled": "Klaim {subject} dibatalkan."
+      "cancelled": "Klaim {subject} dibatalkan.",
+      "newListingTitle": "Listing baru sesuai preferensi",
+      "newListing": "{subject} · {grade} · {price}/kg di {place}."
     }
   }
 }

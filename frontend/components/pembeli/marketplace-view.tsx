@@ -6,6 +6,9 @@ import { FilterBar } from '@/components/pembeli/filter-bar'
 import { ProductCard } from '@/components/pembeli/product-card'
 import { NoResults } from '@/components/pembeli/no-results'
 import { PpiMap } from '@/components/pembeli/ppi-map'
+import Link from 'next/link'
+import { Icon } from '@/components/ui/icon'
+import { FOCUS_RING } from '@/components/nelayan/focus-ring'
 import { useTranslations } from 'next-intl'
 import {
   GRADES,
@@ -90,13 +93,18 @@ export function MarketplaceView({
   all,
   query,
   user,
+  soldOut,
 }: {
   // Every listed batch; the query narrows and orders them here.
   all: Batch[]
   query: MarketplaceQuery
   user: { name: string; role: string }
+  // The buyer landed here because the batch they opened or bought is gone (?habis=1): claimed by someone else first,
+  // or its time ran out. Said once at the top, instead of the batch just vanishing from the grid.
+  soldOut?: boolean
 }) {
-  const copy = marketplaceCopy(useTranslations('dashboard.pembeli.marketplace'), useTranslations('common.category'))
+  const t = useTranslations('dashboard.pembeli.marketplace')
+  const copy = marketplaceCopy(t, useTranslations('common.category'))
   const { MARKETPLACE, NO_RESULTS, PPI_MAP, SORT_MENU, SORT_OPTIONS } = copy
   const batches = selectBatches(all, query)
   // Cards open their drawer over this same view, so closing it comes back here.
@@ -139,6 +147,23 @@ export function MarketplaceView({
         accountHref="/pembeli/akun"
       />
       <div className="box-border w-full [flex:1_1_0] flex flex-col gap-[16px] lg:gap-[20px] p-[16px] sm:p-[24px] lg:p-[24px_32px_32px_32px] justify-start items-start">
+        {soldOut && (
+          <div role="alert" className="box-border w-full h-fit shrink-0 flex flex-row gap-[12px] p-[14px_16px] justify-start items-start bg-[#FFF4E0] rounded-[14px]">
+            <Icon name="circle-alert" fill="#8A5100" className="box-border w-[20px] shrink-0 h-[20px] mt-[1px]" />
+            <div className="box-border [flex:1_1_0] min-w-0 flex flex-col gap-[2px] justify-start items-start">
+              <p className="text-[15px]/[normal] box-border text-[#8A5100] font-poppins font-semibold text-left">{t('soldOutNotice.title')}</p>
+              <p className="text-[13px]/[19px] box-border text-[#8A5100] font-inter font-normal text-left">{t('soldOutNotice.body')}</p>
+            </div>
+            <Link
+              href={marketplaceHref(query)}
+              scroll={false}
+              aria-label={t('soldOutNotice.dismiss')}
+              className={`box-border w-[32px] h-[32px] mt-[-4px] mr-[-6px] shrink-0 flex justify-center items-center rounded-[999px] hover:bg-[#8A51001A] ${FOCUS_RING}`}
+            >
+              <Icon name="x" fill="#8A5100" className="box-border w-[16px] h-[16px]" />
+            </Link>
+          </div>
+        )}
         {/* Search, then sort: one line from lg, stacked below it. */}
         <div className="box-border w-full h-fit shrink-0 flex flex-row flex-wrap lg:flex-nowrap gap-[12px] lg:gap-[20px] justify-start items-center">
           <MarketplaceSearch action={MARKETPLACE_PATH} query={query.q} hidden={hiddenFields(query, 'q')} {...MARKETPLACE.search} />

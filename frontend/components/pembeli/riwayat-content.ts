@@ -57,6 +57,7 @@ export function drawerCopy(t: RiwayatT): TransactionDrawerCopy {
     steps: {
       listed: t('pembeli.steps.listed'),
       sold: t('pembeli.steps.sold'),
+      received: t('pembeli.steps.received'),
       handover: t('pembeli.steps.handover'),
       done: t('pembeli.steps.done'),
       cancelled: t('pembeli.steps.cancelled'),

@@ -7,6 +7,8 @@ import { TRANSACTION_STATES, type TransactionDrawerCopy } from '@/components/nel
 import { gradeCondition } from '@/lib/catches/present'
 import type { TransactionDetailContent } from '@/lib/nelayan/riwayat'
 import type { TransactionChat } from '@/lib/contact/transaction-chat'
+import { PpiMiniMap } from '@/components/pembeli/ppi-mini-map'
+import { MAP_TILES } from '@/components/pembeli/marketplace-content'
 
 type TransactionDrawerProps = {
   detail: TransactionDetailContent
@@ -19,6 +21,8 @@ type TransactionDrawerProps = {
   chat?: TransactionChat
   // "Batalkan pesanan / reservasi", while the transaction is still in progress.
   cancel?: React.ReactNode
+  // The buyer's pickup form (schedule, "Batch sudah diterima"), while the transaction is still in progress.
+  pickupForm?: React.ReactNode
 }
 
 const TITLE_ID = 'transaction-drawer-title'
@@ -26,8 +30,9 @@ const TITLE_ID = 'transaction-drawer-title'
 // "Detail Transaksi Drawer": a 400px panel docked to the right of the table, below the header. Like the listing
 // drawer it is not modal — the table stays readable — so the open row keeps its blue marker as the visible link
 // between the two. The export fixes it at 400×1126px inside the 1440×1220 frame.
-export function TransactionDrawer({ detail, closeHref, copy, handover, chat, cancel }: TransactionDrawerProps) {
+export function TransactionDrawer({ detail, closeHref, copy, handover, chat, cancel, pickupForm }: TransactionDrawerProps) {
   const state = TRANSACTION_STATES[detail.state]
+  const { pickup } = detail
   const banner = copy.banner[detail.state](detail.bannerAt, detail.cancelledBy)
 
   return (
@@ -166,6 +171,36 @@ export function TransactionDrawer({ detail, closeHref, copy, handover, chat, can
             </Row>
           )}
         </Panel>
+
+        {detail.state !== 'dibatalkan' && (
+          <Panel title={copy.pickup.title}>
+            <Row label={copy.pickup.location} value={pickup.ppi?.name ?? '—'} />
+            <Row label={copy.pickup.schedule} value={pickup.scheduledAt ?? copy.pickup.notScheduled} />
+            {pickup.receipt !== 'unsupported' && (
+              <Row label={copy.pickup.receipt}>
+                <span
+                  className={`box-border w-fit min-w-0 shrink h-fit flex flex-row gap-[6px] p-[4px_10px] justify-start items-center ${pickup.receipt === 'confirmed' ? 'bg-[#E8F8F2]' : 'bg-[#F7F9FC] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px]'} rounded-[999px]`}
+                >
+                  <Icon
+                    name={pickup.receipt === 'confirmed' ? 'circle-check' : 'clock-3'}
+                    fill={pickup.receipt === 'confirmed' ? '#17704A' : '#5B6B7C'}
+                    className="box-border w-[13px] shrink-0 h-[13px]"
+                  />
+                  <span className={`text-[12px]/[16px] box-border ${pickup.receipt === 'confirmed' ? 'text-[#17704A]' : 'text-[#0B3B5C]'} font-poppins font-semibold text-left`}>
+                    {pickup.receivedAt ? copy.pickup.receiptConfirmed(pickup.receivedAt) : copy.pickup.receiptPending}
+                  </span>
+                </span>
+              </Row>
+            )}
+            {pickup.ppi?.coords && (
+              // The map itself is hidden from assistive tech; this names the place it shows.
+              <div role="img" aria-label={copy.pickup.mapLabel(pickup.ppi.name)} className="box-border w-full h-fit shrink-0 flex">
+                <PpiMiniMap lat={pickup.ppi.coords.lat} lng={pickup.ppi.coords.lng} tiles={MAP_TILES} wide />
+              </div>
+            )}
+          </Panel>
+        )}
+        {pickupForm}
 
         <Panel title={copy.paymentTitle}>
           <Row label={copy.paymentLabels.pricePerKg} value={detail.pricePerKg} />

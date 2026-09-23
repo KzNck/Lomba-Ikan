@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { MarketplaceView } from '@/components/pembeli/marketplace-view'
 import { BatchDrawer } from '@/components/pembeli/batch-drawer'
 import { buyBatch } from '@/app/marketplace/actions'
-import { PREFERENCES } from '@/components/pembeli/marketplace-content'
+import { getPreferenceValues, marketplaceDefaults } from '@/lib/pembeli/preferences'
 import { getTranslations } from 'next-intl/server'
 import { marketplaceHref, parseMarketplaceQuery } from '@/components/pembeli/marketplace-query'
 import { loadBatches } from '@/lib/marketplace/batches'
@@ -22,10 +22,10 @@ export default async function BatchDetailPage({
 
   // The slug is the catch's id. A miss means it was claimed, expired, or never existed —
   // RLS hides all three from a buyer, so the drawer has nothing to show. Back to the
-  // marketplace, where the batch is simply no longer in the grid.
+  // marketplace, which says the batch is gone ("Maaf, batch ini sudah terjual").
   const batch = batches.find((item) => item.slug === slug)
-  if (!batch) redirect('/marketplace')
-  const query = parseMarketplaceQuery(await searchParams)
+  if (!batch) redirect('/marketplace?habis=1')
+  const query = parseMarketplaceQuery(await searchParams, marketplaceDefaults(await getPreferenceValues()))
 
   return (
     <>
@@ -40,9 +40,10 @@ export default async function BatchDetailPage({
         similarHref={marketplaceHref({
           q: '',
           sort: query.sort,
-          maxGrade: PREFERENCES.maxGrade,
+          maxGrade: query.defaults.maxGrade,
           categories: [batch.category],
-          priorityPpis: PREFERENCES.priorityPpis,
+          priorityPpis: query.defaults.priorityPpis,
+          defaults: query.defaults,
         })}
         buyAction={buyBatch}
       />

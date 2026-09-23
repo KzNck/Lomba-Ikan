@@ -28,6 +28,7 @@ import { getPresenter } from '@/lib/i18n/presenter'
 import { batchNumber } from '@/lib/marketplace/batches'
 import { getMyTransactions, type TransactionWithCatch } from '@/lib/supabase/transactions'
 import { requireProfile } from '@/lib/supabase/auth'
+import { getKoordinatPelabuhan, type LatLng } from '@/lib/wilayah'
 import type { FreshnessGrade } from '@/types/database'
 
 /** Satu baris tabel, sudah dalam bentuk teks siap tampil. */
@@ -68,6 +69,21 @@ export type TransactionDetailContent = {
     pricePerKg: string
     total: string
     paid: boolean
+    pickup: PickupContent
+}
+
+/**
+ * Pengambilan batch (designv2 §9): jadwal yang diatur pembeli, konfirmasi pembeli bahwa batch sudah diterima, dan PPI
+ * tempat serah terimanya. `receipt` 'unsupported' = supabase/pickup-confirmation.sql belum dijalankan: tanpa kolomnya,
+ * nelayan menyelesaikan transaksi tanpa menunggu pembeli, seperti sebelum ada konfirmasi dua pihak.
+ */
+export type PickupContent = {
+    // "23 Sep 2026, 14.30" for the page, and the ISO time the buyer's form opens with.
+    scheduledAt: string | null
+    scheduledIso: string | null
+    receipt: 'unsupported' | 'pending' | 'confirmed'
+    receivedAt: string | null
+    ppi: { name: string; coords: LatLng | null } | null
 }
 
 type PartnerIcon = 'factory' | 'building-2' | 'sailboat'
@@ -141,6 +157,7 @@ function stepsOf(p: Presenter, entry: TransactionWithCatch, state: TransactionSt
     const steps: { label: string; time: string }[] = []
     if (entry.catches?.listed_at) steps.push({ label: labels.listed, time: dateTimeOf(p, entry.catches.listed_at) })
     steps.push({ label: labels.sold, time: dateTimeOf(p, entry.created_at) })
+    if (entry.pembeli_confirmed_at) steps.push({ label: labels.received, time: dateTimeOf(p, entry.pembeli_confirmed_at) })
     if (entry.handover_confirmed_at) steps.push({ label: labels.handover, time: dateTimeOf(p, entry.handover_confirmed_at) })
     // Still running: the claim is the latest step so far.
     if (state === 'diproses') return steps
@@ -194,6 +211,19 @@ function toDetail(
                   : '—',
         total: formatRupiah(p, total),
         paid: entry.disbursed_at !== null,
+        pickup: pickupOf(p, entry),
+    }
+}
+
+function pickupOf(p: Presenter, entry: TransactionWithCatch): PickupContent {
+    const ppiName = entry.ppi_location ?? entry.catches?.catch_location ?? null
+    return {
+        scheduledAt: entry.delivery_scheduled_at ? dateTimeOf(p, entry.delivery_scheduled_at) : null,
+        scheduledIso: entry.delivery_scheduled_at,
+        // The column exists (null or a time) only once supabase/pickup-confirmation.sql has run.
+        receipt: entry.pembeli_confirmed_at === undefined ? 'unsupported' : entry.pembeli_confirmed_at ? 'confirmed' : 'pending',
+        receivedAt: entry.pembeli_confirmed_at ? dateTimeOf(p, entry.pembeli_confirmed_at) : null,
+        ppi: ppiName ? { name: ppiName, coords: getKoordinatPelabuhan(ppiName) } : null,
     }
 }
 

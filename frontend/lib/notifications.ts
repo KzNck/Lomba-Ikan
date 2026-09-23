@@ -14,8 +14,11 @@ import type { IconName } from '@/components/ui/icon'
 import { categoryLabel, formatRupiah, formatWeight, gradeLabel, timeAgo, timeLeft, type Presenter } from '@/lib/catches/present'
 import { getPresenter } from '@/lib/i18n/presenter'
 import type { Translator } from '@/lib/i18n/translator'
-import { getMyCatches } from '@/lib/supabase/catches'
+import { getListedCatches, getMyCatches } from '@/lib/supabase/catches'
 import { getMyTransactions, type TransactionWithCatch } from '@/lib/supabase/transactions'
+import { getNotificationSettings, type NotificationTopic } from '@/lib/notification-settings'
+import { getPreferenceValues, marketplaceDefaults } from '@/lib/pembeli/preferences'
+import { GRADES, type MarketplaceDefaults } from '@/components/pembeli/marketplace-content'
 import type { Catch } from '@/types/database'
 
 export type NotificationTone = 'success' | 'info' | 'warning'
@@ -42,6 +45,8 @@ export type NotificationFeed = {
 
 type Role = 'nelayan' | 'pembeli'
 type NotificationsT = Translator<'notifications'>
+// A notification before its "2 jam yang lalu", with the Akun › Notifikasi group that can switch it off.
+type Item = Omit<NotificationEntry, 'time'> & { topic: NotificationTopic }
 
 const DAY = 24 * 60 * 60 * 1000
 // Kejadian lebih lama dari ini tidak lagi ditampilkan.
@@ -53,6 +58,8 @@ const EXPIRING_WITHIN = 3 * 60 * 60 * 1000
 export const notificationsSeenCookie = (userId: string) => `notif_seen_${userId}`
 
 const time = (iso: string | null | undefined) => (iso ? new Date(iso).getTime() : NaN)
+// "23 Sep 2026, 14.30".
+const dateTime = ({ format }: Presenter, iso: string) => `${format.dateTime(new Date(iso), 'day')}, ${format.dateTime(new Date(iso), 'time')}`
 
 /** "Tongkol 12 kg" — nama dan berat batch yang dibicarakan. */
 function subject(p: Presenter, t: NotificationsT, species: string | undefined, kg: number | null | undefined): string {
@@ -62,7 +69,7 @@ function subject(p: Presenter, t: NotificationsT, species: string | undefined, k
 
 function nelayanItems(p: Presenter, t: NotificationsT, catches: Catch[], transactions: TransactionWithCatch[], now: Date) {
     const byId = new Map(catches.map((entry) => [entry.id, entry]))
-    const items: Omit<NotificationEntry, 'time'>[] = []
+    const items: Item[] = []
     const href = (tx: TransactionWithCatch) => `/nelayan/riwayat?transaksi=${tx.id}`
     // Transaksi terbaru tiap tangkapan (getMyTransactions mengurutkan dari yang terbaru).
     const latestTx = new Map<string, TransactionWithCatch>()
@@ -83,6 +90,7 @@ function nelayanItems(p: Presenter, t: NotificationsT, catches: Catch[], transac
         // Klaimnya tetap tercatat sebagai kejadian sendiri, meski transaksinya kemudian selesai atau batal.
         items.push({
             id: `claimed-${tx.id}`,
+            topic: 'sales',
             tone: 'info',
             icon: 'shopping-cart',
             title: t('nelayan.claimedTitle'),
@@ -91,9 +99,38 @@ function nelayanItems(p: Presenter, t: NotificationsT, catches: Catch[], transac
             href: href(tx),
         })
 
+        // Pickup (designv2 §9). The schedule has no timestamp of its own; the row's last change before the buyer's
+        // confirmation or the handover is when it was set, near enough for ordering.
+        if (tx.delivery_scheduled_at) {
+            const later = [tx.pembeli_confirmed_at, tx.handover_confirmed_at].map(time).filter(Number.isFinite)
+            items.push({
+                id: `scheduled-${tx.id}`,
+                topic: 'sales',
+                tone: 'info',
+                icon: 'calendar',
+                title: t('nelayan.scheduledTitle'),
+                description: t('nelayan.scheduled', { subject: estimate, time: dateTime(p, tx.delivery_scheduled_at) }),
+                at: later.length > 0 ? Math.min(time(tx.updated_at), ...later) - 1000 : time(tx.updated_at),
+                href: href(tx),
+            })
+        }
+        if (tx.pembeli_confirmed_at) {
+            items.push({
+                id: `received-${tx.id}`,
+                topic: 'sales',
+                tone: 'success',
+                icon: 'package-check',
+                title: t('nelayan.receivedTitle'),
+                description: t(tx.status === 'COMPLETED' ? 'nelayan.receivedDone' : 'nelayan.received', { subject: estimate }),
+                at: time(tx.pembeli_confirmed_at),
+                href: href(tx),
+            })
+        }
+
         if (tx.status === 'COMPLETED') {
             items.push({
                 id: `completed-${tx.id}`,
+                topic: 'sales',
                 tone: 'success',
                 icon: 'coins',
                 title: t('nelayan.soldTitle'),
@@ -109,6 +146,7 @@ function nelayanItems(p: Presenter, t: NotificationsT, catches: Catch[], transac
             const outcome = entry?.status === 'LISTED' ? 'cancelledRelisted' : entry?.status === 'EXPIRED' ? 'cancelledExpired' : 'cancelled'
             items.push({
                 id: `cancelled-${tx.id}`,
+                topic: 'sales',
                 tone: 'warning',
                 icon: 'circle-alert',
                 title: t('nelayan.cancelledTitle'),
@@ -124,6 +162,7 @@ function nelayanItems(p: Presenter, t: NotificationsT, catches: Catch[], transac
         if (entry.listed_at) {
             items.push({
                 id: `listed-${entry.id}`,
+                topic: 'listings',
                 tone: 'info',
                 icon: 'badge-check',
                 title: t('nelayan.listedTitle'),
@@ -141,6 +180,7 @@ function nelayanItems(p: Presenter, t: NotificationsT, catches: Catch[], transac
         if (entry.status === 'LISTED' && expiresAt > now.getTime() && expiresAt - now.getTime() <= EXPIRING_WITHIN) {
             items.push({
                 id: `expiring-${entry.id}`,
+                topic: 'listings',
                 tone: 'warning',
                 icon: 'clock',
                 title: t('nelayan.expiringTitle'),
@@ -153,6 +193,7 @@ function nelayanItems(p: Presenter, t: NotificationsT, catches: Catch[], transac
         } else if (entry.status === 'EXPIRED') {
             items.push({
                 id: `expired-${entry.id}`,
+                topic: 'listings',
                 tone: 'warning',
                 icon: 'clock',
                 title: t('nelayan.expiredTitle'),
@@ -166,7 +207,7 @@ function nelayanItems(p: Presenter, t: NotificationsT, catches: Catch[], transac
 }
 
 function pembeliItems(p: Presenter, t: NotificationsT, transactions: TransactionWithCatch[]) {
-    const items: Omit<NotificationEntry, 'time'>[] = []
+    const items: Item[] = []
 
     for (const tx of transactions) {
         const href = `/pembeli/riwayat?transaksi=${tx.id}`
@@ -175,6 +216,7 @@ function pembeliItems(p: Presenter, t: NotificationsT, transactions: Transaction
 
         items.push({
             id: `claimed-${tx.id}`,
+            topic: 'orders',
             tone: 'info',
             icon: 'tag',
             title: t('pembeli.claimedTitle'),
@@ -190,6 +232,7 @@ function pembeliItems(p: Presenter, t: NotificationsT, transactions: Transaction
         if (tx.status === 'COMPLETED') {
             items.push({
                 id: `completed-${tx.id}`,
+                topic: 'orders',
                 tone: 'success',
                 icon: 'handshake',
                 title: t('pembeli.completedTitle'),
@@ -203,6 +246,7 @@ function pembeliItems(p: Presenter, t: NotificationsT, transactions: Transaction
         } else if (tx.status === 'CANCELLED') {
             items.push({
                 id: `cancelled-${tx.id}`,
+                topic: 'orders',
                 tone: 'warning',
                 icon: 'circle-alert',
                 title: t('pembeli.cancelledTitle'),
@@ -215,17 +259,63 @@ function pembeliItems(p: Presenter, t: NotificationsT, transactions: Transaction
     return items
 }
 
+// "A1" freshest … "B3" least fresh, as the marketplace's grade filter reads it.
+const gradeRank = (grade: string | null) => (grade ? GRADES.indexOf(grade as (typeof GRADES)[number]) : -1)
+
+/** Listing yang cocok dengan Preferensi pembeli, dengan aturan yang sama seperti filter awal marketplace-nya. */
+function matchesPreferences(entry: Catch, { categories, maxGrade, priorityPpis }: MarketplaceDefaults) {
+    if (categories.length > 0 && !categories.includes(entry.species)) return false
+    if (maxGrade && (gradeRank(entry.freshness_grade) < 0 || gradeRank(entry.freshness_grade) > gradeRank(maxGrade))) return false
+    if (priorityPpis.length > 0 && !priorityPpis.includes(entry.catch_location)) return false
+    return true
+}
+
+// Enough new listings to act on, without pushing order updates out of the list.
+const NEW_LISTINGS_LIMIT = 8
+
+/** Listing baru sesuai Preferensi (PRD story 6): muncul selama masih bisa dibeli, terbaru dulu. */
+function newListingItems(p: Presenter, t: NotificationsT, listed: Catch[], defaults: MarketplaceDefaults): Item[] {
+    return listed
+        .filter((entry) => entry.listed_at && matchesPreferences(entry, defaults))
+        .slice(0, NEW_LISTINGS_LIMIT)
+        .map((entry) => ({
+            id: `new-listing-${entry.id}`,
+            topic: 'newListings' as const,
+            tone: 'info' as const,
+            icon: 'fish' as const,
+            title: t('pembeli.newListingTitle'),
+            description: t('pembeli.newListing', {
+                subject: subject(p, t, entry.species, entry.weight_kg),
+                grade: gradeLabel(p, entry.freshness_grade),
+                price: formatRupiah(p, entry.price_per_kg),
+                place: entry.catch_location,
+            }),
+            at: time(entry.listed_at),
+            href: `/marketplace/${entry.id}`,
+        }))
+}
+
 /** Notifikasi user yang login, untuk layout area `role`. */
 export async function loadNotifications(role: Role, userId: string): Promise<NotificationFeed> {
-    const [transactions, catches, p, t, store] = await Promise.all([
+    const [transactions, catches, listed, preferences, settings, p, t, store] = await Promise.all([
         getMyTransactions(),
         role === 'nelayan' ? getMyCatches() : Promise.resolve([]),
+        role === 'pembeli' ? getListedCatches() : Promise.resolve([]),
+        role === 'pembeli' ? getPreferenceValues() : null,
+        getNotificationSettings(),
         getPresenter(),
         getTranslations('notifications'),
         cookies(),
     ])
     const now = new Date()
-    const raw = role === 'nelayan' ? nelayanItems(p, t, catches, transactions, now) : pembeliItems(p, t, transactions)
+    const raw = (
+        role === 'nelayan'
+            ? nelayanItems(p, t, catches, transactions, now)
+            : [
+                  ...pembeliItems(p, t, transactions),
+                  ...(preferences ? newListingItems(p, t, listed, marketplaceDefaults(preferences)) : []),
+              ]
+    ).filter((item) => settings[item.topic])
     const cookieName = notificationsSeenCookie(userId)
     const seenAt = Number(store.get(cookieName)?.value) || 0
 

@@ -1,5 +1,9 @@
+import Link from 'next/link'
 import { DashboardHeader } from '@/components/dashboard/dashboard-header'
 import { MainDecoration } from '@/components/nelayan/main-decoration'
+import { Icon } from '@/components/ui/icon'
+import { FOCUS_RING } from '@/components/nelayan/focus-ring'
+import { PRESS, SOLID_HOVER } from '@/components/ui/interaction'
 import { useTranslations } from 'next-intl'
 import { listingPage } from '@/components/nelayan/listing-content'
 
@@ -27,6 +31,19 @@ export function ListingShell({ header, children, drawer }: ListingShellProps) {
           title={LISTING_PAGE.title}
           subtitle={LISTING_PAGE.subtitle}
           user={header.user}
+          action={
+            // designv2 §8: a shortcut to log a catch without going back to the dashboard. Desktop only: below lg the
+            // tab bar's raised button is the same action.
+            <Link
+              href="/nelayan/catat"
+              className={`hidden lg:flex box-border w-fit shrink-0 h-[40px] flex-row gap-[8px] p-[0px_18px] justify-center items-center bg-[#0F6CB8] rounded-[999px] ${SOLID_HOVER} ${PRESS} ${FOCUS_RING}`}
+            >
+              <Icon name="plus" fill="#FFFFFF" className="box-border w-[16px] shrink-0 h-[16px]" />
+              <span className="text-[14px]/[normal] box-border text-[#FFFFFF] font-poppins font-semibold text-left [white-space:nowrap]">
+                {LISTING_PAGE.addCatch}
+              </span>
+            </Link>
+          }
         />
       ) : (
         <div

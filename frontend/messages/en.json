@@ -395,7 +395,16 @@
           "back": "Back",
           "confirm": "Delete for good"
         },
-        "loading": "Loading listings…"
+        "loading": "Loading listings…",
+        "addCatch": "Add Catch"
+      },
+      "offlineSync": {
+        "sending": "Sending {count, plural, one {# catch} other {# catches}} saved on this device…",
+        "sent": "{count, plural, one {# catch} other {# catches}} from this device {count, plural, one {was} other {were}} sent. The freshness estimate is in My Listings.",
+        "waiting": "{count, plural, one {# catch hasn't} other {# catches haven't}} been sent yet. They're sent automatically when the signal is back, or you can send them now.",
+        "retry": "Send again",
+        "view": "View in My Listings",
+        "close": "Close message"
       }
     },
     "riwayat": {
@@ -449,7 +458,8 @@
           "sold": "Sold",
           "handover": "Collected",
           "done": "Completed",
-          "cancelled": "Cancelled"
+          "cancelled": "Cancelled",
+          "received": "Received by buyer"
         },
         "infoTitle": "Transaction Information",
         "id": "Transaction ID",
@@ -497,7 +507,8 @@
           "sold": "Claimed by you",
           "handover": "Collected",
           "done": "Completed",
-          "cancelled": "Cancelled"
+          "cancelled": "Cancelled",
+          "received": "You received it"
         },
         "pending": "Pay the fisher directly",
         "noteCompleted": "This purchase is complete and can't be changed. If something's wrong, contact us from the Help menu.",
@@ -518,7 +529,8 @@
         "confirmYes": "Yes, complete it",
         "confirming": "Completing…",
         "notActive": "This transaction is no longer in progress, so its handover can't be confirmed.",
-        "failed": "The handover wasn't confirmed. Check your internet connection, then try again."
+        "failed": "The handover wasn't confirmed. Check your internet connection, then try again.",
+        "awaitingBuyer": "Waiting for the buyer to confirm they received the batch. Then you can confirm the handover with the final weight from the PPI scale."
       },
       "contact": {
         "chatFisher": "Chat the fisher on WhatsApp",
@@ -537,6 +549,33 @@
         "cancelling": "Cancelling…",
         "notActive": "This order is no longer in progress, so it can't be cancelled.",
         "failed": "The order wasn't cancelled. Check your internet connection, then try again."
+      },
+      "pickup": {
+        "title": "Pickup",
+        "location": "PPI",
+        "schedule": "Scheduled",
+        "notScheduled": "Not set yet",
+        "receipt": "Received by buyer",
+        "receiptPending": "Not confirmed yet",
+        "receiptConfirmed": "Confirmed {at}",
+        "mapLabel": "Map of {ppi}",
+        "scheduleLabel": "Pickup time",
+        "scheduleHelper": "When you will collect the batch at the PPI. The fisher sees this time.",
+        "scheduleSave": "Save time",
+        "scheduleChange": "Change time",
+        "scheduleSaving": "Saving…",
+        "scheduleSaved": "Time saved. The fisher can see it now.",
+        "scheduleInvalid": "Choose a time within the next {days} days.",
+        "receiptTitle": "Have you received the batch?",
+        "receiptDescription": "Confirm once you have the batch at the PPI. The fisher can then mark the transaction done with its final weight.",
+        "receiptButton": "I have received the batch",
+        "receiptConfirmTitle": "Confirm you received the batch?",
+        "receiptConfirmBody": "Make sure the batch is with you. This can’t be undone.",
+        "receiptConfirmYes": "Yes, I have it",
+        "receiptConfirming": "Confirming…",
+        "back": "Back",
+        "notActive": "This transaction is no longer in progress, so its pickup can’t be changed.",
+        "failed": "Not saved. Check your internet connection and try again."
       }
     },
     "akun": {
@@ -633,6 +672,31 @@
         "businessTypeHelper": "Choose one or more. Used to tailor recommendations and offers for you.",
         "kodePosError": "Postal codes have 5 digits.",
         "businessTypeError": "Choose at least one business type."
+      },
+      "notificationsNav": "Notifications",
+      "notifications": {
+        "title": "Notifications",
+        "subtitle": "Choose which news shows in the notification bell.",
+        "topics": {
+          "newListings": {
+            "label": "New matching listings",
+            "description": "New batches in the marketplace that match your preferences."
+          },
+          "orders": {
+            "label": "Order updates",
+            "description": "When your order is recorded, completed or cancelled."
+          },
+          "sales": {
+            "label": "Batch purchases",
+            "description": "When your batch is bought, scheduled for pickup, received, sold or cancelled."
+          },
+          "listings": {
+            "label": "Listing status",
+            "description": "When your listing goes live, is about to end, or ends."
+          }
+        },
+        "channelNote": "News shows in the app’s bell. Email and WhatsApp alerts aren’t available yet.",
+        "failed": "Settings not saved. Check your internet connection and try again."
       }
     },
     "pembeli": {
@@ -643,7 +707,7 @@
         "recommendationsDescription": "The best catches we picked for your needs and location.",
         "recommendationsViewAll": "See all in the Marketplace",
         "recommendationsEmptyTitle": "No recommendations yet",
-        "recommendationsEmptyDescription": "Set your processing types and location radius so we can pick catches that suit you.",
+        "recommendationsEmptyDescription": "Set your material types, grades and priority PPIs in Preferences so we can pick batches that suit you.",
         "recommendationsEmptyAction": "Set preferences",
         "activityTitle": "Activity Summary",
         "viewDetail": "See details",
@@ -738,7 +802,12 @@
           "gradeUnrated": "Not graded yet",
           "priceUnset": "Price not set"
         },
-        "whatsappMessage": "Halo {fisher}, saya {buyer} dari ByCatch Loop. Saya baru membeli batch {batch}: {category}, {weight}, {price}, di {ppi}. Kapan dan di mana kita bisa serah terima?"
+        "whatsappMessage": "Halo {fisher}, saya {buyer} dari ByCatch Loop. Saya baru membeli batch {batch}: {category}, {weight}, {price}, di {ppi}. Kapan dan di mana kita bisa serah terima?",
+        "soldOutNotice": {
+          "title": "Sorry, this batch is already sold",
+          "body": "Another buyer bought the batch you chose, or its listing time ran out. Choose another batch below.",
+          "dismiss": "Close message"
+        }
       }
     }
   },
@@ -772,7 +841,7 @@
         },
         "listing": {
           "title": "Post a Listing",
-          "description": "Data syncs and becomes a listing once there's signal."
+          "description": "Data syncs once there’s signal, then goes live as a listing with one button."
         },
         "buy": {
           "title": "Buyers Purchase Directly",
@@ -780,7 +849,7 @@
         },
         "handover": {
           "title": "Handover at the PPI",
-          "description": "The PPI verifies the batch when the boat docks, then hands it to the buyer."
+          "description": "The buyer collects the batch at the PPI; its final weight is weighed at handover."
         }
       }
     },
@@ -1054,7 +1123,12 @@
       "expiringTitle": "Listing ending soon",
       "expiring": "{subject} ends in {time}.",
       "expiredTitle": "Listing ended",
-      "expired": "{subject} didn't sell before its deadline."
+      "expired": "{subject} didn't sell before its deadline.",
+      "scheduledTitle": "Pickup scheduled",
+      "scheduled": "The buyer will collect {subject} on {time}.",
+      "receivedTitle": "Buyer received the batch",
+      "received": "The buyer has received {subject}. Confirm the handover with the final weight from the PPI scale.",
+      "receivedDone": "The buyer has received {subject}."
     },
     "pembeli": {
       "claimedTitle": "Claim successful",
@@ -1063,7 +1137,9 @@
       "completedTitle": "Handover complete",
       "completed": "{subject} received for a total of {price}.",
       "cancelledTitle": "Transaction cancelled",
-      "cancelled": "Your claim on {subject} was cancelled."
+      "cancelled": "Your claim on {subject} was cancelled.",
+      "newListingTitle": "New listing that matches your preferences",
+      "newListing": "{subject} · {grade} · {price}/kg at {place}."
     }
   }
 }

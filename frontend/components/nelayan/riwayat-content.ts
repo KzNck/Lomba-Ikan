@@ -154,6 +154,7 @@ export function transactionDrawer(t: RiwayatT) {
     steps: {
       listed: t('drawer.steps.listed'),
       sold: t('drawer.steps.sold'),
+      received: t('drawer.steps.received'),
       handover: t('drawer.steps.handover'),
       done: t('drawer.steps.done'),
       cancelled: t('drawer.steps.cancelled'),
@@ -170,6 +171,17 @@ export function transactionDrawer(t: RiwayatT) {
     },
     photoLink: t('drawer.photoLink'),
     photoAlt: (category: string) => t('drawer.photoAlt', { category }),
+    // "Pengambilan": where and when the batch is collected, and whether the buyer has it (designv2 §9).
+    pickup: {
+      title: t('pickup.title'),
+      location: t('pickup.location'),
+      schedule: t('pickup.schedule'),
+      notScheduled: t('pickup.notScheduled'),
+      receipt: t('pickup.receipt'),
+      receiptPending: t('pickup.receiptPending'),
+      receiptConfirmed: (at: string) => t('pickup.receiptConfirmed', { at }),
+      mapLabel: (ppi: string) => t('pickup.mapLabel', { ppi }),
+    },
     paymentTitle: t('drawer.paymentTitle'),
     paymentLabels: {
       pricePerKg: t('drawer.pricePerKg'),
