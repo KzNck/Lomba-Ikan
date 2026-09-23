@@ -1,9 +1,9 @@
-// The app's locales. Indonesian is the default; the active one lives in a cookie (no URL prefix), so every
+// The app's locales. English is the default; the active one lives in a cookie (no URL prefix), so every
 // existing URL keeps working. See i18n/request.ts for how a request picks its locale.
 export const LOCALES = ['id', 'en'] as const
 export type AppLocale = (typeof LOCALES)[number]
 
-export const DEFAULT_LOCALE: AppLocale = 'id'
+export const DEFAULT_LOCALE: AppLocale = 'en'
 
 // next-intl's own cookie name, so its tooling recognises it.
 export const LOCALE_COOKIE = 'NEXT_LOCALE'

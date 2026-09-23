@@ -13,7 +13,7 @@ Versions below come from `frontend/package-lock.json`, `freshness-api/requiremen
 | React | 19.2.8 | UI. Form state uses `useActionState` with Server Actions. |
 | TypeScript | 5.9.3 | Strict mode. Database row types are in `types/database.ts`. |
 | Tailwind CSS | 4.3.3 (via `@tailwindcss/postcss`) | Styling. No `tailwind.config`: tokens live in `app/globals.css`. |
-| next-intl | 4.14.5 | Indonesian (default) and English. The locale is kept in a cookie, not the URL. Shared formats for rupiah, weights and dates, all in the Asia/Jakarta time zone. |
+| next-intl | 4.14.5 | English (default) and Indonesian. The locale is kept in a cookie, not the URL. Shared formats for rupiah, weights and dates, all in the Asia/Jakarta time zone. |
 | @supabase/ssr | 0.12.7 | Cookie-based Supabase sessions in Server Components, Server Actions and the proxy |
 | @supabase/supabase-js | 2.116.0 | Queries, Storage uploads, RPC calls and edge function calls |
 | Leaflet / react-leaflet | 1.9.4 / 5.0.0 | Landing-site (PPI) maps in the marketplace and batch detail |
@@ -62,8 +62,10 @@ Versions below come from `frontend/package-lock.json`, `freshness-api/requiremen
   from the training notebook, with no conversion step.
 - **Offline-first catch logging** (IndexedDB + service worker), because fishers
   often log catches at sea or at the dock with weak or no signal.
-- **Cookie-based i18n with Indonesian as the default**, because the primary users
-  are Indonesian fishers and buyers. English is there for other users and for review.
+- **Cookie-based i18n, English by default with a full Indonesian translation.**
+  The primary users are Indonesian fishers and buyers, so every screen exists in
+  Indonesian. A user's choice is saved to their account and follows them to other
+  devices. Messages sent to fishers on WhatsApp are always in Indonesian.
 - **WhatsApp handoff after purchase**, because it's how both sides already
   arrange payment and pickup. The app records the reservation and the handover,
   but doesn't process payments.

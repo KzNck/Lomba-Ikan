@@ -466,7 +466,7 @@ place that translates the answers into the model's vocabulary.
 
 ### 6.5 Internationalization
 
-`next-intl` with locales `id` (default) and `en`. The locale lives in the
+`next-intl` with locales `en` (default) and `id`. The locale lives in the
 `NEXT_LOCALE` cookie, so URLs have no locale prefix. The choice is also saved to
 `user_metadata.locale`, so it follows the account to other devices. Times are
 rendered in `Asia/Jakarta`. Money uses a shared `rupiah` format. The WhatsApp

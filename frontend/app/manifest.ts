@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'ByCatch Loop',
     short_name: 'ByCatch Loop',
-    description: 'Platform maritim sirkular: ubah by-catch menjadi peluang bernilai tambah.',
-    lang: 'id',
+    description: 'A circular maritime platform that turns by-catch into added-value opportunities.',
+    lang: 'en',
     start_url: '/auth/login',
     scope: '/',
     display: 'standalone',

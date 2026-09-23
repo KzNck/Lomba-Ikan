@@ -12,7 +12,7 @@ connects the two. A fisher logs a batch from their phone, even with no signal.
 The system estimates its freshness from a photo, and buyers claim the batch
 within a 48-hour window.
 
-The app is in Indonesian (default), with a full English translation.
+The app opens in English. A full Indonesian translation is one click away in the language switcher.
 
 ## Sustainable Development Goals
 
@@ -129,7 +129,7 @@ Lomba-Ikan/
 │   ├── app/                  Routes (App Router), Server Actions, PWA manifest
 │   ├── components/           UI by area: home, login, register, nelayan, pembeli, dashboard, pwa, ui
 │   ├── lib/                  Data access (supabase/), freshness client, offline queue, i18n helpers, region data
-│   ├── messages/             Translations: id.json (default), en.json
+│   ├── messages/             Translations: en.json (default), id.json
 │   ├── i18n/                 next-intl locale selection and shared formats
 │   ├── hooks/                Browser hooks (webcam)
 │   ├── public/               Images, PWA icons, service worker (sw.js)
