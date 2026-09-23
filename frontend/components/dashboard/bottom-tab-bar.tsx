@@ -32,6 +32,8 @@ export function BottomTabBar({ items }: { items: SidebarNavItem[] }) {
             <li key={item.href} className="box-border [flex:1_1_0] min-w-0 flex">
               <Link
                 href={item.href}
+                // In full, as the sidebar does (see sidebar-nav.tsx).
+                prefetch
                 aria-current={active ? (pathname === item.href ? 'page' : 'true') : undefined}
                 className={`group box-border w-full min-h-[44px] flex flex-col gap-[3px] justify-center items-center rounded-[12px] ${PRESS} ${FOCUS_RING}`}
               >

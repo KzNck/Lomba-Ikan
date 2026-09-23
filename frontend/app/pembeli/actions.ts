@@ -8,6 +8,7 @@ import { saveAccountValues } from '@/lib/pembeli/account'
 import { savePreferenceValues, type PreferenceValues } from '@/lib/pembeli/preferences'
 import { pembeliPreferensi } from '@/components/register/content'
 import { requireProfile } from '@/lib/supabase/auth'
+import { cacheTags, expireTags } from '@/lib/supabase/cached'
 
 export type AccountFormState = {
   status: 'idle' | 'saved' | 'error'
@@ -25,7 +26,7 @@ const NICKNAME_MAX = 24
 // Checks and saves the Info Pribadi form. The name and phone go to `profiles`; the business details have no
 // columns yet, so they go to the account's user_metadata — see lib/pembeli/account.ts.
 export async function saveAccount(previous: AccountFormState, formData: FormData): Promise<AccountFormState> {
-  await requireProfile('pembeli')
+  const profile = await requireProfile('pembeli')
 
   const text = (name: keyof AccountValues) => String(formData.get(name) ?? '').trim()
   const values: AccountValues = {
@@ -69,6 +70,7 @@ export async function saveAccount(previous: AccountFormState, formData: FormData
   }
 
   // The sidebar and header print the business name, and the marketplace measures distances from the saved location.
+  expireTags(cacheTags.profile(profile.id))
   revalidatePath('/pembeli', 'layout')
   revalidatePath('/marketplace', 'layout')
   return { status: 'saved', values, errors }

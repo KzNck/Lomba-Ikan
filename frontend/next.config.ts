@@ -14,7 +14,9 @@ const nextConfig: NextConfig = {
     // server render. Every page is per-user (RLS through the session cookie), so this client-side copy is the safe
     // place to cache it. Server Actions that change data call revalidatePath, which clears these copies, so a
     // user's own edits always show at once; changes made by someone else show within 30s or on a refresh.
-    staleTimes: { dynamic: 30 },
+    // `static` covers pages the sidebar prefetches in full (prefetch={true}): kept 60s, the same window the server
+    // cache gives catches and transactions (lib/supabase/cached.ts), instead of the 5-minute default.
+    staleTimes: { dynamic: 30, static: 60 },
   },
   images: {
     remotePatterns: supabaseUrl

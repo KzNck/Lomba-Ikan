@@ -6,6 +6,7 @@
 
 import { cache } from 'react'
 import { createClient } from './server'
+import { cachedForUser, cacheTags, REVALIDATE } from './cached'
 import type { Catch, Transaction } from '@/types/database'
 
 // Kolom tangkapan yang dibaca dari sebuah transaksi (riwayat, notifikasi) — bukan seluruh row-nya. Tambahkan di
@@ -30,17 +31,24 @@ export type TransactionWithCatch = Transaction & { catches: TransactionCatch | n
 
 /**
  * Transaksi yang melibatkan user yang login, sebagai nelayan maupun pembeli. Sekali per request: halaman dan
- * helper-nya (mis. loadRiwayat) yang sama-sama memanggilnya berbagi satu query.
+ * helper-nya (mis. loadRiwayat) yang sama-sama memanggilnya berbagi satu query. Antar request dibaca dari cache
+ * server (lib/supabase/cached.ts); aksi transaksi mengosongkan tag kedua pihaknya.
  */
 export const getMyTransactions = cache(async (): Promise<TransactionWithCatch[]> => {
-    const supabase = await createClient()
-    const { data, error } = await supabase
-        .from('transactions')
-        .select(`*, catches(${TRANSACTION_CATCH_COLUMNS})`)
-        .order('created_at', { ascending: false })
+    const result = await cachedForUser(
+        'my-transactions',
+        { tags: (userId) => [cacheTags.transactions(userId)], revalidate: REVALIDATE.transactions },
+        async (supabase) => {
+            const { data, error } = await supabase
+                .from('transactions')
+                .select(`*, catches(${TRANSACTION_CATCH_COLUMNS})`)
+                .order('created_at', { ascending: false })
 
-    if (error) throw new Error(`Gagal ambil transaksi: ${error.message}`)
-    return (data ?? []) as TransactionWithCatch[]
+            if (error) throw new Error(`Gagal ambil transaksi: ${error.message}`)
+            return (data ?? []) as TransactionWithCatch[]
+        }
+    )
+    return result?.data ?? []
 })
 
 export async function getTransactionById(id: string): Promise<TransactionWithCatch | null> {

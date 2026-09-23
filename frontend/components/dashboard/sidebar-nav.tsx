@@ -48,6 +48,9 @@ export function SidebarNav({ items }: SidebarNavProps) {
             <Link
               key={href}
               href={href}
+              // In full, data included: by default a dynamic page is only prefetched down to its loading.tsx
+              // skeleton, so the click still waits on the server. The data comes from the server cache, so this is cheap.
+              prefetch
               aria-current={isActive ? (pathname === href ? 'page' : 'true') : undefined}
               className={`box-border w-full h-[48px] shrink-0 flex flex-row gap-[12px] p-[0px_14px] justify-start items-center ${state.item} rounded-[12px] ${PRESS_WIDE} ${FOCUS_RING}`}
             >

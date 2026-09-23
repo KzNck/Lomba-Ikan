@@ -4,7 +4,8 @@ import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { getTranslations } from 'next-intl/server'
 import { requireProfile } from '@/lib/supabase/auth'
-import { cancelTransaction } from '@/lib/supabase/transactions'
+import { cacheTags, expireTags } from '@/lib/supabase/cached'
+import { cancelTransaction, getTransactionById } from '@/lib/supabase/transactions'
 
 export type CancelReservationState = {
     error?: string
@@ -26,7 +27,9 @@ export async function cancelReservation(
     const t = await getTranslations('dashboard.riwayat.cancel')
 
     const id = String(formData.get('id') ?? '')
-    if (!id) return { error: t('notActive') }
+    // Both parties, so both sides' cached histories can be cleared. RLS returns it only to them.
+    const transaction = id ? await getTransactionById(id) : null
+    if (!transaction) return { error: t('notActive') }
 
     try {
         await cancelTransaction(id)
@@ -39,6 +42,12 @@ export async function cancelReservation(
     }
 
     // The batch is back on the marketplace, and both sides' dashboards and histories changed.
+    expireTags(
+        cacheTags.transactions(transaction.nelayan_id),
+        cacheTags.transactions(transaction.pembeli_id),
+        cacheTags.catches(transaction.nelayan_id),
+        cacheTags.marketplace
+    )
     revalidatePath('/marketplace', 'layout')
     revalidatePath('/nelayan', 'layout')
     revalidatePath('/pembeli', 'layout')

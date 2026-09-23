@@ -6,22 +6,30 @@
 
 import { cache } from 'react'
 import { createClient } from './server'
+import { cachedForUser, cacheTags, REVALIDATE } from './cached'
 import { CATCH_PHOTOS_BUCKET } from './storage'
 import type { Catch, CatchStatus, CreateCatchInput } from '@/types/database'
 
 /**
  * Tangkapan milik nelayan yang sedang login. RLS memfilter berdasarkan auth.uid(). Sekali per request: halaman dan
- * helper-nya (mis. notifikasi di header) yang sama-sama memanggilnya berbagi satu query.
+ * helper-nya (mis. notifikasi di header) yang sama-sama memanggilnya berbagi satu query. Antar request dibaca dari
+ * cache server (lib/supabase/cached.ts); aksi yang mengubah tangkapan mengosongkan tag-nya.
  */
 export const getMyCatches = cache(async (): Promise<Catch[]> => {
-    const supabase = await createClient()
-    const { data, error } = await supabase
-        .from('catches')
-        .select('*')
-        .order('created_at', { ascending: false })
+    const result = await cachedForUser(
+        'my-catches',
+        { tags: (userId) => [cacheTags.catches(userId)], revalidate: REVALIDATE.catches },
+        async (supabase) => {
+            const { data, error } = await supabase
+                .from('catches')
+                .select('*')
+                .order('created_at', { ascending: false })
 
-    if (error) throw new Error(`Gagal ambil data tangkapan: ${error.message}`)
-    return data ?? []
+            if (error) throw new Error(`Gagal ambil data tangkapan: ${error.message}`)
+            return data ?? []
+        }
+    )
+    return result?.data ?? []
 })
 
 export async function getCatchById(id: string): Promise<Catch | null> {
@@ -35,19 +43,28 @@ export async function getCatchById(id: string): Promise<Catch | null> {
 /**
  * Listing yang tampil di marketplace pembeli: berstatus LISTED dan belum lewat
  * batas waktu klaim. Row yang sudah kedaluwarsa masih berstatus LISTED sampai
- * ada job yang mengubahnya, jadi disaring di sini juga.
+ * ada job yang mengubahnya, jadi disaring di sini juga — sekali di query, dan
+ * sekali lagi setelah cache, supaya listing yang habis waktunya selama hasilnya
+ * tersimpan tidak ikut tampil.
  */
 export async function getListedCatches(): Promise<Catch[]> {
-    const supabase = await createClient()
-    const { data, error } = await supabase
-        .from('catches')
-        .select('*')
-        .eq('status', 'LISTED')
-        .gt('expires_at', new Date().toISOString())
-        .order('listed_at', { ascending: false })
+    const result = await cachedForUser(
+        'listed-catches',
+        { tags: () => [cacheTags.marketplace], revalidate: REVALIDATE.marketplace },
+        async (supabase) => {
+            const { data, error } = await supabase
+                .from('catches')
+                .select('*')
+                .eq('status', 'LISTED')
+                .gt('expires_at', new Date().toISOString())
+                .order('listed_at', { ascending: false })
 
-    if (error) throw new Error(`Gagal ambil listing: ${error.message}`)
-    return data ?? []
+            if (error) throw new Error(`Gagal ambil listing: ${error.message}`)
+            return data ?? []
+        }
+    )
+    const now = Date.now()
+    return (result?.data ?? []).filter((entry) => entry.expires_at !== null && Date.parse(entry.expires_at) > now)
 }
 
 /**

@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { getTranslations } from 'next-intl/server'
 import { requireProfile } from '@/lib/supabase/auth'
 import { getCatchById } from '@/lib/supabase/catches'
+import { cacheTags, expireTags } from '@/lib/supabase/cached'
 import { claimCatch, getTransactionContact } from '@/lib/supabase/transactions'
 import { displayNameFor } from '@/lib/supabase/display-name'
 import { categoryLabel, formatRupiah, formatWeight } from '@/lib/catches/present'
@@ -38,11 +39,22 @@ export async function buyBatch(formData: FormData): Promise<void> {
     // RLS menyembunyikan tangkapan yang tidak berstatus LISTED dari pembeli,
     // jadi row yang hilang dan row yang sudah diklaim sama-sama berakhir di sini.
     if (!entry || entry.status !== 'LISTED') {
+        // Daftar yang tersimpan masih memuat batch ini; ambil ulang supaya tidak muncul lagi.
+        expireTags(cacheTags.marketplace)
         revalidatePath('/marketplace', 'layout')
         redirect('/marketplace')
     }
 
     const transaction = await claimCatch(catchId, Number(entry.weight_kg) * Number(entry.price_per_kg ?? 0))
+
+    // Batch-nya keluar dari marketplace, dan transaksinya masuk ke riwayat pembeli dan nelayannya — termasuk status
+    // "Diproses" di Listing Saya dan notifikasi nelayan.
+    expireTags(
+        cacheTags.marketplace,
+        cacheTags.transactions(profile.id),
+        cacheTags.transactions(entry.nelayan_id),
+        cacheTags.catches(entry.nelayan_id)
+    )
 
     revalidatePath('/marketplace', 'layout')
     revalidatePath('/pembeli', 'layout')

@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { requireProfile } from '@/lib/supabase/auth'
+import { cacheTags, expireTags } from '@/lib/supabase/cached'
 import {
     cancelListing as cancel,
     deleteCatch,
@@ -95,6 +96,7 @@ export async function submitCatch(formData: FormData): Promise<void> {
     }
 
     // The new catch shows on the dashboard and in Listing Saya.
+    expireTags(cacheTags.catches(profile.id))
     revalidatePath('/nelayan', 'layout')
     redirect(`/nelayan/catat/hasil?id=${entry.id}`)
 }
@@ -106,7 +108,7 @@ export async function submitCatch(formData: FormData): Promise<void> {
  * `catch_time`, karena kesegarannya dinilai untuk saat ini.
  */
 export async function regradeCatch(formData: FormData): Promise<void> {
-    await requireProfile('nelayan')
+    const profile = await requireProfile('nelayan')
 
     const id = String(formData.get('id') ?? '')
     // RLS hanya mengembalikan tangkapan milik nelayan ini.
@@ -143,6 +145,7 @@ export async function regradeCatch(formData: FormData): Promise<void> {
         })
     }
     if (graded || result) {
+        expireTags(cacheTags.catches(profile.id))
         revalidatePath('/nelayan')
         revalidatePath('/nelayan/listing')
     }
@@ -167,6 +170,7 @@ export async function publishListing(formData: FormData): Promise<void> {
     await publishCatch(id, raw ? Number(raw) : null)
 
     // The batch appears in Listing Saya, on the dashboard, and in the buyers' marketplace.
+    expireTags(cacheTags.catches(profile.id), cacheTags.marketplace)
     revalidatePath('/nelayan', 'layout')
     revalidatePath('/marketplace', 'layout')
     redirect('/nelayan/listing')
@@ -182,7 +186,7 @@ export type ListingEditState = {
 
 /** Simpan edit listing dari drawer "Listing Saya", lalu kembali ke tampilan detailnya. */
 export async function saveListingEdit(_previous: ListingEditState, formData: FormData): Promise<ListingEditState> {
-    await requireProfile('nelayan')
+    const profile = await requireProfile('nelayan')
 
     const id = String(formData.get('id') ?? '')
     const values = { berat: String(formData.get('berat') ?? '').trim(), harga: String(formData.get('harga') ?? '').trim() }
@@ -207,6 +211,7 @@ export async function saveListingEdit(_previous: ListingEditState, formData: For
     }
 
     // The new weight and price show in Listing Saya, on the dashboard, and in the marketplace.
+    expireTags(cacheTags.catches(profile.id), cacheTags.marketplace)
     revalidatePath('/nelayan', 'layout')
     revalidatePath('/marketplace', 'layout')
     redirect(`${LISTING_PATH}?detail=${id}`)
@@ -214,12 +219,13 @@ export async function saveListingEdit(_previous: ListingEditState, formData: For
 
 /** Batalkan listing dari dialog konfirmasi di "Listing Saya". */
 export async function cancelListing(formData: FormData): Promise<void> {
-    await requireProfile('nelayan')
+    const profile = await requireProfile('nelayan')
 
     const id = String(formData.get('id') ?? '')
     if (id) await cancel(id)
 
     // The listing leaves Listing Saya's active tab, the dashboard's panel and stats, and the marketplace.
+    expireTags(cacheTags.catches(profile.id), cacheTags.marketplace)
     revalidatePath('/nelayan', 'layout')
     revalidatePath('/marketplace', 'layout')
     redirect('/nelayan/listing')
@@ -239,6 +245,7 @@ export async function deleteListing(formData: FormData): Promise<void> {
 
     const deleted = id ? await deleteCatch(profile.id, id) : false
 
+    expireTags(cacheTags.catches(profile.id))
     revalidatePath('/nelayan/listing')
     revalidatePath('/nelayan')
     if (deleted) redirect(back)
@@ -265,7 +272,7 @@ const NICKNAME_MAX = 24
 
 /** Cek dan simpan form Info Pribadi di /nelayan/akun. Lihat lib/nelayan/account.ts untuk tempat tiap field disimpan. */
 export async function saveAccount(previous: AccountFormState, formData: FormData): Promise<AccountFormState> {
-    await requireProfile('nelayan')
+    const profile = await requireProfile('nelayan')
 
     const text = (name: keyof AccountValues) => String(formData.get(name) ?? '').trim()
     const values: AccountValues = {
@@ -305,6 +312,7 @@ export async function saveAccount(previous: AccountFormState, formData: FormData
     }
 
     // The sidebar and header print the name, so the whole area re-renders.
+    expireTags(cacheTags.profile(profile.id))
     revalidatePath('/nelayan', 'layout')
     return { status: 'saved', values, errors }
 }
@@ -351,6 +359,12 @@ export async function confirmHandover(_previous: HandoverState, formData: FormDa
         return { weight, error: t('failed') }
     }
 
+    // Selesai di kedua sisi: riwayat nelayan dan pembelinya, dan status batch-nya di Listing Saya.
+    expireTags(
+        cacheTags.transactions(transaction.nelayan_id),
+        cacheTags.transactions(transaction.pembeli_id),
+        cacheTags.catches(transaction.nelayan_id)
+    )
     revalidatePath('/nelayan', 'layout')
     // Kembali ke tampilan yang sama, yang sekarang menunjukkan transaksi ini selesai.
     const back = String(formData.get('kembali') ?? '')

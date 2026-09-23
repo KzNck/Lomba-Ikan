@@ -13,6 +13,7 @@ import { cache } from 'react'
 import { redirect } from 'next/navigation'
 import type { AuthResponse, User } from '@supabase/supabase-js'
 import { createClient } from './server'
+import { cachedForUser, cacheTags, expireTags, REVALIDATE } from './cached'
 import type { Profile, UserRole } from '@/types/database'
 
 /** Halaman utama tiap role — dipakai setelah login dan oleh proxy. */
@@ -82,16 +83,21 @@ export async function getSessionUser(): Promise<{ id: string; email: string; met
 /**
  * Profil user yang sedang login. `null` kalau belum login, atau kalau row
  * `profiles`-nya belum sempat dibuat. Sekali per request: layout dan halaman
- * yang sama-sama memanggilnya berbagi satu query.
+ * yang sama-sama memanggilnya berbagi satu query. Antar request dibaca dari
+ * cache server (lib/supabase/cached.ts); ensureProfile dan form Akun
+ * mengosongkannya setelah menulis.
  */
 export const getProfile = cache(async (): Promise<Profile | null> => {
-    const claims = await getClaims()
-    if (!claims) return null
-
-    const supabase = await createClient()
-    const { data, error } = await supabase.from('profiles').select('*').eq('id', claims.sub).maybeSingle()
-    if (error) throw new Error(`Gagal ambil profil: ${error.message}`)
-    return data
+    const result = await cachedForUser(
+        'profile',
+        { tags: (userId) => [cacheTags.profile(userId)], revalidate: REVALIDATE.profile },
+        async (supabase, userId) => {
+            const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).maybeSingle()
+            if (error) throw new Error(`Gagal ambil profil: ${error.message}`)
+            return data
+        }
+    )
+    return result?.data ?? null
 })
 
 /**
@@ -157,6 +163,9 @@ export async function ensureProfile(user: User): Promise<Profile> {
         .maybeSingle()
     if (readError) throw new Error(`Gagal ambil profil: ${readError.message}`)
     if (existing) return existing
+
+    // Kunjungan sebelum row-nya ada mungkin sudah menyimpan "tanpa profil" di cache akun ini.
+    expireTags(cacheTags.profile(user.id))
 
     const meta = (user.user_metadata ?? {}) as Partial<PendingProfile>
     const { data, error } = await supabase
