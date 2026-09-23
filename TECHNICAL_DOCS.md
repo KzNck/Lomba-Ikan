@@ -559,7 +559,7 @@ applies on the server.
 | --- | --- | --- |
 | Database, Auth, Storage, Edge Functions | Supabase Cloud | SQL run in the SQL Editor, in the order in INSTALLATION.md. Functions deployed with `supabase functions deploy`. `FRESHNESS_API_URL` set with `supabase secrets set`. |
 | Freshness API | Railway, from `freshness-api/Dockerfile` (`python:3.11-slim`, non-root user, port 8080) | Live at `https://lombaikan-production.up.railway.app` |
-| Frontend | _TBD_ | Any host that runs Next.js 16. `next.config.ts` sizes the Server Action body limit (4 MB) to fit under Vercel's 4.5 MB request limit. Set the env vars from INSTALLATION.md §5 and add the domain to Supabase's redirect URLs. |
+| Frontend | Vercel | Live at `https://lomba-ikan.vercel.app`. `next.config.ts` sizes the Server Action body limit (4 MB) to fit under Vercel's 4.5 MB request limit. Needs the env vars from INSTALLATION.md §5, and the domain in Supabase's Site URL / redirect URLs. |
 
 There's no CI/CD pipeline in the repository. Deploys are manual. Checks run
 locally: `npm run lint`, `npx tsc --noEmit`, `npm run build`.

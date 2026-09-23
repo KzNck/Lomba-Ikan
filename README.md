@@ -118,7 +118,7 @@ The full step-by-step guide, including the Supabase setup and a smoke test, is i
 
 ## Live demo
 
-- Web app: _TBD_
+- Web app: https://lomba-ikan.vercel.app
 - Freshness API: https://lombaikan-production.up.railway.app/docs (interactive API docs), health check at `/health`
 
 ## Repository structure
