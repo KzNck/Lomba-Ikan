@@ -45,13 +45,17 @@ Tidak bisa diatur dari kode; kerjakan sekali di dashboard.
    Templates > Reset Password*. Dengan template bawaan tautan "Lupa password"
    tetap berfungsi, tapi hanya di browser yang memintanya.
 6. **File SQL tambahan.** Jalankan sekali di *SQL Editor*, berurutan:
+   `supabase/catches-delete.sql` (tangkapan yang belum terjual bisa dihapus),
    `supabase/expire-listings.sql` (listing kedaluwarsa otomatis),
-   `supabase/pickup-confirmation.sql` (konfirmasi penerimaan pembeli),
+   `supabase/pickup-confirmation.sql` (konfirmasi penerimaan pembeli), lalu
    `supabase/transactions-lockdown.sql` (transaksi hanya bisa diubah lewat
-   fungsi yang memeriksa pemanggilnya), `supabase/profiles-role-lock.sql`
-   (role hanya ditetapkan saat registrasi dan tidak bisa diubah user), lalu
+   fungsi yang memeriksa pemanggilnya). Project yang `schema.sql`-nya dijalankan
+   sebelum role dan grade dikunci juga perlu `supabase/profiles-role-lock.sql`
+   (role hanya ditetapkan saat registrasi dan tidak bisa diubah user) dan
    `supabase/catches-lockdown.sql` (grade hanya ditulis Edge Function
-   `grade-catch`, dan status tangkapan hanya berpindah lewat alur aplikasi).
+   `grade-catch`, dan status tangkapan hanya berpindah lewat alur aplikasi);
+   `schema.sql` yang sekarang sudah memuat keduanya. Urutan lengkapnya ada di
+   `INSTALLATION.md` §3.2.
 
 ## Alur data
 
