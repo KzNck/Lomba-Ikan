@@ -84,7 +84,7 @@ export async function schedulePickup(_previous: PickupState, formData: FormData)
     const transaction = id ? await getTransactionById(id) : null
     if (!transaction) return { status: 'error', error: t('notActive') }
     try {
-        if (!(await updatePickup(id, profile.id, { delivery_scheduled_at: at.toISOString() }))) return { status: 'error', error: t('notActive') }
+        if (!(await updatePickup(id, profile.id, { scheduleAt: at.toISOString() }))) return { status: 'error', error: t('notActive') }
     } catch (error) {
         console.error('schedulePickup:', error)
         return { status: 'error', error: t('failed') }
@@ -111,7 +111,7 @@ export async function confirmReceipt(_previous: PickupState, formData: FormData)
     if (transaction.pembeli_confirmed_at) return { status: 'saved' }
 
     try {
-        if (!(await updatePickup(id, profile.id, { pembeli_confirmed_at: new Date().toISOString() }))) {
+        if (!(await updatePickup(id, profile.id, { received: true }))) {
             return { status: 'error', error: t('notActive') }
         }
     } catch (error) {

@@ -296,6 +296,15 @@ export type Database = {
                 Args: { p_transaction_id: string }
                 Returns: { full_name: string; phone: string | null }[]
             }
+            // supabase/transactions-lockdown.sql
+            set_pickup_schedule: {
+                Args: { p_transaction_id: string; p_at: string }
+                Returns: boolean
+            }
+            confirm_pickup_receipt: {
+                Args: { p_transaction_id: string }
+                Returns: boolean
+            }
         }
         Enums: {
             user_role: UserRole

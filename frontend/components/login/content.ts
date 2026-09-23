@@ -38,6 +38,7 @@ export function loginContent(t: Translator<'auth.login'>) {
       hideRequiredMark: true,
     } satisfies FormFieldConfig,
     submitLabel: t('submit'),
+    forgotLink: { href: '/auth/lupa-password', label: t('forgotLink') },
     // Shown when the confirmation link in the signup email could not be used.
     confirmFailed: t('confirmFailed'),
     terms: {

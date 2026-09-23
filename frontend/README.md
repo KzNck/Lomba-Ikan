@@ -52,6 +52,27 @@ Tidak bisa diatur dari kode; kerjakan sekali di dashboard.
    dibiarkan kosong, dan log server menyebut "Bucket not found".
 4. **Schema.** `supabase/schema.sql` sudah ter-deploy. Jalankan ulang hanya
    kalau project-nya diganti.
+5. **Template Reset Password.** Supaya tautan "Lupa password" bisa dibuka di
+   perangkat mana pun, ubah *Authentication > Email Templates > Reset Password*
+   menjadi:
+
+   ```html
+   <h2>Buat password baru</h2>
+   <p>Klik tautan di bawah untuk membuat password baru akun ByCatch Loop Anda.</p>
+   <p>
+     <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery&next=/auth/atur-password">
+       Buat password baru
+     </a>
+   </p>
+   ```
+
+   Dengan template bawaan tautannya tetap berfungsi, tapi hanya di browser yang
+   memintanya.
+6. **File SQL tambahan.** Jalankan sekali di *SQL Editor*, berurutan:
+   `supabase/expire-listings.sql` (listing kedaluwarsa otomatis),
+   `supabase/pickup-confirmation.sql` (konfirmasi penerimaan pembeli), lalu
+   `supabase/transactions-lockdown.sql` (transaksi hanya bisa diubah lewat
+   fungsi yang memeriksa pemanggilnya).
 
 ## Alur data
 
@@ -99,11 +120,7 @@ Ditulis di sini supaya tidak terlihat seperti bug:
 - **Koordinat PPI** tidak ada di data pelabuhan nasional, jadi peta hanya
   menandai PPI yang koordinatnya terdaftar di `PPI_LOCATIONS`, dan jarak hanya
   dihitung kalau kedua PPI-nya punya koordinat.
-- **Preferensi pencarian pembeli** belum tersimpan; marketplace memakai default
-  di `PREFERENCES`.
 - **Nama kapal dan metode tangkap** belum ditanyakan wizard.
-- **Lupa password** belum ada layarnya; `resetPasswordForEmail` tinggal
-  dipasang kalau dibutuhkan.
 
 ## Kosakata yang harus sama di tiga tempat
 

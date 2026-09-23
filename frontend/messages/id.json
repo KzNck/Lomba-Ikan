@@ -965,7 +965,8 @@
       "termsConnector": "dan",
       "privacy": "Kebijakan Privasi.",
       "signupQuestion": "Belum punya akun?",
-      "signupLink": "Daftar di sini"
+      "signupLink": "Daftar di sini",
+      "forgotLink": "Lupa password?"
     },
     "confirmEmail": {
       "title": "Konfirmasi Email Anda",
@@ -1101,7 +1102,23 @@
       "ppiRequired": "Pilih Pangkalan Pendaratan Ikan (PPI) Anda.",
       "businessNameRequired": "Nama usaha wajib diisi.",
       "businessTypeRequired": "Pilih minimal satu jenis usaha.",
-      "phoneRequired": "Masukkan nomor WhatsApp yang aktif, contoh +62 812 3456 7890."
+      "phoneRequired": "Masukkan nomor WhatsApp yang aktif, contoh +62 812 3456 7890.",
+      "samePassword": "Password baru harus berbeda dari password lama.",
+      "resetLinkExpired": "Tautan reset sudah kedaluwarsa atau pernah dipakai. Masukkan email Anda untuk meminta tautan baru."
+    },
+    "forgotPassword": {
+      "title": "Lupa Password",
+      "subtitle": "Masukkan email akun Anda. Kami kirim tautan untuk membuat password baru.",
+      "submit": "Kirim tautan",
+      "resend": "Kirim ulang tautan",
+      "sent": "Kalau email itu terdaftar, tautan untuk membuat password baru sudah dikirim. Cek kotak masuk dan folder spam.",
+      "rememberQuestion": "Sudah ingat password?",
+      "rememberLink": "Masuk"
+    },
+    "resetPassword": {
+      "title": "Buat Password Baru",
+      "subtitle": "Password baru untuk {email}.",
+      "submit": "Simpan password"
     }
   },
   "notifications": {

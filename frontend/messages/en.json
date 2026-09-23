@@ -965,7 +965,8 @@
       "termsConnector": "and",
       "privacy": "Privacy Policy.",
       "signupQuestion": "Don't have an account?",
-      "signupLink": "Sign up here"
+      "signupLink": "Sign up here",
+      "forgotLink": "Forgot password?"
     },
     "confirmEmail": {
       "title": "Confirm Your Email",
@@ -1101,7 +1102,23 @@
       "ppiRequired": "Choose your Fish Landing Port (PPI).",
       "businessNameRequired": "Business name is required.",
       "businessTypeRequired": "Choose at least one business type.",
-      "phoneRequired": "Enter an active WhatsApp number, e.g. +62 812 3456 7890."
+      "phoneRequired": "Enter an active WhatsApp number, e.g. +62 812 3456 7890.",
+      "samePassword": "The new password must be different from the old one.",
+      "resetLinkExpired": "The reset link has expired or was already used. Enter your email to get a new one."
+    },
+    "forgotPassword": {
+      "title": "Forgot Password",
+      "subtitle": "Enter your account’s email. We’ll send a link to create a new password.",
+      "submit": "Send link",
+      "resend": "Send the link again",
+      "sent": "If that email has an account, a link to create a new password is on its way. Check your inbox and spam folder.",
+      "rememberQuestion": "Remembered your password?",
+      "rememberLink": "Sign in"
+    },
+    "resetPassword": {
+      "title": "Create a New Password",
+      "subtitle": "New password for {email}.",
+      "submit": "Save password"
     }
   },
   "notifications": {

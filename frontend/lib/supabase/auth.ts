@@ -140,6 +140,24 @@ export async function resendConfirmation(email: string, confirmUrl: string): Pro
     if (error) throw new Error(error.message)
 }
 
+/**
+ * Kirim tautan "buat password baru" ke email ini. Supabase tidak memberi tahu apakah emailnya terdaftar, jadi
+ * pemanggil menampilkan pesan yang sama untuk keduanya. `redirectTo` hanya dipakai template email bawaan; template
+ * di README langsung menuju /auth/confirm.
+ */
+export async function requestPasswordReset(email: string, redirectTo: string): Promise<void> {
+    const supabase = await createClient()
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo })
+    if (error) throw new Error(error.message)
+}
+
+/** Ganti password user yang sedang login — sesinya dibuat oleh tautan reset (lihat app/auth/confirm). */
+export async function updatePassword(password: string): Promise<void> {
+    const supabase = await createClient()
+    const { error } = await supabase.auth.updateUser({ password })
+    if (error) throw new Error(error.message)
+}
+
 export async function signIn(email: string, password: string): Promise<User> {
     const supabase = await createClient()
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })

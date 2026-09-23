@@ -1,7 +1,9 @@
 'use client'
 
 import { useActionState } from 'react'
+import Link from 'next/link'
 import { useTranslations } from 'next-intl'
+import { FOCUS_RING } from '@/components/nelayan/focus-ring'
 import { FormField } from '@/components/register/form-field'
 import { SubmitButton } from '@/components/register/submit-button'
 import { FormError } from '@/components/login/form-error'
@@ -32,7 +34,15 @@ export function LoginForm({
     >
       {next && <input type="hidden" name="next" value={next} />}
       <FormField {...content.emailField} defaultValue={state.email} />
-      <FormField {...content.passwordField} />
+      <div className="box-border w-full h-fit shrink-0 flex flex-col gap-[6px] justify-start items-end">
+        <FormField {...content.passwordField} />
+        <Link
+          href={content.forgotLink.href}
+          className={`box-border w-fit min-h-[44px] lg:min-h-auto flex items-center p-[4px_2px] text-[14px]/[normal] text-[#0F6CB8] font-inter font-semibold text-right hover:underline underline-offset-[3px] rounded-[4px] ${FOCUS_RING}`}
+        >
+          {content.forgotLink.label}
+        </Link>
+      </div>
       <FormError message={state.error ?? notice} />
       <SubmitButton label={content.submitLabel} icon="arrow-right" disabled={pending} />
     </form>

@@ -12,11 +12,14 @@ import {
     MIN_PASSWORD_LENGTH,
     ensureProfile,
     getProfile,
+    getUser,
+    requestPasswordReset as sendResetLink,
     resendConfirmation as resend,
     safeNext,
     signIn,
     signOut as endSession,
     signUp,
+    updatePassword,
     type PendingProfile,
 } from '@/lib/supabase/auth'
 import { getPelabuhanById } from '@/lib/wilayah'
@@ -54,6 +57,7 @@ function readableError(t: ErrorTranslator, message: string): string {
         return t('rateLimited')
     }
     if (lower.includes('invalid') && lower.includes('email')) return t('invalidEmail')
+    if (lower.includes('different from the old password')) return t('samePassword')
     return message
 }
 
@@ -208,6 +212,52 @@ export async function resendConfirmation(
         return { error: readableError(t, (error as Error).message), email }
     }
     return { email, sent: true }
+}
+
+/** Where the password-reset link lands once Supabase has signed the user in (see app/auth/confirm). */
+const RESET_PASSWORD_PATH = '/auth/atur-password'
+
+/**
+ * "Lupa password": send the reset link. The answer is the same whether or not the address has an account, so the form
+ * can't be used to find out who is registered; only a malformed address or Supabase's rate limit is reported.
+ */
+export async function requestPasswordReset(_previous: AuthFormState, formData: FormData): Promise<AuthFormState> {
+    const email = text(formData, 'email')
+    const t = await getTranslations('auth.errors')
+    if (!EMAIL.test(email)) return { error: t('enterValidEmail'), email }
+
+    try {
+        await sendResetLink(email, await confirmUrl(RESET_PASSWORD_PATH))
+    } catch (error) {
+        const message = readableError(t, (error as Error).message)
+        if (message === t('rateLimited')) return { error: message, email }
+        // Anything else would hint at whether the account exists; log it and answer as usual.
+        console.error('requestPasswordReset:', error)
+    }
+    return { email, sent: true }
+}
+
+/** "Buat Password Baru", reached from the reset link with a fresh session. Then on to the user's dashboard. */
+export async function setNewPassword(_previous: AuthFormState, formData: FormData): Promise<AuthFormState> {
+    const t = await getTranslations('auth.errors')
+    const password = String(formData.get('password') ?? '')
+    if (password.length < MIN_PASSWORD_LENGTH) return { error: t('passwordTooShort', { min: MIN_PASSWORD_LENGTH }) }
+    if (password !== String(formData.get('konfirmasi-password') ?? '')) return { error: t('passwordMismatch') }
+
+    // getUser, not the token: this is a write, so the session is checked with the Auth server.
+    const user = await getUser()
+    // The reset session ran out while the form was open: ask for a new link, where that message makes sense.
+    if (!user) redirect('/auth/lupa-password?kedaluwarsa=1')
+
+    try {
+        await updatePassword(password)
+    } catch (error) {
+        return { error: readableError(t, (error as Error).message) }
+    }
+
+    const role = (await ensureProfile(user)).role
+    revalidatePath('/', 'layout')
+    redirect(HOME_BY_ROLE[role])
 }
 
 export async function signOut(): Promise<void> {

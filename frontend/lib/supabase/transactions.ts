@@ -135,23 +135,35 @@ export async function cancelTransaction(transactionId: string): Promise<CancelOu
 
 /**
  * Ubah data pengambilan dari sisi pembeli: jadwal (`delivery_scheduled_at`) atau konfirmasi batch sudah diterima
- * (`pembeli_confirmed_at`, dari supabase/pickup-confirmation.sql). Hanya transaksi milik pembeli ini yang masih
- * berjalan yang tersentuh; false kalau tidak ada (sudah selesai, dibatalkan, atau bukan miliknya).
+ * (`pembeli_confirmed_at`). Lewat fungsi SQL di supabase/transactions-lockdown.sql, yang memeriksa bahwa pemanggilnya
+ * pembeli transaksi ini dan transaksinya masih berjalan; false kalau tidak ada yang berubah.
+ *
+ * Project yang belum menjalankan file itu belum punya fungsinya (PGRST202): ubah langsung, seperti sebelumnya —
+ * policy lama masih mengizinkannya di sana.
  */
 export async function updatePickup(
     transactionId: string,
     pembeliId: string,
-    changes: { delivery_scheduled_at?: string; pembeli_confirmed_at?: string }
+    change: { scheduleAt: string } | { received: true }
 ): Promise<boolean> {
     const supabase = await createClient()
-    const { data, error } = await supabase
+    const { data, error } =
+        'scheduleAt' in change
+            ? await supabase.rpc('set_pickup_schedule', { p_transaction_id: transactionId, p_at: change.scheduleAt })
+            : await supabase.rpc('confirm_pickup_receipt', { p_transaction_id: transactionId })
+    if (!error) return data === true
+    if (error.code !== 'PGRST202') throw new Error(`Gagal ubah pengambilan: ${error.message}`)
+
+    const columns =
+        'scheduleAt' in change ? { delivery_scheduled_at: change.scheduleAt } : { pembeli_confirmed_at: new Date().toISOString() }
+    const { data: rows, error: updateError } = await supabase
         .from('transactions')
-        .update(changes)
+        .update(columns)
         .eq('id', transactionId)
         .eq('pembeli_id', pembeliId)
         .not('status', 'in', '(COMPLETED,CANCELLED)')
         .select('id')
 
-    if (error) throw new Error(`Gagal ubah pengambilan: ${error.message}`)
-    return (data ?? []).length > 0
+    if (updateError) throw new Error(`Gagal ubah pengambilan: ${updateError.message}`)
+    return (rows ?? []).length > 0
 }
