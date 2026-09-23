@@ -15,7 +15,7 @@ import { getCatchById } from '@/lib/supabase/catches'
 import { requireProfile } from '@/lib/supabase/auth'
 import { waNumber } from '@/lib/contact/whatsapp'
 import { recommendationsFor } from '@/lib/catches/recommendations'
-import { gradeCondition, gradeLevel, gradeState } from '@/lib/catches/present'
+import { gradeCondition, gradeLevel, gradeState, usageSentence } from '@/lib/catches/present'
 import { getPresenter } from '@/lib/i18n/presenter'
 
 // Estimated holding temperature per grade group — the model reports a grade, not a reading.
@@ -67,8 +67,8 @@ export default async function HasilKesegaranPage({
         gradePanel={gradePanel(t)}
         recommendations={{
           ...usage,
-          // The model's recommendation is one sentence per grade; the cards below follow the same grade.
-          subtitle: entry.hilirisasi_recommendation ?? usage.subtitle,
+          // One sentence per grade, in the active language; the cards below follow the same grade.
+          subtitle: usageSentence(p, entry.freshness_grade) ?? usage.subtitle,
           options: recommendationsFor(p, entry),
         }}
         price={priceField(t, format)}

@@ -138,11 +138,17 @@ export function timeAgo({ t, format }: Presenter, iso: string | null, now: Date 
 }
 
 /**
- * Rekomendasi penggunaan: kalimat dari model kalau sudah menilai tangkapan ini, kalau tidak judul kartu yang
- * diturunkan dari grade-nya (lib/catches/recommendations.ts) — keduanya mengikuti grade yang sama.
+ * Kalimat rekomendasi untuk grade ini, dalam bahasa aktif. Isinya sama dengan HILIRISASI_MAP di
+ * freshness-api/app/models/guardrail.py, tetapi `hilirisasi_recommendation` yang tersimpan tidak ditampilkan:
+ * kalimat itu selalu berbahasa Indonesia, dan row lama masih memuat klaim konsumsi yang sudah dihapus dari model.
  */
-export function usageLabel(p: Presenter, entry: Pick<Catch, 'species' | 'freshness_grade' | 'hilirisasi_recommendation'>): string {
-  return entry.hilirisasi_recommendation || usageOptionsLabel(p, entry) || p.t('usageUnrated')
+export function usageSentence({ t }: Presenter, grade: FreshnessGrade | null): string | null {
+  return grade ? t(`usageByGrade.${grade}`) : null
+}
+
+/** Rekomendasi penggunaan di drawer dan marketplace: kalimat untuk grade-nya, atau "belum dinilai". */
+export function usageLabel(p: Presenter, entry: Pick<Catch, 'freshness_grade'>): string {
+  return usageSentence(p, entry.freshness_grade) ?? p.t('usageUnrated')
 }
 
 /** Status kartu: LISTED masih berjalan, CLAIMED/COMPLETED sudah tutup. */
@@ -212,8 +218,8 @@ export function toActiveListing(p: Presenter, entry: Catch): ActiveListing {
       logged: `${p.format.dateTime(new Date(entry.created_at), 'day')}, ${p.format.dateTime(new Date(entry.created_at), 'time')}`,
       freshness: freshnessLabel(p, entry),
       usage: usageLabel(p, entry),
-      // The cards' titles under the model's sentence, so the drawer lists the same uses as the result modal.
-      usageOptions: entry.hilirisasi_recommendation ? usageOptionsLabel(p, entry) : '',
+      // The cards' titles under the sentence, so the drawer lists the same uses as the result modal.
+      usageOptions: usageOptionsLabel(p, entry),
       photos: [catchImage(p, entry)],
     },
   }

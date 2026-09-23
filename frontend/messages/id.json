@@ -101,6 +101,14 @@
         "description": "Dicampur bahan organik lain jadi kompos padat untuk lahan pertanian."
       }
     },
+    "usageByGrade": {
+      "A1": "Pelepasan kembali / silase segar (ikan masih vital, kualitas prima).",
+      "A2": "Bahan pakan basah / silase segar (vitalitas menurun).",
+      "A3": "Silase segar darurat / pakan basah kualitas rendah (vitalitas sangat rendah, hampir mati).",
+      "B1": "Silase ikan / bahan baku tepung ikan (dekomposisi minimal, mutu masih baik).",
+      "B2": "Budidaya larva maggot BSF (dekomposisi sedang, tidak layak jadi tepung ikan).",
+      "B3": "Pupuk organik cair (POC) (dekomposisi lanjut, hanya layak sebagai bahan pupuk)."
+    },
     "usageUnrated": "Belum ada rekomendasi, tangkapan ini belum dinilai."
   },
   "nav": {

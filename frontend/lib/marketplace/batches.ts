@@ -125,7 +125,7 @@ export function toBatch(
       condition: conditionOf(entry),
       caught: t('caught', { ago: timeAgo(p, entry.catch_time) }),
       auctionLeft: remaining ?? undefined,
-      // The model's sentence for this grade, or the uses derived from the same grade (see usageLabel).
+      // The recommendation sentence for this grade, in the active language (see usageLabel).
       usage: usageLabel(p, entry),
       fisherman: seller?.full_name ?? t('registeredFisher'),
       // Metode tangkap belum ada kolomnya; yang tercatat baru cara penyimpanannya.

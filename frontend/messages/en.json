@@ -101,6 +101,14 @@
         "description": "Mixed with other organic matter into solid compost for farmland."
       }
     },
+    "usageByGrade": {
+      "A1": "Release back / fresh silage (fish still vital, prime quality).",
+      "A2": "Wet feed / fresh silage (vitality declining).",
+      "A3": "Emergency fresh silage / low-grade wet feed (very low vitality, nearly dead).",
+      "B1": "Fish silage / fish meal raw material (minimal decomposition, still good quality).",
+      "B2": "BSF maggot rearing (moderate decomposition, not suitable for fish meal).",
+      "B3": "Liquid organic fertilizer (advanced decomposition, only suitable as fertilizer)."
+    },
     "usageUnrated": "No recommendation yet, this catch hasn't been graded."
   },
   "nav": {
