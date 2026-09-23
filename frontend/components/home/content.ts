@@ -187,7 +187,7 @@ export function footer(t: LandingT) {
       { icon: 'youtube', label: 'YouTube' },
       { icon: 'linkedin', label: 'LinkedIn' },
     ] satisfies FooterSocial[],
-    copyright: t('footer.copyright', { year: 2025 }),
+    copyright: t('footer.copyright', { year: new Date().getFullYear() }),
     legalItems: [t('footer.terms'), t('footer.privacy')],
   }
 }
