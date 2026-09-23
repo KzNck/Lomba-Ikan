@@ -18,7 +18,6 @@ npm run dev
 | `NEXT_PUBLIC_SUPABASE_URL` | ya | URL project Supabase. |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | ya | Publishable key (`sb_publishable_…`), Settings > API Keys. |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | tidak | Anon JWT lama; dipakai hanya kalau publishable key kosong. |
-| `FRESHNESS_API_URL` | tidak | Base URL Freshness AI API. Kosong → tangkapan tersimpan tanpa grade. |
 
 ## Yang perlu diatur di Supabase
 
@@ -49,8 +48,10 @@ Tidak bisa diatur dari kode; kerjakan sekali di dashboard.
    `supabase/expire-listings.sql` (listing kedaluwarsa otomatis),
    `supabase/pickup-confirmation.sql` (konfirmasi penerimaan pembeli),
    `supabase/transactions-lockdown.sql` (transaksi hanya bisa diubah lewat
-   fungsi yang memeriksa pemanggilnya), lalu `supabase/profiles-role-lock.sql`
-   (role hanya ditetapkan saat registrasi dan tidak bisa diubah user).
+   fungsi yang memeriksa pemanggilnya), `supabase/profiles-role-lock.sql`
+   (role hanya ditetapkan saat registrasi dan tidak bisa diubah user), lalu
+   `supabase/catches-lockdown.sql` (grade hanya ditulis Edge Function
+   `grade-catch`, dan status tangkapan hanya berpindah lewat alur aplikasi).
 
 ## Alur data
 
@@ -67,7 +68,7 @@ Registrasi ──> signUp(email, password)   profil dititipkan di user_metadata
      ┌───────────────┴───────────────┐
   Nelayan                         Pembeli
   catat tangkapan                 marketplace (catches berstatus LISTED)
-   └─ Freshness API ─> grade       └─ klaim ─> Edge Function process-escrow
+   └─ grade-catch ─> grade         └─ klaim ─> Edge Function process-escrow
    └─ pasang listing ─> LISTED            └─ transactions
 ```
 
@@ -94,9 +95,9 @@ Ditulis di sini supaya tidak terlihat seperti bug:
   `user_metadata`, bukan `profiles` — lihat `lib/pembeli/account.ts`.
 - **Foto** hanya satu per tangkapan (`photo_url`), jadi carousel drawer berisi
   satu foto.
-- **Koordinat PPI** tidak ada di data pelabuhan nasional, jadi peta hanya
-  menandai PPI yang koordinatnya terdaftar di `PPI_LOCATIONS`, dan jarak hanya
-  dihitung kalau kedua PPI-nya punya koordinat.
+- **Jarak ke PPI** dihitung dari titik tengah kabupaten/kota pembeli, bukan
+  alamat persisnya. Koordinat pelabuhan berasal dari data PIPP KKP
+  (`lib/wilayah/pelabuhan.json`, dibuat oleh `scripts/build-wilayah.mjs`).
 - **Nama kapal dan metode tangkap** belum ditanyakan wizard.
 
 ## Kosakata yang harus sama di tiga tempat
@@ -112,8 +113,9 @@ memakai kosakata sendiri. Terjemahannya cuma ada di satu tempat,
 | Tanpa Es | `ambient` | 0.0 |
 
 Kategori tangkapan dipetakan ke `fish_category` (`campuran`,
-`teri_non_grade`, `rucah`). `status_ikan` masih selalu `MATI` — wizard belum
-menanyakannya. Kolom-kolom ini dibatasi CHECK di database, jadi nilai di luar
+`teri_non_grade`, `rucah`). `status_ikan` berasal dari langkah "Kondisi"
+(Hidup → `HIDUP`, Mati → `MATI`); suhu sekitar belum ditanyakan, jadi
+`ambient_temp_celsius` selalu 30. Kolom-kolom ini dibatasi CHECK di database, jadi nilai di luar
 daftar akan ditolak saat insert, bukan diam-diam tersimpan.
 
 `freshness_grade` memakai enum `A1`…`B3`, sama persis dengan keluaran model.

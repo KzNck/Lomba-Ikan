@@ -1,85 +1,180 @@
 # ByCatch Loop
 
-Small-scale fishers often throw by-catch back into the sea because there's no
-buyer for it at the landing site. ByCatch Loop is a B2B marketplace that lists
-that by-catch for downstream buyers such as BSF (maggot) farms, fish silage
-producers and organic fertilizer makers.
+**Turning unwanted catch into opportunity.**
 
-- **Nelayan (fishers)** log a catch, including offline, with a photo, volume
-  and ice condition, then list it. A listing stays open for 48 hours.
-- **Pembeli (buyers)** filter listings by grade and material type, see their
-  preferred landing sites (PPI) first, claim a batch, schedule a pickup and
-  confirm when it arrives.
-- A freshness model estimates a grade (`A1`…`B3`) from the photo and the catch
-  details. It's shown as an estimate, not a certification.
+Small-scale Indonesian fishers (boats under 10 GT) regularly throw by-catch
+(non-target fish) back into the sea, already dead, because nobody buys it at the
+landing site and ice and hold space on board are limited. At the same time,
+circular-economy businesses such as black soldier fly (BSF) maggot farms, fish
+silage producers and liquid organic fertilizer makers struggle to find cheap,
+steady animal-protein feedstock. ByCatch Loop is a web marketplace that
+connects the two. A fisher logs a batch from their phone, even with no signal.
+The system estimates its freshness from a photo, and buyers claim the batch
+within a 48-hour window.
 
-The app is in Indonesian, with an English translation.
+The app is in Indonesian (default), with a full English translation.
 
-## Repository layout
+## Sustainable Development Goals
 
-| Folder | What it is |
+| SDG | Target | How ByCatch Loop contributes |
+| --- | --- | --- |
+| 14 Life Below Water | 14.b | Gives small-scale fishers a market entry point for by-catch that conventional buyers don't reach in time |
+| 12 Responsible Consumption and Production | 12.3, 12.5 | Turns biomass that would be thrown away into feed and fertilizer feedstock |
+| 2 Zero Hunger | 2.3 | An additional market channel for small-scale fishers, for catch that conventional buyers may not accept |
+| 8 Decent Work and Economic Growth | 8.3 | A steadier supply for small downstream businesses (maggot, silage, fertilizer) |
+| 13 Climate Action | 13.3 | Makes the effect of time, ice and storage on freshness visible, supporting awareness of post-harvest loss prevention |
+
+## Features
+
+**Fishers (nelayan)**
+- Six-step catch wizard: category, estimated volume, time of haul, alive or dead, ice condition, and a photo (camera or upload).
+- Works without signal. Catches logged offline are kept on the device (IndexedDB) and sent automatically when the connection returns.
+- Freshness estimate from the photo and the catch details: a grade from `A1` to `B3`, with an explanation and a recommended downstream use.
+- Publish a batch to the marketplace, with an optional price per kg. Each listing is open for 48 hours.
+- "My Listings" to edit weight and price, cancel, or delete a batch, plus a transaction history where the fisher confirms handover with the final weight from the landing-site scale.
+
+**Buyers (pembeli)**
+- Registration with business type and buying preferences: material types, acceptable grades, preferred landing sites (PPI).
+- Marketplace with search, grade and material filters, preferred PPIs listed first, sort by date, and a map of landing sites (Leaflet + OpenStreetMap). Picking a site on the map filters the list, and each batch shows its distance from the buyer's area.
+- Batch detail with photo, grade, recommended uses and time left.
+- "Buy" reserves the batch and opens WhatsApp to the fisher to arrange payment and pickup. The buyer then sets a pickup time, confirms receipt, or cancels.
+
+**Both roles**
+- In-app notifications built from listing and transaction events, with per-topic settings.
+- Indonesian and English. The choice follows the account across devices.
+- Profile photo with crop.
+- Installable as a PWA, with an offline page for logging catches.
+
+## Architecture
+
+```mermaid
+flowchart LR
+    subgraph Browser
+        UI["Next.js pages<br/>(Server + Client Components)"]
+        IDB[("IndexedDB<br/>offline catch queue")]
+        SW["Service worker<br/>/offline page"]
+    end
+
+    subgraph Next["Next.js server (frontend/)"]
+        SA["Server Actions<br/>+ proxy.ts session refresh"]
+    end
+
+    subgraph Supabase
+        AUTH["Auth"]
+        DB[("Postgres<br/>RLS, SQL functions, pg_cron")]
+        ST[("Storage<br/>catch-photos bucket")]
+        EF["Edge Functions<br/>process-escrow<br/>confirm-handover<br/>grade-catch"]
+    end
+
+    API["freshness-api<br/>FastAPI + YOLOv8 + Random Forest<br/>(Docker, Railway)"]
+    WA["WhatsApp (wa.me link)"]
+
+    UI --> SA
+    UI <--> IDB
+    SW -.-> UI
+    SA --> AUTH
+    SA --> DB
+    SA --> ST
+    SA --> EF
+    EF --> DB
+    EF -->|"fetch photo"| ST
+    EF -->|"photo + catch data"| API
+    UI --> WA
+```
+
+See [TECHNICAL_DOCS.md](TECHNICAL_DOCS.md) for the data model, the edge functions, the freshness model and the auth flow.
+
+## Tech stack
+
+| Layer | Technology |
 | --- | --- |
-| [`frontend/`](frontend) | Next.js 16 app (App Router, React 19, Tailwind 4, next-intl, Leaflet), installable as a PWA |
-| [`supabase/`](supabase) | Postgres schema and policies (SQL files), email templates, and the Deno edge functions `process-escrow`, `confirm-handover` and `grade-catch` |
-| [`freshness-api/`](freshness-api) | FastAPI service that grades a catch: a YOLOv8 classifier reads the photo, and a joblib model combines that with the catch details |
+| Frontend | Next.js 16 (App Router), React 19, TypeScript 5, Tailwind CSS 4, next-intl, Leaflet |
+| Backend | Supabase: Postgres with Row Level Security, Auth, Storage, Deno Edge Functions, pg_cron |
+| Freshness model | Python 3.11, FastAPI, Ultralytics YOLOv8n-cls, scikit-learn Random Forest |
+| Hosting | Supabase Cloud, Railway (freshness API, Docker) |
 
-## Running it
+Exact versions and what each piece is used for: [TECHNOLOGY.md](TECHNOLOGY.md).
 
-### 1. Supabase
-
-1. Create a Supabase project.
-2. In the SQL Editor, run `supabase/schema.sql`, then `storage.sql`, then the
-   other SQL files. Run `pickup-confirmation.sql` before
-   `transactions-lockdown.sql`. Each file explains what it does and is safe to
-   re-run.
-3. Deploy the edge functions and give `grade-catch` the freshness API's URL:
-
-   ```bash
-   supabase link --project-ref <your-project-ref>
-   supabase secrets set FRESHNESS_API_URL=<freshness-api base URL>
-   supabase functions deploy process-escrow
-   supabase functions deploy confirm-handover
-   supabase functions deploy grade-catch
-   ```
-
-4. Finish the dashboard-only settings: email templates, Site URL and redirect
-   URLs. [`frontend/README.md`](frontend/README.md#yang-perlu-diatur-di-supabase)
-   has the steps.
-
-### 2. Freshness API
-
-The model files (`*.joblib`, `bycatch_yolo_freshness.pt`) are committed in
-`freshness-api/`.
+## Quick start
 
 ```bash
-cd freshness-api
-docker build -t freshness-api .
+git clone https://github.com/KzNck/Lomba-Ikan.git
+cd Lomba-Ikan
+
+# 1. Freshness API on port 8080 (keeps running; use a second terminal for step 3)
+docker build -t freshness-api freshness-api
 docker run -p 8080:8080 freshness-api
-```
 
-Or, without Docker (Python 3.11):
+# 2. Supabase: run the SQL files, deploy the edge functions (see INSTALLATION.md)
 
-```bash
-cd freshness-api
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload
-```
-
-Endpoints: `POST /api/v1/predict` (multipart form with the photo) and
-`GET /health`. Interactive docs are at `/docs`.
-
-### 3. Frontend
-
-Requires Node.js 20 or newer.
-
-```bash
+# 3. Frontend on port 3000, from the repository root
 cd frontend
 npm install
-cp .env.example .env.local   # fill in the Supabase URL and publishable key
+cp .env.example .env.local   # fill in your Supabase URL and publishable key
 npm run dev
 ```
 
-The app runs at http://localhost:3000. [`frontend/README.md`](frontend/README.md)
-covers the environment variables, the data flow, and the fields the database
-doesn't store yet (in Indonesian).
+The full step-by-step guide, including the Supabase setup and a smoke test, is in [INSTALLATION.md](INSTALLATION.md).
+
+## Live demo
+
+- Web app: _TBD_
+- Freshness API: https://lombaikan-production.up.railway.app/docs (interactive API docs), health check at `/health`
+
+## Repository structure
+
+```text
+Lomba-Ikan/
+├── frontend/                 Next.js web app
+│   ├── app/                  Routes (App Router), Server Actions, PWA manifest
+│   ├── components/           UI by area: home, login, register, nelayan, pembeli, dashboard, pwa, ui
+│   ├── lib/                  Data access (supabase/), freshness client, offline queue, i18n helpers, region data
+│   ├── messages/             Translations: id.json (default), en.json
+│   ├── i18n/                 next-intl locale selection and shared formats
+│   ├── hooks/                Browser hooks (webcam)
+│   ├── public/               Images, PWA icons, service worker (sw.js)
+│   ├── scripts/              build-wilayah.mjs: regenerates the province, regency and port data
+│   ├── types/                Database types
+│   └── proxy.ts              Session refresh and login guard for protected routes
+├── freshness-api/            FastAPI freshness-grading service
+│   ├── app/                  Router, model pipeline, guardrail rules, response schema
+│   ├── *.joblib, *.pt        Trained model files (loaded at startup)
+│   └── Dockerfile
+├── supabase/
+│   ├── schema.sql            Tables, enums, RLS policies, triggers, SQL functions
+│   ├── *.sql                 Storage bucket, expiry job, pickup confirmation, transaction and role locks
+│   ├── functions/            Edge Functions: process-escrow, confirm-handover, grade-catch
+│   └── email-templates/      Confirm-signup and reset-password emails
+├── INSTALLATION.md
+├── TECHNOLOGY.md
+└── TECHNICAL_DOCS.md
+```
+
+## Competition and team
+
+Built for the **International Web Technology Competition 2026**, organized by the
+Faculty of Vocational Studies, Universitas Negeri Surabaya.
+
+**Team:** “Nenek moyangku seorang pelaut”-Rico
+
+| Role | Name |
+| --- | --- |
+| Backend Engineer | Nicola Adhi Pratama |
+| AI Engineer | Sekar Bestari Nindita Yasmin |
+| UI/UX Designer & Front-end Engineer | Zulfa Salsabila |
+| UI/UX Designer & Front-end Engineer | Nathanael Rico Setiawan |
+
+Institution: _TBD_ · Faculty advisor: _TBD_
+
+## Acknowledgements
+
+- Province and regency data: [cahyadsn/wilayah](https://github.com/cahyadsn/wilayah) (MIT), based on Kepmendagri No. 300.2.2-2138 of 2025.
+- Fishing-port names and coordinates: Pusat Informasi Pelabuhan Perikanan, Ministry of Marine Affairs and Fisheries ([pipp.kkp.go.id](https://pipp.kkp.go.id)).
+- Map tiles: © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors.
+- SDG icons: [United Nations Sustainable Development Goals](https://www.un.org/sustainabledevelopment/news/communications-material/).
+- Fonts: Geist, Inter, Poppins and Dancing Script, via Google Fonts.
+- Freshness thresholds follow the Indonesian national standards SNI 01-2346-2006 (organoleptic scale) and SNI 2729:2013.
+
+## License
+
+_TBD_
