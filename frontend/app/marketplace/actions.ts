@@ -23,7 +23,7 @@ import { whatsappHref } from '@/lib/contact/whatsapp'
  * muncul di riwayat kedua pihak sampai nelayan mengonfirmasi serah terima.
  * Pembayaran terjadi langsung di antara mereka — aplikasi tidak menahan dana.
  *
- * Nilainya dihitung ulang di server dari row-nya, bukan diambil dari form.
+ * Nilainya dihitung process-escrow dari row tangkapan, bukan diambil dari form.
  *
  * Kalau batch-nya sudah keburu diklaim pembeli lain, ini tidak melempar error:
  * Next.js menyembunyikan pesan error Server Action di production, jadi yang
@@ -48,7 +48,7 @@ export async function buyBatch(formData: FormData): Promise<void> {
 
     let transaction
     try {
-        transaction = await claimCatch(catchId, Number(entry.weight_kg) * Number(entry.price_per_kg ?? 0))
+        transaction = await claimCatch(catchId)
     } catch (error) {
         // Another buyer claimed it between the check above and this claim (process-escrow refuses it): the same
         // "sudah terjual" message as above, not an error page. Anything else is a real failure.

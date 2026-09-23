@@ -1,6 +1,6 @@
 // All copy for the "Hasil Kesegaran" modal. Edit here to swap content without touching layout.
-// Text lives in messages/*.json under `dashboard.nelayan.freshness`. The grading itself comes from the Freshness
-// API — see lib/freshness/client.ts — and the recommendations from lib/catches/recommendations.ts.
+// Text lives in messages/*.json under `dashboard.nelayan.freshness`. The grading itself comes from the grade-catch
+// Edge Function — see lib/freshness/grade.ts — and the recommendations from lib/catches/recommendations.ts.
 import type { createFormatter } from 'next-intl'
 import type { Translator } from '@/lib/i18n/translator'
 

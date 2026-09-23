@@ -1,18 +1,25 @@
 // Penilaian kesegaran lewat Edge Function `grade-catch` (supabase/functions):
-// fungsi itu mengambil foto yang tersimpan, memanggil Freshness API, dan
-// menyimpan grade-nya sendiri. URL API-nya jadi secret Supabase, tidak
-// bergantung pada env Vercel.
+// fungsi itu memanggil Freshness API dan menyimpan grade-nya sendiri. URL
+// API-nya jadi secret Supabase, dan hanya fungsi itu yang boleh menulis hasil
+// penilaian ke `catches` (supabase/catches-lockdown.sql).
 
 import { createClient } from '@/lib/supabase/server'
 
 /**
- * Nilai tangkapan yang fotonya sudah tersimpan (catches.photo_url). True kalau
- * grade-nya sudah tersimpan; false kalau gagal atau fungsinya belum dideploy —
- * pemanggil lalu mencoba memanggil Freshness API langsung.
+ * Nilai satu tangkapan. Tanpa `photo`, fungsi memakai foto yang tersimpan di
+ * catches.photo_url; foto yang tidak disimpan (HEIC di Chrome) dikirim di sini.
+ * True kalau grade-nya sudah tersimpan; false kalau gagal, dan tangkapannya
+ * tetap tercatat tanpa grade ("Belum dinilai").
  */
-export async function gradeCatch(catchId: string): Promise<boolean> {
+export async function gradeCatch(catchId: string, photo?: Blob): Promise<boolean> {
     const supabase = await createClient()
-    const { error } = await supabase.functions.invoke('grade-catch', { body: { catch_id: catchId } })
+    let body: FormData | { catch_id: string } = { catch_id: catchId }
+    if (photo) {
+        body = new FormData()
+        body.set('catch_id', catchId)
+        body.set('photo', photo, 'catch.jpg')
+    }
+    const { error } = await supabase.functions.invoke('grade-catch', { body })
     if (error) {
         console.error(`grade-catch gagal untuk ${catchId}: ${error.message}`)
         return false

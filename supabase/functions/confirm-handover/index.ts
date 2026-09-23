@@ -26,7 +26,7 @@ Deno.serve(async (req) => {
     // Tanpa header Authorization user: kalau dipasang di global headers, query
     // berjalan sebagai user itu (kena RLS, yang sejak transactions-lockdown.sql
     // hanya mengizinkan baca), bukan sebagai service role. Pemanggil tetap
-    // dicek di bawah: hanya nelayan atau pembeli transaksinya.
+    // dicek di bawah: hanya nelayan transaksinya.
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY)
 
     const {
@@ -55,9 +55,10 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ message: 'QR code tidak valid' }), { status: 404 })
     }
 
-    // Klien service role melewati RLS, jadi cek di sini: hanya nelayan atau pembeli
-    // transaksi ini yang boleh menyelesaikannya.
-    if (user.id !== transaction.nelayan_id && user.id !== transaction.pembeli_id) {
+    // Klien service role melewati RLS, jadi cek di sini: hanya nelayan transaksi ini yang
+    // menyelesaikannya, dengan berat dari timbangan PPI. Pembeli mengonfirmasi penerimaan lewat
+    // confirm_pickup_receipt, yang menjadi syarat langkah ini (trigger require_buyer_confirmation).
+    if (user.id !== transaction.nelayan_id) {
       return new Response(JSON.stringify({ message: 'Forbidden' }), { status: 403 })
     }
 

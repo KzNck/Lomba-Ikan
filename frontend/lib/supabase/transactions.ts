@@ -63,13 +63,13 @@ export async function getTransactionById(id: string): Promise<TransactionWithCat
 
 /**
  * Klaim tangkapan sebagai pembeli. Lewat Edge Function `process-escrow` karena
- * perlu mengubah catches.status dan menulis row transactions sekaligus, secara
- * atomik — tidak aman dikerjakan dari client.
+ * perlu mengubah catches.status dan menulis row transactions sekaligus — tidak
+ * aman dikerjakan dari client. Nilainya dihitung fungsi itu dari row tangkapan.
  */
-export async function claimCatch(catchId: string, estimatedTotal: number): Promise<Transaction> {
+export async function claimCatch(catchId: string): Promise<Transaction> {
     const supabase = await createClient()
     const { data, error } = await supabase.functions.invoke<Transaction>('process-escrow', {
-        body: { catch_id: catchId, estimated_total: estimatedTotal },
+        body: { catch_id: catchId },
     })
 
     if (error) throw new Error(error.message ?? 'Gagal klaim tangkapan')

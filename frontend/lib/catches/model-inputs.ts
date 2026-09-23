@@ -1,9 +1,8 @@
 // Terjemahan jawaban wizard "Tambah Tangkapan" ke kosakata yang dipakai model AI
 // dan database (lihat CHECK constraint di supabase/schema.sql).
 //
-// Terpisah dari lib/freshness/client.ts supaya wizard — yang berjalan di browser
-// dan juga memakai ini untuk antrean offline — tidak ikut menarik modul yang
-// membaca FRESHNESS_API_URL.
+// Dipakai di server saat mencatat tangkapan, dan di browser untuk antrean
+// offline, jadi modul ini tidak boleh mengimpor kode server.
 
 import type { FishCategory, StatusIkan, StorageMethod } from '@/types/database'
 

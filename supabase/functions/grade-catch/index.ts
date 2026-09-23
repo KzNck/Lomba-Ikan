@@ -1,12 +1,18 @@
 /**
  * Edge Function: grade-catch
  *
- * Dipanggil dari lib/freshness/grade.ts -> gradeCatch(), tepat setelah foto
- * tangkapan tersimpan (submitCatch) dan dari tombol "Nilai ulang" (regradeCatch).
+ * Dipanggil dari lib/freshness/grade.ts -> gradeCatch(), tepat setelah
+ * tangkapan dicatat (submitCatch, syncOfflineCatch) dan dari tombol "Nilai
+ * ulang" (regradeCatch). Satu-satunya jalur yang menulis hasil penilaian ke
+ * catches; dari sesi user kolom-kolom itu dikunci (supabase/catches-lockdown.sql).
  *
- * Alur: cek pemanggil = nelayan pemilik tangkapan -> ambil foto dari
- * catches.photo_url -> panggil Freshness API (multipart, input model yang
- * tersimpan di row) -> simpan grade ke catches -> catat di ai_inference_log.
+ * Request: JSON { catch_id } memakai foto di catches.photo_url, atau
+ * multipart/form-data { catch_id, photo } untuk foto yang tidak disimpan
+ * (HEIC yang tidak bisa diubah ke JPEG di browser).
+ *
+ * Alur: cek pemanggil = nelayan pemilik tangkapan dan belum dinilai -> foto ->
+ * panggil Freshness API (multipart, input model yang tersimpan di row) ->
+ * simpan grade ke catches -> catat di ai_inference_log.
  *
  * URL Freshness API disimpan sebagai secret Supabase, bukan env Vercel:
  *   supabase secrets set FRESHNESS_API_URL=https://lombaikan-production.up.railway.app
@@ -40,14 +46,27 @@ Deno.serve(async (req) => {
       return json({ message: 'FRESHNESS_API_URL belum diset' }, 500)
     }
 
-    const { catch_id } = await req.json()
-    const { data: item } = await admin.from('catches').select('*').eq('id', catch_id).maybeSingle()
+    let catchId: unknown
+    let uploaded: Blob | null = null
+    if ((req.headers.get('Content-Type') ?? '').startsWith('multipart/form-data')) {
+      const form = await req.formData()
+      catchId = form.get('catch_id')
+      const file = form.get('photo')
+      uploaded = file instanceof Blob && file.size > 0 ? file : null
+    } else {
+      catchId = (await req.json()).catch_id
+    }
+
+    const { data: item } = await admin.from('catches').select('*').eq('id', catchId).maybeSingle()
     // Service role melewati RLS: hanya nelayan pemilik tangkapan yang boleh menilainya.
     if (!item || item.nelayan_id !== user.id) return json({ message: 'Tangkapan tidak ditemukan' }, 404)
-    if (!item.photo_url) return json({ message: 'Foto tangkapan belum tersimpan' }, 400)
+    // Satu grade per tangkapan: menilai ulang tangkapan yang sudah bergrade tidak diizinkan.
+    if (item.freshness_grade) return json({ message: 'Tangkapan sudah dinilai' }, 409)
+    if (!uploaded && !item.photo_url) return json({ message: 'Foto tangkapan belum tersimpan' }, 400)
 
-    const photo = await fetch(item.photo_url)
-    if (!photo.ok) return json({ message: 'Foto tidak bisa diambil' }, 502)
+    const stored = uploaded ? null : await fetch(item.photo_url)
+    if (stored && !stored.ok) return json({ message: 'Foto tidak bisa diambil' }, 502)
+    const photo = uploaded ?? (await stored!.blob())
 
     // Jam sejak jaring ditarik, dihitung dari catch_time: sama dengan yang dipakai wizard saat mencatat.
     const hoursPostHaul = Math.max(1, Math.round((Date.now() - Date.parse(item.catch_time)) / 3_600_000))
@@ -63,7 +82,7 @@ Deno.serve(async (req) => {
     const form = new FormData()
     form.set('catch_id', item.id)
     for (const [key, value] of Object.entries(inputs)) form.set(key, String(value))
-    form.set('photo', await photo.blob(), 'catch.jpg')
+    form.set('photo', photo, 'catch.jpg')
 
     const started = Date.now()
     const response = await fetch(`${FRESHNESS_API_URL}/api/v1/predict`, { method: 'POST', body: form })

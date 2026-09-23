@@ -125,9 +125,11 @@ export async function createCatch(input: CreateCatchInput): Promise<Catch> {
 
 /**
  * Terbitkan tangkapan ke marketplace. Trigger `trg_catch_expiry` di database
- * yang mengisi listed_at dan expires_at (+48 jam).
+ * yang mengisi listed_at dan expires_at (+48 jam). Hanya tangkapan yang belum
+ * pernah dipasang: listing yang sudah berakhir tidak mendapat 48 jam baru.
+ * Null kalau tangkapannya tidak lagi berstatus WAITING_FOR_SYNC.
  */
-export async function publishCatch(catchId: string, pricePerKg: number | null): Promise<Catch> {
+export async function publishCatch(catchId: string, pricePerKg: number | null): Promise<Catch | null> {
     const supabase = await createClient()
     const { data, error } = await supabase
         .from('catches')
@@ -137,8 +139,9 @@ export async function publishCatch(catchId: string, pricePerKg: number | null): 
             synced_at: new Date().toISOString(),
         })
         .eq('id', catchId)
+        .eq('status', 'WAITING_FOR_SYNC' as CatchStatus)
         .select()
-        .single()
+        .maybeSingle()
 
     if (error) throw new Error(`Gagal pasang listing: ${error.message}`)
     return data
@@ -209,33 +212,4 @@ export async function setCatchPhoto(catchId: string, photoUrl: string): Promise<
     const supabase = await createClient()
     const { error } = await supabase.from('catches').update({ photo_url: photoUrl }).eq('id', catchId)
     if (error) throw new Error(`Gagal simpan foto tangkapan: ${error.message}`)
-}
-
-/** Simpan hasil penilaian AI ke row tangkapan. */
-export async function saveFreshness(
-    catchId: string,
-    result: {
-        grade: Catch['freshness_grade']
-        score: number | null
-        notes: string | null
-        recommendation: string | null
-        overrideApplied: boolean
-    }
-): Promise<Catch> {
-    const supabase = await createClient()
-    const { data, error } = await supabase
-        .from('catches')
-        .update({
-            freshness_grade: result.grade,
-            freshness_score: result.score,
-            freshness_notes: result.notes,
-            hilirisasi_recommendation: result.recommendation,
-            ai_override_applied: result.overrideApplied,
-        })
-        .eq('id', catchId)
-        .select()
-        .single()
-
-    if (error) throw new Error(`Gagal simpan hasil kesegaran: ${error.message}`)
-    return data
 }

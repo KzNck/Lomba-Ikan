@@ -12,7 +12,6 @@ import {
     getCatchById,
     getCatchByLocalId,
     publishCatch,
-    saveFreshness,
     setCatchPhoto,
     updateListing,
 } from '@/lib/supabase/catches'
@@ -22,8 +21,7 @@ import { uploadCatchPhoto } from '@/lib/supabase/storage'
 import { confirmHandover as completeHandover, getTransactionById } from '@/lib/supabase/transactions'
 import { RIWAYAT_PATH, STATE_OF } from '@/components/nelayan/riwayat-content'
 import { WEIGHT_LIMITS } from '@/components/nelayan/listing-content'
-import { catchTimestamp, toModelInputs, type ModelInputs } from '@/lib/catches/model-inputs'
-import { predictFreshness } from '@/lib/freshness/client'
+import { catchTimestamp, toModelInputs } from '@/lib/catches/model-inputs'
 import { gradeCatch } from '@/lib/freshness/grade'
 import { waNumber } from '@/lib/contact/whatsapp'
 import { OTHER_NAME_MAX } from '@/components/nelayan/catch-content'
@@ -99,9 +97,8 @@ async function recordCatch(profile: Profile, formData: FormData, caughtAt?: Date
     }
 
     // Jawaban wizard diterjemahkan sekali ke kosakata model; hasilnya ikut
-    // disimpan di row-nya, lalu dipakai lagi saat memanggil Freshness API.
+    // disimpan di row-nya, lalu dipakai grade-catch saat memanggil Freshness API.
     const inputs = toModelInputs({ category, time, ice, condition })
-    if (caughtAt) inputs.hours_post_haul = Math.max(1, Math.round((Date.now() - caughtAt.getTime()) / 3_600_000))
 
     // "Lainnya" disimpan dengan nama yang diketik nelayan, supaya listing dan
     // marketplace menampilkannya; model tetap menerima kategori "lainnya" (rucah).
@@ -130,20 +127,9 @@ async function recordCatch(profile: Profile, formData: FormData, caughtAt?: Date
         const photoUrl = await uploadCatchPhoto(profile.id, entry.id, photo)
         if (photoUrl) await setCatchPhoto(entry.id, photoUrl)
 
-        // grade-catch saves the grade itself. Without a stored photo (HEIC from Chrome isn't kept) or while the
-        // function isn't deployed, fall back to calling the Freshness API from here with the photo in hand.
-        const graded = photoUrl ? await gradeCatch(entry.id) : false
-        const result = graded ? null : await predictFreshness({ catchId: entry.id, inputs, photo })
-
-        if (result) {
-            await saveFreshness(entry.id, {
-                grade: result.grade,
-                score: result.score,
-                notes: result.rationale,
-                recommendation: result.recommendation,
-                overrideApplied: result.overrideApplied,
-            })
-        }
+        // grade-catch grades and saves the result; it is the only path that may write a grade. A photo that wasn't
+        // stored (HEIC from Chrome isn't kept) is sent along with the request instead.
+        await gradeCatch(entry.id, photoUrl ? undefined : photo)
     }
 
     return entry.id
@@ -166,40 +152,16 @@ export async function regradeCatch(formData: FormData): Promise<void> {
     const resultHref = `/nelayan/catat/hasil?id=${entry.id}`
     if (entry.freshness_grade || !entry.photo_url) redirect(resultHref)
 
-    const inputs: ModelInputs = {
-        // Row lama dari sebelum kolom-kolom ini ada: nilai yang sama dengan default wizard.
-        status_ikan: entry.status_ikan ?? 'MATI',
-        ice_to_fish_ratio: Number(entry.ice_to_fish_ratio ?? 0),
-        ambient_temp_celsius: Number(entry.ambient_temp_celsius ?? 30),
-        storage_method: entry.storage_method,
-        fish_category: entry.fish_category ?? 'rucah',
-        hours_post_haul: Math.max(1, Math.round((Date.now() - Date.parse(entry.catch_time)) / 3_600_000)),
-    }
-
-    // grade-catch first (it saves the grade itself); the direct call is the fallback.
+    // grade-catch refetches the stored photo and recomputes the hours since haul from `catch_time`.
     const graded = await gradeCatch(entry.id)
-    const response = graded ? null : await fetch(entry.photo_url).catch(() => null)
-    const result = response?.ok
-        ? await predictFreshness({ catchId: entry.id, inputs, photo: await response.blob() })
-        : null
-
-    if (result) {
-        await saveFreshness(entry.id, {
-            grade: result.grade,
-            score: result.score,
-            notes: result.rationale,
-            recommendation: result.recommendation,
-            overrideApplied: result.overrideApplied,
-        })
-    }
-    if (graded || result) {
+    if (graded) {
         expireTags(cacheTags.catches(profile.id))
         revalidatePath('/nelayan')
         revalidatePath('/nelayan/listing')
     }
 
     // `gagal` tells the result page this retry failed too, so it can say so rather than look unchanged.
-    redirect(graded || result ? resultHref : `${resultHref}&gagal=1`)
+    redirect(graded ? resultHref : `${resultHref}&gagal=1`)
 }
 
 /** Terbitkan tangkapan yang sudah dinilai ke marketplace, dengan harga opsional dari form. */
