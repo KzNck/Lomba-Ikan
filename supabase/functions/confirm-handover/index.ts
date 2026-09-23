@@ -18,19 +18,21 @@ const SUPABASE_SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 
 Deno.serve(async (req) => {
   try {
-    const authHeader = req.headers.get('Authorization')
-    if (!authHeader) {
+    const token = req.headers.get('Authorization')?.replace(/^Bearer\s+/i, '')
+    if (!token) {
       return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 })
     }
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY, {
-      global: { headers: { Authorization: authHeader } },
-    })
+    // Tanpa header Authorization user: kalau dipasang di global headers, query
+    // berjalan sebagai user itu (kena RLS, yang sejak transactions-lockdown.sql
+    // hanya mengizinkan baca), bukan sebagai service role. Pemanggil tetap
+    // dicek di bawah: hanya nelayan atau pembeli transaksinya.
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY)
 
     const {
       data: { user },
       error: authError,
-    } = await supabase.auth.getUser()
+    } = await supabase.auth.getUser(token)
 
     if (authError || !user) {
       return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 })
