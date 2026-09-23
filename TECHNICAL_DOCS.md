@@ -425,8 +425,11 @@ place that translates the answers into the model's vocabulary.
 | `components/<area>/` | UI grouped by area. Each area keeps its copy and constants in `*-content.ts` files next to the components. |
 | `lib/supabase/` | Every database, Storage and edge function call, plus auth helpers and caching |
 | `lib/catches/`, `lib/marketplace/`, `lib/nelayan/`, `lib/pembeli/` | Turning database rows into view data (grades, labels, batches, dashboards) |
-| `lib/freshness/` | Direct API client (`client.ts`) and the `grade-catch` call (`grade.ts`) |
+| `lib/freshness/` | The `grade-catch` call (`grade.ts`). The browser and Server Actions never call the freshness API directly. |
 | `lib/offline/storage.ts` | IndexedDB queue (`bycatch-offline` database, `catches` store) |
+| `lib/photo/` | Photo shrinking before upload (`prepare-upload.ts`) and avatar cropping (`avatar-crop.ts`) |
+| `lib/contact/` | `wa.me` links and the WhatsApp message for a transaction |
+| `lib/i18n/` | Locale cookie and translation helpers |
 | `lib/wilayah/` | Province, regency and port data, with coordinates |
 | `messages/` | `id.json`, `en.json` |
 
@@ -591,5 +594,8 @@ locally: `npm run lint`, `npx tsc --noEmit`, `npm run build`.
 - **Landing-page impact figures are pilot targets.** The 3,000 kg/month, ≥70%
   closing rate and <90 minutes numbers are hard-coded targets, not measured
   results. The app doesn't compute an emissions estimate.
+- **Price per kg is optional.** A listing without a price shows "Auction price",
+  but there's no auction: `process-escrow` and `confirm-handover` compute a
+  total of 0 for it, and the two parties agree on the price over WhatsApp.
 - **No `admin` interface.** The role exists, but there are no admin pages.
 - **No automated tests or CI.**

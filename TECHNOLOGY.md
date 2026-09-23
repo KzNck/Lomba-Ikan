@@ -78,7 +78,7 @@ Versions below come from `frontend/package-lock.json`, `freshness-api/requiremen
 | [Railway](https://railway.app) | Hosts the freshness API container (built from `freshness-api/Dockerfile`) | `FRESHNESS_API_URL` edge function secret |
 | [OpenStreetMap](https://www.openstreetmap.org) tile server | Map tiles | `frontend/components/pembeli/marketplace-content.ts` |
 | WhatsApp (`wa.me` links) | Buyer–fisher contact after a purchase | `frontend/lib/contact/` |
-| Google Fonts (via `next/font`) | Geist, Inter, Poppins, Dancing Script, served from the app's own domain at build time | `frontend/app/layout.tsx` |
+| Google Fonts (via `next/font`) | Geist, Geist Mono, Inter, Poppins, Dancing Script, served from the app's own domain at build time | `frontend/app/layout.tsx` |
 
 Static data sources (downloaded by `frontend/scripts/build-wilayah.mjs` and stored in
 `frontend/lib/wilayah/`, no runtime calls):

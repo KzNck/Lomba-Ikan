@@ -35,7 +35,7 @@ The app opens in English. A full Indonesian translation is one click away in the
 
 **Buyers (pembeli)**
 - Registration with business type and buying preferences: material types, acceptable grades, preferred landing sites (PPI).
-- Marketplace with search, grade and material filters, preferred PPIs listed first, sort by date, and a map of landing sites (Leaflet + OpenStreetMap). Picking a site on the map filters the list, and each batch shows its distance from the buyer's area.
+- Marketplace with search, grade and material filters, preferred PPIs listed first, sorting by nearest, freshest or newest, and a map of landing sites (Leaflet + OpenStreetMap). Picking a site on the map filters the list, and each batch shows its distance from the buyer's area.
 - Batch detail with photo, grade, recommended uses and time left.
 - "Buy" reserves the batch and opens WhatsApp to the fisher to arrange payment and pickup. The buyer then sets a pickup time, confirms receipt, or cancels.
 
@@ -128,7 +128,7 @@ Lomba-Ikan/
 ├── frontend/                 Next.js web app
 │   ├── app/                  Routes (App Router), Server Actions, PWA manifest
 │   ├── components/           UI by area: home, login, register, nelayan, pembeli, dashboard, pwa, ui
-│   ├── lib/                  Data access (supabase/), freshness client, offline queue, i18n helpers, region data
+│   ├── lib/                  Data access (supabase/), grading call, offline queue, photo prep, WhatsApp links, i18n helpers, region data
 │   ├── messages/             Translations: en.json (default), id.json
 │   ├── i18n/                 next-intl locale selection and shared formats
 │   ├── hooks/                Browser hooks (webcam)
@@ -172,7 +172,7 @@ Institution: Department of Computer Engineering (Teknik Komputer), Faculty of En
 - Fishing-port names and coordinates: Pusat Informasi Pelabuhan Perikanan, Ministry of Marine Affairs and Fisheries ([pipp.kkp.go.id](https://pipp.kkp.go.id)).
 - Map tiles: © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors.
 - SDG icons: [United Nations Sustainable Development Goals](https://www.un.org/sustainabledevelopment/news/communications-material/).
-- Fonts: Geist, Inter, Poppins and Dancing Script, via Google Fonts.
+- Fonts: Geist, Geist Mono, Inter, Poppins and Dancing Script, via Google Fonts.
 - Freshness thresholds follow the Indonesian national standards SNI 01-2346-2006 (organoleptic scale) and SNI 2729:2013.
 
 ## License
