@@ -164,7 +164,7 @@ Faculty of Vocational Studies, Universitas Negeri Surabaya.
 | UI/UX Designer & Front-end Engineer | Zulfa Salsabila |
 | UI/UX Designer & Front-end Engineer | Nathanael Rico Setiawan |
 
-Institution: _TBD_ · Faculty advisor: _TBD_
+Institution: Department of Computer Engineering (Teknik Komputer), Faculty of Engineering, Universitas Diponegoro · Faculty advisor: _TBD_
 
 ## Acknowledgements
 
