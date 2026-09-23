@@ -621,7 +621,7 @@
         "provinsi": "Province",
         "provinsiPlaceholder": "Choose a province",
         "kabKota": "City/regency",
-        "kabKotaPlaceholder": "Choose a city/regency",
+        "kabKotaPlaceholder": "Select city/regency",
         "kabKotaLocked": "Choose a province first."
       },
       "validation": {
@@ -955,7 +955,7 @@
       "title": "Welcome Back",
       "subtitle": "Sign in to continue to your ByCatch Loop account.",
       "emailLabel": "Email",
-      "emailPlaceholder": "e.g. rina@yourbusiness.co.id",
+      "emailPlaceholder": "e.g. rina@business.id",
       "passwordLabel": "Password",
       "passwordPlaceholder": "Enter your password",
       "submit": "Sign In",
@@ -1001,13 +1001,13 @@
       },
       "fields": {
         "emailLabel": "Email",
-        "emailPlaceholder": "e.g. dulmatin@gmail.com",
+        "emailPlaceholder": "e.g. dul@mail.com",
         "emailHelper": "Used to sign in to your account.",
         "passwordLabel": "Password",
         "passwordPlaceholder": "At least 8 characters",
         "passwordHelper": "Use at least 8 characters.",
         "confirmPasswordLabel": "Confirm Password",
-        "confirmPasswordPlaceholder": "Type your password again",
+        "confirmPasswordPlaceholder": "Re-enter password",
         "requiredNote": "Fields marked * are required.",
         "fullNameLabel": "Full Name"
       },
@@ -1015,7 +1015,7 @@
         "provinsiLabel": "Province",
         "provinsiPlaceholder": "Choose a province",
         "kabKotaLabel": "City/Regency",
-        "kabKotaPlaceholder": "Choose a city/regency",
+        "kabKotaPlaceholder": "Select city/regency",
         "kabKotaLocked": "Choose a province first.",
         "pelabuhanLabel": "Fish Landing Port (PPI)",
         "pelabuhanPlaceholder": "Choose a PPI",
@@ -1039,7 +1039,7 @@
         "cardTitle": "Business Details",
         "namePlaceholder": "e.g. Rina Wulandari",
         "businessNameLabel": "Business Name",
-        "businessNamePlaceholder": "e.g. CV Maggot Sejahtera",
+        "businessNamePlaceholder": "e.g. CV Maju Jaya",
         "businessTypeLabel": "Business Type",
         "businessTypeHelper": "Choose one or more categories that match your business.",
         "businessTypes": {
@@ -1049,7 +1049,7 @@
           "pakan-ternak": "Livestock Feed Producer",
           "lainnya": "Other"
         },
-        "emailPlaceholder": "e.g. rina@yourbusiness.co.id",
+        "emailPlaceholder": "e.g. rina@business.id",
         "businessTypeError": "Choose at least one business type to continue.",
         "progress": "Part 1 of 2: Business information",
         "submit": "Next"

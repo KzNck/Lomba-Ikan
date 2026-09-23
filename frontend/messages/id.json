@@ -621,7 +621,7 @@
         "provinsi": "Provinsi",
         "provinsiPlaceholder": "Pilih provinsi",
         "kabKota": "Kota/kabupaten",
-        "kabKotaPlaceholder": "Pilih kota/kabupaten",
+        "kabKotaPlaceholder": "Pilih kota/kab.",
         "kabKotaLocked": "Pilih provinsi terlebih dahulu."
       },
       "validation": {
@@ -955,9 +955,9 @@
       "title": "Selamat Datang Kembali",
       "subtitle": "Masuk untuk melanjutkan ke akun ByCatch Loop Anda.",
       "emailLabel": "Email",
-      "emailPlaceholder": "Contoh: rina@usahaanda.co.id",
+      "emailPlaceholder": "Contoh: rina@usaha.id",
       "passwordLabel": "Password",
-      "passwordPlaceholder": "Masukkan password Anda",
+      "passwordPlaceholder": "Masukkan password",
       "submit": "Masuk",
       "confirmFailed": "Tautan konfirmasi sudah kedaluwarsa atau pernah dipakai. Masuk, dan kami kirimkan tautan baru.",
       "termsIntro": "Dengan melanjutkan, Anda menyetujui",
@@ -1001,13 +1001,13 @@
       },
       "fields": {
         "emailLabel": "Email",
-        "emailPlaceholder": "Contoh: dulmatin@gmail.com",
+        "emailPlaceholder": "Contoh: dul@mail.com",
         "emailHelper": "Dipakai untuk masuk ke akun Anda.",
         "passwordLabel": "Password",
         "passwordPlaceholder": "Minimal 8 karakter",
         "passwordHelper": "Gunakan minimal 8 karakter.",
         "confirmPasswordLabel": "Konfirmasi Password",
-        "confirmPasswordPlaceholder": "Ketik ulang password Anda",
+        "confirmPasswordPlaceholder": "Ketik ulang password",
         "requiredNote": "Kolom bertanda * wajib diisi.",
         "fullNameLabel": "Nama Lengkap"
       },
@@ -1015,7 +1015,7 @@
         "provinsiLabel": "Provinsi",
         "provinsiPlaceholder": "Pilih provinsi",
         "kabKotaLabel": "Kota/Kabupaten",
-        "kabKotaPlaceholder": "Pilih kota/kabupaten",
+        "kabKotaPlaceholder": "Pilih kota/kab.",
         "kabKotaLocked": "Pilih provinsi terlebih dahulu.",
         "pelabuhanLabel": "Pangkalan Pendaratan Ikan (PPI)",
         "pelabuhanPlaceholder": "Pilih PPI",
@@ -1039,7 +1039,7 @@
         "cardTitle": "Data Usaha",
         "namePlaceholder": "Contoh: Rina Wulandari",
         "businessNameLabel": "Nama Usaha",
-        "businessNamePlaceholder": "Contoh: CV Maggot Sejahtera",
+        "businessNamePlaceholder": "Contoh: CV Maju Jaya",
         "businessTypeLabel": "Klasifikasi Jenis Usaha",
         "businessTypeHelper": "Pilih satu atau lebih kategori yang sesuai dengan usaha Anda.",
         "businessTypes": {
@@ -1049,7 +1049,7 @@
           "pakan-ternak": "Produsen Pakan Ternak",
           "lainnya": "Lainnya"
         },
-        "emailPlaceholder": "Contoh: rina@usahaanda.co.id",
+        "emailPlaceholder": "Contoh: rina@usaha.id",
         "businessTypeError": "Pilih minimal satu jenis usaha untuk melanjutkan.",
         "progress": "Bagian 1 dari 2: Informasi usaha",
         "submit": "Lanjut"
