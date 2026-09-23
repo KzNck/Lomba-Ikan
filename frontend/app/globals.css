@@ -40,6 +40,7 @@
 
   --animate-fade-up: fade-up 400ms var(--ease-out-soft) both;
   --animate-fade-in: fade-in 400ms var(--ease-out-soft) both;
+  --animate-drawer-in: drawer-in 200ms var(--ease-out-soft) both;
   --animate-wave-drift: wave-drift 7s ease-in-out infinite alternate;
 
   @keyframes fade-up {
@@ -57,6 +58,19 @@
     from {
       opacity: 0;
       transform: scale(1.02);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Side drawers slide a short way in from the edge they're docked to (right), instead of scaling the whole
+     full-height panel from its centre. */
+  @keyframes drawer-in {
+    from {
+      opacity: 0;
+      transform: translateX(24px);
     }
     to {
       opacity: 1;

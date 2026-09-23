@@ -52,7 +52,7 @@ export function ListingDrawer({ listing, labels, actions, closeHref, error, edit
   return (
     <aside
       aria-labelledby="listing-drawer-title"
-      className="box-border w-full sm:w-[380px] [box-shadow:-12px_0px_32px_0px_#0B3B5C14] fixed lg:absolute left-0 sm:left-auto right-0 top-0 bottom-0 bg-[#FFFFFF] [border-width:0px_0px_0px_1px] [border-style:solid] [border-color:#E2E8F0] z-[60] lg:z-[3] motion-safe:animate-fade-in"
+      className="box-border w-full sm:w-[380px] [box-shadow:-12px_0px_32px_0px_#0B3B5C14] fixed lg:absolute left-0 sm:left-auto right-0 top-0 bottom-0 bg-[#FFFFFF] [border-width:0px_0px_0px_1px] [border-style:solid] [border-color:#E2E8F0] z-[60] lg:z-[3] motion-safe:animate-drawer-in"
     >
       <DrawerFocusLock />
       <div className="box-border w-full h-full max-h-dvh lg:max-h-[calc(100dvh-81px)] sticky top-0 flex flex-col gap-0 justify-start items-start overflow-clip">

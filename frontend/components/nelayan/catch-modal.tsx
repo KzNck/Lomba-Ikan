@@ -29,7 +29,7 @@ export function CatchModal({ title, subtitle, closeHref, closeLabel, steps, curr
         role="dialog"
         aria-modal="true"
         aria-labelledby="catch-modal-title"
-        className="box-border w-full md:w-[720px] h-dvh sm:h-fit max-h-dvh sm:max-h-[calc(100dvh-32px)] shrink-0 m-auto [box-shadow:0px_24px_64px_0px_#0B3B5C33] flex flex-col gap-[16px] sm:gap-[20px] p-[16px] sm:p-[24px_32px] justify-start items-start bg-[#FFFFFF] rounded-none sm:rounded-[24px]"
+        className="box-border w-full md:w-[720px] h-dvh sm:h-fit max-h-dvh sm:max-h-[calc(100dvh-32px)] shrink-0 m-auto [box-shadow:0px_24px_64px_0px_#0B3B5C33] flex flex-col gap-[16px] sm:gap-[20px] p-[16px] sm:p-[24px_32px] justify-start items-start bg-[#FFFFFF] rounded-none sm:rounded-[24px] motion-safe:animate-fade-up"
       >
         <ModalHeader
           icon="fish"

@@ -50,7 +50,7 @@ export function FreshnessModal({
         aria-modal="true"
         aria-labelledby="freshness-modal-title"
         // Full screen on phones, a card on tablets, the design's 940px card from lg.
-        className="box-border w-full lg:w-[940px] min-h-dvh sm:min-h-0 h-fit shrink-0 lg:my-auto [box-shadow:0px_24px_64px_0px_#0B3B5C33] flex flex-col gap-[20px] lg:gap-[16px] p-[16px] sm:p-[24px] justify-start items-start bg-[#FFFFFF] rounded-none sm:rounded-[24px]"
+        className="box-border w-full lg:w-[940px] min-h-dvh sm:min-h-0 h-fit shrink-0 lg:my-auto [box-shadow:0px_24px_64px_0px_#0B3B5C33] flex flex-col gap-[20px] lg:gap-[16px] p-[16px] sm:p-[24px] justify-start items-start bg-[#FFFFFF] rounded-none sm:rounded-[24px] motion-safe:animate-fade-up"
       >
         <input type="hidden" name="id" value={catchId} />
         <ModalHeader

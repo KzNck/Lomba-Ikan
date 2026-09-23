@@ -38,7 +38,7 @@ export function TransactionDrawer({ detail, closeHref, copy, handover, chat, can
   return (
     <aside
       aria-labelledby={TITLE_ID}
-      className="box-border w-full sm:w-[400px] [box-shadow:-12px_0px_32px_0px_#0B3B5C14] fixed lg:absolute left-0 sm:left-auto right-0 top-0 bottom-0 z-[60] lg:z-[3] flex flex-col gap-0 justify-start items-start bg-[#FFFFFF] [border-width:0px] sm:[border-width:0px_0px_0px_1px] [border-style:solid] [border-color:#E2E8F0] overflow-clip motion-safe:animate-fade-in"
+      className="box-border w-full sm:w-[400px] [box-shadow:-12px_0px_32px_0px_#0B3B5C14] fixed lg:absolute left-0 sm:left-auto right-0 top-0 bottom-0 z-[60] lg:z-[3] flex flex-col gap-0 justify-start items-start bg-[#FFFFFF] [border-width:0px] sm:[border-width:0px_0px_0px_1px] [border-style:solid] [border-color:#E2E8F0] overflow-clip motion-safe:animate-drawer-in"
     >
       <DrawerFocusLock />
       <header className="box-border w-full h-fit shrink-0 flex flex-row gap-[12px] p-[16px] sm:p-[18px_20px] justify-between items-center [border-width:0px_0px_1px_0px] [border-style:solid] [border-color:#E2E8F0]">

@@ -44,7 +44,7 @@ export function BatchDrawer({ batch, closeHref, similarHref, buyAction }: BatchD
       closeHref={closeHref}
       labelledBy={TITLE_ID}
       dismissOnBackdrop
-      className="m-0 ms-auto w-full sm:w-[480px] h-dvh max-h-dvh [box-shadow:-24px_0px_48px_0px_#0B3B5C40] motion-safe:animate-fade-in"
+      className="m-0 ms-auto w-full sm:w-[480px] h-dvh max-h-dvh [box-shadow:-24px_0px_48px_0px_#0B3B5C40] motion-safe:animate-drawer-in"
     >
       <div className="box-border w-full h-full flex flex-col gap-0 justify-start items-start bg-[#FFFFFF] overflow-hidden">
         <header className="box-border w-full h-fit shrink-0 flex flex-row gap-[16px] p-[16px_16px_12px_16px] sm:p-[24px_24px_16px_24px] justify-start items-start">
