@@ -9,7 +9,7 @@
 //
 // Bump VERSION when this file's caching changes; the build's own assets are content-hashed and need no bump.
 
-const VERSION = 'v1'
+const VERSION = 'v2'
 // The offline page's HTML.
 const SHELL_CACHE = `bycatch-shell-${VERSION}`
 // Hashed build files, fonts, category photos and icons: never change under the same URL, so cache-first.
@@ -25,12 +25,22 @@ const CATEGORY_IMAGES = ['campuran', 'teri', 'udang', 'cumi-cumi-sotong', 'ikan-
 const REFRESH_EVERY = 10 * 60 * 1000
 let lastRefresh = 0
 
-// "/_next/static/chunks/…" in HTML attributes, and "static/chunks/…" inside the page's inline RSC payload (which lists
-// the chunks a client component loads). Both become absolute build-asset URLs.
+// Build assets named in the offline page: in HTML attributes and inside the inline RSC payload (which lists the chunks a
+// client component loads), with or without the "/_next/" prefix and with or without the "immutable/" folder newer
+// Next.js builds use ("/_next/static/immutable/chunks/…"). All become absolute build-asset URLs.
 function assetUrls(text) {
   const urls = new Set()
-  for (const match of text.matchAll(/(?:\/_next\/)?(static\/(?:chunks|css|media)\/[^"'\\\s)]+)/g)) urls.add(`/_next/${match[1]}`)
+  for (const match of text.matchAll(/(?:\/_next\/)?(static\/(?:immutable\/)?(?:chunks|css|media)\/[^"'\\\s)]+)/g)) urls.add(`/_next/${match[1]}`)
   return [...urls]
+}
+
+// Fonts a stylesheet loads. Their url()s are relative to the stylesheet ("../media/…"), so resolve them against it.
+function fontUrls(css, sheetUrl) {
+  const base = new URL(sheetUrl, self.location.origin)
+  return [...css.matchAll(/url\(\s*["']?([^"')]+\.woff2?)["']?\s*\)/g)]
+    .map((match) => new URL(match[1], base))
+    .filter((url) => url.origin === self.location.origin)
+    .map((url) => url.pathname)
 }
 
 async function cacheIfMissing(cache, url) {
@@ -53,7 +63,7 @@ async function saveOfflinePage() {
   for (const css of assets.filter((url) => url.endsWith('.css'))) {
     const sheet = await staticCache.match(css)
     if (!sheet) continue
-    const fonts = assetUrls(await sheet.text()).filter((url) => url.includes('/static/media/'))
+    const fonts = fontUrls(await sheet.text(), css)
     await Promise.all(fonts.map((url) => cacheIfMissing(staticCache, url).catch(() => {})))
   }
 
