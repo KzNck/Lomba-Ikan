@@ -47,9 +47,10 @@ Tidak bisa diatur dari kode; kerjakan sekali di dashboard.
    tetap berfungsi, tapi hanya di browser yang memintanya.
 6. **File SQL tambahan.** Jalankan sekali di *SQL Editor*, berurutan:
    `supabase/expire-listings.sql` (listing kedaluwarsa otomatis),
-   `supabase/pickup-confirmation.sql` (konfirmasi penerimaan pembeli), lalu
+   `supabase/pickup-confirmation.sql` (konfirmasi penerimaan pembeli),
    `supabase/transactions-lockdown.sql` (transaksi hanya bisa diubah lewat
-   fungsi yang memeriksa pemanggilnya).
+   fungsi yang memeriksa pemanggilnya), lalu `supabase/profiles-role-lock.sql`
+   (role hanya ditetapkan saat registrasi dan tidak bisa diubah user).
 
 ## Alur data
 

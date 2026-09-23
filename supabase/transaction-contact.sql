@@ -1,7 +1,7 @@
 -- ============================================================
 -- Kontak lawan transaksi (untuk tombol WhatsApp)
 -- ============================================================
--- Profil hanya bisa dibaca pemiliknya (policy "profiles: self access"), jadi
+-- Profil hanya bisa dibaca pemiliknya (policy "profiles: self read"), jadi
 -- pembeli tidak bisa melihat nomor nelayan dan sebaliknya. Fungsi ini
 -- mengembalikan nama dan nomor telepon pihak lain dari satu transaksi — dan
 -- hanya itu, bukan seluruh profil — kepada nelayan atau pembeli transaksi

@@ -3,7 +3,7 @@
 // (/nelayan/riwayat, mitranya pembeli) dan pembeli (/pembeli/riwayat, mitranya
 // nelayan) — lihat `RiwayatSide`.
 //
-// Nama mitra belum bisa ditampilkan: policy "profiles: self access" di
+// Nama mitra belum bisa ditampilkan: policy "profiles: self read" di
 // supabase/schema.sql hanya mengizinkan tiap user membaca profilnya sendiri,
 // jadi profil pihak lain tidak terbaca. Kolomnya memakai label pengganti sampai
 // ada policy (atau view) yang membuka nama mitra secukupnya.

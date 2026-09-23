@@ -190,7 +190,9 @@ export async function ensureProfile(user: User): Promise<Profile> {
             id: user.id,
             // Fallback ke bagian depan email supaya kolom NOT NULL tidak pernah kosong.
             full_name: meta.full_name?.trim() || user.email?.split('@')[0] || 'Pengguna',
-            role: meta.role ?? 'nelayan',
+            // user_metadata bisa diisi siapa pun lewat API Auth, jadi hanya dua role registrasi yang diterima;
+            // database juga menolak role lain (supabase/profiles-role-lock.sql).
+            role: meta.role === 'pembeli' ? 'pembeli' : 'nelayan',
             ppi_location: meta.ppi_location ?? null,
             phone: meta.phone ?? null,
         })

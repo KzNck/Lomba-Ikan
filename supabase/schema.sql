@@ -229,10 +229,38 @@ ALTER TABLE public.transactions   ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.ai_inference_log ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.sync_log       ENABLE ROW LEVEL SECURITY;
 
--- profiles: lihat/edit profil sendiri saja
-CREATE POLICY "profiles: self access"
-  ON public.profiles FOR ALL
+-- profiles: baca, buat, dan ubah profil sendiri saja. Role dari sesi user hanya
+-- nelayan/pembeli dan tidak bisa diubah setelah row dibuat (trigger di bawah).
+-- Untuk project yang sudah berjalan: supabase/profiles-role-lock.sql
+CREATE POLICY "profiles: self read"
+  ON public.profiles FOR SELECT
   USING (auth.uid() = id);
+
+CREATE POLICY "profiles: self insert"
+  ON public.profiles FOR INSERT
+  WITH CHECK (auth.uid() = id AND role IN ('nelayan', 'pembeli'));
+
+CREATE POLICY "profiles: self update"
+  ON public.profiles FOR UPDATE
+  USING (auth.uid() = id)
+  WITH CHECK (auth.uid() = id);
+
+-- Role hanya bisa diubah dari SQL Editor (postgres) atau service role.
+CREATE OR REPLACE FUNCTION public.keep_profile_role()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  IF NEW.role IS DISTINCT FROM OLD.role AND current_user IN ('authenticated', 'anon') THEN
+    RAISE EXCEPTION 'role_locked';
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER trg_profiles_keep_role
+  BEFORE UPDATE ON public.profiles
+  FOR EACH ROW EXECUTE FUNCTION public.keep_profile_role();
 
 -- catches: nelayan CRUD miliknya; pembeli SELECT semua LISTED
 CREATE POLICY "catches: nelayan owns"
@@ -295,7 +323,7 @@ ALTER PUBLICATION supabase_realtime ADD TABLE public.transactions;
 -- ============================================================
 -- Kontak lawan transaksi (untuk tombol WhatsApp)
 -- ============================================================
--- Profil hanya bisa dibaca pemiliknya (policy "profiles: self access"), jadi
+-- Profil hanya bisa dibaca pemiliknya (policy "profiles: self read"), jadi
 -- pembeli tidak bisa melihat nomor nelayan dan sebaliknya. Fungsi ini
 -- mengembalikan nama dan nomor telepon pihak lain dari satu transaksi — dan
 -- hanya itu, bukan seluruh profil — kepada nelayan atau pembeli transaksi
