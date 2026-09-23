@@ -1,5 +1,3 @@
-// lib/supabase/transactions.ts
-//
 // Alur transaksi: klaim → escrow → serah terima.
 // Logic sensitif (escrow, disbursement) dijalankan Edge Function dengan service
 // role, bukan langsung dari client — lihat supabase/functions/.

@@ -1,5 +1,3 @@
-// lib/supabase/client.ts
-//
 // Setup koneksi Supabase. Frontend tinggal import `supabase` dari sini,
 // tidak perlu bikin client sendiri di komponen manapun.
 

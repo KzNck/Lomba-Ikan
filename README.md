@@ -1,118 +1,85 @@
-# Lomba-Ikan Web Platform
+# ByCatch Loop
 
-A comprehensive web platform that integrates a modern frontend, a machine learning API for assessing fish freshness and bycatch, and a robust backend powered by Supabase.
+Small-scale fishers often throw by-catch back into the sea because there's no
+buyer for it at the landing site. ByCatch Loop is a B2B marketplace that lists
+that by-catch for downstream buyers such as BSF (maggot) farms, fish silage
+producers and organic fertilizer makers.
 
-## 🚀 Tech Stack
+- **Nelayan (fishers)** log a catch, including offline, with a photo, volume
+  and ice condition, then list it. A listing stays open for 48 hours.
+- **Pembeli (buyers)** filter listings by grade and material type, see their
+  preferred landing sites (PPI) first, claim a batch, schedule a pickup and
+  confirm when it arrives.
+- A freshness model estimates a grade (`A1`…`B3`) from the photo and the catch
+  details. It's shown as an estimate, not a certification.
 
-### Frontend (`/frontend`)
-*   **Framework:** [Next.js](https://nextjs.org/) (v16) with React 19
-*   **Styling:** [Tailwind CSS](https://tailwindcss.com/) (v4)
-*   **Database & Auth:** Supabase SSR & Supabase JS client
-*   **Maps & Geolocation:** Leaflet & React-Leaflet
-*   **Language:** TypeScript
+The app is in Indonesian, with an English translation.
 
-### Machine Learning API (`/freshness-api`)
-*   **Framework:** [FastAPI](https://fastapi.tiangolo.com/) with Uvicorn
-*   **Machine Learning:** Scikit-learn, Pandas, NumPy, SciPy
-*   **Model Serialization:** Joblib
-*   **Image Processing:** Pillow
-*   **Language:** Python 3
-*   **Containerization:** Docker (Ready for Cloud Run/Railway deployment)
+## Repository layout
 
-### Database & Backend Services (`/supabase`)
-*   **Platform:** [Supabase](https://supabase.com/) (PostgreSQL Database, Authentication, Storage)
-*   **Edge Functions:** Deno / TypeScript (e.g., `trigger-freshness`, `process-escrow`, `confirm-handover`)
+| Folder | What it is |
+| --- | --- |
+| [`frontend/`](frontend) | Next.js 16 app (App Router, React 19, Tailwind 4, next-intl, Leaflet), installable as a PWA |
+| [`supabase/`](supabase) | Postgres schema and policies (SQL files), email templates, and the Deno edge functions `process-escrow`, `confirm-handover` and `grade-catch` |
+| [`freshness-api/`](freshness-api) | FastAPI service that grades a catch: a YOLOv8 classifier reads the photo, and a joblib model combines that with the catch details |
 
----
+## Running it
 
-## 🛠 Installation Guide
+### 1. Supabase
 
-### Prerequisites
-*   Node.js (v20+ recommended)
-*   Python (v3.9+ recommended)
-*   Git
-*   Docker (Optional, for running the API and Supabase locally)
+1. Create a Supabase project.
+2. In the SQL Editor, run `supabase/schema.sql`, then `storage.sql`, then the
+   other SQL files. Run `pickup-confirmation.sql` before
+   `transactions-lockdown.sql`. Each file explains what it does and is safe to
+   re-run.
+3. Deploy the edge functions and give `grade-catch` the freshness API's URL:
 
-### 1. Clone the Repository
+   ```bash
+   supabase link --project-ref <your-project-ref>
+   supabase secrets set FRESHNESS_API_URL=<freshness-api base URL>
+   supabase functions deploy process-escrow
+   supabase functions deploy confirm-handover
+   supabase functions deploy grade-catch
+   ```
+
+4. Finish the dashboard-only settings: email templates, Site URL and redirect
+   URLs. [`frontend/README.md`](frontend/README.md#yang-perlu-diatur-di-supabase)
+   has the steps.
+
+### 2. Freshness API
+
+The model files (`*.joblib`, `bycatch_yolo_freshness.pt`) are committed in
+`freshness-api/`.
+
 ```bash
-git clone <repository-url>
-cd Lomba-Web
+cd freshness-api
+docker build -t freshness-api .
+docker run -p 8080:8080 freshness-api
 ```
 
-### 2. Frontend Setup
-Navigate to the frontend directory and install the necessary dependencies:
+Or, without Docker (Python 3.11):
+
+```bash
+cd freshness-api
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+Endpoints: `POST /api/v1/predict` (multipart form with the photo) and
+`GET /health`. Interactive docs are at `/docs`.
+
+### 3. Frontend
+
+Requires Node.js 20 or newer.
+
 ```bash
 cd frontend
 npm install
-```
-
-Set up the environment variables by copying the example file:
-```bash
-cp .env.example .env.local
-```
-*Make sure to populate `.env.local` with your `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.*
-
-Start the frontend development server:
-```bash
+cp .env.example .env.local   # fill in the Supabase URL and publishable key
 npm run dev
 ```
-The application will be accessible at `http://localhost:3000`.
 
-### 3. Machine Learning API Setup
-The API can be run using either Python's virtual environment or Docker.
-
-**Option A: Virtual Environment (Local)**
-```bash
-cd freshness-api
-
-# Create a virtual environment
-python -m venv venv
-
-# Activate the virtual environment
-# On Windows:
-venv\Scripts\activate
-# On macOS/Linux:
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run the FastAPI server
-uvicorn app.main:app --reload
-```
-The API will be accessible at `http://localhost:8000`.
-
-**Option B: Docker (Cloud Run / Railway Ready)**
-```bash
-cd freshness-api
-
-# Build the Docker image
-docker build -t freshness-api .
-
-# Run the Docker container
-docker run -p 8080:8080 freshness-api
-```
-The API will be accessible at `http://localhost:8080`. Interactive documentation is available at `http://localhost:8080/docs`.
-
-### 4. Supabase Edge Functions Setup
-To deploy or run the Supabase edge functions locally, you will need the Supabase CLI:
-```bash
-cd supabase
-# To start Supabase locally (requires Docker):
-supabase start
-
-# To deploy functions to a remote project:
-supabase functions deploy confirm-handover
-supabase functions deploy process-escrow
-supabase functions deploy trigger-freshness
-```
-
-> **Note:** Terdapat versi terbaru (v2) untuk edge function `trigger-freshness` yang berlokasi di `freshness-api/supabase-edge-function/index.ts`. Versi ini menggunakan endpoint API baru yang mendukung format `multipart/form-data` dengan melampirkan file foto, yang sangat dibutuhkan oleh model visual AI. Pastikan versi terbaru ini yang di-deploy ke Supabase project Anda (menggantikan atau meng-overwrite fungsi lama yang ada di `supabase/functions/trigger-freshness`).
-
----
-
-## 📁 Project Structure
-
-*   **/frontend** - Contains the Next.js web application, UI components, and Supabase client integration.
-*   **/freshness-api** - Contains the Python FastAPI service (with Docker support), handling ML predictions for fish freshness and bycatch models, serta fungsi Supabase Edge v2.
-*   **/supabase** - Contains Supabase project configuration, schema database, and legacy/other edge functions.
+The app runs at http://localhost:3000. [`frontend/README.md`](frontend/README.md)
+covers the environment variables, the data flow, and the fields the database
+doesn't store yet (in Indonesian).

@@ -1,5 +1,3 @@
-// lib/catches/present.ts
-//
 // Menerjemahkan row `catches` dari Supabase ke bentuk yang dipakai komponen UI.
 // Semua pemformatan (rupiah, berat, sisa waktu, grade) berkumpul di sini supaya
 // kartu di dashboard, "Listing Saya", dan marketplace menampilkan hal yang sama.

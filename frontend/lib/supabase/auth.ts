@@ -1,5 +1,3 @@
-// lib/supabase/auth.ts
-//
 // Helper auth sisi server. Masuk memakai email + password.
 //
 // Data profil yang diisi saat registrasi dititipkan ke `user_metadata` lewat

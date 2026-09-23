@@ -1,5 +1,3 @@
-// lib/catches/model-inputs.ts
-//
 // Terjemahan jawaban wizard "Tambah Tangkapan" ke kosakata yang dipakai model AI
 // dan database (lihat CHECK constraint di supabase/schema.sql).
 //

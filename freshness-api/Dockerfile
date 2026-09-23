@@ -8,7 +8,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY app/ ./app/
 
-# File model — WAJIB ada di folder ini sebelum build (lihat README.md).
+# File model — WAJIB ada di folder ini sebelum build.
 # bycatch_unified_model.joblib & bycatch_preprocessor.joblib di sini HARUS versi
 # YOLO-unified (dari backend_artifacts.zip notebook IniiKAN_YOLO_unified.ipynb),
 # bukan versi classical-CV lama -- beda jumlah fitur, tidak kompatibel.

@@ -1,5 +1,3 @@
-// lib/supabase/catches.ts
-//
 // Semua query tabel `catches`. Dipanggil dari Server Component / Server Action,
 // jadi memakai client dari server.ts (bawa cookie sesi) — RLS yang menentukan
 // baris mana yang kelihatan, bukan filter manual di sini.

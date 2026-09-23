@@ -1,5 +1,3 @@
-// lib/notification-settings.ts
-//
 // Pengaturan "Akun › Notifikasi": jenis kabar mana yang tampil di lonceng header. Belum ada kolomnya di `profiles`,
 // jadi disimpan di `user_metadata.notifications` (seperti Preferensi dan nama panggilan) dan dibaca dari token sesi —
 // membuka halaman mana pun tidak menambah query. Kabar yang belum pernah diatur dianggap menyala.

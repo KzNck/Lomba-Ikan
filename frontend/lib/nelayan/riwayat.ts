@@ -1,5 +1,3 @@
-// lib/nelayan/riwayat.ts
-//
 // Merakit data halaman riwayat dari Supabase: row `transactions` yang sudah
 // COMPLETED atau CANCELLED, beserta tangkapannya. Dipakai dua sisi: nelayan
 // (/nelayan/riwayat, mitranya pembeli) dan pembeli (/pembeli/riwayat, mitranya

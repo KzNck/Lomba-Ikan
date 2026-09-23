@@ -1,5 +1,3 @@
-// lib/supabase/display-name.ts
-//
 // Nama pendek yang tampil di chrome dashboard: sapaan, pill akun di header, dan
 // kartu akun di sidebar. Nama lengkap tetap dipakai di tempat yang butuh
 // identitas (halaman Akun, transaksi, listing yang dilihat pembeli).

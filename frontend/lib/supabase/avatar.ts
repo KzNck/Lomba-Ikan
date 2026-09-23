@@ -1,5 +1,3 @@
-// lib/supabase/avatar.ts
-//
 // Foto profil, untuk nelayan dan pembeli. `profiles` tidak punya kolomnya, jadi URL-nya disimpan di `user_metadata`
 // (seperti nama panggilan dan bahasa) dan dibaca dari token sesi. Filenya di bucket foto tangkapan, di folder milik
 // user sendiri — policy storage yang sama (lihat supabase/storage.sql) sudah mengizinkan upload dan hapus di sana.

@@ -1,5 +1,3 @@
-// lib/supabase/profiles.ts
-//
 // Query tabel `profiles`. Helper auth (kirim/verifikasi OTP, sesi) ada di auth.ts.
 
 import { createClient } from './server'

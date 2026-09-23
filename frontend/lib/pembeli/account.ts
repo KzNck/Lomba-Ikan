@@ -1,5 +1,3 @@
-// lib/pembeli/account.ts
-//
 // Baca dan simpan "Info Pribadi" pembeli.
 //
 // Tabel `profiles` baru punya kolom full_name, phone, bank_account, dan

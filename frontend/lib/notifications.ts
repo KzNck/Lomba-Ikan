@@ -1,5 +1,3 @@
-// lib/notifications.ts
-//
 // Isi dropdown notifikasi di header, untuk nelayan dan pembeli. Belum ada tabel
 // notifikasi di schema, jadi daftarnya disusun dari kejadian yang memang
 // tercatat di `transactions` dan `catches`. Terbaru di atas.

@@ -47,7 +47,7 @@ export function akunNav(t: AkunT) {
   }
 }
 
-export function profileHeader(t: AkunT, roleLabel: string) {
+export function profileHeader(roleLabel: string) {
   return {
     roleLabel,
   }

@@ -1,5 +1,3 @@
-// lib/supabase/server.ts
-//
 // Untuk dipakai di Server Components / Server Actions (Next.js App Router).
 // Beda dari client.ts karena perlu handle cookies buat session auth.
 

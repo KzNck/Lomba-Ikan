@@ -1,5 +1,3 @@
-// lib/freshness/grade.ts
-//
 // Penilaian kesegaran lewat Edge Function `grade-catch` (supabase/functions):
 // fungsi itu mengambil foto yang tersimpan, memanggil Freshness API, dan
 // menyimpan grade-nya sendiri. URL API-nya jadi secret Supabase, tidak

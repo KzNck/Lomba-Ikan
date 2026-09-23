@@ -1,5 +1,3 @@
-// lib/supabase/env.ts
-//
 // Satu tempat untuk baca kredensial Supabase, dipakai browser client, server
 // client, dan proxy. Next.js hanya mengganti `process.env.X` secara literal di
 // bundle browser, jadi setiap nama variabel harus ditulis utuh — bukan lewat

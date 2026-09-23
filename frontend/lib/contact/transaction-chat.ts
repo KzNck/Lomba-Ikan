@@ -1,5 +1,3 @@
-// lib/contact/transaction-chat.ts
-//
 // Tombol "Chat di WhatsApp" di drawer riwayat, untuk transaksi yang masih
 // berjalan: pembeli ke nelayannya, nelayan ke pembelinya.
 

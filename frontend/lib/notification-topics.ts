@@ -1,5 +1,3 @@
-// lib/notification-topics.ts
-//
 // Jenis kabar di lonceng header per peran, untuk "Akun › Notifikasi". Terpisah dari lib/notification-settings.ts
 // (yang membaca sesi dan menulis ke Supabase) supaya form di browser bisa memakainya tanpa menarik kode server.
 

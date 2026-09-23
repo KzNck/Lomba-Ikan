@@ -1,5 +1,3 @@
-// lib/catches/recommendations.ts
-//
 // "Rekomendasi Penggunaan": kartu jalur hilirisasi untuk satu tangkapan, dipakai
 // di modal Hasil Kesegaran, drawer Detail Listing, dan marketplace pembeli.
 //

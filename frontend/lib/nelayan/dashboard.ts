@@ -1,5 +1,3 @@
-// lib/nelayan/dashboard.ts
-//
 // Merakit data dashboard nelayan dari Supabase. Dipakai halaman /nelayan dan
 // halaman "Tambah Tangkapan" yang menampilkan dashboard di belakang modalnya.
 

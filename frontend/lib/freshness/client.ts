@@ -1,5 +1,3 @@
-// lib/freshness/client.ts
-//
 // Panggilan ke Freshness AI API (FastAPI, lihat ../freshness-api).
 //
 // Endpoint-nya multipart/form-data — foto ikut dikirim — bukan JSON.

@@ -25,22 +25,11 @@ npm run dev
 Tidak bisa diatur dari kode; kerjakan sekali di dashboard.
 
 1. **Template Confirm signup.** Konfirmasi email menyala, jadi tautan di email
-   harus mengarah ke `/auth/confirm`. Ubah *Authentication > Email Templates >
-   Confirm signup* menjadi:
-
-   ```html
-   <h2>Konfirmasi email Anda</h2>
-   <p>Klik tautan di bawah untuk mengaktifkan akun ByCatch Loop Anda.</p>
-   <p>
-     <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email">
-       Konfirmasi email saya
-     </a>
-   </p>
-   ```
-
-   `type=email` — itu yang dipakai template Confirm signup. Template bawaan
-   memakai `{{ .ConfirmationURL }}`, yang menuju endpoint Supabase, bukan app
-   ini, jadi harus diganti.
+   harus mengarah ke `/auth/confirm`. Salin isi
+   `supabase/email-templates/confirm-signup.html` ke *Authentication > Email
+   Templates > Confirm signup* (subjeknya ada di komentar baris pertama). Template
+   bawaan memakai `{{ .ConfirmationURL }}`, yang menuju endpoint Supabase, bukan
+   app ini, jadi harus diganti.
 2. **Site URL.** *Authentication > URL Configuration*: isi Site URL (mis.
    `http://localhost:3000` saat pengembangan) dan tambahkan redirect URL tiap
    domain yang dipakai. `{{ .SiteURL }}` di template mengambil nilai ini, dan
@@ -52,22 +41,10 @@ Tidak bisa diatur dari kode; kerjakan sekali di dashboard.
    dibiarkan kosong, dan log server menyebut "Bucket not found".
 4. **Schema.** `supabase/schema.sql` sudah ter-deploy. Jalankan ulang hanya
    kalau project-nya diganti.
-5. **Template Reset Password.** Supaya tautan "Lupa password" bisa dibuka di
-   perangkat mana pun, ubah *Authentication > Email Templates > Reset Password*
-   menjadi:
-
-   ```html
-   <h2>Buat password baru</h2>
-   <p>Klik tautan di bawah untuk membuat password baru akun ByCatch Loop Anda.</p>
-   <p>
-     <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery&next=/auth/atur-password">
-       Buat password baru
-     </a>
-   </p>
-   ```
-
-   Dengan template bawaan tautannya tetap berfungsi, tapi hanya di browser yang
-   memintanya.
+5. **Template Reset Password.** Salin isi
+   `supabase/email-templates/reset-password.html` ke *Authentication > Email
+   Templates > Reset Password*. Dengan template bawaan tautan "Lupa password"
+   tetap berfungsi, tapi hanya di browser yang memintanya.
 6. **File SQL tambahan.** Jalankan sekali di *SQL Editor*, berurutan:
    `supabase/expire-listings.sql` (listing kedaluwarsa otomatis),
    `supabase/pickup-confirmation.sql` (konfirmasi penerimaan pembeli), lalu
@@ -103,7 +80,6 @@ dikonfirmasi juga diarahkan ke sana, bukan ditolak dengan pesan buntu.
 
 - Query Supabase ada di `lib/supabase/` — semuanya sisi server, memakai cookie
   sesi, jadi RLS yang menentukan baris mana yang kelihatan.
-- Realtime (`lib/supabase/realtime.ts`) khusus browser.
 - Row database dibentuk jadi props komponen di `lib/catches/present.ts` dan
   `lib/marketplace/batches.ts`.
 - Proxy (`proxy.ts`) menyegarkan sesi dan menjaga `/nelayan`, `/pembeli`, dan
@@ -140,11 +116,3 @@ menanyakannya. Kolom-kolom ini dibatasi CHECK di database, jadi nilai di luar
 daftar akan ditolak saat insert, bukan diam-diam tersimpan.
 
 `freshness_grade` memakai enum `A1`…`B3`, sama persis dengan keluaran model.
-
-## Catatan: Edge Function `trigger-freshness`
-
-`supabase/functions/trigger-freshness/index.ts` sudah tidak cocok dengan
-Freshness API: ia mengirim JSON dan membaca `grade`/`score`/`notes`, sedangkan
-endpoint `/api/v1/predict` menerima `multipart/form-data` (termasuk foto) dan
-mengembalikan `predicted_grade`/`confidence_score`/`rationale`. App memanggil
-API-nya langsung lewat `lib/freshness/client.ts`, jadi webhook itu tidak dipakai.

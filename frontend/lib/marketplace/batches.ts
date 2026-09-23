@@ -1,5 +1,3 @@
-// lib/marketplace/batches.ts
-//
 // Membentuk "batch" marketplace dari row `catches` yang berstatus LISTED,
 // lengkap dengan nama nelayan, letak PPI-nya di peta, dan jaraknya dari
 // pembeli (dari PPI pembeli, atau pusat kabupaten/kota yang ia daftarkan).

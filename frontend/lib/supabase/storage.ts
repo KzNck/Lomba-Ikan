@@ -1,5 +1,3 @@
-// lib/supabase/storage.ts
-//
 // Upload foto tangkapan ke Supabase Storage.
 
 import { isWebImage } from '@/lib/photo/prepare-upload'

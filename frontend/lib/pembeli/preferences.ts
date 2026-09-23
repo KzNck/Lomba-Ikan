@@ -1,5 +1,3 @@
-// lib/pembeli/preferences.ts
-//
 // Baca dan simpan "Preferensi" pembeli: jenis bahan, grade, dan PPI prioritas.
 //
 // Registrasi (bagian 2) menitipkannya di `user_metadata` dengan kunci jenis_bahan, grade, dan ppi_prioritas —

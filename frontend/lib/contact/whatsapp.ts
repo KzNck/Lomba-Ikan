@@ -1,5 +1,3 @@
-// lib/contact/whatsapp.ts
-//
 // Tautan wa.me ke nomor yang tersimpan di profil. Profil menyimpan nomor apa
 // adanya ("+62 812 3456 7890", "0812-3456-7890"), sedangkan wa.me butuh angka
 // saja dengan kode negara di depan.

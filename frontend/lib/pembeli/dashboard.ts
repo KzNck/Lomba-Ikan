@@ -1,5 +1,3 @@
-// lib/pembeli/dashboard.ts
-//
 // Merakit data dashboard pembeli: rekomendasi batch dan ringkasan aktivitas.
 
 import type { ProductCardContent } from '@/components/pembeli/product-card'

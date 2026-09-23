@@ -1,5 +1,3 @@
-// lib/photo/avatar-crop.ts
-//
 // Posisi foto profil di dalam lingkarannya: zoom, geser, dan putar. Pratinjau di
 // editor dan JPEG 512px yang diunggah digambar dengan fungsi yang sama
 // (drawCrop), jadi yang terlihat saat mengatur persis yang tersimpan.

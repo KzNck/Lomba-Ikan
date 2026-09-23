@@ -1,5 +1,3 @@
-// lib/nelayan/dashboard-data.ts
-//
 // Angka dan daftar untuk dashboard nelayan, dihitung dari row `catches` dan
 // `transactions` milik user yang login.
 

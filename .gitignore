@@ -1,4 +1,60 @@
+# OS / editor
 .DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Logs
+*.log
+
+# Env files (only examples are committed)
+.env
+.env.*
+!.env.example
+
+# AI coding tools (kept locally)
+.agents/
+.claude/
+.cursor/
+.cursorrules
+.windsurf/
+.windsurfrules
+.aider*
+.continue/
+.codeium/
+.copilot/
+AGENTS.md
+CLAUDE.md
+
+# Design sources and archives
 /fisherman-design/
+*.zip
+
 # Supabase CLI cache, wherever the CLI was run from.
 **/supabase/.temp/
+**/supabase/.branches/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Node / Next.js (frontend/.gitignore covers the details)
+node_modules/
+.next/
+out/
+build/
+dist/
+coverage/
+.turbo/
+.vercel/
+*.tsbuildinfo
+next-env.d.ts

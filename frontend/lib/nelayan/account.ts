@@ -1,5 +1,3 @@
-// lib/nelayan/account.ts
-//
 // Baca dan simpan "Info Pribadi" nelayan.
 //
 // Nama, telepon, rekening, dan PPI punya kolom di `profiles`. Kolom

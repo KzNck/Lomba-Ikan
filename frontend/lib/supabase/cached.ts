@@ -1,5 +1,3 @@
-// lib/supabase/cached.ts
-//
 // Cache data sisi server (unstable_cache) untuk query yang dibaca di hampir
 // setiap halaman dashboard. Tanpa ini, tiap render — termasuk load pertama
 // setelah refresh — bertanya ke Supabase lagi; dengan ini, render yang datang

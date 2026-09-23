@@ -1,5 +1,3 @@
-// lib/offline/storage.ts
-//
 // Antrean tangkapan yang dicatat tanpa sinyal, di IndexedDB perangkat ini. IndexedDB, bukan localStorage, karena
 // fotonya ikut disimpan sebagai Blob: tanpa foto, tangkapan tidak bisa dinilai kesegarannya saat tersinkron.
 //

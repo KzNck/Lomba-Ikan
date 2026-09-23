@@ -1,5 +1,3 @@
-// lib/photo/prepare-upload.ts
-//
 // Foto tangkapan diperkecil dan disimpan ulang sebagai JPEG di browser sebelum
 // dikirim. Foto HP bisa 3–5 MB, sedangkan server action menerima paling banyak
 // beberapa MB (serverActions.bodySizeLimit di next.config.ts); JPEG juga satu
