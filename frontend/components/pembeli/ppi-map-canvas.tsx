@@ -77,6 +77,9 @@ export function PpiMapCanvas({ markers, labels, tiles }: PpiMapCanvasProps) {
   const [zoom, setZoom] = useState<number | null>(null)
   const [locateState, setLocateState] = useState<LocateState>('idle')
   const [myLocation, setMyLocation] = useState<L.LatLng | null>(null)
+  // Leaflet animates its own pans and zooms and ignores the OS setting; with reduced motion the map jumps instead.
+  // The canvas only renders in the browser (ssr: false in ppi-map.tsx), so the media query is readable here.
+  const [reducedMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches)
 
   // Frame every PPI on first load; the bounds are only read once by MapContainer.
   const allBounds = useMemo(
@@ -109,8 +112,8 @@ export function PpiMapCanvas({ markers, labels, tiles }: PpiMapCanvasProps) {
   const markerKey = markers.map(({ name }) => name).join('|')
   useEffect(() => {
     if (!map) return
-    if (selected) map.flyTo([selected.lat, selected.lng], Math.max(map.getZoom(), 8))
-    else map.flyToBounds(allBounds, FIT)
+    if (selected) map.flyTo([selected.lat, selected.lng], Math.max(map.getZoom(), 8), { animate: !reducedMotion })
+    else map.flyToBounds(allBounds, { ...FIT, animate: !reducedMotion })
     // Only when the pick or the set of pins changes, not on every render of the same view.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, selectedName, markerKey])
@@ -132,6 +135,8 @@ export function PpiMapCanvas({ markers, labels, tiles }: PpiMapCanvasProps) {
         minZoom={MIN_ZOOM}
         maxZoom={MAX_ZOOM}
         zoomControl={false}
+        zoomAnimation={!reducedMotion}
+        markerZoomAnimation={!reducedMotion}
         // Zooms on the point under the pointer; the map sits beside the list, so it doesn't catch the page's scroll.
         scrollWheelZoom
         className="absolute inset-0 [z-index:0] bg-[#DCEEFB] font-inter"

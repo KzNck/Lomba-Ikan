@@ -51,7 +51,7 @@ export function DateRangeMenu({ action, keep, range, value, editLabel, copy }: D
         <Icon
           name="chevron-down"
           fill="#5B6B7C"
-          className={`box-border w-[18px] shrink-0 h-[18px] transition-transform duration-200 ease-out ${open ? 'rotate-180' : ''}`}
+          className={`box-border w-[18px] shrink-0 h-[18px] motion-safe:transition-transform duration-200 ease-out ${open ? 'rotate-180' : ''}`}
         />
       </button>
       <Form

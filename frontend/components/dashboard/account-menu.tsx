@@ -45,7 +45,7 @@ export function AccountMenu({ name, accountHref, placement, triggerClassName, ch
         <Icon
           name="chevron-down"
           fill={chevronFill}
-          className={`box-border w-[16px] shrink-0 h-[16px] transition-transform duration-200 ease-out ${open ? 'rotate-180' : ''}`}
+          className={`box-border w-[16px] shrink-0 h-[16px] motion-safe:transition-transform duration-200 ease-out ${open ? 'rotate-180' : ''}`}
         />
       </button>
       <div
