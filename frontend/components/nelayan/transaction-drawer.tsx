@@ -128,7 +128,7 @@ export function TransactionDrawer({ detail, closeHref, copy, handover, chat, can
           </Row>
           <Row label={copy.infoLabels.grade}>
             <span
-              className={`box-border w-fit shrink-0 h-fit flex flex-row gap-[6px] p-[4px_10px] justify-start items-center ${detail.grade && gradeCondition(detail.grade) === 'live' ? 'bg-[#E8F8F2]' : 'bg-[#F7F9FC] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px]'} rounded-[999px]`}
+              className={`box-border w-fit min-w-0 h-fit flex flex-row gap-[6px] p-[4px_10px] justify-start items-center ${detail.grade && gradeCondition(detail.grade) === 'live' ? 'bg-[#E8F8F2]' : 'bg-[#F7F9FC] [outline:1px_solid_#E2E8F0] [outline-offset:-0.5px]'} rounded-[999px]`}
             >
               <Icon
                 name={detail.grade && gradeCondition(detail.grade) === 'live' ? 'leaf' : 'snowflake'}
@@ -136,7 +136,7 @@ export function TransactionDrawer({ detail, closeHref, copy, handover, chat, can
                 className="box-border w-[13px] shrink-0 h-[13px]"
               />
               <span
-                className={`text-[12px]/[normal] box-border ${detail.grade && gradeCondition(detail.grade) === 'live' ? 'text-[#17704A]' : 'text-[#0B3B5C]'} font-poppins font-semibold text-left [white-space:nowrap]`}
+                className={`text-[12px]/[normal] box-border ${detail.grade && gradeCondition(detail.grade) === 'live' ? 'text-[#17704A]' : 'text-[#0B3B5C]'} font-poppins font-semibold text-left lg:[white-space:nowrap]`}
               >
                 {detail.gradeLabel}
               </span>
@@ -151,7 +151,7 @@ export function TransactionDrawer({ detail, closeHref, copy, handover, chat, can
           <Row label={copy.catchLabels.ice} value={detail.ice} />
           {detail.photoUrl && (
             <Row label={copy.catchLabels.photo}>
-              <span className="box-border w-fit shrink-0 h-fit flex flex-row gap-[10px] justify-start items-center">
+              <span className="box-border w-fit min-w-0 h-fit flex flex-row gap-[10px] justify-start items-center">
                 {/* The photo lives in Supabase storage, so it is a plain <img>: next/image would need that host allowed. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -163,7 +163,7 @@ export function TransactionDrawer({ detail, closeHref, copy, handover, chat, can
                   href={detail.photoUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className={`inline-flex items-center min-h-[44px] lg:inline lg:min-h-auto text-[13px]/[normal] box-border text-[#0F6CB8] hover:underline font-poppins font-semibold text-left [white-space:nowrap] rounded-[4px] ${FOCUS_RING}`}
+                  className={`inline-flex items-center min-h-[44px] lg:inline lg:min-h-auto text-[13px]/[normal] box-border text-[#0F6CB8] hover:underline font-poppins font-semibold text-left lg:[white-space:nowrap] rounded-[4px] ${FOCUS_RING}`}
                 >
                   {copy.photoLink}
                 </a>

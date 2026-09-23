@@ -71,12 +71,12 @@ export function FilterChip({ icon, label, value, active, editLabel, remove, edit
             {...buttonProps}
             aria-label={editLabel}
             // Below lg a pseudo-element stretches the tap area over the chip's padding (the chip is 50px tall).
-            className={`box-border w-fit shrink-0 h-fit flex flex-row gap-[10px] justify-start items-center rounded-[6px] cursor-pointer relative after:content-[''] after:absolute after:top-[-8px] after:bottom-[-8px] after:left-[-12px] after:right-0 lg:after:content-none ${FOCUS_RING}`}
+            className={`box-border w-fit min-w-0 h-fit flex flex-row gap-[10px] justify-start items-center rounded-[6px] cursor-pointer relative after:content-[''] after:absolute after:top-[-8px] after:bottom-[-8px] after:left-[-12px] after:right-0 lg:after:content-none ${FOCUS_RING}`}
           >
             <Icon name={icon} fill={state.icon} className="box-border w-[18px] shrink-0 h-[18px]" />
-            <span className="box-border w-fit shrink-0 h-fit flex flex-col gap-0 justify-start items-start">
-              <span className={`text-[12px]/[normal] box-border ${state.label} font-inter font-normal text-left [white-space:nowrap]`}>{label}</span>
-              <span className={`text-[14px]/[normal] box-border ${state.value} font-poppins font-semibold text-left [white-space:nowrap]`}>{value}</span>
+            <span className="box-border w-fit min-w-0 h-fit flex flex-col gap-0 justify-start items-start">
+              <span className={`text-[12px]/[normal] box-border ${state.label} font-inter font-normal text-left lg:[white-space:nowrap]`}>{label}</span>
+              <span className={`text-[14px]/[normal] box-border ${state.value} font-poppins font-semibold text-left lg:[white-space:nowrap]`}>{value}</span>
             </span>
           </button>
           {remove && (
