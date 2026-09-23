@@ -157,7 +157,7 @@ export function ListingCard({
         </dl>
         <div className="box-border w-full h-fit shrink-0 mt-auto flex flex-row gap-[6px] p-[12px_0px_0px_0px] justify-start items-center [border-width:1px_0px_0px_0px] [border-style:solid] [border-color:#E2E8F0] [margin:-0.5px_0px_0px_0px]">
           <Icon name={statusStyle.footerIcon} fill={statusStyle.footerFill} className="box-border w-[16px] shrink-0 h-[16px]" />
-          <p className={`text-[13px]/[normal] box-border ${statusStyle.footerText} font-inter font-medium text-left [white-space:nowrap]`}>{footer}</p>
+          <p className={`text-[13px]/[normal] box-border ${statusStyle.footerText} font-inter font-medium text-left sm:[white-space:nowrap]`}>{footer}</p>
         </div>
         <Link
           href={href}

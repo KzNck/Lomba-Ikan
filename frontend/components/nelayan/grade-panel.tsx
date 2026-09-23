@@ -81,7 +81,7 @@ function Metric({ icon, label, value, divider }: { icon: IconName; label: string
       className={`box-border [flex:1_1_0] h-fit flex flex-col gap-[4px] justify-start items-start ${divider ? 'p-[0px_0px_0px_16px] [border-width:0px_0px_0px_1px] [border-style:solid] [border-color:#E2E8F0]' : ''}`}
     >
       <Icon name={icon} fill="#0F6CB8" className="box-border w-[20px] h-[20px] shrink-0" />
-      <p className="text-[12px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left [white-space:nowrap]">{label}</p>
+      <p className="text-[12px]/[normal] box-border text-[#5B6B7C] font-inter font-normal text-left sm:[white-space:nowrap]">{label}</p>
       <p className="text-[16px]/[normal] box-border text-[#0B3B5C] font-poppins font-semibold text-left [white-space:nowrap]">{value}</p>
     </div>
   )
