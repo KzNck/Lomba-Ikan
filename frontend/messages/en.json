@@ -913,7 +913,7 @@
       "goals": {
         "14": {
           "title": "Life Below Water",
-          "description": "Reduces discard mortality by giving by‑catch economic value, while recording non‑target catch volumes."
+          "description": "Gives small-scale fishers a market for by‑catch that conventional buyers don't take in time."
         },
         "12": {
           "title": "Responsible Consumption & Production",
@@ -929,7 +929,7 @@
         },
         "13": {
           "title": "Climate Action",
-          "description": "Estimates the methane emissions avoided from marine biomass rotting on the coast."
+          "description": "Shows how time, ice and storage affect freshness, so catch is handled before it spoils."
         }
       }
     },

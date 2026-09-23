@@ -148,11 +148,11 @@ export function impact(t: LandingT) {
 }
 
 const GOALS = [
-  { number: 14, badge: '/images/sdgs/goal-14.svg', targets: '14.4' },
+  { number: 14, badge: '/images/sdgs/goal-14.svg', targets: '14.b' },
   { number: 12, badge: '/images/sdgs/goal-12.svg', targets: '12.3 & 12.5' },
   { number: 2, badge: '/images/sdgs/goal-02.svg', targets: '2.3' },
   { number: 8, badge: '/images/sdgs/goal-08.svg', targets: '8.3' },
-  { number: 13, badge: '/images/sdgs/goal-13.svg', targets: '13.2' },
+  { number: 13, badge: '/images/sdgs/goal-13.svg', targets: '13.3' },
 ] as const
 
 export function sdgs(t: LandingT) {
