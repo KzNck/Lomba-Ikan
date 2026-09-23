@@ -20,7 +20,12 @@ export type Pelabuhan = {
   jenis: string
   // Usually one; a port on a regency border is listed under each.
   kabKota: string[]
+  // From PIPP; the kabupaten/kota's centre where PIPP's point was missing or implausible (see the build script).
+  lat: number | null
+  lng: number | null
 }
+
+export type LatLng = { lat: number; lng: number }
 
 export const PROVINSI: Wilayah[] = provinsiData
 const KAB_KOTA: Wilayah[] = kabKotaData
@@ -55,4 +60,26 @@ export function getLokasiPelabuhan(pelabuhan: Pelabuhan): string {
   const kabKota = pelabuhan.kabKota[0]
   const provinsi = kabKota.split('.')[0]
   return [KAB_KOTA_NAMA.get(kabKota), PROVINSI_NAMA.get(provinsi)].filter(Boolean).join(', ')
+}
+
+// Names that aren't in the KKP list: the demo listings seeded before the national data was added.
+const LEGACY_PPI: Record<string, LatLng> = {
+  'PPI Bitung': { lat: 1.4406, lng: 125.195 },
+  'PPI Tanjung Priok': { lat: -6.1045, lng: 106.8053 },
+  'PPI Benoa': { lat: -8.7454, lng: 115.2116 },
+  'PPI Ambon': { lat: -3.6954, lng: 128.1814 },
+  'PPI Cilacap': { lat: -7.727, lng: 109.008 },
+}
+
+const PELABUHAN_BY_NAMA = new Map<string, Pelabuhan>()
+for (const p of PELABUHAN) if (!PELABUHAN_BY_NAMA.has(p.nama)) PELABUHAN_BY_NAMA.set(p.nama, p)
+
+// Where a port is, by the name stored with a listing (`catches.catch_location`, `profiles.ppi_location`).
+// Null for a name that isn't a known port, such as "Belum diatur".
+export function getKoordinatPelabuhan(nama: string | null | undefined): LatLng | null {
+  if (!nama) return null
+  const legacy = LEGACY_PPI[nama]
+  if (legacy) return legacy
+  const port = PELABUHAN_BY_NAMA.get(nama)
+  return port && port.lat !== null && port.lng !== null ? { lat: port.lat, lng: port.lng } : null
 }

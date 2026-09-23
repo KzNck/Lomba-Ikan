@@ -104,15 +104,16 @@ export function PpiMapCanvas({ markers, labels, tiles }: PpiMapCanvasProps) {
     }
   }, [map])
 
-  // Picking a PPI flies to it; clearing the pick frames them all again.
+  // Picking a PPI flies to it; clearing the pick, or a filter change that adds or removes pins, frames them all again.
   const selectedName = selected?.name
+  const markerKey = markers.map(({ name }) => name).join('|')
   useEffect(() => {
     if (!map) return
     if (selected) map.flyTo([selected.lat, selected.lng], Math.max(map.getZoom(), 8))
     else map.flyToBounds(allBounds, FIT)
-    // Only when the pick changes, not on every render of the same pick.
+    // Only when the pick or the set of pins changes, not on every render of the same view.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, selectedName])
+  }, [map, selectedName, markerKey])
 
   const locate = () => {
     if (!map) return
@@ -131,7 +132,8 @@ export function PpiMapCanvas({ markers, labels, tiles }: PpiMapCanvasProps) {
         minZoom={MIN_ZOOM}
         maxZoom={MAX_ZOOM}
         zoomControl={false}
-        scrollWheelZoom={false}
+        // Zooms on the point under the pointer; the map sits beside the list, so it doesn't catch the page's scroll.
+        scrollWheelZoom
         className="absolute inset-0 [z-index:0] bg-[#DCEEFB] font-inter"
       >
         <TileLayer url={tiles.url} attribution={tiles.attribution} />

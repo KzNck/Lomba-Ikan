@@ -7,7 +7,7 @@ import { PpiMiniMap } from '@/components/pembeli/ppi-mini-map'
 import { BuyButton } from '@/components/pembeli/buy-button'
 import { DetailChip, DetailSection } from '@/components/pembeli/detail-section'
 import { useTranslations } from 'next-intl'
-import { marketplaceCopy, PPI_LOCATIONS } from '@/components/pembeli/marketplace-content'
+import { marketplaceCopy } from '@/components/pembeli/marketplace-content'
 import type { Batch } from '@/lib/marketplace/batches'
 import { PRESS, PRESS_WIDE, SOLID_HOVER } from '@/components/ui/interaction'
 
@@ -36,7 +36,7 @@ export function BatchDrawer({ batch, closeHref, similarHref, buyAction }: BatchD
   const condition = CONDITIONS[detail.condition]
   // A category the marketplace doesn't list falls back to the batch's own name.
   const category = CATEGORIES.find(({ value }) => value === batch.category)?.label ?? batch.name
-  const location = PPI_LOCATIONS[batch.location]
+  const location = batch.coords
   const sold = batch.status === 'sold'
 
   return (

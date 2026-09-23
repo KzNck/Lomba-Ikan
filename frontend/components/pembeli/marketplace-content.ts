@@ -34,15 +34,6 @@ export const CONDITION_ICONS = {
 } as const
 export type Condition = keyof typeof CONDITION_ICONS
 
-// Where each PPI is, for the map. A PPI with no batches gets no marker.
-export const PPI_LOCATIONS: Record<string, { lat: number; lng: number }> = {
-  'PPI Bitung': { lat: 1.4406, lng: 125.195 },
-  'PPI Tanjung Priok': { lat: -6.1045, lng: 106.8053 },
-  'PPI Benoa': { lat: -8.7454, lng: 115.2116 },
-  'PPI Ambon': { lat: -3.6954, lng: 128.1814 },
-  'PPI Cilacap': { lat: -7.727, lng: 109.008 },
-}
-
 // OpenStreetMap's standard tiles: no API key, fine for development and light use. For production traffic, point
 // this at a tile provider you have an account with (OSM's tile policy asks heavy users to). Swap URL and
 // attribution together.

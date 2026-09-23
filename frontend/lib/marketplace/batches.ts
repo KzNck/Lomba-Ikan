@@ -1,11 +1,12 @@
 // lib/marketplace/batches.ts
 //
 // Membentuk "batch" marketplace dari row `catches` yang berstatus LISTED,
-// lengkap dengan nama nelayan dan jarak dari PPI prioritas pembeli.
+// lengkap dengan nama nelayan, letak PPI-nya di peta, dan jaraknya dari
+// pembeli (dari PPI pembeli, atau pusat kabupaten/kota yang ia daftarkan).
 
 import type { ImageContent } from '@/components/home/hero'
 import type { ProductCardContent } from '@/components/pembeli/product-card'
-import { MARKETPLACE_PATH, PPI_LOCATIONS, type Condition } from '@/components/pembeli/marketplace-content'
+import { MARKETPLACE_PATH, type Condition } from '@/components/pembeli/marketplace-content'
 import { getTranslations } from 'next-intl/server'
 import {
   catchImage,
@@ -24,7 +25,9 @@ import { getPresenter } from '@/lib/i18n/presenter'
 import type { Translator } from '@/lib/i18n/translator'
 import { getListedCatches } from '@/lib/supabase/catches'
 import { getProfileNames, type ProfileName } from '@/lib/supabase/profiles'
-import { requireProfile } from '@/lib/supabase/auth'
+import { getSessionUser, requireProfile } from '@/lib/supabase/auth'
+import { getKoordinatPelabuhan, type LatLng } from '@/lib/wilayah'
+import { getKoordinatKabKota } from '@/lib/wilayah/koordinat'
 import type { Catch } from '@/types/database'
 
 export type Batch = ProductCardContent & {
@@ -38,7 +41,9 @@ export type Batch = ProductCardContent & {
   // null when either end has no known coordinates, which sorts it last under "Terdekat".
   distanceKm: number | null
   listedAt: string
+  // The PPI's name, and where it is; null for a name that isn't a known port (the batch then has no map pin).
   location: string
+  coords: LatLng | null
   detail: {
     condition: Condition
     caught: string
@@ -63,19 +68,6 @@ function haversineKm(a: { lat: number; lng: number }, b: { lat: number; lng: num
   return Math.round(2 * 6371 * Math.asin(Math.sqrt(h)))
 }
 
-/**
- * Jarak dari PPI prioritas pembeli ke PPI batch. Hanya bisa dihitung kalau
- * koordinat kedua PPI ada di PPI_LOCATIONS — data pelabuhan nasional di
- * lib/wilayah belum menyimpan koordinat.
- */
-function distanceFrom(origin: string | null, location: string): number | null {
-  if (!origin) return null
-  const from = PPI_LOCATIONS[origin]
-  const to = PPI_LOCATIONS[location]
-  if (!from || !to) return null
-  return haversineKm(from, to)
-}
-
 /** Kondisi yang ditampilkan drawer, dari grade dan cara penyimpanannya. */
 function conditionOf(entry: Catch): Condition {
     return gradeCondition(entry.freshness_grade) === 'live' && entry.storage_method !== 'ambient'
@@ -96,12 +88,14 @@ export function toBatch(
   { t }: BatchCopy,
   entry: Catch,
   seller: ProfileName | undefined,
-  origin: string | null
+  // Where the buyer is; null leaves every distance unknown.
+  origin: LatLng | null
 ): Batch {
   const weightKg = Number(entry.weight_kg)
   const pricePerKg = entry.price_per_kg === null ? 0 : Number(entry.price_per_kg)
   const total = weightKg * pricePerKg
-  const distanceKm = distanceFrom(origin, entry.catch_location)
+  const coords = getKoordinatPelabuhan(entry.catch_location)
+  const distanceKm = origin && coords ? haversineKm(origin, coords) : null
   const remaining = timeLeft(p, entry.expires_at)
   const image = catchImage(p, entry)
 
@@ -122,6 +116,7 @@ export function toBatch(
     distanceKm,
     listedAt: entry.listed_at ?? entry.created_at,
     location: entry.catch_location,
+    coords,
     weight: formatWeight(p, weightKg),
     distance: distanceKm === null ? '—' : `${distanceKm} km`,
     // No price yet (it follows the auction): say so, rather than "Belum diatur/kg".
@@ -150,12 +145,15 @@ export function batchTotal(batch: Batch): number {
 
 /** Semua batch yang tampil di marketplace, untuk pembeli yang sedang login. */
 export async function loadBatches(): Promise<Batch[]> {
-  const profile = await requireProfile('pembeli')
+  const [profile, user] = await Promise.all([requireProfile('pembeli'), getSessionUser()])
   const listed = await getListedCatches()
+  // The buyer's own PPI when they picked one, else the centre of the kabupaten/kota they registered.
+  const kabKota = user?.metadata.kab_kota
+  const origin = getKoordinatPelabuhan(profile.ppi_location) ?? getKoordinatKabKota(typeof kabKota === 'string' ? kabKota : null)
   const [sellers, p, t] = await Promise.all([
     getProfileNames(listed.map((entry) => entry.nelayan_id)),
     getPresenter(),
     getTranslations('dashboard.pembeli.marketplace.batch'),
   ])
-  return listed.map((entry) => toBatch(p, { t }, entry, sellers.get(entry.nelayan_id), profile.ppi_location))
+  return listed.map((entry) => toBatch(p, { t }, entry, sellers.get(entry.nelayan_id), origin))
 }

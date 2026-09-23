@@ -11,7 +11,6 @@ import {
   GRADES,
   MARKETPLACE_PATH,
   marketplaceCopy,
-  PPI_LOCATIONS,
   type MarketplaceCopy,
 } from '@/components/pembeli/marketplace-content'
 import {
@@ -30,6 +29,8 @@ import type { Batch } from '@/lib/marketplace/batches'
 function filterChips(
   query: MarketplaceQuery,
   { FILTERS, CATEGORIES }: MarketplaceCopy,
+  // Every PPI that has a listed batch, plus any already prioritised: the ones worth offering.
+  ppiNames: string[],
 ): (FilterChipProps & { key: string })[] {
   const chip = (
     key: string,
@@ -77,7 +78,7 @@ function filterChips(
     chip('priority', FILTERS.priority, query.priorityPpis.join(', ') || null, { ...query, priorityPpis: [] }, {
       type: 'checkbox',
       name: 'prioritas',
-      options: Object.keys(PPI_LOCATIONS).map((name) => ({ value: name, label: name, checked: query.priorityPpis.includes(name) })),
+      options: ppiNames.map((name) => ({ value: name, label: name, checked: query.priorityPpis.includes(name) })),
     }),
   ]
 }
@@ -109,14 +110,19 @@ export function MarketplaceView({
   }))
   const sortLabel = SORT_MENU.buttonLabel(SORT_OPTIONS.find(({ value }) => value === query.sort)!.label)
 
+  // Each batch carries its PPI's coordinates (lib/wilayah); a name that isn't a known port gets no marker.
+  const coordsOf = new Map(all.flatMap((batch) => (batch.coords ? [[batch.location, batch.coords] as const] : [])))
+  const ppiNames = [...new Set([...all.map((batch) => batch.location), ...query.priorityPpis])].sort((a, b) =>
+    a.localeCompare(b, 'id'),
+  )
   const markers = [...availableByPpi(all, query)]
-    .filter(([name]) => name in PPI_LOCATIONS)
+    .filter(([name]) => coordsOf.has(name))
     .map(([name, count]) => {
       const selected = name === query.ppi
       const detail = PPI_MAP.markerDetail(count)
       return {
         name,
-        ...PPI_LOCATIONS[name],
+        ...coordsOf.get(name)!,
         detail,
         action: PPI_MAP.markerLabel(name, detail, selected),
         href: marketplaceHref({ ...query, ppi: selected ? undefined : name }),
@@ -138,7 +144,7 @@ export function MarketplaceView({
           <MarketplaceSearch action={MARKETPLACE_PATH} query={query.q} hidden={hiddenFields(query, 'q')} {...MARKETPLACE.search} />
           <SortMenu label={sortLabel} options={sortOptions} />
         </div>
-        <FilterBar label={MARKETPLACE.filtersLabel} filters={filterChips(query, copy)} reset={reset} />
+        <FilterBar label={MARKETPLACE.filtersLabel} filters={filterChips(query, copy, ppiNames)} reset={reset} />
         {/* Stretched (the export has items-start) so the map runs the column's full height. */}
         <div className="box-border w-full [flex:1_1_0] flex flex-col lg:flex-row gap-[20px] justify-start items-stretch">
           <section className="box-border [flex:1_1_0] min-w-0 h-fit flex flex-col gap-[14px] justify-start items-start">

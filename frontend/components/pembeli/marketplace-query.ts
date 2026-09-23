@@ -10,7 +10,6 @@ import {
   CATEGORY_VALUES,
   GRADES,
   MARKETPLACE_PATH,
-  PPI_LOCATIONS,
   PREFERENCES,
   SORT_VALUES,
   type Category,
@@ -36,15 +35,16 @@ export type MarketplaceQuery = {
 // The URL value for "filter removed". Any value that isn't an option reads as removed; this is the one we write.
 const NONE = 'semua'
 const DEFAULT_SORT = SORT_VALUES[0]
-const PPI_NAMES = Object.keys(PPI_LOCATIONS)
 
 const first = (value: string | string[] | undefined) => (Array.isArray(value) ? value[0] : value)?.trim() ?? ''
 
 // A repeatable filter: absent means "use the preference", present keeps only valid options (none left = removed).
 // The editing panels send an empty value alongside the checkboxes so unticking everything still counts as present.
-function listParam<T extends string>(raw: string | string[] | undefined, valid: readonly string[], fallback: T[]) {
+// `valid` null accepts any value: PPI names, where any of the national ports can hold batches.
+function listParam<T extends string>(raw: string | string[] | undefined, valid: readonly string[] | null, fallback: T[]) {
   if (raw === undefined) return fallback
   const values = (Array.isArray(raw) ? raw : [raw]).map((value) => value.trim())
+  if (!valid) return [...new Set(values.filter((value) => value && value !== NONE))] as T[]
   return valid.filter((option) => values.includes(option)) as T[]
 }
 
@@ -55,10 +55,11 @@ export function parseMarketplaceQuery(params: SearchParams): MarketplaceQuery {
   return {
     q: first(params.q),
     sort,
-    ppi: ppi in PPI_LOCATIONS ? ppi : undefined,
+    // Any PPI name: one with no batches simply shows "Tidak ada hasil".
+    ppi: ppi || undefined,
     maxGrade: params.grade === undefined ? PREFERENCES.maxGrade : ((GRADES as readonly string[]).includes(grade) ? (grade as Grade) : null),
     categories: listParam<Category>(params.jenis, CATEGORY_VALUES, PREFERENCES.categories),
-    priorityPpis: listParam<string>(params.prioritas, PPI_NAMES, PREFERENCES.priorityPpis),
+    priorityPpis: listParam<string>(params.prioritas, null, PREFERENCES.priorityPpis),
   }
 }
 
