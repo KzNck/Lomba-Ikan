@@ -121,6 +121,15 @@ The full step-by-step guide, including the Supabase setup and a smoke test, is i
 - Web app: https://lomba-ikan.vercel.app
 - Freshness API: https://lombaikan-production.up.railway.app/docs (interactive API docs), health check at `/health`
 
+### Test accounts
+
+Log in to the web app with one of these accounts to try each role:
+
+| Role | Email | Password |
+| --- | --- | --- |
+| Fisher (nelayan) | nathanaelrico10@gmail.com | 12345678 |
+| Buyer (pembeli) | nathanaelrico05@gmail.com | 12345678 |
+
 ## Repository structure
 
 ```text
