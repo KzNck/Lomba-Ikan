@@ -296,7 +296,7 @@
         "ungraded": {
           "subtitle": "Tangkapan Anda sudah tersimpan, tapi penilaian kesegarannya belum tersedia.",
           "title": "Penilaian belum berhasil",
-          "body": "AI belum bisa menilai foto ini. Coba nilai ulang, atau pasang ke listing tanpa grade.",
+          "body": "Foto ini belum bisa dinilai. Coba nilai ulang, atau pasang ke listing tanpa grade.",
           "noPhotoBody": "Foto ini tidak bisa dinilai ulang. Anda tetap bisa memasangnya ke listing tanpa grade.",
           "retry": "Nilai ulang",
           "retrying": "Menilai…",

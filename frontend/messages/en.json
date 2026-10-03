@@ -296,7 +296,7 @@
         "ungraded": {
           "subtitle": "Your catch is saved, but its freshness assessment isn't available yet.",
           "title": "Assessment didn't go through",
-          "body": "The AI couldn't grade this photo yet. Try grading it again, or post the listing without a grade.",
+          "body": "This photo couldn't be graded yet. Try grading it again, or post the listing without a grade.",
           "noPhotoBody": "This photo can't be graded again. You can still post the listing without a grade.",
           "retry": "Grade again",
           "retrying": "Grading…",
